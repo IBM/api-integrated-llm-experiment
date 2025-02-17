@@ -1,3 +1,6 @@
+# Package Versioning
+__version__.py
+
 # IDE
 .vscode/
 
