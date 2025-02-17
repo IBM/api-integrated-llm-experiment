@@ -29,7 +29,7 @@ python -m build
 
 To install the CLI, follow these steps:
 
-1. Navigate to your Python virtual environment.
+1. Navigate to your Python virtual environment for API-Integrated-LLM CLI.
 2. Run the following command to install the package from the built WHL file:
 
 ```bash
