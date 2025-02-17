@@ -1,9 +1,13 @@
 import argparse
 from pathlib import Path
 import os
+from typing import Any, Dict
 from api_integrated_llm.evaluation import evaluate
 from api_integrated_llm.helpers.benchmark_helper import get_model_id_obj_dict
-from api_integrated_llm.helpers.file_helper import get_files_in_folder
+from api_integrated_llm.helpers.file_helper import (
+    get_dict_from_json,
+    get_files_in_folder,
+)
 from api_integrated_llm.scoring import scoring
 
 
@@ -23,6 +27,14 @@ def get_arguments() -> argparse.Namespace:
     return parser.parse_args()
 
 
+def get_llm_configuration(llm_configuration_file_path: Path) -> Dict[str, Any]:
+    return (
+        get_dict_from_json(file_path=llm_configuration_file_path)
+        if os.path.isfile((llm_configuration_file_path))
+        else get_model_id_obj_dict()
+    )
+
+
 def cli() -> None:
     args = get_arguments()
     source_folder_path = os.path.join(args.root, "source")
@@ -33,7 +45,13 @@ def cli() -> None:
     )
 
     evaluate(
-        model_id_info_dict=get_model_id_obj_dict(),
+        model_id_info_dict=(
+            get_llm_configuration(
+                llm_configuration_file_path=os.path.join(
+                    source_folder_path, "configurations", "llm_configurations.json"
+                )
+            )
+        ),
         evaluation_input_file_paths=get_files_in_folder(
             folder_path=os.path.join(source_folder_path, "evaluation"),
             file_extension="json",
