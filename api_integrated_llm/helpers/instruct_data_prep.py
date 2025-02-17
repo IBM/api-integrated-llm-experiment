@@ -7,6 +7,7 @@ from typing import Any, Dict, List, Optional
 from api_integrated_llm.helpers.file_helper import (
     get_dict_from_json,
     get_list_dict_from_jsonl,
+    get_uuid4_str,
 )
 from api_integrated_llm.helpers.sampling_helper import get_random_example_for_prompt
 from api_integrated_llm.helpers.tokenizer_helper import granite_prompt_input
@@ -199,9 +200,10 @@ def instruct_data(
                     .replace("{ICL_EXAMPLES}", example_str)
                     .replace("{QUERY}", sample["input"])
                 )
+        sample_id = sample.get("sample_id", get_uuid4_str())
         test_data.append(
             {
-                "sample_id": sample["sample_id"],
+                "sample_id": sample_id,
                 "input": input_prompt,
                 "output": json.dumps(sample["output"]),
                 "gold_answer": sample["gold_answer"],
