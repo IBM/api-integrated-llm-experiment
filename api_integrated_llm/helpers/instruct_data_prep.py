@@ -182,6 +182,9 @@ def instruct_data(
                 FUNCTION_STR=json.dumps(sample["tools"]),
                 ICL_EXAMPLES=example_str,
                 QUERY=sample["input"],
+                KEY_VALUES_AND_DESCRIPTIONS=json.dumps(
+                    sample.get("key_values_and_descriptions", [])
+                ),
             )
         else:
             try:
@@ -193,6 +196,9 @@ def instruct_data(
                     FUNCTION_STR=json.dumps(sample["tools"]),
                     ICL_EXAMPLES=example_str,
                     QUERY=sample["input"],
+                    KEY_VALUES_AND_DESCRIPTIONS=json.dumps(
+                        sample.get("key_values_and_descriptions", [])
+                    ),
                 )
             except:
                 input_prompt = (
@@ -200,6 +206,10 @@ def instruct_data(
                     .replace("{FUNCTION_STR}", json.dumps(sample["tools"]))
                     .replace("{ICL_EXAMPLES}", example_str)
                     .replace("{QUERY}", sample["input"])
+                    .replace(
+                        "{KEY_VALUES_AND_DESCRIPTIONS}",
+                        json.dumps(sample.get("key_values_and_descriptions", [])),
+                    )
                 )
         sample_id = sample.get("sample_id", get_uuid4_str())
         test_data.append(
