@@ -58,4 +58,4 @@ def get_random_example_for_prompt(
             continue
         sample_hash_to_skip.add(sample_hash)
 
-    return {"random_examples": sampled_examples}
+    return {"random_examples": sampled_examples}  # type: ignore

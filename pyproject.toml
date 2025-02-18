@@ -10,7 +10,7 @@ requires-python = ">=3.10"
 keywords = ["api", "llm"]
 authors  = []
 # "datasets==2.12.0", "deepspeed==0.9.2", "accelerate==0.19.0", "evaluate==0.4.0", "ninja", "ipython", "rouge-score", "py7zr", "tensorboard", "openai", "black", "jsonlines", "rouge", "ipdb",  "pytesseract", "nltk",
-dependencies = ["transformers==4.29.2", "scikit-learn", "pydantic"]
+dependencies = ["transformers==4.49.0", "scikit-learn", "pydantic"]
 dynamic      = ["version"]
 readme       = { file = "README.md", content-type = "text/markdown" }
 
@@ -18,7 +18,7 @@ readme       = { file = "README.md", content-type = "text/markdown" }
 api-integrated-llm = "api_integrated_llm.helpers.cli_helper:cli"
 
 [project.optional-dependencies]
-test = ["pytest"]
+test = ["pytest", "pre-commit"]
 
 [project.urls]
 homepage   = "https://github.ibm.com/Jungkoo-Kang/api_integrated_llm_experiment"

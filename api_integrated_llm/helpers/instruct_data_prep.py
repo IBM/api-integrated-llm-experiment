@@ -110,22 +110,23 @@ def get_examples(
 ) -> Dict[str, Dict[str, Any]]:
     return (
         get_random_example_for_prompt(
-            evaluation_input_file_paths=evaluation_input_file_paths,
+            evaluation_input_file_paths=evaluation_input_file_paths,  # type: ignore
             chosen_evaluation_input_file_path=chosen_evaluation_input_file_path,
             num_examples=num_examples,
         )
         if should_generate_random_example
-        else get_dict_from_json(example_file_path)
+        else get_dict_from_json(example_file_path)  # type: ignore
     )
 
 
 def get_prompt_dict(
     prompt_file_path: Path, evaluation_input_file_path: Path
 ) -> Dict[str, Any]:
-    prompt_dict_all = get_dict_from_json(file_path=prompt_file_path)
-    if "rest" in evaluation_input_file_path:
+    prompt_dict_all = get_dict_from_json(file_path=prompt_file_path)  # type: ignore
+    path_str = str(evaluation_input_file_path)
+    if "rest" in path_str:  # type: ignore
         return prompt_dict_all["router"]
-    if "sequencing" in evaluation_input_file_path or "slot-filling":
+    if "sequencing" in path_str or "slot-filling" in path_str:  # type: ignore
         return prompt_dict_all["sequencing"]
     return prompt_dict_all["icl"]
 
@@ -140,8 +141,8 @@ def instruct_data(
     num_examples: int = 1,
 ) -> List[Dict[str, Any]]:
     examples_dict = get_examples(
-        example_file_path=example_file_path,
-        evaluation_input_file_paths=evaluation_input_file_paths,
+        example_file_path=example_file_path,  # type: ignore
+        evaluation_input_file_paths=evaluation_input_file_paths,  # type: ignore
         chosen_evaluation_input_file_path=evaluation_input_file_path,
         num_examples=num_examples,
         should_generate_random_example=should_generate_random_example,
@@ -159,7 +160,7 @@ def instruct_data(
         evaluation_input_file_path=evaluation_input_file_path,
     )
 
-    evaluation_source_dict = get_dict_from_json(evaluation_input_file_path)
+    evaluation_source_dict = get_dict_from_json(evaluation_input_file_path)  # type: ignore
 
     data = (
         transform_to_evaluation_source_from_inner_sourced_json(

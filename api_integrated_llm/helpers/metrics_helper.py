@@ -6,7 +6,6 @@ binarizer = MultiLabelBinarizer()
 
 
 def compute_score_sklearn(gold_output, pred_output):
-
     binarizer.fit(gold_output)
 
     f1_score_macro = f1_score(
@@ -87,18 +86,12 @@ def _compute_metrics(
     recall_macro = np.nan_to_num(tp / (tp + fn))
     idxs_special_case1 = np.where(tp == -1)[0]
     idxs_special_case2 = np.where(tp == -2)[0]
-    prec_macro[idxs_special_case1] = 0.0
-    recall_macro[idxs_special_case1] = 1.0
-    prec_macro[idxs_special_case2] = 1.0
-    recall_macro[idxs_special_case2] = 0.0
+    prec_macro[idxs_special_case1] = 0.0  # type: ignore
+    recall_macro[idxs_special_case1] = 1.0  # type: ignore
+    prec_macro[idxs_special_case2] = 1.0  # type: ignore
+    recall_macro[idxs_special_case2] = 0.0  # type: ignore
     f1_macro = np.nan_to_num(
         2 * prec_macro * recall_macro / (prec_macro + recall_macro)
-    )
-    f1_macro_qald = (
-        2
-        * prec_macro.mean()
-        * recall_macro.mean()
-        / (prec_macro.mean() + recall_macro.mean())
     )
     tp[idxs_special_case1] = 0
     tp[idxs_special_case2] = 0

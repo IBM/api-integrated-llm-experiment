@@ -60,3 +60,12 @@ To evaluate and score data, use the following command:
 ```bash
 api-integrated-llm -rt <PATH_TO_DATA_SOURCE_FOLDER>
 ```
+
+### Development
+
+Install development dependencies.
+
+```bash
+pip install -e ".[test]"
+pre-commit install
+```

@@ -305,7 +305,7 @@ def get_hash_str_from_dict(tmp_dict: Dict[str, Any]) -> str:
 
 
 def get_dataset_name(file_path: Path) -> str:
-    json_dict = get_dict_from_json(file_path)
+    json_dict = get_dict_from_json(str(file_path))
     data = json_dict["data"]
     return data[0]["dataset_name"][:]
 

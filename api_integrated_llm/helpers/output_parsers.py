@@ -11,7 +11,7 @@ def get_deli_sep_str_list(text, deli=","):
 
     for idx in comma_indexes:
         valid_flag = True
-        lfs, rfs = text[:idx], text[idx + 1 :]
+        lfs, _ = text[:idx], text[idx + 1 :]  # noqa: E203
 
         # Delimeter not inside quotes
         quotes_count_lfs = lfs.count('"')
@@ -80,7 +80,7 @@ def ground_seq_nested_repsonse(api_list):
         else:
             arg_dict = {}
         for s_n, s_v in arg_dict.items():
-            for l, a in label_api_map.items():
+            for l, a in label_api_map.items():  # noqa: E741
                 # if type(s_v) == str and l in s_v:
                 if type(s_v) == str and check_label_in_slot(l, s_v):
                     # ipdb.set_trace()
@@ -170,7 +170,9 @@ def parse_granite_3_output(item, num_errors_parsing_pred_intent, skip_grounding=
             if start_idx == -1 or end_idx == -1 or start_idx > end_idx:
                 raise Exception("Parsing error")
 
-            pred_dict_list = json.loads(generated_text[start_idx : end_idx + 1])
+            pred_dict_list = json.loads(
+                generated_text[start_idx : end_idx + 1]  # noqa: E203
+            )  # noqa: E203
         else:
             raise Exception("no generated_text field in item")
 
@@ -356,7 +358,9 @@ def parse_mistral_7b_instruct_v0_3(
         # ipdb.set_trace()
         try:
             pred = item["generated_text"].strip()
-            pred_dict_list = json.loads(pred.replace("\n", "").replace("\_", "_"))
+            pred_dict_list = json.loads(
+                pred.replace("\n", "").replace("\_", "_")  # noqa: W605
+            )  # noqa: W605
             if skip_grounding:
                 pred_func_calls = [json.dumps(func) for func in pred_dict_list]
             else:
@@ -514,57 +518,6 @@ def parse_Hammer2_0_7b(
     try:
         pred = item["generated_text"].replace("```", "").strip()
         pred_dict_list = json.loads(pred)
-        assert len(pred_dict_list) > 0, "parsing issue"
-
-        if skip_grounding:
-            pred_func_calls = [json.dumps(func) for func in pred_dict_list]
-        else:
-            pred_func_calls = ground_seq_nested_repsonse(pred_dict_list)
-            pred_func_calls = [json.dumps(func) for func in pred_func_calls]
-
-    except:
-        num_errors_parsing_pred_intent += 1
-        pred_has_parsing_errors = True
-
-    return (
-        pred_func_calls,
-        gold_func_calls,
-        pred_dict_list,
-        gold_dict_list,
-        num_errors_parsing_pred_intent,
-        pred_has_parsing_errors,
-    )
-
-
-def parse_ToolAce(item, num_errors_parsing_pred_intent, skip_grounding=False):
-    """
-    ### Input: 'item' as json object
-    # Pred: Example from Granite3.0
-    item['generated_text'] : '[{"name": "divide", "label": "$var_1", "arguments": {"arg_0": 45, "arg_1": 18}}, {"name": "divide", "label": "$var_2", "arguments": {"arg_0": 1, "arg_1": "$var_1.result$"}}]'
-    # Gold:
-    item['output'] : '[{"name": "multiply", "label": "$var_1", "arguments": {"arg_0": 18, "arg_1": 45}}, {"name": "divide", "label": "$var_2", "arguments": {"arg_0": "$var_1.result$", "arg_1": 27}}]'
-
-    ### Output: List[String]
-    pred_func_calls: ['{"name": "divide", "arguments": {"arg_0": 45, "arg_1": 18}}', '{"name": "divide", "arguments": {"arg_0": 1, "arg_1": "$divide.result$"}}']
-    gold_func_calls: ['{"name": "multiply", "arguments": {"arg_0": 18, "arg_1": 45}}', '{"name": "divide", "arguments": {"arg_0": "$multiply.result$", "arg_1": 27}}']
-    """
-
-    pred_has_parsing_errors = False
-    pred_func_calls, gold_func_calls = [], []
-    pred_dict_list, gold_dict_list = [], []
-
-    ## Gold
-    gold_dict_list = json.loads(item["output"])
-    if skip_grounding:
-        gold_func_calls = [json.dumps(func) for func in gold_dict_list]
-    else:
-        gold_func_calls = ground_seq_nested_repsonse(gold_dict_list)
-        gold_func_calls = [json.dumps(func) for func in gold_func_calls]
-
-    ## Pred
-    try:
-        pred = item["generated_text"]
-        pred_dict_list = ast_utils.ast_parse(pred)
         assert len(pred_dict_list) > 0, "parsing issue"
 
         if skip_grounding:

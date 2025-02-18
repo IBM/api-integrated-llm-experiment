@@ -1,5 +1,6 @@
 from copy import deepcopy
-import os, json
+import os
+import json
 from pathlib import Path
 import statistics
 from typing import Any, Dict, List, Optional
@@ -8,7 +9,6 @@ import sys
 
 from api_integrated_llm.helpers.output_parsers import (
     parse_Hammer2_0_7b,
-    parse_ToolAce,
     parse_granite_20b_function_calling_output,
     parse_granite_3_output,
     parse_hermes_2_pro_mistral_7B,
@@ -109,7 +109,7 @@ def calculate_ans_stack(func_calls, spec_lib, python_codes_dir, func_file_dict):
             output_params = list(output_params.keys())
             arg_values = []
             arg_val_list = []
-            # ipdb.set_trace()
+
             for k, v in f["arguments"].items():
                 if type(v) == str and v.startswith("$") and v.endswith("$"):
                     v = v[1:-1]
@@ -118,9 +118,7 @@ def calculate_ans_stack(func_calls, spec_lib, python_codes_dir, func_file_dict):
                     v = variable_result_map[v_l][out_param]
                 arg_val_list.append(v)
                 arg_values.append(str(v))
-            # ipdb.set_trace()
-            func_str = f"{f['name']}({','.join(arg_values)})"
-            # res = eval(func_str) ## mathqa
+
             ### stack
             file_name = func_file_dict[f["name"]]
             file_path = os.path.join(python_codes_dir, file_name)
@@ -132,10 +130,9 @@ def calculate_ans_stack(func_calls, spec_lib, python_codes_dir, func_file_dict):
             func = getattr(mod, f["name"])
             res = func(*arg_val_list)
 
-            if len(output_params) == 1:  #### STACK
+            if len(output_params) == 1:
                 variable_result_map[label] = {output_params[0]: res}
             else:
-                # ipdb.set_trace()
                 return False
         # ipdb.set_trace()
         final_var = func_calls[-1]["label"].replace("$", "")
@@ -293,15 +290,6 @@ def calculate_scores(
                 num_errors_parsing_pred_intent,
                 pred_has_parsing_errors,
             ) = parse_Hammer2_0_7b(item, num_errors_parsing_pred_intent)
-        elif "toolace" in model_name.lower():
-            (
-                pred_func_calls,
-                gold_func_calls,
-                pred_dict_list,
-                gold_dict_list,
-                num_errors_parsing_pred_intent,
-                pred_has_parsing_errors,
-            ) = parse_ToolAce(item, num_errors_parsing_pred_intent)
         elif "granite" in model_name.lower():
             (
                 pred_func_calls,
@@ -366,7 +354,7 @@ def calculate_scores(
         gold_output_intent.append(gold_apis_names)
         pred_output_intent.append(pred_apis_names)
         if not intents_only:
-            pred_api_map, gold_api_map = {}, {}
+            pred_api_map, gold_api_map = {}, {}  # type: ignore
             for f in pred_func_calls:
                 if f.strip() == '{"name": "dummy", "arguments": {}}':
                     continue
@@ -431,7 +419,7 @@ def calculate_scores(
                         )
                     )
                 except:
-                    args = {}
+                    args = {}  # type: ignore
                 api_with_args_pred.append(f"{f_name}({args})")
             except:
                 continue
@@ -478,9 +466,21 @@ def calculate_scores(
         "p_intent": "{:.3f}".format(p_intent),
         "r_intent": "{:.3f}".format(r_intent),
         "f1_intent": "{:.3f}".format(f1_intent),
-        "p_slot": "{:.3f}".format(p_slot) if p_slot != None else "",
-        "r_slot": "{:.3f}".format(r_slot) if r_slot != None else "",
-        "f1_slot": "{:.3f}".format(f1_slot) if f1_slot != None else "",
+        "p_slot": (
+            "{:.3f}".format(p_slot)
+            if p_slot is not None
+            else ""  # noqa: E711 # type: ignore
+        ),
+        "r_slot": (
+            "{:.3f}".format(r_slot)
+            if r_slot is not None
+            else ""  # noqa: E711 # type: ignore
+        ),
+        "f1_slot": (
+            "{:.3f}".format(f1_slot)
+            if f1_slot is not None
+            else ""  # noqa: E711 # type: ignore
+        ),
         "num_examples": len(predictions),
         "accuracy_combined": "{:.3f}".format(statistics.mean(all_accuracy_combined)),
         "percentage_times_full_score": "{:.3f}".format(

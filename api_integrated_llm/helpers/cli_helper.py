@@ -29,7 +29,7 @@ def get_arguments() -> argparse.Namespace:
 
 def get_llm_configuration(llm_configuration_file_path: Path) -> Dict[str, Any]:
     return (
-        get_dict_from_json(file_path=llm_configuration_file_path)
+        get_dict_from_json(file_path=llm_configuration_file_path)  # type: ignore
         if os.path.isfile((llm_configuration_file_path))
         else get_model_id_obj_dict()
     )
@@ -47,7 +47,7 @@ def cli() -> None:
     evaluate(
         model_id_info_dict=(
             get_llm_configuration(
-                llm_configuration_file_path=os.path.join(
+                llm_configuration_file_path=os.path.join(  # type: ignore
                     source_folder_path, "configurations", "llm_configurations.json"
                 )
             )
@@ -56,12 +56,12 @@ def cli() -> None:
             folder_path=os.path.join(source_folder_path, "evaluation"),
             file_extension="json",
         ),
-        example_file_path=os.path.join(
+        example_file_path=os.path.join(  # type: ignore
             source_folder_path, "prompts", "examples_icl.json"
         ),
-        output_folder_path=evaluation_folder_path,
-        prompt_file_path=os.path.join(source_folder_path, "prompts", "prompts.json"),
-        error_folder_path=os.path.join(
+        output_folder_path=evaluation_folder_path,  # type: ignore
+        prompt_file_path=os.path.join(source_folder_path, "prompts", "prompts.json"),  # type: ignore
+        error_folder_path=os.path.join(  # type: ignore
             output_folder_path,
             "error",
         ),
@@ -71,10 +71,10 @@ def cli() -> None:
         num_examples=3,
     )
     scoring(
-        evaluator_output_file_paths=get_files_in_folder(
+        evaluator_output_file_paths=get_files_in_folder(  # type: ignore
             folder_path=evaluation_folder_path,
             file_extension="jsonl",
         ),
-        output_folder_path=os.path.join(output_folder_path, "scoring"),
+        output_folder_path=os.path.join(output_folder_path, "scoring"),  # type: ignore
         win_rate_flag=False,
     )

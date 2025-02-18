@@ -57,7 +57,7 @@ def evaluate(
                 print(f"Model Name: {model_name}")
                 for evaluation_input_file_path in evaluation_input_file_paths:
                     dataset_name = get_file_name_without_extension(
-                        file_path=evaluation_input_file_path
+                        file_path=evaluation_input_file_path  # type: ignore
                     )
                     print(f"Dataset: {dataset_name}")
                     output_list: List[Dict[str, Any]] = []
@@ -65,7 +65,7 @@ def evaluate(
                         test_data = instruct_data(
                             prompt_file_path,
                             model_name,
-                            evaluation_input_file_path,
+                            evaluation_input_file_path,  # type: ignore
                             evaluation_input_file_paths,
                             example_file_path,
                             should_generate_random_example,
@@ -84,7 +84,7 @@ def evaluate(
                                     model_name=model_name,
                                     test_data=test_data,
                                     responses=responses,
-                                    evaluation_input_file_path=evaluation_input_file_path,
+                                    evaluation_input_file_path=evaluation_input_file_path,  # type: ignore
                                     dataset_name=dataset_name,
                                     temperature=temperature,
                                     max_tokens=max_tokens,

@@ -1,0 +1,44 @@
+fail_fast: true
+
+repos:
+  - repo: https://github.com/ambv/black
+    rev: 23.9.1
+    hooks:
+      - id: black
+
+  - repo: https://github.com/pre-commit/mirrors-pylint
+    rev: v3.0.0a5
+    hooks:
+      - id: pylint
+        args: [--disable=all, --enable=unused-import]
+
+  - repo: https://github.com/pycqa/flake8
+    rev: 6.1.0
+    hooks:
+      - id: flake8
+        entry: pflake8
+        additional_dependencies: [pyproject-flake8]
+        # exclude: 
+        
+        args:
+        - "--max-line-length=120"
+        - "--ignore=E501,E266,E722,W503,E721 api_integrated_llm/helpers/benchmark_helper.py api_integrated_llm/helpers/output_parsers.py api_integrated_llm/scoring.py api_integrated_llm/helpers/file_helper.py api_integrated_llm/helpers/instruct_data_prep.py"
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.5.1
+    hooks:
+      - id: mypy
+        additional_dependencies: [pydantic, types-requests]
+        args: [--ignore-missing-imports,--follow-import=skip,--strict-optional,--disable-error-code=attr-defined,--disable-error-code=unused-ignore]
+        # exclude: mock_external_service/
+
+  - repo: https://github.com/ibm/detect-secrets
+    rev: 0.13.1+ibm.62.dss
+    hooks:
+      - id: detect-secrets # pragma: whitelist secret
+        # Add options for detect-secrets-hook binary. You can run `detect-secrets-hook --help` to list out all possible options.
+        # You may also run `pre-commit run detect-secrets` to preview the scan result.
+        # when "--baseline" without "--use-all-plugins", pre-commit scan with just plugins in baseline file
+        # when "--baseline" with "--use-all-plugins", pre-commit scan with all available plugins
+        # add "--fail-on-unaudited" to fail pre-commit for unaudited potential secrets
+        args: [--baseline, .secrets.baseline, --use-all-plugins]
