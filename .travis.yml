@@ -21,8 +21,3 @@ jobs:
     script:
     - pre-commit run --all-files
     - pytest
-  # - stage: Build and Push
-  #   name: Build wheel and push to Artifactory
-  #   if: branch = main OR tag IS present
-  #   script:
-  #   - make build push
