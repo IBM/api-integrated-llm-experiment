@@ -102,9 +102,7 @@ def ground_seq_nested_repsonse(api_list):
             temp_arguments[s_n] = s_v
 
         grounded_api_list.append({"name": api["name"], "arguments": temp_arguments})
-    # if 'var' in str(grounded_api_list):
-    #     print(grounded_api_list)
-    #     ipdb.set_trace()
+
     return grounded_api_list
 
 
@@ -127,7 +125,6 @@ def parse_granite_20b_function_calling_output(
         pred = item["generated_text"].strip().replace("ASSISTANT", "").strip()
         pred_str_list = pred.split("<function_call>")
         pred_dict_list = [json.loads(p) for p in pred_str_list if p]
-        # ipdb.set_trace()
         pred_dict_list = [p for p in pred_dict_list if not p["name"] == "var_result"]
         if skip_grounding:
             pred_func_calls = [json.dumps(func) for func in pred_dict_list]
@@ -139,7 +136,6 @@ def parse_granite_20b_function_calling_output(
             )
             pred_func_calls = [json.dumps(func) for func in pred_func_calls]
     except:
-        # ipdb.set_trace()
         num_errors_parsing_pred_intent += 1
         pred_has_parsing_errors = True
 
@@ -177,12 +173,7 @@ def parse_granite_3_output(item, num_errors_parsing_pred_intent, skip_grounding=
             pred_dict_list = json.loads(generated_text[start_idx : end_idx + 1])
         else:
             raise Exception("no generated_text field in item")
-        # ipdb.set_trace()
-        # pred_dict_list = json.loads(item['generated_text'])
-        # pred_str_list = item['generated_text'].split('<function_call>')
-        # pred_dict_list = [json.loads(p) for p in pred_str_list if p]
-        # ipdb.set_trace()
-        # pred_dict_list = [p for p in pred_dict_list if not p['name'] == "var_result"]
+
         if skip_grounding:
             pred_func_calls = [json.dumps(func) for func in pred_dict_list]
         else:
@@ -342,8 +333,7 @@ def parse_mistral_7b_instruct_v0_3(
     pred_dict_list, gold_dict_list = [], []
     ## Gold
     gold_dict_list = json.loads(item["output"])
-    # gold_func_calls = ground_seq_nested_repsonse(gold_dict_list)
-    # gold_func_calls = [json.dumps(func) for func in gold_func_calls]
+
     if skip_grounding:
         gold_func_calls = [json.dumps(func) for func in gold_dict_list]
     else:
@@ -395,8 +385,7 @@ def parse_hermes_2_pro_mistral_7B(
     pred_dict_list, gold_dict_list = [], []
     ## Gold
     gold_dict_list = json.loads(item["output"])
-    # gold_func_calls = ground_seq_nested_repsonse(gold_dict_list)
-    # gold_func_calls = [json.dumps(func) for func in gold_func_calls]
+
     if skip_grounding:
         gold_func_calls = [json.dumps(func) for func in gold_dict_list]
     else:
@@ -408,13 +397,9 @@ def parse_hermes_2_pro_mistral_7B(
         pred = item["generated_text"].strip()
         if pred.startswith("tool_call\n{"):
             pred = pred.replace("tool_call\n{", "<tool_call>\n{")
-        # print(pred)
-        # ipdb.set_trace()
-        func_str_list = re.findall(r"<tool_call>(.*?)</tool_call>", pred, re.DOTALL)
-        # print(func_str_list)
-        # assert len(func_str_list) > 0, "parsing issue"
 
-        # ipdb.set_trace()
+        func_str_list = re.findall(r"<tool_call>(.*?)</tool_call>", pred, re.DOTALL)
+
         pred_dict_list = []
         for p in func_str_list:
             try:

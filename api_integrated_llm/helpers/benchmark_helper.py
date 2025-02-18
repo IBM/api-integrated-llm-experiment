@@ -13,16 +13,6 @@ def get_model_id_obj_dict() -> Dict[str, Dict[str, str]]:
             "DeepSeek-V3",
             "Mixtral-8x22B-Instruct-v0.1",
             "llama-3-3-70b-instruct",
-            #
-            # "Granite-20B-FunctionCalling",
-            # "Llama-3.2-11B-Vision-Instruct",
-            # "Llama-3.2-90B-Vision-Instruct",
-            # "Hammer2.0-7b",
-            # "ToolAce-8b",
-            # "xLAM-1b-fc-r",
-            # "xLAM-7b-fc-r",
-            # "xLAM-8x7b-r",
-            # "xLAM-8x22b-r"
         ]
     )
     model_id_obj_dict = dict()
@@ -83,15 +73,6 @@ def get_model_id_obj_dict() -> Dict[str, Dict[str, str]]:
             "model": "meta-llama/llama-3-3-70b-instruct",
             "endpoint": "https://inference-3scale-apicast-production.apps.rits.fmaas.res.ibm.com/llama-3-3-70b-instruct/v1",
         },
-        "Hammer2.0-7b": {  # Add necessary info require to run VLLM @Mayank
-            "inference_type": "VLLM",
-            "model": "MadeAgents/Hammer2.0-7b",
-        },
-        "ToolAce-8b": {"inference_type": "VLLM", "model": "Team-ACE/ToolACE-8B"},
-        "xLAM-1b-fc-r": {"inference_type": "VLLM", "model": "Salesforce/xLAM-1b-fc-r"},
-        "xLAM-7b-fc-r": {"inference_type": "VLLM", "model": "Salesforce/xLAM-7b-fc-r"},
-        "xLAM-8x7b-r": {"inference_type": "VLLM", "model": "Salesforce/xLAM-8x7b-r"},
-        "xLAM-8x22b-r": {"inference_type": "VLLM", "model": "Salesforce/xLAM-8x22b-r"},
     }
 
     for model_id in model_info_dict.keys():

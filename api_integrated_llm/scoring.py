@@ -18,10 +18,12 @@ from api_integrated_llm.helpers.output_parsers import (
     parse_xLAM_1b_fc_r,
 )
 from api_integrated_llm.helpers.utils import (
-    compute_score_sklearn,
     post_process_api_with_args,
 )
-from api_integrated_llm.helpers.metrics_helper import compute_score
+from api_integrated_llm.helpers.metrics_helper import (
+    compute_score,
+    compute_score_sklearn,
+)
 from api_integrated_llm.helpers.file_helper import (
     get_dict_from_json,
     get_list_dict_from_jsonl,
@@ -61,10 +63,6 @@ def calculate_ans_mathqa(func_calls, spec_lib):
                 arg_values.append(str(v))
 
             func_str = f"{f['name']}({','.join(arg_values)})"
-            # if func_calls == [{'name': 'factorial', 'label': '$var_1', 'arguments': {'arg_0': 20}}, {'name': 'floor', 'label': '$var_2', 'arguments': {'arg_0': '$var_1.result$'}}, {'name': 'power', 'label': '$var_3', 'arguments': {'arg_0': 2, 'arg_1': '$var_2.result$'}}, {'name': 'multiply', 'label': '$var_4', 'arguments': {'arg_0': '$var_1.result$', 'arg_1': '$var_3.result$'}}]:
-            #     print(func_str)
-            # ipdb.set_trace()
-
             res = eval(func_str)
             if (
                 not type(res) == dict
@@ -411,14 +409,9 @@ def calculate_scores(
 
         if pred_has_parsing_errors:
             num_pred_examples_w_parsing_errors += 1
-        ##################combined score##############
-        # gold_func_calls, pred_func_calls should guid the order
+
         api_with_args_gold = []
-        # for api_name in gold_apis_names:
-        #     args = gold_api_map[api_name]
-        #     api_with_args_gold.append(f'{api_name}({", ".join(sorted(args))})')
         for f in gold_func_calls:
-            # if not f: continue
             f = json.loads(f.replace("<|endoftext|>", "").strip())
             f_name = str(f["name"])
             args = ", ".join(
@@ -428,7 +421,6 @@ def calculate_scores(
 
         api_with_args_pred = []
         for f in pred_func_calls:
-            # if not f: continue
             try:
                 f = json.loads(f.replace("<|endoftext|>", "").strip())
                 f_name = str(f["name"])
@@ -447,27 +439,12 @@ def calculate_scores(
         api_with_args_gold, api_with_args_pred = post_process_api_with_args(
             api_with_args_gold, api_with_args_pred
         )
-        # print(api_with_args_gold)
-        # print(api_with_args_pred)
-        # ipdb.set_trace()
-        # for api_name in pred_apis_names:
-        #     args = pred_api_map[api_name]
-        #     api_with_args_pred.append(f'{api_name}({", ".join(sorted(args))})')
-        # print('')
-        ##############################################
+
         from sklearn.metrics import accuracy_score
 
-        # from sklearn.metrics import f1_score, precision_score, recall_score
-        from sklearn.preprocessing import MultiLabelBinarizer
-
-        binarizer = MultiLabelBinarizer()
-        # ipdb.set_trace()
-        # binarizer.fit(api_with_args_gold)
         try:
-            # ipdb.set_trace()
             accuracy_combined = accuracy_score(api_with_args_gold, api_with_args_pred)
         except:
-            # ipdb.set_trace()
             accuracy_combined = 0.0
         if accuracy_combined == 1:
             all_num_times_full_score += 1
@@ -481,8 +458,6 @@ def calculate_scores(
             )
             win_rate_list.append(win_score)
 
-    # ipdb.set_trace()
-    ##############################################
     if not sklearn_metrics:
         p_intent, r_intent, f1_intent = compute_score(
             gold_output_intent, pred_output_intent

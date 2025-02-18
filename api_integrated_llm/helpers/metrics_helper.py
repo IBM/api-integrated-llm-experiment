@@ -2,10 +2,11 @@ import numpy as np
 from sklearn.metrics import f1_score, precision_score, recall_score
 from sklearn.preprocessing import MultiLabelBinarizer
 
+binarizer = MultiLabelBinarizer()
+
 
 def compute_score_sklearn(gold_output, pred_output):
 
-    binarizer = MultiLabelBinarizer()
     binarizer.fit(gold_output)
 
     f1_score_macro = f1_score(
@@ -24,9 +25,6 @@ def compute_score_sklearn(gold_output, pred_output):
         average="macro",
     )
 
-    # f1_score_sklearn_micro = f1_score(binarizer.transform(gold_output),
-    #                                   binarizer.transform(pred_output),
-    #                                   average='micro')
     return precision_macro, recall_macro, f1_score_macro
 
 
