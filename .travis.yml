@@ -1,0 +1,28 @@
+dist: focal
+language: python
+cache:
+  pip: true
+  directories:    
+    - $HOME/.cache/pip
+    - $HOME/.pre-commit
+
+sudo: false
+notifications:
+  email: false
+python:
+- 3.11
+jobs:
+  include:
+  - stage: Test
+    name: Execute Tests
+    install:
+    - pip install -e .
+    - pip install -e ".[test]"
+    script:
+    - pre-commit run --all-files
+    - pytest
+  # - stage: Build and Push
+  #   name: Build wheel and push to Artifactory
+  #   if: branch = main OR tag IS present
+  #   script:
+  #   - make build push
