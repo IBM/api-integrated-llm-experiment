@@ -47,12 +47,12 @@ The source folder should have the following structure:
 
 ```txt
 .
-├── source
-│   ├── evaluation
-│   │   └── <YOUR_DATA_HERE>
-│   └── prompts
-│       ├── examples_icl.json
-│       └── prompts.json
+└── source
+    ├── evaluation
+    │   └── <YOUR_DATA_HERE>
+    └── prompts
+        ├── examples_icl.json
+        └── prompts.json
 ```
 
 To evaluate and score data, use the following command:
