@@ -124,9 +124,9 @@ def get_prompt_dict(
 ) -> Dict[str, Any]:
     prompt_dict_all = get_dict_from_json(file_path=prompt_file_path)  # type: ignore
     path_str = str(evaluation_input_file_path)
-    if "rest" in path_str:  # type: ignore
+    if "rest" in path_str:
         return prompt_dict_all["router"]
-    if "sequencing" in path_str or "slot-filling" in path_str:  # type: ignore
+    if "sequencing" in path_str:
         return prompt_dict_all["sequencing"]
     return prompt_dict_all["icl"]
 
