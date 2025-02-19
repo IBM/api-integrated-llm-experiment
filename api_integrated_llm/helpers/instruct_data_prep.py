@@ -1,7 +1,6 @@
-from copy import deepcopy
 import json
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Dict, List, Optional
 
 
 from api_integrated_llm.data_models.source_models import (
@@ -18,7 +17,7 @@ from api_integrated_llm.helpers.sampling_helper import get_random_example_for_pr
 from api_integrated_llm.helpers.tokenizer_helper import granite_prompt_input
 
 
-def get_example_str(icl_examples: List[DataUnit], model_name: str) -> str:
+def get_example_str(icl_examples: List[DataUnit]) -> str:
     example_strs: list[str] = []
     counter = 1
     for ex in icl_examples:
@@ -29,66 +28,6 @@ def get_example_str(icl_examples: List[DataUnit], model_name: str) -> str:
             )
             counter += 1
     return "".join(example_strs)
-
-
-def sanitize_evaluation_input(json_dict: Dict[str, Any]) -> Dict[str, Any]:
-    new_json_dict = deepcopy(json_dict)
-    if "data" in json_dict:
-        data = []
-        for datum in json_dict["data"]:
-            if ("ignore" in datum) and datum["ignore"]:
-                continue
-            json_str = json.dumps(datum)
-            if "Union" not in json_str:
-                data.append(deepcopy(datum))
-        new_json_dict["data"] = data
-    return new_json_dict
-
-
-def is_inner_sourced_example_source(sample_dict: Dict[str, Any]) -> bool:
-    return not (
-        ("mathqa" in sample_dict)
-        and ("stack" in sample_dict)
-        and (len(sample_dict) == 2)
-    )
-
-
-def has_data(sample_dict: Dict[str, Any]) -> bool:
-    return (
-        False if ("data" not in sample_dict or len(sample_dict["data"]) == 0) else True
-    )
-
-
-def transform_to_example_source_from_inner_sourced_json(
-    sample_dict: Dict[str, Any],
-) -> Dict[str, Any]:
-    if not has_data(sample_dict=sample_dict):
-        raise Exception('"data" field is required to create an example source')
-
-    sanitized_json_dict = sanitize_evaluation_input(json_dict=sample_dict)
-
-    data = sanitized_json_dict["data"]
-    dataset_name = data[0]["dataset_name"][:]
-
-    return {dataset_name: deepcopy(data[:5])}
-
-
-def is_inner_sourced_evaluation_source(file_path: Path) -> bool:
-    return not str(file_path).endswith(".jsonl")
-
-
-def transform_to_evaluation_source_from_inner_sourced_json(
-    sample_dict: Dict[str, Any],
-) -> List[Dict[str, Any]]:
-    if not has_data(sample_dict=sample_dict):
-        raise Exception('"data" field is required to create an evaluation source')
-
-    sanitized_json_dict = sanitize_evaluation_input(json_dict=sample_dict)
-
-    if len(sanitized_json_dict["data"]) == 0:
-        raise Exception("No evaluation data is found.")
-
-    return sanitized_json_dict["data"]
 
 
 def get_examples(
@@ -155,7 +94,7 @@ def instruct_data(
     )
 
     test_data: List[EvaluationOutputDataUnit] = []
-    example_str = get_example_str(examples, model_name)
+    example_str = get_example_str(examples)
 
     if source_model.data is None:
         return test_data

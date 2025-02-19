@@ -22,7 +22,7 @@ def granite_prompt_input(
     example_str: str,
     base_prompt: str,
     key_value_description_str: str,
-):
+) -> str:
     prompts_initial = {"role": "user", "content": input}
     extra_turn = {
         "role": "system",
