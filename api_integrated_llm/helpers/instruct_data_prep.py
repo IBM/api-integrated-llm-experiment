@@ -4,39 +4,43 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 
+from api_integrated_llm.data_models.source_models import (
+    DataUnit,
+    EvaluationOutputDataUnit,
+    ExampleDataModel,
+    QuerySourceModel,
+)
 from api_integrated_llm.helpers.file_helper import (
+    get_base_model_from_json,
     get_dict_from_json,
-    get_list_dict_from_jsonl,
     get_uuid4_str,
 )
 from api_integrated_llm.helpers.sampling_helper import get_random_example_for_prompt
 from api_integrated_llm.helpers.tokenizer_helper import granite_prompt_input
 
 
-def get_example_str(icl_examples, model_name):
+def get_example_str(icl_examples: List[DataUnit], model_name: str) -> str:
     exampl_str = ""
     inputs = []
     output_fn_names = []
     idx = 1
     for ex in icl_examples:
-        inputs.append(ex["input"])
-        output_fn_names.extend([f["name"] for f in ex["output"]])
+        inputs.append(ex.input)
+        output_fn_names.extend([f.name for f in ex.output])
 
         if model_name == "xLAM-7b-fc-r":
-            exampl_str += f"\n#Example-{idx}\nInput: {ex['input']}\nOutput: {{\"tool_calls\": {json.dumps(ex['output'])} }}\n"
+            exampl_str += f'\n#Example-{idx}\nInput: {ex.input}\nOutput: {{"tool_calls": {json.dumps(ex.output)} }}\n'
         elif model_name == "xLAM-1b-fc-r":
-            exampl_str += f"\n#Example-{idx}\nInput: {ex['input']}\nOutput: {{\"tool_calls\": {json.dumps(ex['output'])} }}\n"
+            exampl_str += f'\n#Example-{idx}\nInput: {ex.input}\nOutput: {{"tool_calls": {json.dumps(ex.output)} }}\n'
         elif model_name in ["xLAM-8x7b-r", "xLAM-8x22b-r"]:
-            exampl_str += f"\n#Example-{idx}\nInput: {ex['input']}\nOutput: {{\"thought\": \"\", \"tool_calls\": {json.dumps(ex['output'])} }}\n"
+            exampl_str += f'\n#Example-{idx}\nInput: {ex.input}\nOutput: {{"thought": "", "tool_calls": {json.dumps(ex.output)} }}\n'
         elif model_name == "Hermes-2-Pro-Mistral-7B":
             output_str = " ".join(
-                [f"<tool_call> {json.dumps(f)} </tool_call>" for f in ex["output"]]
+                [f"<tool_call> {json.dumps(f)} </tool_call>" for f in ex.output]
             )
-            exampl_str += (
-                f"\n#Example-{idx}\nInput: {ex['input']}\nOutput: {output_str}\n"
-            )
+            exampl_str += f"\n#Example-{idx}\nInput: {ex.input}\nOutput: {output_str}\n"
         else:
-            exampl_str += f"\n#Example-{idx}\nInput: {ex['input']}\nOutput: {json.dumps(ex['output'])}\n"
+            exampl_str += f"\n#Example-{idx}\nInput: {ex.input}\nOutput: {json.dumps(ex.output)}\n"
         idx += 1
     return exampl_str
 
@@ -107,21 +111,24 @@ def get_examples(
     chosen_evaluation_input_file_path: Path,
     num_examples: int,
     should_generate_random_example: bool,
-) -> Dict[str, Dict[str, Any]]:
-    return (
-        get_random_example_for_prompt(
+) -> List[DataUnit]:
+    if should_generate_random_example:
+        return get_random_example_for_prompt(
             evaluation_input_file_paths=evaluation_input_file_paths,  # type: ignore
             chosen_evaluation_input_file_path=chosen_evaluation_input_file_path,
             num_examples=num_examples,
         )
-        if should_generate_random_example
-        else get_dict_from_json(example_file_path)  # type: ignore
+
+    example_model: ExampleDataModel = get_base_model_from_json(
+        example_file_path, ExampleDataModel
     )
+
+    return example_model.data
 
 
 def get_prompt_dict(
     prompt_file_path: Path, evaluation_input_file_path: Path
-) -> Dict[str, Any]:
+) -> Dict[str, str]:
     prompt_dict_all = get_dict_from_json(file_path=prompt_file_path)  # type: ignore
     path_str = str(evaluation_input_file_path)
     if "rest" in path_str:
@@ -139,18 +146,14 @@ def instruct_data(
     example_file_path: Optional[Path] = None,
     should_generate_random_example: bool = False,
     num_examples: int = 1,
-) -> List[Dict[str, Any]]:
-    examples_dict = get_examples(
+) -> List[EvaluationOutputDataUnit]:
+    examples = get_examples(
         example_file_path=example_file_path,  # type: ignore
         evaluation_input_file_paths=evaluation_input_file_paths,  # type: ignore
         chosen_evaluation_input_file_path=evaluation_input_file_path,
         num_examples=num_examples,
         should_generate_random_example=should_generate_random_example,
     )
-
-    examples = (
-        list(examples_dict.values())[0] if len(examples_dict) > 0 else []
-    )  # use examples from one source
 
     if len(examples) == 0:
         raise Exception("No example data is found.")
@@ -160,31 +163,43 @@ def instruct_data(
         evaluation_input_file_path=evaluation_input_file_path,
     )
 
-    evaluation_source_dict = get_dict_from_json(evaluation_input_file_path)  # type: ignore
-
-    data = (
-        transform_to_evaluation_source_from_inner_sourced_json(
-            sample_dict=evaluation_source_dict
-        )
-        if is_inner_sourced_evaluation_source(file_path=evaluation_input_file_path)
-        else get_list_dict_from_jsonl(evaluation_input_file_path)
+    source_model: QuerySourceModel = (
+        get_base_model_from_json(
+            file_path=evaluation_input_file_path,
+            base_model=QuerySourceModel,
+        ),
     )
 
-    test_data = []
+    test_data: List[EvaluationOutputDataUnit] = []
     example_str = get_example_str(examples, model)
-    for sample in data:
+    for sample in source_model.data:
+        function_str = json.dumps(
+            list((map(lambda item: item.model_dump(), sample.tools)))
+        )
+        key_value_description_str = json.dumps(
+            list(
+                (
+                    map(
+                        lambda item: item.model_dump(),
+                        sample.key_values_and_descriptions,
+                    )
+                )
+            )
+        )
         if "granite" in model.lower():
             input_prompt = granite_prompt_input(
-                sample["input"], sample["tools"], example_str, prompt_dict["granite"]
+                sample.input,
+                sample.tools,
+                example_str,
+                prompt_dict["granite"],
+                key_value_description_str,
             )
         elif "llama" in model.lower():
             input_prompt = prompt_dict["LLaMa-3.1"].format(
-                FUNCTION_STR=json.dumps(sample["tools"]),
+                FUNCTION_STR=function_str,
                 ICL_EXAMPLES=example_str,
-                QUERY=sample["input"],
-                KEY_VALUES_AND_DESCRIPTIONS=json.dumps(
-                    sample.get("key_values_and_descriptions", [])
-                ),
+                QUERY=sample.input,
+                KEY_VALUES_AND_DESCRIPTIONS=key_value_description_str,
             )
         else:
             try:
@@ -193,32 +208,27 @@ def instruct_data(
                     tmp_key = "llama-3-1-405b-instruct"
 
                 input_prompt = prompt_dict[tmp_key].format(
-                    FUNCTION_STR=json.dumps(sample["tools"]),
+                    FUNCTION_STR=function_str,
                     ICL_EXAMPLES=example_str,
-                    QUERY=sample["input"],
-                    KEY_VALUES_AND_DESCRIPTIONS=json.dumps(
-                        sample.get("key_values_and_descriptions", [])
-                    ),
+                    QUERY=sample.input,
+                    KEY_VALUES_AND_DESCRIPTIONS=key_value_description_str,
                 )
             except:
                 input_prompt = (
                     prompt_dict[model]
-                    .replace("{FUNCTION_STR}", json.dumps(sample["tools"]))
+                    .replace("{FUNCTION_STR}", function_str)
                     .replace("{ICL_EXAMPLES}", example_str)
-                    .replace("{QUERY}", sample["input"])
-                    .replace(
-                        "{KEY_VALUES_AND_DESCRIPTIONS}",
-                        json.dumps(sample.get("key_values_and_descriptions", [])),
-                    )
+                    .replace("{QUERY}", sample.input)
+                    .replace("{KEY_VALUES_AND_DESCRIPTIONS}", key_value_description_str)
                 )
-        sample_id = sample.get("sample_id", get_uuid4_str())
+
         test_data.append(
-            {
-                "sample_id": sample_id,
-                "input": input_prompt,
-                "output": json.dumps(sample["output"]),
-                "gold_answer": sample["gold_answer"],
-            }
+            EvaluationOutputDataUnit(
+                sample_id=sample.sample_id,
+                input=input_prompt,
+                output=sample.output,
+                gold_answer=sample.gold_answer,
+            )
         )
 
     return test_data

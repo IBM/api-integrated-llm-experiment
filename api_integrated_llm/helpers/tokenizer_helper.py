@@ -1,4 +1,7 @@
+from typing import List
 from transformers import AutoTokenizer
+
+from api_integrated_llm.data_models.source_models import ToolItemModel
 
 tokenizer = ""
 
@@ -13,7 +16,13 @@ def get_granite_tokenizer():
         return tokenizer
 
 
-def granite_prompt_input(input, function, example_str, base_prompt: str):
+def granite_prompt_input(
+    input: str,
+    function: List[ToolItemModel],
+    example_str: str,
+    base_prompt: str,
+    key_value_description_str: str,
+):
     prompts_initial = {"role": "user", "content": input}
     extra_turn = {
         "role": "system",
@@ -26,9 +35,16 @@ def granite_prompt_input(input, function, example_str, base_prompt: str):
     prompts = [extra_turn] + [prompts_initial]
     tokenizer = get_granite_tokenizer()
     formatted_prompt = tokenizer.apply_chat_template(
-        prompts, function, tokenize=False, add_generation_prompt=True
+        prompts,
+        list(map(lambda item: item.model_dump(), function)),
+        tokenize=False,
+        add_generation_prompt=True,
     )
 
-    formatted_prompt = base_prompt + formatted_prompt
+    new_prompt = base_prompt.format(
+        KEY_VALUES_AND_DESCRIPTIONS=key_value_description_str,
+    )
+
+    formatted_prompt = new_prompt + formatted_prompt
 
     return formatted_prompt

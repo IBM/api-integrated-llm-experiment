@@ -1,43 +1,48 @@
-from copy import deepcopy
 from pathlib import Path
 import os
-from typing import Any, Dict, List
+from typing import Dict, List
 
+from api_integrated_llm.data_models.source_models import (
+    EvaluationOutputDataUnit,
+    EvaluationOutputResponseDataUnit,
+)
 from api_integrated_llm.helpers.file_helper import (
     get_file_name_without_extension,
     write_json_from_dict,
-    write_list_dict_jsonl,
+    write_jsonl,
 )
 from api_integrated_llm.helpers.service_helper import get_responses_from_pool
 from api_integrated_llm.helpers.instruct_data_prep import instruct_data
 
 
-def get_evaluation_dicts_from_responses(
+def get_evaluation_output_units_from_responses(
     model_name: str,
-    test_data: List[Dict[str, Any]],
+    test_data: List[EvaluationOutputDataUnit],
     responses: List[str],
     evaluation_input_file_path: Path,
     dataset_name: str,
     temperature: float,
     max_tokens: int,
-) -> List[Dict[str, Any]]:
-    output_list: List[Dict[str, Any]] = []
+) -> List[EvaluationOutputResponseDataUnit]:
+    output_list: List[EvaluationOutputResponseDataUnit] = []
     for sample, resp in zip(test_data, responses):
         if resp is not None and isinstance(resp, list) and len(resp) > 0:
-            temp = deepcopy(sample)
-            temp["generated_text"] = resp[0].strip()
-            temp["llm_model_id"] = model_name[:]
-            temp["source_file_path"] = evaluation_input_file_path[:]
-            temp["dataset_name"] = dataset_name
-            temp["temperature"] = temperature
-            temp["max_tokens"] = max_tokens
-            output_list.append(temp)
+            output_unit = EvaluationOutputResponseDataUnit.get_model_from_output_unit(
+                model=sample
+            )
+            output_unit.generated_text = resp[0].strip()
+            output_unit.llm_model_id = model_name[:]
+            output_unit.source_file_path = evaluation_input_file_path
+            output_unit.dataset_name = dataset_name
+            output_unit.temperature = temperature
+            output_unit.max_tokens = max_tokens
+            output_list.append(output_unit)
     return output_list
 
 
 def evaluate(
     model_id_info_dict: Dict[str, Dict[str, str]],
-    evaluation_input_file_paths: List[str],
+    evaluation_input_file_paths: List[Path],
     example_file_path: Path,
     output_folder_path: Path,
     prompt_file_path: Path,
@@ -60,15 +65,15 @@ def evaluate(
                         file_path=evaluation_input_file_path  # type: ignore
                     )
                     print(f"Dataset: {dataset_name}")
-                    output_list: List[Dict[str, Any]] = []
+                    output_list: List[EvaluationOutputResponseDataUnit] = []
                     try:
                         test_data = instruct_data(
-                            prompt_file_path,
-                            model_name,
-                            evaluation_input_file_path,  # type: ignore
-                            evaluation_input_file_paths,
-                            example_file_path,
-                            should_generate_random_example,
+                            prompt_file_path=prompt_file_path,
+                            model=model_name,
+                            evaluation_input_file_path=evaluation_input_file_path,  # type: ignore
+                            evaluation_input_file_paths=evaluation_input_file_paths,
+                            example_file_path=example_file_path,
+                            should_generate_random_example=should_generate_random_example,
                             num_examples=num_examples,
                         )
 
@@ -80,11 +85,11 @@ def evaluate(
                                 max_tokens=max_tokens,
                             )
                             output_list.extend(
-                                get_evaluation_dicts_from_responses(
+                                get_evaluation_output_units_from_responses(
                                     model_name=model_name,
                                     test_data=test_data,
                                     responses=responses,
-                                    evaluation_input_file_path=evaluation_input_file_path,  # type: ignore
+                                    evaluation_input_file_path=evaluation_input_file_path,
                                     dataset_name=dataset_name,
                                     temperature=temperature,
                                     max_tokens=max_tokens,
@@ -95,7 +100,7 @@ def evaluate(
                                 "Model inference type does not match existing implementations"
                             )
 
-                        write_list_dict_jsonl(
+                        write_jsonl(
                             file_path=os.path.join(
                                 output_folder_path,
                                 model_name,
@@ -103,7 +108,7 @@ def evaluate(
                                 max_tokens_str,
                                 dataset_name + ".jsonl",
                             ),
-                            dicts=output_list,
+                            jsons=output_list,
                         )
                     except Exception as e:
                         print(e)

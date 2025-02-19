@@ -6,6 +6,8 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 from multiprocessing import Pool
 import requests
 
+from api_integrated_llm.data_models.source_models import EvaluationOutputDataUnit
+
 
 def get_response_from_post_request(
     obj: Dict[str, Any],
@@ -153,7 +155,7 @@ def generate_rits_response(prompt, temperature, max_tokens, model_name, model_re
 
 
 def get_responses_from_pool(
-    test_data: List[Dict[str, Any]],
+    test_data: List[EvaluationOutputDataUnit],
     model_obj: Dict[str, str],
     temperature: float,
     max_tokens: int,
@@ -164,7 +166,7 @@ def get_responses_from_pool(
     for sample in test_data:
         prompts.append(
             (
-                sample["input"],
+                sample.input,
                 temperature,
                 max_tokens,
                 model_obj["model"],

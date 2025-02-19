@@ -15,7 +15,7 @@ def get_uuid4_str() -> str:
     return uuid.uuid4().hex
 
 
-def create_folders_recirsively_if_not_exist(tmp_path: str) -> None:
+def create_folders_recirsively_if_not_exist(tmp_path: Path) -> None:
     base_path = os.path.basename(os.path.normpath(tmp_path))
     directory_path = (
         os.path.dirname(os.path.abspath(tmp_path))  # file path
@@ -27,49 +27,49 @@ def create_folders_recirsively_if_not_exist(tmp_path: str) -> None:
         os.makedirs(directory_path)
 
 
-def write_pickle_file(file_path: str, obj: Any) -> None:
+def write_pickle_file(file_path: Path, obj: Any) -> None:
     create_folders_recirsively_if_not_exist(tmp_path=file_path)
 
     with open(file_path, "wb") as f:
         pickle.dump(obj, f)
 
 
-def read_pickle_file(file_path: str) -> Any:
+def read_pickle_file(file_path: Path) -> Any:
     data = None
     with open(file_path, "rb") as f:
         data = pickle.load(f)
     return data
 
 
-def get_dict_from_json(file_path: str) -> Dict[str, Any]:
+def get_dict_from_json(file_path: Path) -> Dict[str, Any]:
     tmp_dict = {}
     with open(file_path, "r") as f:
         tmp_dict = json.load(f)
     return tmp_dict
 
 
-def write_txt_file(file_path: str, text: str) -> None:
+def write_txt_file(file_path: Path, text: str) -> None:
     create_folders_recirsively_if_not_exist(tmp_path=file_path)
 
     with open(file_path, "w") as f:
         f.write(text)
 
 
-def write_json_from_dict(file_path: str, dic: Dict) -> None:
+def write_json_from_dict(file_path: Path, dic: Dict) -> None:
     create_folders_recirsively_if_not_exist(tmp_path=file_path)
 
     with open(file_path, "w") as outfile:
         json.dump(dic, outfile)
 
 
-def write_json(file_path: str, base_model: BaseModel) -> None:
+def write_json(file_path: Path, base_model: BaseModel) -> None:
     create_folders_recirsively_if_not_exist(tmp_path=file_path)
 
     with open(file_path, "w") as f:
         f.write(base_model.model_dump_json(indent=2))
 
 
-def write_jsonl(file_path: str, jsons: List[BaseModel]) -> None:
+def write_jsonl(file_path: Path, jsons: List[BaseModel]) -> None:
     create_folders_recirsively_if_not_exist(tmp_path=file_path)
 
     with open(file_path, "w") as f:
@@ -77,7 +77,7 @@ def write_jsonl(file_path: str, jsons: List[BaseModel]) -> None:
             f.write(item.model_dump_json() + "\n")
 
 
-def write_list_dict_jsonl(file_path: str, dicts: List[Dict[Any, Any]]) -> None:
+def write_list_dict_jsonl(file_path: Path, dicts: List[Dict[Any, Any]]) -> None:
     create_folders_recirsively_if_not_exist(tmp_path=file_path)
 
     with open(file_path, "w") as f:
@@ -86,7 +86,7 @@ def write_list_dict_jsonl(file_path: str, dicts: List[Dict[Any, Any]]) -> None:
 
 
 def get_base_models_from_jsonl(
-    file_path: str, base_model: BaseModel
+    file_path: Path, base_model: BaseModel
 ) -> List[BaseModel]:
     outputs: List[BaseModel] = list()
     with open(file_path, "r") as f:
@@ -103,7 +103,7 @@ def get_base_models_from_jsonl(
 
 
 def get_base_models_from_json_list(
-    file_path: str, base_model: BaseModel
+    file_path: Path, base_model: BaseModel
 ) -> List[BaseModel]:
     raw_list = []
     outputs: List[BaseModel] = list()
@@ -119,7 +119,7 @@ def get_base_models_from_json_list(
     return outputs
 
 
-def get_base_model_from_json(file_path: str, base_model: BaseModel) -> BaseModel:
+def get_base_model_from_json(file_path: Path, base_model: BaseModel) -> BaseModel:
     with open(file_path, "r") as f:
         tmp_dict = json.load(f)
 
@@ -131,7 +131,7 @@ def get_base_model_from_json(file_path: str, base_model: BaseModel) -> BaseModel
     return model
 
 
-def get_models_from_jsonl(file_path: str, model: BaseModel) -> List[BaseModel]:
+def get_models_from_jsonl(file_path: Path, model: BaseModel) -> List[BaseModel]:
     outputs: List[BaseModel] = list()
     with open(file_path, "r") as f:
         json_list = list(f)
@@ -197,7 +197,7 @@ def write_json_with_name_parts(
     return error_messages
 
 
-def check_paths(paths: List[str]) -> None:
+def check_paths(paths: List[Path]) -> None:
     error_messages: List[str] = []
     for tmp_path in paths:
         if not os.path.exists(tmp_path):
@@ -215,7 +215,7 @@ def print_return_base_model(model: BaseModel) -> BaseModel:
 
 
 def get_files_in_folder(
-    folder_path: str, file_extension: Optional[str] = None
+    folder_path: Path, file_extension: Optional[str] = None
 ) -> List[str]:
     return (
         [
@@ -234,7 +234,7 @@ def get_files_in_folder(
 
 
 def get_base_models_from_folder(
-    folder_path: str,
+    folder_path: Path,
     file_extension: str,
     base_model: BaseModel,
 ) -> List[BaseModel]:
@@ -273,7 +273,7 @@ def get_base_model_from_llm_generated_text(
 
 
 def get_file_content_str_from_file_names(
-    folder_absolute_path: str, file_names: List[str]
+    folder_absolute_path: Path, file_names: List[str]
 ) -> List[str]:
     contents: List[str] = []
     for file_name in file_names:
@@ -284,7 +284,7 @@ def get_file_content_str_from_file_names(
 
 
 def get_file_content_dict_from_file_names(
-    folder_absolute_path: str, file_names: List[str]
+    folder_absolute_path: Path, file_names: List[str]
 ) -> List[Dict[str, Any]]:
     contents: List[Dict[str, Any]] = []
     for file_name in file_names:
