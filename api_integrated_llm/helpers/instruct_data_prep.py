@@ -7,6 +7,7 @@ from api_integrated_llm.data_models.source_models import (
     DataUnit,
     EvaluationOutputDataUnit,
     ExampleDataModel,
+    QuerySourceDataModel,
     QuerySourceModel,
 )
 from api_integrated_llm.helpers.file_helper import (
@@ -61,6 +62,54 @@ def get_prompt_dict(
     if "sequencing" in path_str:
         return prompt_dict_all["sequencing"]
     return prompt_dict_all["icl"]
+
+
+def get_input_query(
+    sample_input: str,
+    model_name: str,
+    sample: QuerySourceDataModel,
+    example_str: str,
+    prompt_dict: Dict[str, str],
+    function_str: str,
+    key_value_description_str: str,
+) -> str:
+    if "granite" in model_name.lower():
+        return granite_prompt_input(
+            sample_input,
+            (sample.tools if sample.tools is not None else []),
+            example_str,
+            prompt_dict["granite"],
+            key_value_description_str,
+        )
+    elif "llama" in model_name.lower():
+        return prompt_dict["LLaMa-3.1"].format(
+            FUNCTION_STR=function_str,
+            ICL_EXAMPLES=example_str,
+            QUERY=sample_input,
+            KEY_VALUES_AND_DESCRIPTIONS=key_value_description_str,
+        )
+    input_prompt = ""
+    try:
+        tmp_key = model_name[:]
+        if tmp_key not in prompt_dict:  # handle exceptions
+            tmp_key = "llama-3-1-405b-instruct"
+
+        input_prompt = prompt_dict[tmp_key].format(
+            FUNCTION_STR=function_str,
+            ICL_EXAMPLES=example_str,
+            QUERY=sample_input,
+            KEY_VALUES_AND_DESCRIPTIONS=key_value_description_str,
+        )
+    except:
+        input_prompt = (
+            prompt_dict[model_name]
+            .replace("{FUNCTION_STR}", function_str)
+            .replace("{ICL_EXAMPLES}", example_str)
+            .replace("{QUERY}", sample_input)
+            .replace("{KEY_VALUES_AND_DESCRIPTIONS}", key_value_description_str)
+        )
+
+    return input_prompt
 
 
 def instruct_data(
@@ -120,46 +169,18 @@ def instruct_data(
             else ""
         )
         sample_input = sample.input if sample.input is not None else ""
-        if "granite" in model_name.lower():
-            input_prompt = granite_prompt_input(
-                sample_input,
-                (sample.tools if sample.tools is not None else []),
-                example_str,
-                prompt_dict["granite"],
-                key_value_description_str,
-            )
-        elif "llama" in model_name.lower():
-            input_prompt = prompt_dict["LLaMa-3.1"].format(
-                FUNCTION_STR=function_str,
-                ICL_EXAMPLES=example_str,
-                QUERY=sample_input,
-                KEY_VALUES_AND_DESCRIPTIONS=key_value_description_str,
-            )
-        else:
-            try:
-                tmp_key = model_name[:]
-                if tmp_key not in prompt_dict:  # handle exceptions
-                    tmp_key = "llama-3-1-405b-instruct"
-
-                input_prompt = prompt_dict[tmp_key].format(
-                    FUNCTION_STR=function_str,
-                    ICL_EXAMPLES=example_str,
-                    QUERY=sample_input,
-                    KEY_VALUES_AND_DESCRIPTIONS=key_value_description_str,
-                )
-            except:
-                input_prompt = (
-                    prompt_dict[model_name]
-                    .replace("{FUNCTION_STR}", function_str)
-                    .replace("{ICL_EXAMPLES}", example_str)
-                    .replace("{QUERY}", sample_input)
-                    .replace("{KEY_VALUES_AND_DESCRIPTIONS}", key_value_description_str)
-                )
-
         test_data.append(
             EvaluationOutputDataUnit(
                 sample_id=sample.sample_id,
-                input=input_prompt,
+                input=get_input_query(
+                    sample_input=sample_input,
+                    model_name=model_name,
+                    sample=sample,
+                    example_str=example_str,
+                    prompt_dict=prompt_dict,
+                    function_str=function_str,
+                    key_value_description_str=key_value_description_str,
+                ),
                 output=sample.output,
                 gold_answer=sample.gold_answer,
             )
