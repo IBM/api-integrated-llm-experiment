@@ -179,7 +179,7 @@ def get_uuid_str() -> str:
 def write_json_with_name_parts(
     name_parts: List[str],
     extension: str,
-    output_folder_path: str,
+    output_folder_path: Path,
     base_model: BaseModel,
 ) -> str:
     """
@@ -189,7 +189,7 @@ def write_json_with_name_parts(
     file_name = "_".join(name_parts) + extension
     file_path = os.path.join(output_folder_path, file_name)
     try:
-        write_json(file_path=file_path, base_model=base_model)
+        write_json(file_path=Path(file_path), base_model=base_model)
     except Exception as e:
         error_messages = str(e)
         print(error_messages)
@@ -216,17 +216,17 @@ def print_return_base_model(model: BaseModel) -> BaseModel:
 
 def get_files_in_folder(
     folder_path: Path, file_extension: Optional[str] = None
-) -> List[str]:
+) -> List[Path]:
     return (
         [
-            os.path.join(dp, f)
+            Path(os.path.join(dp, f))
             for dp, dn, filenames in os.walk(folder_path)
             for f in filenames
             if os.path.splitext(f)[1] == ("." + file_extension)
         ]
         if file_extension is not None
         else [
-            os.path.join(dp, f)
+            Path(os.path.join(dp, f))
             for dp, dn, filenames in os.walk(folder_path)
             for f in filenames
         ]
@@ -247,7 +247,7 @@ def get_base_models_from_folder(
     for file_path in json_file_paths:
         try:
             gym_source_raw = get_base_model_from_json(
-                file_path=file_path, base_model=base_model
+                file_path=Path(file_path), base_model=base_model
             )
             models.append(gym_source_raw)
         except Exception as e:
@@ -305,7 +305,7 @@ def get_hash_str_from_dict(tmp_dict: Dict[str, Any]) -> str:
 
 
 def get_dataset_name(file_path: Path) -> str:
-    json_dict = get_dict_from_json(str(file_path))
+    json_dict = get_dict_from_json(file_path)
     data = json_dict["data"]
     return data[0]["dataset_name"][:]
 

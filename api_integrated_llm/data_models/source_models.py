@@ -57,9 +57,9 @@ class QuerySourceDataModel(BaseModel):
     original_output: Optional[List[QueryItemDataModel]] = None
     initialization_step: Optional[QueryItemDataModel] = None
     tools: Optional[List[ToolItemModel]] = list()
-    key_values_and_descriptions: Optional[List[QueryKeyValueDescriptionDataModel]] = (
-        None
-    )
+    key_values_and_descriptions: Optional[
+        List[QueryKeyValueDescriptionDataModel]
+    ] = None
 
     def get_data_unit_model(self) -> DataUnit:
         return DataUnit(

@@ -101,24 +101,28 @@ def evaluate(
                             )
 
                         write_jsonl(
-                            file_path=os.path.join(
-                                output_folder_path,
-                                model_name,
-                                temperature_str,
-                                max_tokens_str,
-                                dataset_name + ".jsonl",
+                            file_path=Path(
+                                os.path.join(
+                                    output_folder_path,
+                                    model_name,
+                                    temperature_str,
+                                    max_tokens_str,
+                                    dataset_name + ".jsonl",
+                                )
                             ),
                             jsons=output_list,
                         )
                     except Exception as e:
                         print(e)
                         write_json_from_dict(
-                            file_path=os.path.join(
-                                error_folder_path,
-                                model_name,
-                                temperature_str,
-                                max_tokens_str,
-                                dataset_name + "_evaluation" + ".json",
+                            file_path=Path(
+                                os.path.join(
+                                    error_folder_path,
+                                    model_name,
+                                    temperature_str,
+                                    max_tokens_str,
+                                    dataset_name + "_evaluation" + ".json",
+                                )
                             ),
                             dic={"error": str(e)},
                         )

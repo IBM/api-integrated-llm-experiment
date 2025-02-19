@@ -15,7 +15,7 @@ def get_random_example_for_prompt(
     num_examples: int,
 ) -> List[DataUnit]:
     if len(evaluation_input_file_paths) <= 1:
-        return {}
+        return []
     sampled_examples: List[DataUnit] = []
     sample_hash_to_skip: Set[int] = set()
     max_try = 10000
@@ -27,11 +27,9 @@ def get_random_example_for_prompt(
             num_try += 1
             continue
 
-        source_model: QuerySourceModel = (
-            get_base_model_from_json(
-                file_path=file_to_sample,
-                base_model=QuerySourceModel,
-            ),
+        source_model: QuerySourceModel = get_base_model_from_json(
+            file_path=Path(file_to_sample),
+            base_model=QuerySourceModel,
         )
         if source_model.data is None or len(source_model.data) == 0:
             num_try += 1
