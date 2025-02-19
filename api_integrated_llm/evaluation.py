@@ -28,7 +28,7 @@ def get_evaluation_output_units_from_responses(
     for sample, resp in zip(test_data, responses):
         if resp is not None and isinstance(resp, list) and len(resp) > 0:
             output_unit = EvaluationOutputResponseDataUnit.get_model_from_output_unit(
-                model=sample
+                data_model=sample
             )
             output_unit.generated_text = resp[0].strip()
             output_unit.llm_model_id = model_name[:]
