@@ -54,8 +54,8 @@ class QuerySourceDataModel(BaseModel):
     input: Optional[str] = None
     output: Optional[List[QueryItemDataModel]] = None
     gold_answer: Optional[Union[List[Any], str, int, float]] = None
-    original_output: Optional[List[QueryItemDataModel]] = None
-    initialization_step: Optional[QueryItemDataModel] = None
+    original_output: Optional[List[Any]] = None
+    initialization_step: Optional[Any] = None
     tools: Optional[List[ToolItemModel]] = list()
     key_values_and_descriptions: Optional[
         List[QueryKeyValueDescriptionDataModel]

@@ -19,34 +19,16 @@ from api_integrated_llm.helpers.tokenizer_helper import granite_prompt_input
 
 
 def get_example_str(icl_examples: List[DataUnit], model_name: str) -> str:
-    exampl_str = ""
-    inputs = []
-    output_fn_names = []
-    idx = 1
+    example_strs: list[str] = []
+    counter = 1
     for ex in icl_examples:
-        inputs.append(ex.input)
         if ex.output is not None:
-            output_fn_names.extend([f.name for f in ex.output])
-
-        if model_name == "xLAM-7b-fc-r":
-            exampl_str += f'\n#Example-{idx}\nInput: {ex.input}\nOutput: {{"tool_calls": {json.dumps(ex.output)} }}\n'
-        elif model_name == "xLAM-1b-fc-r":
-            exampl_str += f'\n#Example-{idx}\nInput: {ex.input}\nOutput: {{"tool_calls": {json.dumps(ex.output)} }}\n'
-        elif model_name in ["xLAM-8x7b-r", "xLAM-8x22b-r"]:
-            exampl_str += f'\n#Example-{idx}\nInput: {ex.input}\nOutput: {{"thought": "", "tool_calls": {json.dumps(ex.output)} }}\n'
-        elif model_name == "Hermes-2-Pro-Mistral-7B":
-            output_str = (
-                " ".join(
-                    [f"<tool_call> {json.dumps(f)} </tool_call>" for f in ex.output]
-                )
-                if ex.output is not None
-                else ""
+            tmp = [item.model_dump() for item in ex.output]
+            example_strs.append(
+                f"\n#Example-{counter}\nInput: {ex.input}\nOutput: {json.dumps(tmp)}\n"
             )
-            exampl_str += f"\n#Example-{idx}\nInput: {ex.input}\nOutput: {output_str}\n"
-        else:
-            exampl_str += f"\n#Example-{idx}\nInput: {ex.input}\nOutput: {json.dumps(ex.output)}\n"
-        idx += 1
-    return exampl_str
+            counter += 1
+    return "".join(example_strs)
 
 
 def sanitize_evaluation_input(json_dict: Dict[str, Any]) -> Dict[str, Any]:
