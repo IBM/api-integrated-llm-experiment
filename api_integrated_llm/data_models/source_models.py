@@ -12,7 +12,7 @@ class PropertyItem(BaseModel):
 
 
 class ParametersModel(BaseModel):
-    properties: Optional[Dict[str, PropertyItem]] = None
+    properties: Optional[Union[Dict[str, Union[PropertyItem, str]], str]] = None
     required: Optional[List[str]] = None
     type: Optional[str] = None
 
@@ -20,8 +20,8 @@ class ParametersModel(BaseModel):
 class ToolDescriptionModel(BaseModel):
     description: Optional[str] = None
     name: Optional[str] = None
-    parameters: ParametersModel = ParametersModel()
-    output_parameters: ParametersModel = ParametersModel()
+    parameters: Union[Dict[str, Any], ParametersModel] = ParametersModel()
+    output_parameters: Union[Dict[str, Any], ParametersModel] = ParametersModel()
 
 
 class ToolItemModel(BaseModel):
@@ -32,14 +32,14 @@ class ToolItemModel(BaseModel):
 
 class QueryItemDataModel(BaseModel):
     name: Optional[str] = None
-    arguments: Optional[Dict[str, Any]] = dict()
+    arguments: Optional[Union[Dict[str, Any], str]] = dict()
     label: Optional[str] = None
 
 
 class QueryKeyValueDescriptionDataModel(BaseModel):
-    key_name: Optional[str] = None
-    description: Optional[str] = None
-    dtype: Optional[str] = None
+    key_name: Optional[Union[str, float, int]] = None
+    description: Optional[Union[str, float, int]] = None
+    dtype: Optional[Union[str, float, int]] = None
 
 
 class DataUnit(BaseModel):
@@ -50,7 +50,7 @@ class DataUnit(BaseModel):
 
 
 class QuerySourceDataModel(BaseModel):
-    sample_id: str = get_uuid4_str()
+    sample_id: Optional[Union[str, int]] = get_uuid4_str()
     input: Optional[str] = None
     output: Optional[List[QueryItemDataModel]] = None
     gold_answer: Optional[Union[List[Any], str, int, float]] = None
@@ -72,7 +72,7 @@ class QuerySourceDataModel(BaseModel):
 
 class QuerySourceModel(BaseModel):
     data: Optional[List[QuerySourceDataModel]] = None
-    global_api_pool: Optional[Dict[str, ToolDescriptionModel]] = None
+    global_api_pool: Optional[Dict[str, Any]] = None
     win_rate: Optional[float] = None
 
 
@@ -81,7 +81,7 @@ class ExampleDataModel(BaseModel):
 
 
 class EvaluationOutputDataUnit(BaseModel):
-    sample_id: str
+    sample_id: Union[str, int]
     input: str
     output: Optional[List[QueryItemDataModel]] = None
     gold_answer: Optional[Union[List[Any], str, int, float]] = None
@@ -97,11 +97,11 @@ class EvaluationOutputResponseDataUnit(EvaluationOutputDataUnit):
 
     @staticmethod
     def get_model_from_output_unit(
-        model: EvaluationOutputDataUnit,
+        data_model: EvaluationOutputDataUnit,
     ) -> EvaluationOutputResponseDataUnit:
         return EvaluationOutputResponseDataUnit(
-            sample_id=model.sample_id,
-            input=model.input,
-            output=model.output,
-            gold_answer=model.gold_answer,
+            sample_id=data_model.sample_id,
+            input=data_model.input,
+            output=data_model.output,
+            gold_answer=data_model.gold_answer,
         )

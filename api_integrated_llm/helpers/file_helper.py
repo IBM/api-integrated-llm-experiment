@@ -124,11 +124,12 @@ def get_base_model_from_json(file_path: Path, base_model: BaseModel) -> BaseMode
         tmp_dict = json.load(f)
 
     try:
-        model = base_model.model_validate(tmp_dict)
+        new_model = base_model.model_validate(tmp_dict)
     except Exception as e:
         print(e)
+        raise Exception(f"Model Parsing failed: {file_path}")
 
-    return model
+    return new_model
 
 
 def get_models_from_jsonl(file_path: Path, model: BaseModel) -> List[BaseModel]:

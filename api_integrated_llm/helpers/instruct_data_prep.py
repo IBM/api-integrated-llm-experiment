@@ -144,7 +144,7 @@ def get_prompt_dict(
 
 def instruct_data(
     prompt_file_path: Path,
-    model: str,
+    model_name: str,
     evaluation_input_file_path: Path,
     evaluation_input_file_paths: List[Path],
     example_file_path: Optional[Path] = None,
@@ -173,7 +173,7 @@ def instruct_data(
     )
 
     test_data: List[EvaluationOutputDataUnit] = []
-    example_str = get_example_str(examples, model)
+    example_str = get_example_str(examples, model_name)
 
     if source_model.data is None:
         return test_data
@@ -199,7 +199,7 @@ def instruct_data(
             else ""
         )
         sample_input = sample.input if sample.input is not None else ""
-        if "granite" in model.lower():
+        if "granite" in model_name.lower():
             input_prompt = granite_prompt_input(
                 sample_input,
                 (sample.tools if sample.tools is not None else []),
@@ -207,7 +207,7 @@ def instruct_data(
                 prompt_dict["granite"],
                 key_value_description_str,
             )
-        elif "llama" in model.lower():
+        elif "llama" in model_name.lower():
             input_prompt = prompt_dict["LLaMa-3.1"].format(
                 FUNCTION_STR=function_str,
                 ICL_EXAMPLES=example_str,
@@ -216,7 +216,7 @@ def instruct_data(
             )
         else:
             try:
-                tmp_key = model[:]
+                tmp_key = model_name[:]
                 if tmp_key not in prompt_dict:  # handle exceptions
                     tmp_key = "llama-3-1-405b-instruct"
 
@@ -228,7 +228,7 @@ def instruct_data(
                 )
             except:
                 input_prompt = (
-                    prompt_dict[model]
+                    prompt_dict[model_name]
                     .replace("{FUNCTION_STR}", function_str)
                     .replace("{ICL_EXAMPLES}", example_str)
                     .replace("{QUERY}", sample_input)

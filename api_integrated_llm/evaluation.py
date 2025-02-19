@@ -69,7 +69,7 @@ def evaluate(
                     try:
                         test_data = instruct_data(
                             prompt_file_path=prompt_file_path,
-                            model=model_name,
+                            model_name=model_name,
                             evaluation_input_file_path=evaluation_input_file_path,  # type: ignore
                             evaluation_input_file_paths=evaluation_input_file_paths,
                             example_file_path=example_file_path,
