@@ -37,11 +37,13 @@ def get_llm_configuration(llm_configuration_file_path: Path) -> Dict[str, Any]:
 
 def cli() -> None:
     args = get_arguments()
-    source_folder_path = os.path.join(args.root, "source")
-    output_folder_path = os.path.join(args.root, "output")
-    evaluation_folder_path = os.path.join(
-        output_folder_path,
-        "evaluation",
+    source_folder_path = Path(os.path.join(args.root, "source"))
+    output_folder_path = Path(os.path.join(args.root, "output"))
+    evaluation_folder_path = Path(
+        os.path.join(
+            output_folder_path,
+            "evaluation",
+        )
     )
 
     evaluate(
@@ -53,7 +55,7 @@ def cli() -> None:
             )
         ),
         evaluation_input_file_paths=get_files_in_folder(
-            folder_path=os.path.join(source_folder_path, "evaluation"),
+            folder_path=Path(os.path.join(source_folder_path, "evaluation")),
             file_extension="json",
         ),
         example_file_path=os.path.join(  # type: ignore
@@ -75,6 +77,6 @@ def cli() -> None:
             folder_path=evaluation_folder_path,
             file_extension="jsonl",
         ),
-        output_folder_path=os.path.join(output_folder_path, "scoring"),  # type: ignore
+        output_folder_path=Path(os.path.join(output_folder_path, "scoring")),  # type: ignore
         win_rate_flag=False,
     )

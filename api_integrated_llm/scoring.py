@@ -589,7 +589,7 @@ def check_data(
 
 def handle_scoring_process_exception(
     e: Exception,
-    model: str,
+    model_name: str,
     dataset_name: str,
     evaluator_output_file_path: Path,
     temperature_str: str,
@@ -600,7 +600,7 @@ def handle_scoring_process_exception(
         file_path=os.path.join(
             project_root_path,
             "error",
-            model,
+            model_name,
             temperature_str,
             max_tokens_str,
             dataset_name + "_scoring" + ".json",
@@ -656,7 +656,7 @@ def scoring(
         except Exception as e:
             handle_scoring_process_exception(
                 e=e,
-                model=model,
+                model_name=model,
                 dataset_name=dataset_name,
                 evaluator_output_file_path=evaluator_output_file_path,
                 temperature_str=temperature_str,
