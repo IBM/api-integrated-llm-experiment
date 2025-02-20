@@ -19,9 +19,9 @@ def get_arguments() -> argparse.Namespace:
     parser.add_argument(
         "-rt",
         "--root",
-        type=str,
+        type=Path,
         help="Dataset root absolute path",
-        default=str(project_root_path),
+        default=project_root_path,
     )
 
     return parser.parse_args()
