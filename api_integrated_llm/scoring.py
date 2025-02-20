@@ -191,7 +191,10 @@ def calculate_win_score(pred_func_calls, gold_ans, spec_file, dataset_name):
 
 
 def parse_output_from_language_models(
-    prediction: Dict[str, Any], model_name: str, num_errors_parsing_pred_intent: int
+    prediction: Dict[str, Any],
+    model_name: str,
+    num_errors_parsing_pred_intent: int,
+    is_single_intent_detection: bool = False,
 ) -> Tuple[List[Any], List[Any], List[Any], List[Any], Any, Any]:
     pred_has_parsing_errors = False
     pred_func_calls, gold_func_calls = [], []
@@ -208,7 +211,7 @@ def parse_output_from_language_models(
                 num_errors_parsing_pred_intent_res,
                 pred_has_parsing_errors,
             ) = parse_granite_20b_function_calling_output(
-                prediction, num_errors_parsing_pred_intent
+                prediction, num_errors_parsing_pred_intent, is_single_intent_detection
             )
         else:
             (
@@ -218,7 +221,9 @@ def parse_output_from_language_models(
                 gold_dict_list,
                 num_errors_parsing_pred_intent_res,
                 pred_has_parsing_errors,
-            ) = parse_granite_3_output(prediction, num_errors_parsing_pred_intent)
+            ) = parse_granite_3_output(
+                prediction, num_errors_parsing_pred_intent, is_single_intent_detection
+            )
     elif "llama" in model_name_lower_cased:
         if "llama-3-70b" in model_name_lower_cased:
             (
@@ -228,7 +233,9 @@ def parse_output_from_language_models(
                 gold_dict_list,
                 num_errors_parsing_pred_intent_res,
                 pred_has_parsing_errors,
-            ) = parse_llama_3_70b_instruct(prediction, num_errors_parsing_pred_intent)
+            ) = parse_llama_3_70b_instruct(
+                prediction, num_errors_parsing_pred_intent, is_single_intent_detection
+            )
         else:
             (
                 pred_func_calls,
@@ -237,7 +244,9 @@ def parse_output_from_language_models(
                 gold_dict_list,
                 num_errors_parsing_pred_intent_res,
                 pred_has_parsing_errors,
-            ) = parse_llama_3_output(prediction, num_errors_parsing_pred_intent)
+            ) = parse_llama_3_output(
+                prediction, num_errors_parsing_pred_intent, is_single_intent_detection
+            )
     elif "mistral" in model_name_lower_cased or "mixtral" in model_name_lower_cased:
         (
             pred_func_calls,
@@ -246,7 +255,9 @@ def parse_output_from_language_models(
             gold_dict_list,
             num_errors_parsing_pred_intent_res,
             pred_has_parsing_errors,
-        ) = parse_mistral_7b_instruct_v0_3(prediction, num_errors_parsing_pred_intent)
+        ) = parse_mistral_7b_instruct_v0_3(
+            prediction, num_errors_parsing_pred_intent, is_single_intent_detection
+        )
     elif "deepseek" in model_name_lower_cased:
         (
             pred_func_calls,
@@ -255,7 +266,9 @@ def parse_output_from_language_models(
             gold_dict_list,
             num_errors_parsing_pred_intent_res,
             pred_has_parsing_errors,
-        ) = parse_llama_3_output(prediction, num_errors_parsing_pred_intent)
+        ) = parse_llama_3_output(
+            prediction, num_errors_parsing_pred_intent, is_single_intent_detection
+        )
     else:
         (
             pred_func_calls,
@@ -264,7 +277,9 @@ def parse_output_from_language_models(
             gold_dict_list,
             num_errors_parsing_pred_intent_res,
             pred_has_parsing_errors,
-        ) = parse_llama_3_output(prediction, num_errors_parsing_pred_intent)
+        ) = parse_llama_3_output(
+            prediction, num_errors_parsing_pred_intent, is_single_intent_detection
+        )
 
     return (
         pred_func_calls,
@@ -322,6 +337,9 @@ def calculate_scores(
             prediction=prediction,
             model_name=model_name[:],
             num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
+            is_single_intent_detection=(
+                "rest" in str(spec_path)
+            ),  # TODO: improve the way to identify the need for single intent detection
         )
 
         gold_apis_names, pred_apis_names = [], []

@@ -108,11 +108,14 @@ def ground_seq_nested_repsonse(api_list):
 
 
 def parse_granite_20b_function_calling_output(
-    prediction, num_errors_parsing_pred_intent, skip_grounding=False
+    prediction: Dict[str, Any],
+    num_errors_parsing_pred_intent: int,
+    is_single_intent_detection: bool,
+    skip_grounding: bool = False,
 ):
     pred_has_parsing_errors = False
     pred_func_calls, gold_func_calls = [], []
-    pred_dict_list, gold_dict_list = [], []
+    pred_dict_list, gold_dict_list = [], []  # type: ignore
     gold_dict_list = get_json_dict_from_txt(txt=prediction["output"])
     if skip_grounding:
         gold_func_calls = [json.dumps(func) for func in gold_dict_list]
@@ -123,6 +126,12 @@ def parse_granite_20b_function_calling_output(
     try:
         pred = prediction["generated_text"].strip().replace("ASSISTANT", "").strip()
         pred_str_list = pred.split("<function_call>")
+
+        if (
+            is_single_intent_detection and len(pred_dict_list) > 0
+        ):  # single intent detection
+            pred_dict_list = [pred_dict_list[0]]
+
         pred_dict_list = [json.loads(p) for p in pred_str_list if p]
         pred_dict_list = [p for p in pred_dict_list if not p["name"] == "var_result"]
         if skip_grounding:
@@ -149,7 +158,10 @@ def parse_granite_20b_function_calling_output(
 
 
 def parse_granite_3_output(
-    prediction, num_errors_parsing_pred_intent, skip_grounding=False
+    prediction: Dict[str, Any],
+    num_errors_parsing_pred_intent: int,
+    is_single_intent_detection: bool,
+    skip_grounding: bool = False,
 ):
     pred_has_parsing_errors = False
     pred_func_calls, gold_func_calls = [], []
@@ -165,6 +177,11 @@ def parse_granite_3_output(
         pred_dict_list = get_json_data_with_two_step_parsing(  # type: ignore
             txt=prediction["generated_text"].strip(), should_return_list=True
         )
+
+        if (
+            is_single_intent_detection and len(pred_dict_list) > 0
+        ):  # single intent detection
+            pred_dict_list = [pred_dict_list[0]]
 
         if skip_grounding:
             pred_func_calls = [json.dumps(func) for func in pred_dict_list]
@@ -195,7 +212,8 @@ def parse_granite_3_output(
 def parse_llama_3_output(
     prediction: Dict[str, Any],
     num_errors_parsing_pred_intent: int,
-    skip_grounding=False,
+    is_single_intent_detection: bool,
+    skip_grounding: bool = False,
 ):
     pred_has_parsing_errors = False
     pred_func_calls, gold_func_calls = [], []
@@ -212,6 +230,12 @@ def parse_llama_3_output(
         pred_dict_list = get_json_data_with_two_step_parsing(  # type: ignore
             txt=prediction["generated_text"].strip(), should_return_list=True
         )
+
+        if (
+            is_single_intent_detection and len(pred_dict_list) > 0
+        ):  # single intent detection
+            pred_dict_list = [pred_dict_list[0]]
+
         if skip_grounding:
             pred_func_calls = [json.dumps(func) for func in pred_dict_list]
         else:
@@ -236,7 +260,10 @@ def parse_llama_3_output(
 
 
 def parse_llama_3_70b_instruct(
-    prediction, num_errors_parsing_pred_intent, skip_grounding=False
+    prediction: Dict[str, Any],
+    num_errors_parsing_pred_intent: int,
+    is_single_intent_detection: bool,
+    skip_grounding: bool = False,
 ):
     pred_has_parsing_errors = False
     pred_func_calls, gold_func_calls = [], []
@@ -253,6 +280,12 @@ def parse_llama_3_70b_instruct(
         pred_dict_list = get_json_data_with_two_step_parsing(  # type: ignore
             txt=prediction["generated_text"].strip(), should_return_list=True
         )
+
+        if (
+            is_single_intent_detection and len(pred_dict_list) > 0
+        ):  # single intent detection
+            pred_dict_list = [pred_dict_list[0]]
+
         pred_dict_list = [p for p in pred_dict_list if not p["name"] == "var_result"]
 
         if skip_grounding:
@@ -307,7 +340,10 @@ def parse_llama_3_70b_instruct(
 
 
 def parse_mistral_7b_instruct_v0_3(
-    prediction, num_errors_parsing_pred_intent, skip_grounding=False
+    prediction: Dict[str, Any],
+    num_errors_parsing_pred_intent: int,
+    is_single_intent_detection: bool,
+    skip_grounding: bool = False,
 ):
     pred_has_parsing_errors = False
     pred_func_calls, gold_func_calls = [], []
@@ -325,6 +361,11 @@ def parse_mistral_7b_instruct_v0_3(
         pred_dict_list = get_json_data_with_two_step_parsing(  # type: ignore
             txt=prediction["generated_text"].strip(), should_return_list=True
         )
+
+        if (
+            is_single_intent_detection and len(pred_dict_list) > 0
+        ):  # single intent detection
+            pred_dict_list = [pred_dict_list[0]]
 
         if skip_grounding:
             pred_func_calls = [json.dumps(func) for func in pred_dict_list]
