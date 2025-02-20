@@ -149,6 +149,9 @@ def instruct_data(
         return test_data
 
     for sample in source_model.data:
+        if sample.ignore is not None and sample.ignore:
+            continue
+
         function_str = (
             json.dumps(list((map(lambda item: item.model_dump(), sample.tools))))
             if sample.tools is not None
