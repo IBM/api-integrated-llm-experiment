@@ -3,19 +3,15 @@ import os
 import json
 from pathlib import Path
 import statistics
-from typing import Any, Dict, List, Optional
-from tqdm import tqdm
+from typing import Any, List
 import sys
 
 from api_integrated_llm.helpers.output_parsers import (
-    parse_Hammer2_0_7b,
     parse_granite_20b_function_calling_output,
     parse_granite_3_output,
-    parse_hermes_2_pro_mistral_7B,
     parse_llama_3_70b_instruct,
     parse_llama_3_output,
     parse_mistral_7b_instruct_v0_3,
-    parse_xLAM_1b_fc_r,
 )
 from api_integrated_llm.helpers.utils import (
     post_process_api_with_args,
@@ -25,8 +21,10 @@ from api_integrated_llm.helpers.metrics_helper import (
     compute_score_sklearn,
 )
 from api_integrated_llm.helpers.file_helper import (
+    get_dataset_name_from_file_path,
     get_dict_from_json,
     get_list_dict_from_jsonl,
+    write_json_from_dict,
 )
 import importlib
 import signal
@@ -71,13 +69,12 @@ def calculate_ans_mathqa(func_calls, spec_lib):
             ):
                 variable_result_map[label] = {output_params[0]: res}
             else:
-                # ipdb.set_trace()
                 return False
-        # ipdb.set_trace()
+
         final_var = func_calls[-1]["label"].replace("$", "")
-        # final_var = func_calls[-1]["name"].replace("$", "")
+
         final_ans = next(iter(variable_result_map[final_var].values()))
-        # ipdb.set_trace()
+
         return final_ans
     except TimeoutError:
         print("The program timed out!")
@@ -88,7 +85,6 @@ def calculate_ans_mathqa(func_calls, spec_lib):
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
         print(e)
-        # ipdb.set_trace()
         return False
 
 
@@ -96,11 +92,9 @@ def calculate_ans_stack(func_calls, spec_lib, python_codes_dir, func_file_dict):
     signal.signal(signal.SIGALRM, handler)
     signal.alarm(10)
     try:
-        # ipdb.set_trace()
         variable_result_map = {}
         for idx, f in enumerate(func_calls):
             label = f["label"].replace("$", "")
-            # output_params = [s for s in spec_lib if s["name"] == f["name"]][0]["output_parameter"] # mathqa
             output_params = [s for s in spec_lib if s["name"] == f["name"]][0][
                 "output_parameters"
             ][
@@ -134,10 +128,10 @@ def calculate_ans_stack(func_calls, spec_lib, python_codes_dir, func_file_dict):
                 variable_result_map[label] = {output_params[0]: res}
             else:
                 return False
-        # ipdb.set_trace()
+
         final_var = func_calls[-1]["label"].replace("$", "")
         final_ans = next(iter(variable_result_map[final_var].values()))
-        # ipdb.set_trace()
+
         return final_ans
     except TimeoutError:
         print("The program timed out!")
@@ -148,7 +142,6 @@ def calculate_ans_stack(func_calls, spec_lib, python_codes_dir, func_file_dict):
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
         print(e)
-        # ipdb.set_trace()
         return False
 
 
@@ -209,7 +202,6 @@ def calculate_scores(
     model_max_tokens: int = 1500,
 ):
     error_messages: List[str] = []
-    # ipdb.set_trace()
     gold_output_intent = []
     pred_output_intent = []
     gold_output_slot = []
@@ -230,7 +222,7 @@ def calculate_scores(
     all_num_times_full_score = 0
     win_rate_list = []
     num_pred_examples_w_parsing_errors = 0
-    for item in tqdm(predictions):
+    for item in predictions:
         pred_has_parsing_errors = False
         pred_func_calls, gold_func_calls = [], []
         pred_dict_list, gold_dict_list = [], []
@@ -263,33 +255,6 @@ def calculate_scores(
                 num_errors_parsing_pred_intent,
                 pred_has_parsing_errors,
             ) = parse_mistral_7b_instruct_v0_3(item, num_errors_parsing_pred_intent)
-        elif "hermes" in model_name.lower():
-            (
-                pred_func_calls,
-                gold_func_calls,
-                pred_dict_list,
-                gold_dict_list,
-                num_errors_parsing_pred_intent,
-                pred_has_parsing_errors,
-            ) = parse_hermes_2_pro_mistral_7B(item, num_errors_parsing_pred_intent)
-        elif "xlam" in model_name.lower():
-            (
-                pred_func_calls,
-                gold_func_calls,
-                pred_dict_list,
-                gold_dict_list,
-                num_errors_parsing_pred_intent,
-                pred_has_parsing_errors,
-            ) = parse_xLAM_1b_fc_r(item, num_errors_parsing_pred_intent)
-        elif "hammer" in model_name.lower():  # Todo: Hammer parsing @Mayank
-            (
-                pred_func_calls,
-                gold_func_calls,
-                pred_dict_list,
-                gold_dict_list,
-                num_errors_parsing_pred_intent,
-                pred_has_parsing_errors,
-            ) = parse_Hammer2_0_7b(item, num_errors_parsing_pred_intent)
         elif "granite" in model_name.lower():
             (
                 pred_func_calls,
@@ -522,72 +487,8 @@ def print_result(result, model, dataset):
     print("-" * 100)
 
 
-def create_folders_recirsively_if_not_exist(tmp_path: str) -> None:
-    base_path = os.path.basename(os.path.normpath(tmp_path))
-    directory_path = (
-        os.path.dirname(os.path.abspath(tmp_path))  # file path
-        if "." in base_path
-        else os.path.abspath(tmp_path)  # folder path
-    )
-
-    if not os.path.isdir(directory_path):
-        os.makedirs(directory_path)
-
-
-def write_json_from_dict(file_path: str, dic: Dict) -> None:
-    create_folders_recirsively_if_not_exist(tmp_path=file_path)
-
-    with open(file_path, "w") as outfile:
-        json.dump(dic, outfile)
-
-
-def get_dataset_name_from_file_path(file_path: Path) -> str:
-    file_name = str(file_path).split("/")[-1]
-    return file_name.replace(".jsonl", "")
-
-
-def get_files_in_folder(
-    folder_path: str, file_extension: Optional[str] = None
-) -> List[str]:
-    return (
-        [
-            os.path.join(dp, f)
-            for dp, dn, filenames in os.walk(folder_path)
-            for f in filenames
-            if os.path.splitext(f)[1] == ("." + file_extension)
-        ]
-        if file_extension is not None
-        else [
-            os.path.join(dp, f)
-            for dp, dn, filenames in os.walk(folder_path)
-            for f in filenames
-        ]
-    )
-
-
-def check_data(
-    data: Optional[List[Dict[str, Any]]],
-    dataset_name: str,
-    evaluator_output_file_path: Path,
-) -> bool:
-    if data is None or len(data) == 0:  # handle empty data
-        save_path = os.path.join(
-            project_root_path,
-            "error",
-            dataset_name + "_scoring" + ".json",
-        )
-        write_json_from_dict(
-            file_path=save_path,
-            dic={
-                "error": "No data to score",
-                "file": evaluator_output_file_path,
-            },
-        )
-        return False
-    return True
-
-
 def handle_scoring_process_exception(
+    output_root_path: Path,
     e: Exception,
     model_name: str,
     dataset_name: str,
@@ -597,13 +498,15 @@ def handle_scoring_process_exception(
 ) -> None:
     print(e)
     write_json_from_dict(
-        file_path=os.path.join(
-            project_root_path,
-            "error",
-            model_name,
-            temperature_str,
-            max_tokens_str,
-            dataset_name + "_scoring" + ".json",
+        file_path=Path(
+            os.path.join(
+                output_root_path,
+                "error",
+                model_name,
+                temperature_str,
+                max_tokens_str,
+                dataset_name + "_scoring" + ".json",
+            )
         ),
         dic={"error": str(e), "file": evaluator_output_file_path},
     )
@@ -618,34 +521,30 @@ def scoring(
         dataset_name = get_dataset_name_from_file_path(
             file_path=evaluator_output_file_path
         )
-
+        temperature_str = "default_temperature"
+        max_tokens_str = "default_max_tokens"
+        model_name = "default_model"
         try:
             data = get_list_dict_from_jsonl(evaluator_output_file_path)
             temperature_str = "temperature_" + str(data[0]["temperature"]).replace(
                 ".", "_"
             )
             max_tokens_str = "maxtokens_" + str(data[0]["max_tokens"])
-
-            if not check_data(
-                data=data,
-                dataset_name=dataset_name,
-                evaluator_output_file_path=evaluator_output_file_path,
-            ):
-                continue
-
             dataset_name = data[0]["dataset_name"][:]
-            model = data[0]["llm_model_id"]
+            model_name = data[0]["llm_model_id"]
             write_json_from_dict(
-                file_path=os.path.join(
-                    output_folder_path,
-                    model,
-                    temperature_str,
-                    max_tokens_str,
-                    (dataset_name + "_scoring_output.json"),
+                file_path=Path(
+                    os.path.join(
+                        output_folder_path,
+                        model_name,
+                        temperature_str,
+                        max_tokens_str,
+                        (dataset_name + "_scoring_output.json"),
+                    )
                 ),
                 dic=calculate_scores(
                     data,
-                    model,
+                    model_name,
                     data[0]["source_file_path"],
                     dataset_name,
                     win_rate_flag=win_rate_flag,
@@ -655,8 +554,9 @@ def scoring(
             )
         except Exception as e:
             handle_scoring_process_exception(
+                output_root_path=output_folder_path,
                 e=e,
-                model_name=model,
+                model_name=model_name,
                 dataset_name=dataset_name,
                 evaluator_output_file_path=evaluator_output_file_path,
                 temperature_str=temperature_str,

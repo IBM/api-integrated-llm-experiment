@@ -53,7 +53,6 @@ def ground_seq_nested_repsonse(api_list):
                     return True
         return False
 
-    # ipdb.set_trace()
     # label_api_map = {api['name']: api['label'] for api in api_list if not api['name'] == 'var_result'}
     label_api_map = {}
     for api in api_list:
@@ -68,7 +67,7 @@ def ground_seq_nested_repsonse(api_list):
             label_api_map[lbl] = api["name"]
 
     grounded_api_list = []
-    # ipdb.set_trace()
+
     for api in api_list:
         if api["name"] == "var_result":
             continue
@@ -83,18 +82,15 @@ def ground_seq_nested_repsonse(api_list):
             for l, a in label_api_map.items():  # noqa: E741
                 # if type(s_v) == str and l in s_v:
                 if type(s_v) == str and check_label_in_slot(l, s_v):
-                    # ipdb.set_trace()
                     s_v = s_v.replace(l, a)
                 elif type(s_v) == list:
                     new_s_v = []
                     for v in s_v:
                         # if type(v) == str and l in v:
                         if type(v) == str and check_label_in_slot(l, v):
-                            # ipdb.set_trace()
                             v = v.replace(l, a)
                         # elif type(v) == dict and l in json.dumps(v):
                         elif type(v) == dict and check_label_in_slot(l, json.dumps(v)):
-                            # ipdb.set_trace()
                             v = json.loads(json.dumps(v).replace(l, a))
                         new_s_v.append(v)
                     s_v = new_s_v
@@ -189,10 +185,9 @@ def parse_granite_3_output(item, num_errors_parsing_pred_intent, skip_grounding=
             for func in pred_func_calls_dict:
                 pred_func_calls.append(json.dumps(func))
     except:
-        # ipdb.set_trace()
         num_errors_parsing_pred_intent += 1
         pred_has_parsing_errors = True
-    # ipdb.set_trace()
+
     return (
         pred_func_calls,
         gold_func_calls,
@@ -253,7 +248,6 @@ def parse_llama_3_output(item, num_errors_parsing_pred_intent, skip_grounding=Fa
 def parse_llama_3_70b_instruct(
     item, num_errors_parsing_pred_intent, skip_grounding=False
 ):
-    # ipdb.set_trace()
     pred_has_parsing_errors = False
     pred_func_calls, gold_func_calls = [], []
     pred_dict_list, gold_dict_list = [], []
@@ -267,7 +261,6 @@ def parse_llama_3_70b_instruct(
 
     ## Pred
     try:
-        # ipdb.set_trace()
         pred = item["generated_text"].strip()
         pred_dict_list = json.loads(pred)
         # pred_func_calls = ground_seq_nested_repsonse(pred_dict_list)
@@ -286,7 +279,6 @@ def parse_llama_3_70b_instruct(
         try:
             pred = item["generated_text"].strip()
             if pred.startswith("[") and pred.endswith("]"):
-                # ipdb.set_trace()
                 pred = pred[1:-1]
                 pred_list = pred.split("),")
                 new_pred_list = []
@@ -301,11 +293,11 @@ def parse_llama_3_70b_instruct(
                     slot_str = p.split("(", 1)[1][:-1]
                     slots = get_deli_sep_str_list(slot_str)
                     arg_dict = {}
-                    # ipdb.set_trace()
+
                     for s in slots:
                         s_n, s_v = s.split("=")[0].strip(), s.split("=")[1].strip()
                         arg_dict[s_n] = process_slot_value(s_v)
-                    # ipdb.set_trace()
+
                     pred_func_calls.append(
                         json.dumps({"name": intent, "arguments": arg_dict})
                     )
@@ -313,7 +305,6 @@ def parse_llama_3_70b_instruct(
                 num_errors_parsing_pred_intent += 1
                 pred_has_parsing_errors = True
         except:
-            # ipdb.set_trace()
             num_errors_parsing_pred_intent += 1
             pred_has_parsing_errors = True
 
@@ -341,13 +332,12 @@ def parse_mistral_7b_instruct_v0_3(
     else:
         gold_func_calls = ground_seq_nested_repsonse(gold_dict_list)
         gold_func_calls = [json.dumps(func) for func in gold_func_calls]
-    # ipdb.set_trace()
 
     ## Pred
     try:
         pred = item["generated_text"].strip()
         pred_dict_list = json.loads(pred)
-        # ipdb.set_trace()
+
         if skip_grounding:
             pred_func_calls = [json.dumps(func) for func in pred_dict_list]
         else:
@@ -355,7 +345,6 @@ def parse_mistral_7b_instruct_v0_3(
             # pred_func_calls = pred_dict_list
             pred_func_calls = [json.dumps(func) for func in pred_func_calls]
     except:
-        # ipdb.set_trace()
         try:
             pred = item["generated_text"].strip()
             pred_dict_list = json.loads(
@@ -412,7 +401,7 @@ def parse_hermes_2_pro_mistral_7B(
                 continue
         # pred_dict_list = [json.loads(p) for p in func_str_list]
         # print(pred_dict_list)
-        # ipdb.set_trace()
+
         assert len(pred_dict_list) > 0, "parsing issue"
         if skip_grounding:
             pred_func_calls = [json.dumps(func) for func in pred_dict_list]
@@ -421,7 +410,6 @@ def parse_hermes_2_pro_mistral_7B(
             # pred_func_calls = pred_dict_list
             pred_func_calls = [json.dumps(func) for func in pred_func_calls]
     except:
-        # ipdb.set_trace()
         num_errors_parsing_pred_intent += 1
         pred_has_parsing_errors = True
 
@@ -448,11 +436,9 @@ def parse_xLAM_1b_fc_r(item, num_errors_parsing_pred_intent, skip_grounding=Fals
     else:
         gold_func_calls = ground_seq_nested_repsonse(gold_dict_list)
         gold_func_calls = [json.dumps(func) for func in gold_func_calls]
-    # ipdb.set_trace()
 
     ## Pred
     try:
-        # ipdb.set_trace()
         pred = item["generated_text"].strip()
         pred = (
             pred.replace("[BEGIN OF ANSWER]", "")
@@ -465,7 +451,7 @@ def parse_xLAM_1b_fc_r(item, num_errors_parsing_pred_intent, skip_grounding=Fals
         tool_dict = json.loads(pred)
         assert "tool_calls" in tool_dict, "parsing error"
         pred_dict_list = tool_dict["tool_calls"]
-        # ipdb.set_trace()
+
         if skip_grounding:
             pred_func_calls = [json.dumps(func) for func in pred_dict_list]
         else:
@@ -473,7 +459,6 @@ def parse_xLAM_1b_fc_r(item, num_errors_parsing_pred_intent, skip_grounding=Fals
             # pred_func_calls = pred_dict_list
             pred_func_calls = [json.dumps(func) for func in pred_func_calls]
     except:
-        # ipdb.set_trace()
         num_errors_parsing_pred_intent += 1
         pred_has_parsing_errors = True
 

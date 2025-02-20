@@ -314,3 +314,8 @@ def get_dataset_name(file_path: Path) -> str:
 def get_file_name_without_extension(file_path: Path) -> str:
     file_name = str(file_path).split("/")[-1]
     return "".join(file_name.split(".")[:-1])
+
+
+def get_dataset_name_from_file_path(file_path: Path) -> str:
+    file_name = str(file_path).split("/")[-1]
+    return file_name.replace(".jsonl", "")
