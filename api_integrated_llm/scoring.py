@@ -3,7 +3,7 @@ import os
 import json
 from pathlib import Path
 import statistics
-from typing import Any, List
+from typing import Any, Dict, List, Tuple
 import sys
 
 from api_integrated_llm.helpers.output_parsers import (
@@ -190,14 +190,100 @@ def calculate_win_score(pred_func_calls, gold_ans, spec_file, dataset_name):
         return False
 
 
+def parse_output_from_language_models(
+    prediction: Dict[str, Any], model_name: str, num_errors_parsing_pred_intent: int
+) -> Tuple[List[Any], List[Any], List[Any], List[Any], Any, Any]:
+    pred_has_parsing_errors = False
+    pred_func_calls, gold_func_calls = [], []
+    pred_dict_list, gold_dict_list = [], []
+    num_errors_parsing_pred_intent_res = 0
+    model_name_lower_cased = model_name.lower()
+    if "granite" in model_name_lower_cased:
+        if "functioncalling" in model_name_lower_cased:
+            (
+                pred_func_calls,
+                gold_func_calls,
+                pred_dict_list,
+                gold_dict_list,
+                num_errors_parsing_pred_intent_res,
+                pred_has_parsing_errors,
+            ) = parse_granite_20b_function_calling_output(
+                prediction, num_errors_parsing_pred_intent
+            )
+        else:
+            (
+                pred_func_calls,
+                gold_func_calls,
+                pred_dict_list,
+                gold_dict_list,
+                num_errors_parsing_pred_intent_res,
+                pred_has_parsing_errors,
+            ) = parse_granite_3_output(prediction, num_errors_parsing_pred_intent)
+    elif "llama" in model_name_lower_cased:
+        if "llama-3-70b" in model_name_lower_cased:
+            (
+                pred_func_calls,
+                gold_func_calls,
+                pred_dict_list,
+                gold_dict_list,
+                num_errors_parsing_pred_intent_res,
+                pred_has_parsing_errors,
+            ) = parse_llama_3_70b_instruct(prediction, num_errors_parsing_pred_intent)
+        else:
+            (
+                pred_func_calls,
+                gold_func_calls,
+                pred_dict_list,
+                gold_dict_list,
+                num_errors_parsing_pred_intent_res,
+                pred_has_parsing_errors,
+            ) = parse_llama_3_output(prediction, num_errors_parsing_pred_intent)
+    elif "mistral" in model_name_lower_cased or "mixtral" in model_name_lower_cased:
+        (
+            pred_func_calls,
+            gold_func_calls,
+            pred_dict_list,
+            gold_dict_list,
+            num_errors_parsing_pred_intent_res,
+            pred_has_parsing_errors,
+        ) = parse_mistral_7b_instruct_v0_3(prediction, num_errors_parsing_pred_intent)
+    elif "deepseek" in model_name_lower_cased:
+        (
+            pred_func_calls,
+            gold_func_calls,
+            pred_dict_list,
+            gold_dict_list,
+            num_errors_parsing_pred_intent_res,
+            pred_has_parsing_errors,
+        ) = parse_llama_3_output(prediction, num_errors_parsing_pred_intent)
+    else:
+        (
+            pred_func_calls,
+            gold_func_calls,
+            pred_dict_list,
+            gold_dict_list,
+            num_errors_parsing_pred_intent_res,
+            pred_has_parsing_errors,
+        ) = parse_llama_3_output(prediction, num_errors_parsing_pred_intent)
+
+    return (
+        pred_func_calls,
+        gold_func_calls,
+        pred_dict_list,
+        gold_dict_list,
+        num_errors_parsing_pred_intent_res,
+        pred_has_parsing_errors,
+    )
+
+
 def calculate_scores(
-    predictions,
-    model_name,
-    spec_path,
-    dataset_name,
-    intents_only=False,
-    sklearn_metrics=True,
-    win_rate_flag=True,
+    predictions: List[Dict[str, Any]],
+    model_name: str,
+    spec_path: Path,
+    dataset_name: str,
+    intents_only: bool = False,
+    sklearn_metrics: bool = True,
+    win_rate_flag: bool = True,
     model_temperature: float = 0.0,
     model_max_tokens: int = 1500,
 ):
@@ -214,6 +300,7 @@ def calculate_scores(
         None,
         None,
     )
+
     num_errors_parsing_pred_intent = 0
     num_errors_parsing_gold_intent = 0
     num_errors_parsing_pred_slot = 0
@@ -222,75 +309,20 @@ def calculate_scores(
     all_num_times_full_score = 0
     win_rate_list = []
     num_pred_examples_w_parsing_errors = 0
-    for item in predictions:
-        pred_has_parsing_errors = False
-        pred_func_calls, gold_func_calls = [], []
-        pred_dict_list, gold_dict_list = [], []
-        if "granite" in model_name.lower() and "functioncalling" in model_name.lower():
-            (
-                pred_func_calls,
-                gold_func_calls,
-                pred_dict_list,
-                gold_dict_list,
-                num_errors_parsing_pred_intent,
-                pred_has_parsing_errors,
-            ) = parse_granite_20b_function_calling_output(
-                item, num_errors_parsing_pred_intent
-            )
-        elif "llama-3" in model_name.lower():
-            (
-                pred_func_calls,
-                gold_func_calls,
-                pred_dict_list,
-                gold_dict_list,
-                num_errors_parsing_pred_intent,
-                pred_has_parsing_errors,
-            ) = parse_llama_3_70b_instruct(item, num_errors_parsing_pred_intent)
-        elif "mistral" in model_name.lower() or "mixtral" in model_name.lower():
-            (
-                pred_func_calls,
-                gold_func_calls,
-                pred_dict_list,
-                gold_dict_list,
-                num_errors_parsing_pred_intent,
-                pred_has_parsing_errors,
-            ) = parse_mistral_7b_instruct_v0_3(item, num_errors_parsing_pred_intent)
-        elif "granite" in model_name.lower():
-            (
-                pred_func_calls,
-                gold_func_calls,
-                pred_dict_list,
-                gold_dict_list,
-                num_errors_parsing_pred_intent,
-                pred_has_parsing_errors,
-            ) = parse_granite_3_output(item, num_errors_parsing_pred_intent)
-        elif "llama" in model_name.lower():
-            (
-                pred_func_calls,
-                gold_func_calls,
-                pred_dict_list,
-                gold_dict_list,
-                num_errors_parsing_pred_intent,
-                pred_has_parsing_errors,
-            ) = parse_llama_3_output(item, num_errors_parsing_pred_intent)
-        elif "deepseek" in model_name.lower():
-            (
-                pred_func_calls,
-                gold_func_calls,
-                pred_dict_list,
-                gold_dict_list,
-                num_errors_parsing_pred_intent,
-                pred_has_parsing_errors,
-            ) = parse_llama_3_output(item, num_errors_parsing_pred_intent)
-        else:
-            (
-                pred_func_calls,
-                gold_func_calls,
-                pred_dict_list,
-                gold_dict_list,
-                num_errors_parsing_pred_intent,
-                pred_has_parsing_errors,
-            ) = parse_llama_3_output(item, num_errors_parsing_pred_intent)
+
+    for prediction in predictions:
+        (
+            pred_func_calls,
+            gold_func_calls,
+            pred_dict_list,
+            gold_dict_list,
+            num_errors_parsing_pred_intent,
+            pred_has_parsing_errors,
+        ) = parse_output_from_language_models(
+            prediction=prediction,
+            model_name=model_name[:],
+            num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
+        )
 
         gold_apis_names, pred_apis_names = [], []
         for f in pred_func_calls:
@@ -405,9 +437,8 @@ def calculate_scores(
 
         ## WinRate
         if win_rate_flag:
-            # win_score = calculate_win_score(gold_dict_list, item["gold_answer"], spec_path)
             win_score = calculate_win_score(
-                pred_dict_list, item["gold_answer"], spec_path, dataset_name
+                pred_dict_list, prediction["gold_answer"], spec_path, dataset_name
             )
             win_rate_list.append(win_score)
 
@@ -545,7 +576,7 @@ def scoring(
                 dic=calculate_scores(
                     data,
                     model_name,
-                    data[0]["source_file_path"],
+                    Path(data[0]["source_file_path"]),
                     dataset_name,
                     win_rate_flag=win_rate_flag,
                     model_temperature=data[0]["temperature"],

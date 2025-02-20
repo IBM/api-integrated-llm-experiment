@@ -319,3 +319,21 @@ def get_file_name_without_extension(file_path: Path) -> str:
 def get_dataset_name_from_file_path(file_path: Path) -> str:
     file_name = str(file_path).split("/")[-1]
     return file_name.replace(".jsonl", "")
+
+
+def get_json_dict_from_txt(txt: str) -> Dict[str, Any]:
+    start_idx = txt.index("{")
+    end_idx = txt.rfind("}")
+
+    if start_idx >= end_idx:
+        raise Exception("text does not contain json string")
+
+    truncated_json_str = txt[start_idx : (end_idx + 1)]  # noqa: E203
+    json_dict = {}
+    try:
+        json_dict = json.loads(truncated_json_str)
+    except Exception as e:
+        print(e)
+        raise Exception("text does not contain a valid json string")
+
+    return json_dict

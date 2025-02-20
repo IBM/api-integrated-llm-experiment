@@ -1,5 +1,6 @@
 import json
 import re
+from typing import Any, Dict
 
 
 def get_deli_sep_str_list(text, deli=","):
@@ -198,12 +199,17 @@ def parse_granite_3_output(item, num_errors_parsing_pred_intent, skip_grounding=
     )
 
 
-def parse_llama_3_output(item, num_errors_parsing_pred_intent, skip_grounding=False):
+def parse_llama_3_output(
+    prediction: Dict[str, Any],
+    num_errors_parsing_pred_intent: int,
+    skip_grounding=False,
+):
     pred_has_parsing_errors = False
     pred_func_calls, gold_func_calls = [], []
     pred_dict_list, gold_dict_list = [], []
     ## Gold
-    gold_dict_list = json.loads(item["output"])
+    gold_dict_list = json.loads(prediction["output"])
+
     if skip_grounding:
         gold_func_calls = [json.dumps(func) for func in gold_dict_list]
     else:
@@ -212,7 +218,8 @@ def parse_llama_3_output(item, num_errors_parsing_pred_intent, skip_grounding=Fa
 
     ## Pred
     try:
-        gen_text = item["generated_text"].strip()
+        # see what is here
+        gen_text = prediction["generated_text"].strip()
         if gen_text.endswith("'"):
             gen_text = gen_text[:-1]
         if not gen_text.startswith("["):
@@ -226,7 +233,7 @@ def parse_llama_3_output(item, num_errors_parsing_pred_intent, skip_grounding=Fa
         else:
             pred_func_calls = (
                 ground_seq_nested_repsonse(pred_dict_list)
-                if "label" in item["generated_text"]
+                if "label" in prediction["generated_text"]
                 else pred_dict_list
             )
             pred_func_calls = [json.dumps(func) for func in pred_func_calls]
