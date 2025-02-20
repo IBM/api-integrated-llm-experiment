@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 import pickle
 import pprint
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Union
 import json
 from typing import List
 import uuid
@@ -321,17 +321,31 @@ def get_dataset_name_from_file_path(file_path: Path) -> str:
     return file_name.replace(".jsonl", "")
 
 
-def get_json_dict_from_txt(txt: str) -> Dict[str, Any]:
+def get_json_dict_from_txt(txt: str) -> Union[Dict[str, Any], List[Dict[str, Any]]]:
+    # json string in list of objects form
+    start_idx = txt.index("[")
+    end_idx = txt.rfind("]")
+    is_valid_json = False
+    json_dict: Union[Dict[str, Any], List[Dict[str, Any]]] = {}
+    if start_idx < end_idx:
+        try:
+            json_dict = json.loads(txt[start_idx : (end_idx + 1)])  # noqa: E203
+            is_valid_json = True
+        except Exception as e:
+            print(e)
+
+    if is_valid_json:
+        return json_dict
+
+    # json string in object form
     start_idx = txt.index("{")
     end_idx = txt.rfind("}")
 
     if start_idx >= end_idx:
         raise Exception("text does not contain json string")
 
-    truncated_json_str = txt[start_idx : (end_idx + 1)]  # noqa: E203
-    json_dict = {}
     try:
-        json_dict = json.loads(truncated_json_str)
+        json_dict = json.loads(txt[start_idx : (end_idx + 1)])  # noqa: E203
     except Exception as e:
         print(e)
         raise Exception("text does not contain a valid json string")
