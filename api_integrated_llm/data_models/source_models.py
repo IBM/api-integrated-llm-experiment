@@ -27,7 +27,7 @@ class ToolDescriptionModel(BaseModel):
 class ToolItemModel(BaseModel):
     description: Optional[str] = None
     name: Optional[str] = None
-    arguments: Optional[Dict[str, Any]] = dict()
+    arguments: Optional[Union[Dict[str, Any], str]] = dict()
 
 
 class QueryItemDataModel(BaseModel):
