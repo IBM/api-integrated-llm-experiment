@@ -60,6 +60,7 @@ class QuerySourceDataModel(BaseModel):
     key_values_and_descriptions: Optional[
         List[QueryKeyValueDescriptionDataModel]
     ] = None
+    ignore: Optional[bool] = False
 
     def get_data_unit_model(self) -> DataUnit:
         return DataUnit(

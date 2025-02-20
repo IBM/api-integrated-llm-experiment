@@ -58,7 +58,7 @@ def get_prompt_dict(
     prompt_dict_all = get_dict_from_json(file_path=prompt_file_path)  # type: ignore
     path_str = str(evaluation_input_file_path)
     if "rest" in path_str:
-        return prompt_dict_all["router"]
+        return prompt_dict_all["icl"]
     if "sequencing" in path_str:
         return prompt_dict_all["sequencing"]
     return prompt_dict_all["icl"]
@@ -149,6 +149,9 @@ def instruct_data(
         return test_data
 
     for sample in source_model.data:
+        if sample.ignore is not None and sample.ignore:
+            continue
+
         function_str = (
             json.dumps(list((map(lambda item: item.model_dump(), sample.tools))))
             if sample.tools is not None

@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 import pickle
 import pprint
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Union
 import json
 from typing import List
 import uuid
@@ -314,3 +314,100 @@ def get_dataset_name(file_path: Path) -> str:
 def get_file_name_without_extension(file_path: Path) -> str:
     file_name = str(file_path).split("/")[-1]
     return "".join(file_name.split(".")[:-1])
+
+
+def get_dataset_name_from_file_path(file_path: Path) -> str:
+    file_name = str(file_path).split("/")[-1]
+    return file_name.replace(".jsonl", "")
+
+
+def get_json_dict_from_txt(txt: str) -> Union[Dict[str, Any], List[Dict[str, Any]]]:
+    json_dict: Union[Dict[str, Any], List[Dict[str, Any]]] = {}
+    start_idx_list = txt.find("[")
+    start_idx_obj = txt.find("{")
+    should_parse_object = False
+
+    if start_idx_list == -1:
+        if start_idx_obj == -1:
+            raise Exception("No json string found")
+        else:
+            should_parse_object = True
+    else:
+        if start_idx_list < start_idx_obj:
+            should_parse_object = False
+        else:
+            should_parse_object = True
+
+    if should_parse_object:
+        try:
+            # json string in object form
+            start_idx = txt.index("{")
+            end_idx = txt.rfind("}")
+
+            if start_idx >= end_idx:
+                raise Exception("text does not contain json string")
+
+            json_dict = json.loads(txt[start_idx : (end_idx + 1)])  # noqa: E203
+        except Exception as e:
+            print(e)
+            raise Exception("text does not contain a valid json string")
+
+    else:
+        # json string in list of objects form
+        try:
+            start_idx = txt.index("[")
+            end_idx = txt.rfind("]")
+
+            if start_idx < end_idx:
+                json_dict = json.loads(txt[start_idx : (end_idx + 1)])  # noqa: E203
+        except Exception as e:
+            print(e)
+            raise Exception("text does not contain a valid json string")
+
+    return json_dict
+
+
+def get_jsonl_list_from_string(
+    txt: str,
+) -> List[Union[List[Dict[str, Any]], Dict[str, Any]]]:
+    jsonl_list: List[Union[List[Dict[str, Any]], Dict[str, Any]]] = []
+    for line in txt.split("\n"):
+        jsonl_list.append(get_json_dict_from_txt(txt=line))
+    return jsonl_list
+
+
+def get_json_data_with_two_step_parsing(
+    txt: str, should_return_list: bool
+) -> Optional[
+    Union[
+        List[Union[List[Dict[str, Any]], Dict[str, Any]]],
+        List[Dict[str, Any]],
+        Dict[str, Any],
+    ]
+]:
+    res: Optional[
+        Union[
+            List[Union[List[Dict[str, Any]], Dict[str, Any]]],
+            List[Dict[str, Any]],
+            Dict[str, Any],
+        ]
+    ] = None
+    json_obtained = False
+    try:
+        res = get_json_dict_from_txt(txt=txt)
+        json_obtained = True
+    except Exception as e:
+        print(e)
+
+    if not json_obtained:  # try jsonl parsing
+        try:
+            res = get_jsonl_list_from_string(txt=txt)
+            json_obtained = True
+        except Exception as e:
+            print(e)
+
+    if not json_obtained:
+        raise Exception("json and jsonl parsing failed")
+    if should_return_list and res is not None and not isinstance(res, list):
+        res = [res]
+    return res
