@@ -91,7 +91,7 @@ class EvaluationOutputDataUnit(BaseModel):
 class EvaluationOutputResponseDataUnit(EvaluationOutputDataUnit):
     generated_text: str = ""
     llm_model_id: str = ""
-    source_file_path: Path = Path(__file__)
+    source_file_path: str = str(Path(__file__))
     dataset_name: str = ""
     temperature: float = -1.0
     max_tokens: int = 1500

@@ -32,7 +32,7 @@ def get_evaluation_output_units_from_responses(
             )
             output_unit.generated_text = resp[0].strip()
             output_unit.llm_model_id = model_name[:]
-            output_unit.source_file_path = evaluation_input_file_path
+            output_unit.source_file_path = str(evaluation_input_file_path)
             output_unit.dataset_name = dataset_name
             output_unit.temperature = temperature
             output_unit.max_tokens = max_tokens

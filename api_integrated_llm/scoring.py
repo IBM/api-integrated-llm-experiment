@@ -587,7 +587,7 @@ def handle_scoring_process_exception(
                 dataset_name + "_scoring" + ".json",
             )
         ),
-        dic={"error": str(e), "file": evaluator_output_file_path},
+        dic={"error": str(e), "file": str(evaluator_output_file_path)},
     )
 
 
