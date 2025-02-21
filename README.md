@@ -43,6 +43,21 @@ api-integrated-llm -h
 
 ## Command Line Interface (CLI)
 
+```
+usage: api-integrated-llm [-h] [-m {default,evaluator,scorer}] [-rt ROOT] [-ig | --ignore | --no-ignore]
+
+Conversational AI Gym Tool
+
+options:
+  -h, --help            show this help message and exit
+  -m {default,evaluator,scorer}, --mode {default,evaluator,scorer}
+                        Cli mode
+  -rt ROOT, --root ROOT
+                        Dataset root absolute path
+  -ig, --ignore, --no-ignore
+                        Ignore data points marked as "ignore"
+```
+
 The source folder should have the following structure:
 
 ```txt
