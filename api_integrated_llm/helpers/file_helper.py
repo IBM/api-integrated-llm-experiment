@@ -351,7 +351,6 @@ def get_json_dict_from_txt(txt: str) -> Union[Dict[str, Any], List[Dict[str, Any
         except Exception as e:
             print(e)
             raise Exception("text does not contain a valid json string")
-
     else:
         # json string in list of objects form
         try:

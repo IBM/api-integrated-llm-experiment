@@ -211,7 +211,10 @@ def parse_output_from_language_models(
                 num_errors_parsing_pred_intent_res,
                 pred_has_parsing_errors,
             ) = parse_granite_20b_function_calling_output(
-                prediction, num_errors_parsing_pred_intent, is_single_intent_detection
+                prediction=prediction,
+                num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
+                is_single_intent_detection=is_single_intent_detection,
+                skip_grounding=is_single_intent_detection,
             )
         else:
             (
@@ -222,7 +225,10 @@ def parse_output_from_language_models(
                 num_errors_parsing_pred_intent_res,
                 pred_has_parsing_errors,
             ) = parse_granite_3_output(
-                prediction, num_errors_parsing_pred_intent, is_single_intent_detection
+                prediction=prediction,
+                num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
+                is_single_intent_detection=is_single_intent_detection,
+                skip_grounding=is_single_intent_detection,
             )
     elif "llama" in model_name_lower_cased:
         if "llama-3-70b" in model_name_lower_cased:
@@ -234,7 +240,10 @@ def parse_output_from_language_models(
                 num_errors_parsing_pred_intent_res,
                 pred_has_parsing_errors,
             ) = parse_llama_3_70b_instruct(
-                prediction, num_errors_parsing_pred_intent, is_single_intent_detection
+                prediction=prediction,
+                num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
+                is_single_intent_detection=is_single_intent_detection,
+                skip_grounding=is_single_intent_detection,
             )
         else:
             (
@@ -245,7 +254,10 @@ def parse_output_from_language_models(
                 num_errors_parsing_pred_intent_res,
                 pred_has_parsing_errors,
             ) = parse_llama_3_output(
-                prediction, num_errors_parsing_pred_intent, is_single_intent_detection
+                prediction=prediction,
+                num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
+                is_single_intent_detection=is_single_intent_detection,
+                skip_grounding=is_single_intent_detection,
             )
     elif "mistral" in model_name_lower_cased or "mixtral" in model_name_lower_cased:
         (
@@ -256,7 +268,10 @@ def parse_output_from_language_models(
             num_errors_parsing_pred_intent_res,
             pred_has_parsing_errors,
         ) = parse_mistral_7b_instruct_v0_3(
-            prediction, num_errors_parsing_pred_intent, is_single_intent_detection
+            prediction=prediction,
+            num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
+            is_single_intent_detection=is_single_intent_detection,
+            skip_grounding=is_single_intent_detection,
         )
     elif "deepseek" in model_name_lower_cased:
         (
@@ -267,7 +282,10 @@ def parse_output_from_language_models(
             num_errors_parsing_pred_intent_res,
             pred_has_parsing_errors,
         ) = parse_llama_3_output(
-            prediction, num_errors_parsing_pred_intent, is_single_intent_detection
+            prediction=prediction,
+            num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
+            is_single_intent_detection=is_single_intent_detection,
+            skip_grounding=is_single_intent_detection,
         )
     else:
         (
@@ -278,7 +296,10 @@ def parse_output_from_language_models(
             num_errors_parsing_pred_intent_res,
             pred_has_parsing_errors,
         ) = parse_llama_3_output(
-            prediction, num_errors_parsing_pred_intent, is_single_intent_detection
+            prediction=prediction,
+            num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
+            is_single_intent_detection=is_single_intent_detection,
+            skip_grounding=is_single_intent_detection,
         )
 
     return (
@@ -326,21 +347,25 @@ def calculate_scores(
     num_pred_examples_w_parsing_errors = 0
 
     for prediction in predictions:
-        (
-            pred_func_calls,
-            gold_func_calls,
-            pred_dict_list,
-            gold_dict_list,
-            num_errors_parsing_pred_intent,
-            pred_has_parsing_errors,
-        ) = parse_output_from_language_models(
-            prediction=prediction,
-            model_name=model_name[:],
-            num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
-            is_single_intent_detection=(
-                "rest" in str(spec_path)
-            ),  # TODO: improve the way to identify the need for single intent detection
-        )
+        try:
+            (
+                pred_func_calls,
+                gold_func_calls,
+                pred_dict_list,
+                gold_dict_list,
+                num_errors_parsing_pred_intent,
+                pred_has_parsing_errors,
+            ) = parse_output_from_language_models(
+                prediction=prediction,
+                model_name=model_name[:],
+                num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
+                is_single_intent_detection=(
+                    "rest" in str(spec_path)
+                ),  # TODO: improve the way to identify the need for single intent detection
+            )
+        except Exception as e:
+            print(e)
+            continue
 
         gold_apis_names, pred_apis_names = [], []
         for f in pred_func_calls:
@@ -360,9 +385,12 @@ def calculate_scores(
             if not f:
                 continue
             try:
-                f = json.loads(f.replace("<|endoftext|>", "").strip())
+                f = json.loads(
+                    f.replace("<|endoftext|>", "").replace("null", "{}").strip()
+                )
                 gold_apis_names.append(str(f["name"]))
-            except:  # cases with empty gold output
+            except Exception as e:  # cases with empty gold output
+                print(e)
                 num_errors_parsing_gold_intent += 1
                 pass
 
@@ -392,7 +420,9 @@ def calculate_scores(
                 if not f:
                     continue
                 try:
-                    f = json.loads(f.replace("<|endoftext|>", "").strip())
+                    f = json.loads(
+                        f.replace("<|endoftext|>", "").replace("null", "{}").strip()
+                    )
                     gold_api_map[f["name"]] = []
                     for arg, val in f["arguments"].items():
                         gold_api_map[f["name"]].append(f"{arg} = {val}")
@@ -575,6 +605,12 @@ def scoring(
         model_name = "default_model"
         try:
             data = get_list_dict_from_jsonl(evaluator_output_file_path)
+
+            if data is None or len(data) == 0:
+                raise Exception(
+                    f"No evaluation data found at {evaluator_output_file_path}"
+                )
+
             temperature_str = "temperature_" + str(data[0]["temperature"]).replace(
                 ".", "_"
             )
@@ -596,6 +632,7 @@ def scoring(
                     model_name,
                     Path(data[0]["source_file_path"]),
                     dataset_name,
+                    sklearn_metrics=False,
                     win_rate_flag=win_rate_flag,
                     model_temperature=data[0]["temperature"],
                     model_max_tokens=data[0]["max_tokens"],

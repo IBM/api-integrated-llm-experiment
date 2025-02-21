@@ -51,6 +51,7 @@ def evaluate(
     max_tokens_list: List[int],
     should_generate_random_example: bool = False,
     num_examples: int = 1,
+    should_ignore: bool = True,
 ):
     for temperature in temperatures:
         print(f"Temperature: {temperature}")
@@ -75,6 +76,7 @@ def evaluate(
                             example_file_path=example_file_path,
                             should_generate_random_example=should_generate_random_example,
                             num_examples=num_examples,
+                            should_ignore=should_ignore,
                         )
 
                         if model_obj["inference_type"] == "RITS":

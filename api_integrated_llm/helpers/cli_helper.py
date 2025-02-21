@@ -34,6 +34,14 @@ def get_arguments() -> argparse.Namespace:
         default=project_root_path,
     )
 
+    parser.add_argument(
+        "-ig",
+        "--ignore",
+        type=bool,
+        help='Ignore data points marked as "ignore"',
+        default=True,
+    )
+
     return parser.parse_args()
 
 
@@ -81,6 +89,7 @@ def cli() -> None:
             max_tokens_list=[1500],
             should_generate_random_example=True,
             num_examples=3,
+            should_ignore=args.ignore,
         )
 
     if args.mode == CliModeModel.DEFAULT or args.mode == CliModeModel.SCORER:

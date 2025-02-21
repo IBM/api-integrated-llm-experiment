@@ -120,6 +120,7 @@ def instruct_data(
     example_file_path: Optional[Path] = None,
     should_generate_random_example: bool = False,
     num_examples: int = 1,
+    should_ignore: bool = True,
 ) -> List[EvaluationOutputDataUnit]:
     examples = get_examples(
         example_file_path=example_file_path,  # type: ignore
@@ -149,7 +150,7 @@ def instruct_data(
         return test_data
 
     for sample in source_model.data:
-        if sample.ignore is not None and sample.ignore:
+        if should_ignore and sample.ignore is not None and sample.ignore:
             continue
 
         function_str = (
