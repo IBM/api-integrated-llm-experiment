@@ -1,5 +1,5 @@
 import json
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 from api_integrated_llm.helpers.file_helper import (
     get_json_data_with_two_step_parsing,
@@ -107,6 +107,10 @@ def ground_seq_nested_repsonse(api_list):
     return grounded_api_list
 
 
+def get_output_list(prediction: Dict[str, Any]) -> List[Dict[str, Any]]:
+    return get_json_dict_from_txt(txt=prediction["output"]) if isinstance(prediction["output"], str) else prediction["output"]  # type: ignore
+
+
 def parse_granite_20b_function_calling_output(
     prediction: Dict[str, Any],
     num_errors_parsing_pred_intent: int,
@@ -116,7 +120,7 @@ def parse_granite_20b_function_calling_output(
     pred_has_parsing_errors = False
     pred_func_calls, gold_func_calls = [], []
     pred_dict_list, gold_dict_list = [], []  # type: ignore
-    gold_dict_list = get_json_dict_from_txt(txt=prediction["output"])
+    gold_dict_list = get_output_list(prediction=prediction)
     if skip_grounding:
         gold_func_calls = [json.dumps(func) for func in gold_dict_list]
     else:
@@ -143,7 +147,8 @@ def parse_granite_20b_function_calling_output(
                 else pred_dict_list
             )
             pred_func_calls = [json.dumps(func) for func in pred_func_calls]
-    except:
+    except Exception as e:
+        print(e)
         num_errors_parsing_pred_intent += 1
         pred_has_parsing_errors = True
 
@@ -165,8 +170,8 @@ def parse_granite_3_output(
 ):
     pred_has_parsing_errors = False
     pred_func_calls, gold_func_calls = [], []
-    pred_dict_list, gold_dict_list = [], []
-    gold_dict_list = get_json_dict_from_txt(txt=prediction["output"])
+    pred_dict_list, gold_dict_list = [], []  # type: ignore
+    gold_dict_list = get_output_list(prediction=prediction)
     if skip_grounding:
         gold_func_calls = [json.dumps(func) for func in gold_dict_list]
     else:
@@ -195,7 +200,8 @@ def parse_granite_3_output(
             pred_func_calls = []
             for func in pred_func_calls_dict:
                 pred_func_calls.append(json.dumps(func))
-    except:
+    except Exception as e:
+        print(e)
         num_errors_parsing_pred_intent += 1
         pred_has_parsing_errors = True
 
@@ -218,7 +224,7 @@ def parse_llama_3_output(
     pred_has_parsing_errors = False
     pred_func_calls, gold_func_calls = [], []
     pred_dict_list, gold_dict_list = [], []  # type: ignore
-    gold_dict_list = get_json_dict_from_txt(txt=prediction["output"])  # type: ignore
+    gold_dict_list = get_output_list(prediction=prediction)
 
     if skip_grounding:
         gold_func_calls = [json.dumps(func) for func in gold_dict_list]
@@ -245,7 +251,8 @@ def parse_llama_3_output(
                 else pred_dict_list
             )
             pred_func_calls = [json.dumps(func) for func in pred_func_calls]
-    except:
+    except Exception as e:
+        print(e)
         num_errors_parsing_pred_intent += 1
         pred_has_parsing_errors = True
 
@@ -267,8 +274,9 @@ def parse_llama_3_70b_instruct(
 ):
     pred_has_parsing_errors = False
     pred_func_calls, gold_func_calls = [], []
-    pred_dict_list, gold_dict_list = [], []
-    gold_dict_list = get_json_dict_from_txt(txt=prediction["output"])
+    pred_dict_list, gold_dict_list = [], []  # type: ignore
+    gold_dict_list = get_output_list(prediction=prediction)
+
     if skip_grounding:
         gold_func_calls = [json.dumps(func) for func in gold_dict_list]
     else:
@@ -297,7 +305,8 @@ def parse_llama_3_70b_instruct(
                 else pred_dict_list
             )
             pred_func_calls = [json.dumps(func) for func in pred_func_calls]
-    except:
+    except Exception as e:
+        print(e)
         try:
             if pred.startswith("[") and pred.endswith("]"):
                 pred = pred[1:-1]
@@ -325,7 +334,8 @@ def parse_llama_3_70b_instruct(
             else:
                 num_errors_parsing_pred_intent += 1
                 pred_has_parsing_errors = True
-        except:
+        except Exception as e1:
+            print(e1)
             num_errors_parsing_pred_intent += 1
             pred_has_parsing_errors = True
 
@@ -347,8 +357,8 @@ def parse_mistral_7b_instruct_v0_3(
 ):
     pred_has_parsing_errors = False
     pred_func_calls, gold_func_calls = [], []
-    pred_dict_list, gold_dict_list = [], []
-    gold_dict_list = get_json_dict_from_txt(txt=prediction["output"])
+    pred_dict_list, gold_dict_list = [], []  # type: ignore
+    gold_dict_list = get_output_list(prediction=prediction)
 
     if skip_grounding:
         gold_func_calls = [json.dumps(func) for func in gold_dict_list]
@@ -373,7 +383,8 @@ def parse_mistral_7b_instruct_v0_3(
             pred_func_calls = ground_seq_nested_repsonse(pred_dict_list)
             # pred_func_calls = pred_dict_list
             pred_func_calls = [json.dumps(func) for func in pred_func_calls]
-    except:
+    except Exception as e:
+        print(e)
         try:
             pred = prediction["generated_text"].strip()
             pred_dict_list = json.loads(
@@ -385,7 +396,8 @@ def parse_mistral_7b_instruct_v0_3(
                 pred_func_calls = ground_seq_nested_repsonse(pred_dict_list)
                 # pred_func_calls = pred_dict_list
                 pred_func_calls = [json.dumps(func) for func in pred_func_calls]
-        except:
+        except Exception as e1:
+            print(e1)
             num_errors_parsing_pred_intent += 1
             pred_has_parsing_errors = True
 
