@@ -16,7 +16,7 @@ project_root_path = Path(__file__).parent.parent.parent.resolve()
 
 
 def get_arguments() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Conversational AI Gym Tool")
+    parser = argparse.ArgumentParser(description="API Integrated LLM CLI")
 
     parser.add_argument(
         "-m",

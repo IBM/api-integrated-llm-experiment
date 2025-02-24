@@ -250,10 +250,10 @@ def get_base_models_from_folder(
 
     for file_path in json_file_paths:
         try:
-            gym_source_raw = get_base_model_from_json(
+            source_raw = get_base_model_from_json(
                 file_path=Path(file_path), base_model=base_model
             )
-            models.append(gym_source_raw)
+            models.append(source_raw)
         except Exception as e:
             print(e)
 
@@ -378,9 +378,7 @@ def get_jsonl_list_from_string(
     return jsonl_list
 
 
-def get_json_data_with_two_step_parsing(
-    txt: str, should_return_list: bool
-) -> Optional[
+def get_json_data_with_two_step_parsing(txt: str, should_return_list: bool) -> Optional[
     Union[
         List[Union[List[Dict[str, Any]], Dict[str, Any]]],
         List[Dict[str, Any]],

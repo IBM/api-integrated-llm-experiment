@@ -9,7 +9,7 @@ conda create --name ail python=3.10 -y
 conda activate ail
 ```
 
-The tools in `agent-gym` can be conveniently utilized as Python packages. To build a local package, clone the repor and execute the following commands 
+The tools in `aapi-integrated-llm` can be conveniently utilized as Python packages. To build a local package, clone the repor and execute the following commands 
 from the project's root directory. 
 
 ```bash
@@ -46,7 +46,7 @@ api-integrated-llm -h
 ```
 usage: api-integrated-llm [-h] [-m {default,evaluator,scorer}] [-rt ROOT] [-ig | --ignore | --no-ignore]
 
-Conversational AI Gym Tool
+API Integrated LLM CLI
 
 options:
   -h, --help            show this help message and exit
