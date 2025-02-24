@@ -9,7 +9,7 @@ conda create --name ail python=3.10 -y
 conda activate ail
 ```
 
-The tools in `aapi-integrated-llm` can be conveniently utilized as Python packages. To build a local package, clone the repor and execute the following commands 
+The tools in `api-integrated-llm` can be conveniently utilized as Python packages. To build a local package, clone the repor and execute the following commands 
 from the project's root directory. 
 
 ```bash
