@@ -12,8 +12,10 @@ from api_integrated_llm.helpers.file_helper import (
 from api_integrated_llm.scoring import scoring
 
 
+project_root_path = Path(__file__).parent.parent.parent.resolve()
+
+
 def get_arguments() -> argparse.Namespace:
-    project_root_path = Path(__file__).parent.parent.parent.resolve()
     parser = argparse.ArgumentParser(description="API Integrated LLM CLI")
 
     parser.add_argument(
@@ -41,6 +43,29 @@ def get_arguments() -> argparse.Namespace:
         help='Ignore data points marked as "ignore"',
     )
 
+    parser.add_argument(
+        "-er",
+        "--random_example",
+        action=argparse.BooleanOptionalAction,
+        help="Create examples in prompts by sampling source data randomly",
+    )
+
+    parser.add_argument(
+        "-nr",
+        "--number_random_example",
+        type=int,
+        help="The number of examples sampled from source data randomly",
+        default=2,
+    )
+
+    parser.add_argument(
+        "-ep",
+        "--example_file_path",
+        type=Path,
+        help="The absolute path for an example file for a prompt",
+        default=project_root_path,
+    )
+
     return parser.parse_args()
 
 
@@ -66,8 +91,12 @@ def cli() -> None:
         evaluate(
             model_id_info_dict=(
                 get_llm_configuration(
-                    llm_configuration_file_path=os.path.join(  # type: ignore
-                        source_folder_path, "configurations", "llm_configurations.json"
+                    llm_configuration_file_path=Path(
+                        os.path.join(
+                            source_folder_path,
+                            "configurations",
+                            "llm_configurations.json",
+                        )
                     )
                 )
             ),
@@ -75,19 +104,29 @@ def cli() -> None:
                 folder_path=Path(os.path.join(source_folder_path, "evaluation")),
                 file_extension="json",
             ),
-            example_file_path=os.path.join(  # type: ignore
-                source_folder_path, "prompts", "examples_icl.json"
+            example_file_path=(
+                Path(
+                    os.path.join(
+                        source_folder_path, "prompts", "examples", "examples.json"
+                    )
+                )
+                if args.example_file_path == project_root_path
+                else args.example_file_path
             ),
-            output_folder_path=evaluation_folder_path,  # type: ignore
-            prompt_file_path=os.path.join(source_folder_path, "prompts", "prompts.json"),  # type: ignore
-            error_folder_path=os.path.join(  # type: ignore
-                output_folder_path,
-                "error",
+            output_folder_path=evaluation_folder_path,
+            prompt_file_path=Path(
+                os.path.join(source_folder_path, "prompts", "prompts.json")
+            ),
+            error_folder_path=Path(
+                os.path.join(
+                    output_folder_path,
+                    "error",
+                )
             ),
             temperatures=[0.0],
             max_tokens_list=[1500],
-            should_generate_random_example=True,
-            num_examples=3,
+            should_generate_random_example=args.random_example,
+            num_examples=args.number_random_example,
             should_ignore=args.ignore,
         )
 
@@ -97,6 +136,6 @@ def cli() -> None:
                 folder_path=evaluation_folder_path,
                 file_extension="jsonl",
             ),
-            output_folder_path=Path(os.path.join(output_folder_path, "scoring")),  # type: ignore
+            output_folder_path=Path(os.path.join(output_folder_path, "scoring")),
             win_rate_flag=False,
         )

@@ -45,6 +45,7 @@ api-integrated-llm -h
 
 ```
 usage: api-integrated-llm [-h] [-m {default,evaluator,scorer}] [-rt ROOT] [-ig | --ignore | --no-ignore]
+                          [-er | --random_example | --no-random_example] [-nr NUMBER_RANDOM_EXAMPLE] [-ep EXAMPLE_FILE_PATH]
 
 API Integrated LLM CLI
 
@@ -56,6 +57,12 @@ options:
                         Dataset root absolute path
   -ig, --ignore, --no-ignore
                         Ignore data points marked as "ignore"
+  -er, --random_example, --no-random_example
+                        Create examples in prompts by sampling source data randomly
+  -nr NUMBER_RANDOM_EXAMPLE, --number_random_example NUMBER_RANDOM_EXAMPLE
+                        The number of examples sampled from source data randomly
+  -ep EXAMPLE_FILE_PATH, --example_file_path EXAMPLE_FILE_PATH
+                        The absolute path for an example file for a prompt
 ```
 
 The source folder should have the following structure:
@@ -67,9 +74,10 @@ The source folder should have the following structure:
     │   └── llm_configurations.json
     ├── evaluation
     │   └── <YOUR_DATA_HERE>
-    └── prompts
-        ├── examples_icl.json
-        └── prompts.json
+    └── prompts
+        ├── examples
+        │   └── examples.json
+        └── prompts.json
 ```
 
 To evaluate and score data, use the following command:
