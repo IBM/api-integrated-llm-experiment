@@ -14,7 +14,7 @@ from api_integrated_llm.scoring import scoring
 
 def get_arguments() -> argparse.Namespace:
     project_root_path = Path(__file__).parent.parent.parent.resolve()
-    parser = argparse.ArgumentParser(description="Conversational AI Gym Tool")
+    parser = argparse.ArgumentParser(description="API Integrated LLM CLI")
 
     parser.add_argument(
         "-m",
