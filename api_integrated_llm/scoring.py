@@ -4,6 +4,9 @@ from pathlib import Path
 import statistics
 from typing import Any, Dict, List, Tuple
 import sys
+import importlib
+import signal
+from sklearn.metrics import accuracy_score
 
 from api_integrated_llm.data_models.common_models import CommonErrorModel
 from api_integrated_llm.data_models.source_models import (
@@ -31,8 +34,7 @@ from api_integrated_llm.helpers.file_helper import (
     write_json,
     write_jsonl,
 )
-import importlib
-import signal
+
 
 project_root_path = Path(__file__).parent.resolve()
 
@@ -198,9 +200,9 @@ def calculate_win_score(pred_func_calls, gold_ans, spec_file, dataset_name):
 def parse_output_from_language_models(
     prediction: Dict[str, Any],
     model_name: str,
-    num_errors_parsing_pred_intent: int,
     is_single_intent_detection: bool = False,
 ) -> Tuple[List[Any], List[Any], List[Any], List[Any], Any, Any]:
+    num_errors_parsing_pred_intent = 0
     pred_has_parsing_errors = False
     pred_func_calls, gold_func_calls = [], []
     pred_dict_list, gold_dict_list = [], []
@@ -317,6 +319,140 @@ def parse_output_from_language_models(
     )
 
 
+def get_api_names(
+    gold_func_calls: List[Any], pred_func_calls: List[Any]
+) -> Tuple[List[str], List[str], int, int, bool]:
+    gold_apis_names, pred_apis_names = [], []
+    pred_has_parsing_errors = False
+    num_errors_parsing_pred_intent = 0
+    num_errors_parsing_gold_intent = 0
+    for f in pred_func_calls:
+        if not f:
+            continue
+        try:
+            if f.strip() == '{"name": "dummy", "arguments": {}}':
+                continue
+            f = json.loads(f.replace("<|endoftext|>", "").strip())
+            pred_apis_names.append(str(f["name"]))
+        except:
+            # pred_apis_names.append('random_' + str(randrange(100)))
+            num_errors_parsing_pred_intent += 1
+            pred_has_parsing_errors = True
+            pass
+    for f in gold_func_calls:
+        if not f:
+            continue
+        try:
+            f = json.loads(f.replace("<|endoftext|>", "").replace("null", "{}").strip())
+            gold_apis_names.append(str(f["name"]))
+        except Exception as e:  # cases with empty gold output
+            print(e)
+            num_errors_parsing_gold_intent += 1
+            pass
+
+    return (
+        gold_apis_names,
+        pred_apis_names,
+        num_errors_parsing_gold_intent,
+        num_errors_parsing_pred_intent,
+        pred_has_parsing_errors,
+    )
+
+
+def get_slot_info(
+    gold_func_calls: List[Any], pred_func_calls: List[Any], intents_only: bool
+) -> Tuple[List[Any], List[Any], List[str], int, int, bool]:
+    gold_output_slot = []
+    pred_output_slot = []
+    error_messages: List[str] = []
+    num_errors_parsing_gold_slot = 0
+    num_errors_parsing_pred_slot = 0
+    pred_has_parsing_errors = False
+
+    if not intents_only:
+        pred_api_map, gold_api_map = {}, {}  # type: ignore
+        for f in pred_func_calls:
+            if f.strip() == '{"name": "dummy", "arguments": {}}':
+                continue
+            try:
+                if not f:
+                    continue
+                f = json.loads(f.replace("<|endoftext|>", "").strip())
+                if type(f) != dict or "name" not in f:
+                    raise Exception("'name' not in predicted function call")
+                api_name = f["name"]
+                pred_api_map[api_name] = []
+                for arg, val in f["arguments"].items():
+                    pred_api_map[f["name"]].append(f"{arg} = {val}")
+            except Exception as e:
+                num_errors_parsing_pred_slot += 1
+                pred_has_parsing_errors = True
+                error_messages.append(str(e))
+                pass
+        for f in gold_func_calls:
+            if not f:
+                continue
+            try:
+                f = json.loads(
+                    f.replace("<|endoftext|>", "").replace("null", "{}").strip()
+                )
+                gold_api_map[f["name"]] = []
+                for arg, val in f["arguments"].items():
+                    gold_api_map[f["name"]].append(f"{arg} = {val}")
+            except:  # cases with empty gold output
+                num_errors_parsing_gold_slot += 1
+                error_messages.append("gold output is empty")
+                pass
+        for key in set(pred_api_map.keys()).union(gold_api_map.keys()):
+            if key in pred_api_map:
+                pred_output_slot.append(pred_api_map[key])
+            else:
+                pred_output_slot.append([])
+            if key in gold_api_map:
+                gold_output_slot.append(gold_api_map[key])
+            else:
+                gold_output_slot.append([])
+
+    return (
+        gold_output_slot,
+        pred_output_slot,
+        error_messages,
+        num_errors_parsing_gold_slot,
+        num_errors_parsing_pred_slot,
+        pred_has_parsing_errors,
+    )
+
+
+def get_api_args(
+    gold_func_calls: List[Any], pred_func_calls: List[Any]
+) -> Tuple[List[Any], List[Any]]:
+    api_with_args_gold = []
+    for f in gold_func_calls:
+        f = json.loads(f.replace("<|endoftext|>", "").strip())
+        f_name = str(f["name"])
+        args = ", ".join(
+            sorted([f"{key} = {val}" for key, val in f["arguments"].items()])
+        )
+        api_with_args_gold.append(f"{f_name}({args})")
+
+    api_with_args_pred = []
+    for f in pred_func_calls:
+        try:
+            f = json.loads(f.replace("<|endoftext|>", "").strip())
+            f_name = str(f["name"])
+            try:
+                args = ", ".join(
+                    sorted([f"{key} = {val}" for key, val in f["arguments"].items()])
+                )
+            except:
+                args = {}  # type: ignore
+            api_with_args_pred.append(f"{f_name}({args})")
+        except:
+            continue
+
+    return post_process_api_with_args(api_with_args_gold, api_with_args_pred)
+
+
 def calculate_scores(
     predictions_input: List[EvaluationOutputResponseDataUnit],
     intents_only: bool = False,
@@ -332,8 +468,6 @@ def calculate_scores(
     error_messages: List[str] = []
     gold_output_intent = []
     pred_output_intent = []
-    gold_output_slot = []
-    pred_output_slot = []
     p_intent, r_intent, f1_intent, p_slot, r_slot, f1_slot = (
         None,
         None,
@@ -359,127 +493,59 @@ def calculate_scores(
                 gold_func_calls,
                 pred_dict_list,
                 gold_dict_list,
-                num_errors_parsing_pred_intent,
+                model_num_errors_parsing_pred_intent,
                 pred_has_parsing_errors,
             ) = parse_output_from_language_models(
                 prediction=prediction,
                 model_name=model_name[:],
-                num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
                 is_single_intent_detection=(
                     "rest" in str(spec_path)
                 ),  # TODO: improve the way to identify the need for single intent detection
             )
+            num_errors_parsing_pred_intent += model_num_errors_parsing_pred_intent
         except Exception as e:
             print(e)
             continue
 
-        gold_apis_names, pred_apis_names = [], []
-        for f in pred_func_calls:
-            if not f:
-                continue
-            try:
-                if f.strip() == '{"name": "dummy", "arguments": {}}':
-                    continue
-                f = json.loads(f.replace("<|endoftext|>", "").strip())
-                pred_apis_names.append(str(f["name"]))
-            except:
-                # pred_apis_names.append('random_' + str(randrange(100)))
-                num_errors_parsing_pred_intent += 1
-                pred_has_parsing_errors = True
-                pass
-        for f in gold_func_calls:
-            if not f:
-                continue
-            try:
-                f = json.loads(
-                    f.replace("<|endoftext|>", "").replace("null", "{}").strip()
-                )
-                gold_apis_names.append(str(f["name"]))
-            except Exception as e:  # cases with empty gold output
-                print(e)
-                num_errors_parsing_gold_intent += 1
-                pass
+        (
+            gold_apis_names,
+            pred_apis_names,
+            instance_num_errors_parsing_gold_intent,
+            instance_num_errors_parsing_pred_intent,
+            has_parsing_errors,
+        ) = get_api_names(
+            gold_func_calls=gold_func_calls, pred_func_calls=pred_func_calls
+        )
+        pred_has_parsing_errors = pred_has_parsing_errors or has_parsing_errors
+        num_errors_parsing_gold_intent += instance_num_errors_parsing_gold_intent
+        num_errors_parsing_pred_intent += instance_num_errors_parsing_pred_intent
 
         gold_output_intent.append(gold_apis_names)
         pred_output_intent.append(pred_apis_names)
-        if not intents_only:
-            pred_api_map, gold_api_map = {}, {}  # type: ignore
-            for f in pred_func_calls:
-                if f.strip() == '{"name": "dummy", "arguments": {}}':
-                    continue
-                try:
-                    if not f:
-                        continue
-                    f = json.loads(f.replace("<|endoftext|>", "").strip())
-                    if type(f) != dict or "name" not in f:
-                        raise Exception("'name' not in predicted function call")
-                    api_name = f["name"]
-                    pred_api_map[api_name] = []
-                    for arg, val in f["arguments"].items():
-                        pred_api_map[f["name"]].append(f"{arg} = {val}")
-                except Exception as e:
-                    num_errors_parsing_pred_slot += 1
-                    pred_has_parsing_errors = True
-                    error_messages.append(str(e))
-                    pass
-            for f in gold_func_calls:
-                if not f:
-                    continue
-                try:
-                    f = json.loads(
-                        f.replace("<|endoftext|>", "").replace("null", "{}").strip()
-                    )
-                    gold_api_map[f["name"]] = []
-                    for arg, val in f["arguments"].items():
-                        gold_api_map[f["name"]].append(f"{arg} = {val}")
-                except:  # cases with empty gold output
-                    num_errors_parsing_gold_slot += 1
-                    error_messages.append("gold output is empty")
-                    pass
-            for key in set(pred_api_map.keys()).union(gold_api_map.keys()):
-                if key in pred_api_map:
-                    pred_output_slot.append(pred_api_map[key])
-                else:
-                    pred_output_slot.append([])
-                if key in gold_api_map:
-                    gold_output_slot.append(gold_api_map[key])
-                else:
-                    gold_output_slot.append([])
 
+        (
+            gold_output_slot,
+            pred_output_slot,
+            slot_error_messages,
+            instance_num_errors_parsing_gold_slot,
+            instance_num_errors_parsing_pred_slot,
+            has_parsing_errors,
+        ) = get_slot_info(
+            gold_func_calls=gold_func_calls,
+            pred_func_calls=pred_func_calls,
+            intents_only=intents_only,
+        )
+        error_messages.extend(slot_error_messages)
+        num_errors_parsing_gold_slot += instance_num_errors_parsing_gold_slot
+        num_errors_parsing_pred_slot += instance_num_errors_parsing_pred_slot
+
+        pred_has_parsing_errors = pred_has_parsing_errors or has_parsing_errors
         if pred_has_parsing_errors:
             num_pred_examples_w_parsing_errors += 1
 
-        api_with_args_gold = []
-        for f in gold_func_calls:
-            f = json.loads(f.replace("<|endoftext|>", "").strip())
-            f_name = str(f["name"])
-            args = ", ".join(
-                sorted([f"{key} = {val}" for key, val in f["arguments"].items()])
-            )
-            api_with_args_gold.append(f"{f_name}({args})")
-
-        api_with_args_pred = []
-        for f in pred_func_calls:
-            try:
-                f = json.loads(f.replace("<|endoftext|>", "").strip())
-                f_name = str(f["name"])
-                try:
-                    args = ", ".join(
-                        sorted(
-                            [f"{key} = {val}" for key, val in f["arguments"].items()]
-                        )
-                    )
-                except:
-                    args = {}  # type: ignore
-                api_with_args_pred.append(f"{f_name}({args})")
-            except:
-                continue
-
-        api_with_args_gold, api_with_args_pred = post_process_api_with_args(
-            api_with_args_gold, api_with_args_pred
+        api_with_args_gold, api_with_args_pred = get_api_args(
+            gold_func_calls=gold_func_calls, pred_func_calls=pred_func_calls
         )
-
-        from sklearn.metrics import accuracy_score
 
         try:
             accuracy_combined = accuracy_score(api_with_args_gold, api_with_args_pred)
@@ -541,21 +607,6 @@ def calculate_scores(
         gold_output_slot=gold_output_slot,
         pred_output_slot=pred_output_slot,
     )
-
-
-def print_result(result, model, dataset):
-    print("\n###################################")
-    print(f"############ {dataset} ##############")
-    print(f"############ {model} ##############")
-    print("###################################")
-    print(f"Total Samples: {result['num_examples']}")
-    print(f"Parsing Errors: {result['num_pred_examples_w_parsing_errors']}")
-    print(f"F1 Intent: {result['f1_intent']}")
-    print(f"F1 Slot: {result['f1_slot']}")
-    print(f"Partial Match Accuracy: {result['accuracy_combined']}")
-    print(f"Full Match Accuracy: {result['percentage_times_full_score']}")
-    print(f"Win Rate: {result['win_rate']}")
-    print("-" * 100)
 
 
 def handle_scoring_process_exception(
