@@ -1,10 +1,10 @@
 from enum import Enum
 
 
-class CliMode(str, Enum):
+class CliModeModel(str, Enum):
     DEFAULT = "default"
-    EVALUATOR = "eval"
-    SCORER = "score"
+    EVALUATOR = "evaluator"
+    SCORER = "scorer"
 
     def __str__(self):
         return str(self.value)

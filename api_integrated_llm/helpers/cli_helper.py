@@ -2,6 +2,7 @@ import argparse
 from pathlib import Path
 import os
 from typing import Any, Dict
+from api_integrated_llm.data_models.cli_models import CliModeModel
 from api_integrated_llm.evaluation import evaluate
 from api_integrated_llm.helpers.benchmark_helper import get_model_id_obj_dict
 from api_integrated_llm.helpers.file_helper import (
@@ -15,6 +16,15 @@ def get_arguments() -> argparse.Namespace:
     project_root_path = Path(__file__).parent.parent.parent.resolve()
     parser = argparse.ArgumentParser(description="Conversational AI Gym Tool")
 
+    parser.add_argument(
+        "-m",
+        "--mode",
+        type=CliModeModel,
+        help="Cli mode",
+        default=CliModeModel.DEFAULT,
+        choices=list(CliModeModel),
+    )
+
     # Common arguments
     parser.add_argument(
         "-rt",
@@ -22,6 +32,13 @@ def get_arguments() -> argparse.Namespace:
         type=Path,
         help="Dataset root absolute path",
         default=project_root_path,
+    )
+
+    parser.add_argument(
+        "-ig",
+        "--ignore",
+        action=argparse.BooleanOptionalAction,
+        help='Ignore data points marked as "ignore"',
     )
 
     return parser.parse_args()
@@ -45,38 +62,41 @@ def cli() -> None:
             "evaluation",
         )
     )
-
-    evaluate(
-        model_id_info_dict=(
-            get_llm_configuration(
-                llm_configuration_file_path=os.path.join(  # type: ignore
-                    source_folder_path, "configurations", "llm_configurations.json"
+    if args.mode == CliModeModel.DEFAULT or args.mode == CliModeModel.EVALUATOR:
+        evaluate(
+            model_id_info_dict=(
+                get_llm_configuration(
+                    llm_configuration_file_path=os.path.join(  # type: ignore
+                        source_folder_path, "configurations", "llm_configurations.json"
+                    )
                 )
-            )
-        ),
-        evaluation_input_file_paths=get_files_in_folder(
-            folder_path=Path(os.path.join(source_folder_path, "evaluation")),
-            file_extension="json",
-        ),
-        example_file_path=os.path.join(  # type: ignore
-            source_folder_path, "prompts", "examples_icl.json"
-        ),
-        output_folder_path=evaluation_folder_path,  # type: ignore
-        prompt_file_path=os.path.join(source_folder_path, "prompts", "prompts.json"),  # type: ignore
-        error_folder_path=os.path.join(  # type: ignore
-            output_folder_path,
-            "error",
-        ),
-        temperatures=[0.0],
-        max_tokens_list=[1500],
-        should_generate_random_example=True,
-        num_examples=3,
-    )
-    scoring(
-        evaluator_output_file_paths=get_files_in_folder(  # type: ignore
-            folder_path=evaluation_folder_path,
-            file_extension="jsonl",
-        ),
-        output_folder_path=Path(os.path.join(output_folder_path, "scoring")),  # type: ignore
-        win_rate_flag=False,
-    )
+            ),
+            evaluation_input_file_paths=get_files_in_folder(
+                folder_path=Path(os.path.join(source_folder_path, "evaluation")),
+                file_extension="json",
+            ),
+            example_file_path=os.path.join(  # type: ignore
+                source_folder_path, "prompts", "examples_icl.json"
+            ),
+            output_folder_path=evaluation_folder_path,  # type: ignore
+            prompt_file_path=os.path.join(source_folder_path, "prompts", "prompts.json"),  # type: ignore
+            error_folder_path=os.path.join(  # type: ignore
+                output_folder_path,
+                "error",
+            ),
+            temperatures=[0.0],
+            max_tokens_list=[1500],
+            should_generate_random_example=True,
+            num_examples=3,
+            should_ignore=args.ignore,
+        )
+
+    if args.mode == CliModeModel.DEFAULT or args.mode == CliModeModel.SCORER:
+        scoring(
+            evaluator_output_file_paths=get_files_in_folder(  # type: ignore
+                folder_path=evaluation_folder_path,
+                file_extension="jsonl",
+            ),
+            output_folder_path=Path(os.path.join(output_folder_path, "scoring")),  # type: ignore
+            win_rate_flag=False,
+        )

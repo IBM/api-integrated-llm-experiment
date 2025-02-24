@@ -32,7 +32,7 @@ def get_evaluation_output_units_from_responses(
             )
             output_unit.generated_text = resp[0].strip()
             output_unit.llm_model_id = model_name[:]
-            output_unit.source_file_path = evaluation_input_file_path
+            output_unit.source_file_path = str(evaluation_input_file_path)
             output_unit.dataset_name = dataset_name
             output_unit.temperature = temperature
             output_unit.max_tokens = max_tokens
@@ -51,6 +51,7 @@ def evaluate(
     max_tokens_list: List[int],
     should_generate_random_example: bool = False,
     num_examples: int = 1,
+    should_ignore: bool = True,
 ):
     for temperature in temperatures:
         print(f"Temperature: {temperature}")
@@ -75,6 +76,7 @@ def evaluate(
                             example_file_path=example_file_path,
                             should_generate_random_example=should_generate_random_example,
                             num_examples=num_examples,
+                            should_ignore=should_ignore,
                         )
 
                         if model_obj["inference_type"] == "RITS":

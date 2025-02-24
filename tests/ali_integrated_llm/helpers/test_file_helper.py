@@ -13,7 +13,9 @@ project_root_path = Path(__file__).parent.parent.parent.parent.resolve()
 
 def test_parse_sources() -> None:
     for file_path in get_files_in_folder(
-        folder_path=Path(os.path.join(project_root_path, "source", "evaluation")),
+        folder_path=Path(
+            os.path.join(project_root_path, "tests", "data", "source", "evaluation")
+        ),
         file_extension="json",
     ):
         _ = get_base_model_from_json(
