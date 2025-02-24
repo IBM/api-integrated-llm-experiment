@@ -8,7 +8,7 @@ from api_integrated_llm.helpers.output_parsers import parse_llama_3_output
 test_root_path = Path(__file__).parent.parent.parent.resolve()
 
 
-def test_parse_llama_3_output() -> None:
+def test_parse_llama_3_output_single_intent() -> None:
     data_list = get_list_dict_from_jsonl(
         file_path=Path(
             os.path.join(
@@ -31,6 +31,7 @@ def test_parse_llama_3_output() -> None:
     ) = parse_llama_3_output(
         prediction=data_list[0],
         num_errors_parsing_pred_intent=0,
+        is_single_intent_detection=True,
         skip_grounding=False,
     )
 
