@@ -12,8 +12,10 @@ from api_integrated_llm.helpers.file_helper import (
 from api_integrated_llm.scoring import scoring
 
 
+project_root_path = Path(__file__).parent.parent.parent.resolve()
+
+
 def get_arguments() -> argparse.Namespace:
-    project_root_path = Path(__file__).parent.parent.parent.resolve()
     parser = argparse.ArgumentParser(description="Conversational AI Gym Tool")
 
     parser.add_argument(
@@ -56,6 +58,14 @@ def get_arguments() -> argparse.Namespace:
         default=2,
     )
 
+    parser.add_argument(
+        "-ep",
+        "--example_file_path",
+        type=Path,
+        help="The absolute path for an example file for a prompt",
+        default=project_root_path,
+    )
+
     return parser.parse_args()
 
 
@@ -94,16 +104,24 @@ def cli() -> None:
                 folder_path=Path(os.path.join(source_folder_path, "evaluation")),
                 file_extension="json",
             ),
-            example_file_path=Path(
-                os.path.join(
-                    source_folder_path, "prompts", "examples", "examples_icl.json"
+            example_file_path=(
+                Path(
+                    os.path.join(
+                        source_folder_path, "prompts", "examples", "examples.json"
+                    )
                 )
+                if args.example_file_path == project_root_path
+                else args.example_file_path
             ),
-            output_folder_path=evaluation_folder_path,  # type: ignore
-            prompt_file_path=os.path.join(source_folder_path, "prompts", "prompts.json"),  # type: ignore
-            error_folder_path=os.path.join(  # type: ignore
-                output_folder_path,
-                "error",
+            output_folder_path=evaluation_folder_path,
+            prompt_file_path=Path(
+                os.path.join(source_folder_path, "prompts", "prompts.json")
+            ),
+            error_folder_path=Path(
+                os.path.join(
+                    output_folder_path,
+                    "error",
+                )
             ),
             temperatures=[0.0],
             max_tokens_list=[1500],

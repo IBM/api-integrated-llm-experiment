@@ -67,9 +67,10 @@ The source folder should have the following structure:
     │   └── llm_configurations.json
     ├── evaluation
     │   └── <YOUR_DATA_HERE>
-    └── prompts
-        ├── examples_icl.json
-        └── prompts.json
+    └── prompts
+        ├── examples
+        │   └── examples.json
+        └── prompts.json
 ```
 
 To evaluate and score data, use the following command:
