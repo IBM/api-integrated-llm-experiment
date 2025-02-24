@@ -1,6 +1,6 @@
 from __future__ import annotations
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 from pydantic import BaseModel
 
 from api_integrated_llm.helpers.file_helper import get_uuid4_str
@@ -84,7 +84,7 @@ class ExampleDataModel(BaseModel):
 class EvaluationOutputDataUnit(BaseModel):
     sample_id: Union[str, int]
     input: str
-    output: Optional[List[QueryItemDataModel]] = None
+    output: Optional[Union[List[QueryItemDataModel], str]] = None
     gold_answer: Optional[Union[List[Any], str, int, float]] = None
 
 
@@ -106,3 +106,37 @@ class EvaluationOutputResponseDataUnit(EvaluationOutputDataUnit):
             output=data_model.output,
             gold_answer=data_model.gold_answer,
         )
+
+    def get_basic_strs(self) -> Tuple[str, str, str, str]:
+        return (
+            ("temperature_" + str(self.temperature).replace(".", "_")),
+            ("maxtokens_" + str(self.max_tokens)),
+            self.dataset_name[:],
+            self.llm_model_id[:],
+        )
+
+
+class ScorerOuputModel(BaseModel):
+    p_intent: float
+    r_intent: float
+    f1_intent: float
+    p_slot: Optional[float]
+    r_slot: Optional[float]
+    f1_slot: Optional[float]
+    num_examples: int
+    accuracy_combined: float
+    percentage_times_full_score: float
+    win_rate: Optional[float]
+    num_errors_parsing_pred_intent: int
+    num_errors_parsing_gold_intent: int
+    num_errors_parsing_pred_slot: int
+    num_errors_parsing_gold_slot: int
+    num_pred_examples_w_parsing_errors: int
+    error_messages: List[str]
+    model_temperature: int
+    model_max_tokens: int
+    evaluation_source: List[EvaluationOutputResponseDataUnit]
+    gold_output_intent: List[Any]
+    pred_output_intent: List[Any]
+    gold_output_slot: List[Any]
+    pred_output_slot: List[Any]

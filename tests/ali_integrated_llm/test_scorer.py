@@ -12,7 +12,9 @@ def test_scorer() -> None:
     scoring(
         evaluator_output_file_paths=get_files_in_folder(  # type: ignore
             folder_path=Path(
-                os.path.join(project_root_path, "tests", "data", "output", "evaluation")
+                os.path.join(
+                    project_root_path, "tests", "data", "test_output", "evaluation"
+                )
             ),
             file_extension="jsonl",
         ),

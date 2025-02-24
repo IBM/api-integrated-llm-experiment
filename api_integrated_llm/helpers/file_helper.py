@@ -69,10 +69,13 @@ def write_json(file_path: Path, base_model: BaseModel) -> None:
         f.write(base_model.model_dump_json(indent=2))
 
 
-def write_jsonl(file_path: Path, jsons: List[BaseModel]) -> None:
+def write_jsonl(
+    file_path: Path, jsons: List[BaseModel], should_append: bool = False
+) -> None:
     create_folders_recirsively_if_not_exist(tmp_path=file_path)
 
-    with open(file_path, "w") as f:
+    mode = "a" if should_append else "w"
+    with open(file_path, mode) as f:
         for item in jsons:
             f.write(item.model_dump_json() + "\n")
 

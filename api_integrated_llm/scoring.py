@@ -1,4 +1,3 @@
-from copy import deepcopy
 import os
 import json
 from pathlib import Path
@@ -6,6 +5,11 @@ import statistics
 from typing import Any, Dict, List, Tuple
 import sys
 
+from api_integrated_llm.data_models.common_models import CommonErrorModel
+from api_integrated_llm.data_models.source_models import (
+    EvaluationOutputResponseDataUnit,
+    ScorerOuputModel,
+)
 from api_integrated_llm.helpers.output_parsers import (
     parse_granite_20b_function_calling_output,
     parse_granite_3_output,
@@ -21,10 +25,11 @@ from api_integrated_llm.helpers.metrics_helper import (
     compute_score_sklearn,
 )
 from api_integrated_llm.helpers.file_helper import (
+    get_base_models_from_jsonl,
     get_dataset_name_from_file_path,
     get_dict_from_json,
-    get_list_dict_from_jsonl,
-    write_json_from_dict,
+    write_json,
+    write_jsonl,
 )
 import importlib
 import signal
@@ -313,16 +318,17 @@ def parse_output_from_language_models(
 
 
 def calculate_scores(
-    predictions: List[Dict[str, Any]],
-    model_name: str,
-    spec_path: Path,
-    dataset_name: str,
+    predictions_input: List[EvaluationOutputResponseDataUnit],
     intents_only: bool = False,
     sklearn_metrics: bool = True,
     win_rate_flag: bool = True,
-    model_temperature: float = 0.0,
-    model_max_tokens: int = 1500,
-):
+) -> ScorerOuputModel:
+    model_name = predictions_input[0].llm_model_id[:]
+    dataset_name = predictions_input[0].dataset_name[:]
+    spec_path = Path(predictions_input[0].source_file_path)
+    model_temperature = predictions_input[0].temperature
+    model_max_tokens = predictions_input[0].max_tokens
+
     error_messages: List[str] = []
     gold_output_intent = []
     pred_output_intent = []
@@ -346,7 +352,7 @@ def calculate_scores(
     win_rate_list = []
     num_pred_examples_w_parsing_errors = 0
 
-    for prediction in predictions:
+    for prediction in list(map(lambda item: item.model_dump(), predictions_input)):
         try:
             (
                 pred_func_calls,
@@ -506,49 +512,35 @@ def calculate_scores(
                 gold_output_slot, pred_output_slot
             )
 
-    return {
-        "p_intent": "{:.3f}".format(p_intent),
-        "r_intent": "{:.3f}".format(r_intent),
-        "f1_intent": "{:.3f}".format(f1_intent),
-        "p_slot": (
-            "{:.3f}".format(p_slot)
-            if p_slot is not None
-            else ""  # noqa: E711 # type: ignore
+    num_samples = len(predictions_input)
+
+    return ScorerOuputModel(
+        p_intent=p_intent,
+        r_intent=r_intent,
+        f1_intent=f1_intent,
+        p_slot=p_slot,
+        r_slot=r_slot,
+        f1_slot=f1_slot,
+        num_examples=num_samples,
+        accuracy_combined=statistics.mean(all_accuracy_combined),
+        percentage_times_full_score=(all_num_times_full_score / num_samples),
+        win_rate=((sum(win_rate_list) / len(win_rate_list)) if win_rate_flag else None),
+        num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
+        num_errors_parsing_gold_intent=num_errors_parsing_gold_intent,
+        num_errors_parsing_pred_slot=num_errors_parsing_pred_slot,
+        num_errors_parsing_gold_slot=num_errors_parsing_gold_slot,
+        num_pred_examples_w_parsing_errors=num_pred_examples_w_parsing_errors,
+        error_messages=error_messages,
+        model_temperature=model_temperature,
+        model_max_tokens=model_max_tokens,
+        evaluation_source=list(
+            map(lambda item: item.model_copy(deep=True), predictions_input)
         ),
-        "r_slot": (
-            "{:.3f}".format(r_slot)
-            if r_slot is not None
-            else ""  # noqa: E711 # type: ignore
-        ),
-        "f1_slot": (
-            "{:.3f}".format(f1_slot)
-            if f1_slot is not None
-            else ""  # noqa: E711 # type: ignore
-        ),
-        "num_examples": len(predictions),
-        "accuracy_combined": "{:.3f}".format(statistics.mean(all_accuracy_combined)),
-        "percentage_times_full_score": "{:.3f}".format(
-            all_num_times_full_score / len(predictions)
-        ),
-        "win_rate": (
-            "{:.3f}".format(sum(win_rate_list) / len(win_rate_list))
-            if win_rate_flag
-            else "no"
-        ),
-        "num_errors_parsing_pred_intent": num_errors_parsing_pred_intent,
-        "num_errors_parsing_gold_intent": num_errors_parsing_gold_intent,
-        "num_errors_parsing_pred_slot": num_errors_parsing_pred_slot,
-        "num_errors_parsing_gold_slot": num_errors_parsing_gold_slot,
-        "num_pred_examples_w_parsing_errors": num_pred_examples_w_parsing_errors,
-        "error_messages": error_messages,
-        "model_temperature": model_temperature,
-        "model_max_tokens": model_max_tokens,
-        "evaluation_source": deepcopy(predictions),
-        "gold_output_intent": gold_output_intent,
-        "pred_output_intent": pred_output_intent,
-        "gold_output_slot": gold_output_slot,
-        "pred_output_slot": pred_output_slot,
-    }
+        gold_output_intent=gold_output_intent,
+        pred_output_intent=pred_output_intent,
+        gold_output_slot=gold_output_slot,
+        pred_output_slot=pred_output_slot,
+    )
 
 
 def print_result(result, model, dataset):
@@ -576,7 +568,7 @@ def handle_scoring_process_exception(
     max_tokens_str: str,
 ) -> None:
     print(e)
-    write_json_from_dict(
+    write_jsonl(
         file_path=Path(
             os.path.join(
                 output_root_path,
@@ -587,7 +579,8 @@ def handle_scoring_process_exception(
                 dataset_name + "_scoring" + ".json",
             )
         ),
-        dic={"error": str(e), "file": str(evaluator_output_file_path)},
+        jsons=[CommonErrorModel(error=str(e), file=str(evaluator_output_file_path))],
+        should_append=True,
     )
 
 
@@ -604,20 +597,20 @@ def scoring(
         max_tokens_str = "default_max_tokens"
         model_name = "default_model"
         try:
-            data = get_list_dict_from_jsonl(evaluator_output_file_path)
+            data: List[EvaluationOutputResponseDataUnit] = get_base_models_from_jsonl(
+                file_path=evaluator_output_file_path,
+                base_model=EvaluationOutputResponseDataUnit,
+            )
 
             if data is None or len(data) == 0:
                 raise Exception(
                     f"No evaluation data found at {evaluator_output_file_path}"
                 )
 
-            temperature_str = "temperature_" + str(data[0]["temperature"]).replace(
-                ".", "_"
-            )
-            max_tokens_str = "maxtokens_" + str(data[0]["max_tokens"])
-            dataset_name = data[0]["dataset_name"][:]
-            model_name = data[0]["llm_model_id"]
-            write_json_from_dict(
+            temperature_str, max_tokens_str, dataset_name, model_name = data[
+                0
+            ].get_basic_strs()
+            write_json(
                 file_path=Path(
                     os.path.join(
                         output_folder_path,
@@ -627,15 +620,10 @@ def scoring(
                         (dataset_name + "_scoring_output.json"),
                     )
                 ),
-                dic=calculate_scores(
+                base_model=calculate_scores(
                     data,
-                    model_name,
-                    Path(data[0]["source_file_path"]),
-                    dataset_name,
                     sklearn_metrics=False,
                     win_rate_flag=win_rate_flag,
-                    model_temperature=data[0]["temperature"],
-                    model_max_tokens=data[0]["max_tokens"],
                 ),
             )
         except Exception as e:
