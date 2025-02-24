@@ -14,7 +14,7 @@ def test_parse_llama_3_output_single_intent() -> None:
             os.path.join(
                 test_root_path,
                 "data",
-                "output",
+                "test_output",
                 "evaluation",
                 "llama",
                 "real_estate_properties_nestful_format_cosql.jsonl",
@@ -45,7 +45,7 @@ def test_parse_llama_3_output_multi_intent() -> None:
             os.path.join(
                 test_root_path,
                 "data",
-                "output",
+                "test_output",
                 "evaluation",
                 "llama",
                 "real_estate_properties_nestful_format_cosql.jsonl",
