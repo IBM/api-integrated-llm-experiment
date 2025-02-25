@@ -1,4 +1,5 @@
 import asyncio
+from copy import deepcopy
 from pathlib import Path
 import os
 from typing import Dict, List
@@ -16,6 +17,8 @@ from api_integrated_llm.helpers.service_helper import (
     get_responses_from_async,
 )
 from api_integrated_llm.helpers.instruct_data_prep import instruct_data
+
+loop = asyncio.get_event_loop()
 
 
 def get_evaluation_output_units_from_responses(
@@ -43,6 +46,89 @@ def get_evaluation_output_units_from_responses(
     return output_list
 
 
+async def get_output_list(
+    prompt_file_path: Path,
+    evaluation_input_file_path: Path,
+    evaluation_input_file_paths: List[Path],
+    example_file_path: Path,
+    error_folder_path: Path,
+    output_folder_path: Path,
+    model_name: str,
+    dataset_name: str,
+    should_generate_random_example: bool,
+    num_examples: int,
+    should_ignore: bool,
+    model_obj,
+    temperature: float,
+    max_tokens: int,
+    temperature_str: str,
+    max_tokens_str: str,
+) -> None:
+    output_list: List[EvaluationOutputResponseDataUnit] = []
+    try:
+        test_data = instruct_data(
+            prompt_file_path=prompt_file_path,
+            model_name=model_name,
+            evaluation_input_file_path=evaluation_input_file_path,  # type: ignore
+            evaluation_input_file_paths=evaluation_input_file_paths,
+            example_file_path=example_file_path,
+            should_generate_random_example=should_generate_random_example,
+            num_examples=num_examples,
+            should_ignore=should_ignore,
+        )
+
+        if model_obj["inference_type"] == "RITS":
+            responses = await get_responses_from_async(
+                test_data=test_data,
+                model_obj=model_obj,
+                temperature=temperature,
+                max_tokens=max_tokens,
+            )
+
+            output_list.extend(
+                get_evaluation_output_units_from_responses(
+                    model_name=model_name,
+                    test_data=test_data,
+                    responses=responses,
+                    evaluation_input_file_path=evaluation_input_file_path,
+                    dataset_name=dataset_name,
+                    temperature=temperature,
+                    max_tokens=max_tokens,
+                )
+            )
+        else:
+            raise Exception(
+                "Model inference type does not match existing implementations"
+            )
+    except Exception as e:
+        print(e)
+        write_json_from_dict(
+            file_path=Path(
+                os.path.join(
+                    error_folder_path,
+                    model_name,
+                    temperature_str,
+                    max_tokens_str,
+                    dataset_name + "_evaluation" + ".json",
+                )
+            ),
+            dic={"error": str(e)},
+        )
+
+    write_jsonl(
+        file_path=Path(
+            os.path.join(
+                output_folder_path,
+                model_name,
+                temperature_str,
+                max_tokens_str,
+                dataset_name + ".jsonl",
+            )
+        ),
+        jsons=output_list,
+    )
+
+
 def evaluate(
     model_id_info_dict: Dict[str, Dict[str, str]],
     evaluation_input_file_paths: List[Path],
@@ -62,83 +148,36 @@ def evaluate(
         for max_tokens in max_tokens_list:
             print(f"Max tokens: {max_tokens}")
             max_tokens_str = "maxtokens_" + str(max_tokens)
-            for model_name, model_obj in model_id_info_dict.items():
-                print(f"Model Name: {model_name}")
-                for evaluation_input_file_path in evaluation_input_file_paths:
+
+            for evaluation_input_file_path in evaluation_input_file_paths:
+                tasks = []
+                for model_name, model_obj in model_id_info_dict.items():
                     dataset_name = get_file_name_without_extension(
                         file_path=evaluation_input_file_path  # type: ignore
                     )
-                    print(f"Dataset: {dataset_name}")
-                    output_list: List[EvaluationOutputResponseDataUnit] = []
-                    try:
-                        test_data = instruct_data(
-                            prompt_file_path=prompt_file_path,
-                            model_name=model_name,
-                            evaluation_input_file_path=evaluation_input_file_path,  # type: ignore
-                            evaluation_input_file_paths=evaluation_input_file_paths,
-                            example_file_path=example_file_path,
+                    tasks.append(
+                        get_output_list(
+                            prompt_file_path=deepcopy(prompt_file_path),
+                            evaluation_input_file_path=deepcopy(
+                                evaluation_input_file_path
+                            ),
+                            evaluation_input_file_paths=deepcopy(
+                                evaluation_input_file_paths
+                            ),
+                            example_file_path=deepcopy(example_file_path),
+                            error_folder_path=deepcopy(error_folder_path),
+                            output_folder_path=deepcopy(output_folder_path),
+                            model_name=model_name[:],
+                            dataset_name=dataset_name[:],
                             should_generate_random_example=should_generate_random_example,
                             num_examples=num_examples,
                             should_ignore=should_ignore,
+                            model_obj=deepcopy(model_obj),
+                            temperature=temperature,
+                            max_tokens=max_tokens,
+                            temperature_str=temperature_str[:],
+                            max_tokens_str=max_tokens_str[:],
                         )
+                    )
 
-                        if model_obj["inference_type"] == "RITS":
-                            responses = asyncio.run(
-                                get_responses_from_async(
-                                    test_data=test_data,
-                                    model_obj=model_obj,
-                                    temperature=temperature,
-                                    max_tokens=max_tokens,
-                                )
-                            )
-
-                            # separate responses here
-
-                            # responses = get_responses_from_pool(
-                            #     test_data=test_data,
-                            #     model_obj=model_obj,
-                            #     temperature=temperature,
-                            #     max_tokens=max_tokens,
-                            # )
-                            output_list.extend(
-                                get_evaluation_output_units_from_responses(
-                                    model_name=model_name,
-                                    test_data=test_data,
-                                    responses=responses,
-                                    evaluation_input_file_path=evaluation_input_file_path,
-                                    dataset_name=dataset_name,
-                                    temperature=temperature,
-                                    max_tokens=max_tokens,
-                                )
-                            )
-                        else:
-                            raise Exception(
-                                "Model inference type does not match existing implementations"
-                            )
-
-                        write_jsonl(
-                            file_path=Path(
-                                os.path.join(
-                                    output_folder_path,
-                                    model_name,
-                                    temperature_str,
-                                    max_tokens_str,
-                                    dataset_name + ".jsonl",
-                                )
-                            ),
-                            jsons=output_list,
-                        )
-                    except Exception as e:
-                        print(e)
-                        write_json_from_dict(
-                            file_path=Path(
-                                os.path.join(
-                                    error_folder_path,
-                                    model_name,
-                                    temperature_str,
-                                    max_tokens_str,
-                                    dataset_name + "_evaluation" + ".json",
-                                )
-                            ),
-                            dic={"error": str(e)},
-                        )
+                loop.run_until_complete(asyncio.gather(*tasks))

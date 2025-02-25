@@ -4,7 +4,6 @@ import json
 import os
 import time
 from typing import Any, Dict, List, Optional, Tuple, Union
-from multiprocessing import Pool
 import requests
 
 from api_integrated_llm.data_models.common_models import HttpResponseModel
@@ -204,54 +203,15 @@ async def get_response_from_RITS_async(
     )
 
 
-def get_response_from_RITS(
-    id_model: str,
-    model_resource: str,
-    api_key: str,
-    contents: List[str],
-    max_tokens: int,
-    temperature: float = 0.0,
-    n: int = 1,
-    timeout: int = 240,
-) -> Tuple[Optional[Union[str, List[str]]], str, float]:
-    return get_response_from_post_request(
-        obj=get_openai_payload(
-            prompts=deepcopy(contents),
-            id_model=id_model[:],
-            temperature=temperature,
-            n=n,
-            max_tokens=max_tokens,
-            seed=123456,
-        ),
-        url=get_RITS_model_url(model_resource=model_resource[:]),
-        headers=get_openai_api_headers(api_key=api_key[:]),
-        timeout=timeout,
-    )
-
-
 async def generate_rits_response_async(
-    prompt, temperature, max_tokens, model_name, model_resource
+    prompt: str,
+    temperature: float,
+    max_tokens: int,
+    model_name: str,
+    model_resource: str,
 ):
     try:
-        resp = await get_response_from_RITS(
-            id_model=model_name[:],
-            model_resource=model_resource[:],
-            api_key=os.environ["RITS_API_KEY"],
-            contents=[prompt],
-            max_tokens=max_tokens,
-            temperature=temperature,
-            n=1,
-            timeout=1500,
-        )
-
-        return resp[0]
-    except Exception as exception:
-        return dict(error=exception)
-
-
-def generate_rits_response(prompt, temperature, max_tokens, model_name, model_resource):
-    try:
-        resp = get_response_from_RITS(
+        resp = await get_response_from_RITS_async(
             id_model=model_name[:],
             model_resource=model_resource[:],
             api_key=os.environ["RITS_API_KEY"],
@@ -285,28 +245,3 @@ async def get_responses_from_async(
     ]
 
     return await asyncio.gather(*tasks)
-
-
-def get_responses_from_pool(
-    test_data: List[EvaluationOutputDataUnit],
-    model_obj: Dict[str, str],
-    temperature: float,
-    max_tokens: int,
-) -> List[str]:
-    prompts = []
-    responses = []
-
-    for sample in test_data:
-        prompts.append(
-            (
-                sample.input,
-                temperature,
-                max_tokens,
-                model_obj["model"],
-                model_obj["endpoint"].split("/")[-2],
-            )
-        )
-
-    with Pool(processes=40) as pool:
-        responses = pool.starmap(generate_rits_response, prompts)
-    return responses
