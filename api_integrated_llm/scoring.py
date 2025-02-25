@@ -20,6 +20,9 @@ from api_integrated_llm.helpers.output_parsers import (
     parse_llama_3_output,
     parse_mistral_7b_instruct_v0_3,
 )
+from api_integrated_llm.helpers.scorer_helper import (
+    get_evaluation_output_response_data_units_from_json,
+)
 from api_integrated_llm.helpers.utils import (
     post_process_api_with_args,
 )
@@ -201,6 +204,7 @@ def parse_output_from_language_models(
     prediction: Dict[str, Any],
     model_name: str,
     is_single_intent_detection: bool = False,
+    is_agent: bool = False,
 ) -> Tuple[List[Any], List[Any], List[Any], List[Any], Any, Any]:
     num_errors_parsing_pred_intent = 0
     pred_has_parsing_errors = False
@@ -208,7 +212,21 @@ def parse_output_from_language_models(
     pred_dict_list, gold_dict_list = [], []
     num_errors_parsing_pred_intent_res = 0
     model_name_lower_cased = model_name.lower()
-    if "granite" in model_name_lower_cased:
+    if is_agent:
+        (
+            pred_func_calls,
+            gold_func_calls,
+            pred_dict_list,
+            gold_dict_list,
+            num_errors_parsing_pred_intent_res,
+            pred_has_parsing_errors,
+        ) = parse_llama_3_output(
+            prediction=prediction,
+            num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
+            is_single_intent_detection=is_single_intent_detection,
+            skip_grounding=is_single_intent_detection,
+        )
+    elif "granite" in model_name_lower_cased:
         if "functioncalling" in model_name_lower_cased:
             (
                 pred_func_calls,
@@ -486,7 +504,15 @@ def calculate_scores(
     win_rate_list = []
     num_pred_examples_w_parsing_errors = 0
 
-    for prediction in list(map(lambda item: item.model_dump(), predictions_input)):
+    gold_output_slot = []
+    pred_output_slot = []
+
+    for prediction, prediction_model in list(
+        map(
+            lambda item: (item.model_dump(), item.model_copy(deep=True)),
+            predictions_input,
+        )
+    ):
         try:
             (
                 pred_func_calls,
@@ -501,6 +527,7 @@ def calculate_scores(
                 is_single_intent_detection=(
                     "rest" in str(spec_path)
                 ),  # TODO: improve the way to identify the need for single intent detection
+                is_agent=prediction_model.is_agent,
             )
             num_errors_parsing_pred_intent += model_num_errors_parsing_pred_intent
         except Exception as e:
@@ -524,8 +551,8 @@ def calculate_scores(
         pred_output_intent.append(pred_apis_names)
 
         (
-            gold_output_slot,
-            pred_output_slot,
+            instance_gold_output_slot,
+            instance_pred_output_slot,
             slot_error_messages,
             instance_num_errors_parsing_gold_slot,
             instance_num_errors_parsing_pred_slot,
@@ -535,6 +562,8 @@ def calculate_scores(
             pred_func_calls=pred_func_calls,
             intents_only=intents_only,
         )
+        gold_output_slot.extend(instance_gold_output_slot)
+        pred_output_slot.extend(instance_pred_output_slot)
         error_messages.extend(slot_error_messages)
         num_errors_parsing_gold_slot += instance_num_errors_parsing_gold_slot
         num_errors_parsing_pred_slot += instance_num_errors_parsing_pred_slot
@@ -648,9 +677,15 @@ def scoring(
         max_tokens_str = "default_max_tokens"
         model_name = "default_model"
         try:
-            data: List[EvaluationOutputResponseDataUnit] = get_base_models_from_jsonl(
-                file_path=evaluator_output_file_path,
-                base_model=EvaluationOutputResponseDataUnit,
+            data: List[EvaluationOutputResponseDataUnit] = (
+                get_base_models_from_jsonl(
+                    file_path=evaluator_output_file_path,
+                    base_model=EvaluationOutputResponseDataUnit,
+                )
+                if str(evaluator_output_file_path).endswith("jsonl")
+                else get_evaluation_output_response_data_units_from_json(
+                    file_path=evaluator_output_file_path,
+                )
             )
 
             if data is None or len(data) == 0:
