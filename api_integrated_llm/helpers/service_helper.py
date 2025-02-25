@@ -2,11 +2,78 @@ from copy import deepcopy
 from datetime import timedelta
 import json
 import os
+import time
 from typing import Any, Dict, List, Optional, Tuple, Union
-from multiprocessing import Pool
 import requests
 
+from api_integrated_llm.data_models.common_models import HttpResponseModel
 from api_integrated_llm.data_models.source_models import EvaluationOutputDataUnit
+
+import aiohttp
+import asyncio
+
+
+async def fetch_data_post(
+    url: str,
+    obj: Dict[str, Any],
+    headers: Optional[Dict[str, Any]] = None,
+    timeout: int = 240,
+) -> HttpResponseModel:
+    async with aiohttp.ClientSession() as session:
+        start_time = time.monotonic()
+        if headers is not None:
+            async with session.post(
+                url, json=obj, headers=headers, timeout=timeout
+            ) as response:
+                return HttpResponseModel(
+                    elapsed=timedelta(time.monotonic() - start_time),
+                    status=response.status,
+                    response_txt=await response.text(),
+                )
+        else:
+            async with session.post(url, json=obj, timeout=timeout) as response:
+                return HttpResponseModel(
+                    elapsed=timedelta(time.monotonic() - start_time),
+                    status=response.status,
+                    response_txt=await response.text(),
+                )
+
+
+async def get_response_from_post_request_async(
+    obj: Dict[str, Any],
+    url: str,
+    headers: Optional[Dict[str, Any]] = None,
+    timeout: int = 600,
+) -> Tuple[Optional[Union[str, List[str]]], str, float]:
+    text_response: Optional[Union[str, List[str]]] = None
+    error_message: str = ""
+    lag: Optional[timedelta] = None
+    try:
+        response_model = await fetch_data_post(
+            url=url,
+            obj=obj,
+            headers=headers,
+            timeout=timeout,
+        )
+        lag = response_model.elapsed
+        payload = json.loads(response_model.response_txt)
+
+        if "response" in payload:  # single response from ollama
+            text_response = payload["response"]
+        elif "choices" in payload:  # multiple responses from RITS
+            text_response = []
+            for choice in payload["choices"]:
+                if "text" in choice:
+                    text_response.append(choice["text"])
+    except Exception as e:
+        error_message = str(e)
+        print(error_message)
+
+    return (
+        text_response,
+        error_message,
+        (-1.0 if lag is None else lag.total_seconds()),
+    )
 
 
 def get_response_from_post_request(
@@ -111,7 +178,7 @@ def get_RITS_model_url(model_resource: str) -> str:
     return "/".join(url_elements)
 
 
-def get_response_from_RITS(
+async def get_response_from_RITS_async(
     id_model: str,
     model_resource: str,
     api_key: str,
@@ -121,7 +188,7 @@ def get_response_from_RITS(
     n: int = 1,
     timeout: int = 240,
 ) -> Tuple[Optional[Union[str, List[str]]], str, float]:
-    return get_response_from_post_request(
+    return await get_response_from_post_request_async(
         obj=get_openai_payload(
             prompts=deepcopy(contents),
             id_model=id_model[:],
@@ -136,9 +203,15 @@ def get_response_from_RITS(
     )
 
 
-def generate_rits_response(prompt, temperature, max_tokens, model_name, model_resource):
+async def generate_rits_response_async(
+    prompt: str,
+    temperature: float,
+    max_tokens: int,
+    model_name: str,
+    model_resource: str,
+):
     try:
-        resp = get_response_from_RITS(
+        resp = await get_response_from_RITS_async(
             id_model=model_name[:],
             model_resource=model_resource[:],
             api_key=os.environ["RITS_API_KEY"],
@@ -154,26 +227,21 @@ def generate_rits_response(prompt, temperature, max_tokens, model_name, model_re
         return dict(error=exception)
 
 
-def get_responses_from_pool(
+async def get_responses_from_async(
     test_data: List[EvaluationOutputDataUnit],
     model_obj: Dict[str, str],
     temperature: float,
     max_tokens: int,
 ) -> List[str]:
-    prompts = []
-    responses = []
-
-    for sample in test_data:
-        prompts.append(
-            (
-                sample.input,
-                temperature,
-                max_tokens,
-                model_obj["model"],
-                model_obj["endpoint"].split("/")[-2],
-            )
+    tasks = [
+        generate_rits_response_async(
+            prompt=sample.input[:],
+            temperature=temperature,
+            max_tokens=max_tokens,
+            model_name=model_obj["model"][:],
+            model_resource=model_obj["endpoint"].split("/")[-2][:],
         )
+        for sample in test_data
+    ]
 
-    with Pool(processes=40) as pool:
-        responses = pool.starmap(generate_rits_response, prompts)
-    return responses
+    return await asyncio.gather(*tasks)
