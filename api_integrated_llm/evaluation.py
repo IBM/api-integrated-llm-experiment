@@ -1,3 +1,4 @@
+import asyncio
 from pathlib import Path
 import os
 from typing import Dict, List
@@ -11,7 +12,9 @@ from api_integrated_llm.helpers.file_helper import (
     write_json_from_dict,
     write_jsonl,
 )
-from api_integrated_llm.helpers.service_helper import get_responses_from_pool
+from api_integrated_llm.helpers.service_helper import (
+    get_responses_from_async,
+)
 from api_integrated_llm.helpers.instruct_data_prep import instruct_data
 
 
@@ -80,12 +83,23 @@ def evaluate(
                         )
 
                         if model_obj["inference_type"] == "RITS":
-                            responses = get_responses_from_pool(
-                                test_data=test_data,
-                                model_obj=model_obj,
-                                temperature=temperature,
-                                max_tokens=max_tokens,
+                            responses = asyncio.run(
+                                get_responses_from_async(
+                                    test_data=test_data,
+                                    model_obj=model_obj,
+                                    temperature=temperature,
+                                    max_tokens=max_tokens,
+                                )
                             )
+
+                            # separate responses here
+
+                            # responses = get_responses_from_pool(
+                            #     test_data=test_data,
+                            #     model_obj=model_obj,
+                            #     temperature=temperature,
+                            #     max_tokens=max_tokens,
+                            # )
                             output_list.extend(
                                 get_evaluation_output_units_from_responses(
                                     model_name=model_name,
