@@ -18,8 +18,6 @@ from api_integrated_llm.helpers.service_helper import (
 )
 from api_integrated_llm.helpers.instruct_data_prep import instruct_data
 
-loop = asyncio.get_event_loop()
-
 
 def get_evaluation_output_units_from_responses(
     model_name: str,
@@ -142,6 +140,8 @@ def evaluate(
     num_examples: int = 1,
     should_ignore: bool = True,
 ):
+    loop = asyncio.get_event_loop()
+
     for temperature in temperatures:
         print(f"Temperature: {temperature}")
         temperature_str = "temperature_" + str(temperature).replace(".", "_")
