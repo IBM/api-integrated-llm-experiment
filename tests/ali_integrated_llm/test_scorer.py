@@ -28,7 +28,7 @@ def test_scorer_llm_evaluator_output() -> None:
     )
 
 
-def test_scorer() -> None:
+def test_scorer_agent() -> None:
     scoring(
         evaluator_output_file_paths=get_files_in_folder(  # type: ignore
             folder_path=Path(

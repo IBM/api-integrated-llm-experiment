@@ -476,6 +476,7 @@ def calculate_scores(
     intents_only: bool = False,
     sklearn_metrics: bool = True,
     win_rate_flag: bool = True,
+    is_single_intent_detection: bool = False,
 ) -> ScorerOuputModel:
     model_name = predictions_input[0].llm_model_id[:]
     dataset_name = predictions_input[0].dataset_name[:]
@@ -696,6 +697,7 @@ def scoring(
             temperature_str, max_tokens_str, dataset_name, model_name = data[
                 0
             ].get_basic_strs()
+            is_single_intent_detection = "rest" in str(evaluator_output_file_path)
             write_json(
                 file_path=Path(
                     os.path.join(
@@ -708,8 +710,9 @@ def scoring(
                 ),
                 base_model=calculate_scores(
                     data,
-                    sklearn_metrics=False,
+                    sklearn_metrics=(not is_single_intent_detection),
                     win_rate_flag=win_rate_flag,
+                    is_single_intent_detection=is_single_intent_detection,
                 ),
             )
         except Exception as e:
