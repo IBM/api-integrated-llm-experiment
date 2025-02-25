@@ -1,0 +1,4262 @@
+[
+    {
+        "input": "What's Angela Sanders's major?",
+        "output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$starting_table_var$",
+                    "key_name": "member_first_name",
+                    "value": "Angela",
+                    "condition": "equal_to"
+                },
+                "label": "FILTERED_DF_0"
+            },
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_0$",
+                    "key_name": "member_last_name",
+                    "value": "Sanders",
+                    "condition": "equal_to"
+                },
+                "label": "FILTERED_DF_1"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_1$",
+                    "key_name": "major_major_name",
+                    "distinct": false,
+                    "limit": -1
+                },
+                "label": "SELECT_COL_0"
+            }
+        ],
+        "initialization_step": {
+            "name": "initialize_active_data",
+            "arguments": {
+                "condition_sequence": [
+                    [
+                        "T1.link_to_major",
+                        "T2.major_id",
+                        "INNER"
+                    ]
+                ],
+                "alias_to_table_dict": {
+                    "T1": {
+                        "original_table_name": "member",
+                        "modified_table_name": "member"
+                    },
+                    "T2": {
+                        "original_table_name": "major",
+                        "modified_table_name": "major"
+                    }
+                },
+                "database_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/invocable_api_hub/driver/../../db/cache/student_club.sqlite"
+            },
+            "label": "starting_table_var"
+        },
+        "predicted_output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$var_1$",
+                    "key_name": "member_first_name",
+                    "value": "Angela",
+                    "condition": "equal_to"
+                },
+                "label": "var_2"
+            },
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$var_2$",
+                    "key_name": "member_last_name",
+                    "value": "Sanders",
+                    "condition": "equal_to"
+                },
+                "label": "var_3"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$var_3$",
+                    "key_name": "major_major_name",
+                    "distinct": false,
+                    "limit": 1
+                },
+                "label": "var_4"
+            }
+        ],
+        "gold_answer": "Business",
+        "predicted_answer": "Business",
+        "llm_data": {
+            "max_new_tokens": 10024,
+            "min_new_tokens": 1,
+            "top_p": 0.1,
+            "temperature": 0.0,
+            "random_seed": 0,
+            "decoding_method": "greedy",
+            "stop_sequences": [
+                "\nObservation"
+            ],
+            "llm_name": "mistralai/mixtral-8x22B-instruct-v0.1"
+        },
+        "metadata": {
+            "gold_answer": "Business",
+            "dataset": "student_club",
+            "source_file_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/sql_translation_output/dev/slot_filling_bird_student_club.json",
+            "sample_id": 0
+        }
+    },
+    {
+        "input": "How many students in the Student_Club are from the College of Engineering?",
+        "output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$starting_table_var$",
+                    "key_name": "major_college",
+                    "value": "College of Engineering",
+                    "condition": "equal_to"
+                },
+                "label": "FILTERED_DF_0"
+            },
+            {
+                "name": "aggregate_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_0$",
+                    "key_name": "member_member_id",
+                    "distinct": false,
+                    "limit": -1,
+                    "aggregation_type": "count"
+                },
+                "label": "COUNT"
+            }
+        ],
+        "initialization_step": {
+            "name": "initialize_active_data",
+            "arguments": {
+                "condition_sequence": [
+                    [
+                        "T1.link_to_major",
+                        "T2.major_id",
+                        "INNER"
+                    ]
+                ],
+                "alias_to_table_dict": {
+                    "T1": {
+                        "original_table_name": "member",
+                        "modified_table_name": "member"
+                    },
+                    "T2": {
+                        "original_table_name": "major",
+                        "modified_table_name": "major"
+                    }
+                },
+                "database_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/invocable_api_hub/driver/../../db/cache/student_club.sqlite"
+            },
+            "label": "starting_table_var"
+        },
+        "predicted_output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$var_1$",
+                    "key_name": "major_college",
+                    "value": "College of Engineering",
+                    "condition": "equal_to"
+                },
+                "label": "var_2"
+            },
+            {
+                "name": "aggregate_data",
+                "arguments": {
+                    "data_source": "$var_2$",
+                    "key_name": "member_member_id",
+                    "aggregation_type": "count",
+                    "distinct": true,
+                    "limit": null
+                },
+                "label": "var_3"
+            },
+            {
+                "name": "aggregate_data",
+                "arguments": {
+                    "data_source": "$var_2$",
+                    "key_name": "member_member_id",
+                    "aggregation_type": "count",
+                    "distinct": true
+                },
+                "label": "var_4"
+            }
+        ],
+        "gold_answer": 6,
+        "predicted_answer": 6,
+        "llm_data": {
+            "max_new_tokens": 10024,
+            "min_new_tokens": 1,
+            "top_p": 0.1,
+            "temperature": 0.0,
+            "random_seed": 0,
+            "decoding_method": "greedy",
+            "stop_sequences": [
+                "\nObservation"
+            ],
+            "llm_name": "mistralai/mixtral-8x22B-instruct-v0.1"
+        },
+        "metadata": {
+            "gold_answer": 6,
+            "dataset": "student_club",
+            "source_file_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/sql_translation_output/dev/slot_filling_bird_student_club.json",
+            "sample_id": 1
+        }
+    },
+    {
+        "input": "Please list the full names of the students in the Student_Club that come from the Art and Design Department.",
+        "output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$starting_table_var$",
+                    "key_name": "major_department",
+                    "value": "Art and Design Department",
+                    "condition": "equal_to"
+                },
+                "label": "FILTERED_DF_0"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_0$",
+                    "key_name": "member_first_name",
+                    "distinct": false,
+                    "limit": -1
+                },
+                "label": "SELECT_COL_0"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_0$",
+                    "key_name": "member_last_name",
+                    "distinct": false,
+                    "limit": -1
+                },
+                "label": "SELECT_COL_1"
+            }
+        ],
+        "initialization_step": {
+            "name": "initialize_active_data",
+            "arguments": {
+                "condition_sequence": [
+                    [
+                        "T1.link_to_major",
+                        "T2.major_id",
+                        "INNER"
+                    ]
+                ],
+                "alias_to_table_dict": {
+                    "T1": {
+                        "original_table_name": "member",
+                        "modified_table_name": "member"
+                    },
+                    "T2": {
+                        "original_table_name": "major",
+                        "modified_table_name": "major"
+                    }
+                },
+                "database_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/invocable_api_hub/driver/../../db/cache/student_club.sqlite"
+            },
+            "label": "starting_table_var"
+        },
+        "predicted_output": [],
+        "gold_answer": [
+            "Amy",
+            "Firth"
+        ],
+        "predicted_answer": null,
+        "llm_data": {
+            "max_new_tokens": 10024,
+            "min_new_tokens": 1,
+            "top_p": 0.1,
+            "temperature": 0.0,
+            "random_seed": 0,
+            "decoding_method": "greedy",
+            "stop_sequences": [
+                "\nObservation"
+            ],
+            "llm_name": "mistralai/mixtral-8x22B-instruct-v0.1"
+        },
+        "metadata": {
+            "gold_answer": [
+                "Amy",
+                "Firth"
+            ],
+            "dataset": "student_club",
+            "source_file_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/sql_translation_output/dev/slot_filling_bird_student_club.json",
+            "sample_id": 2
+        }
+    },
+    {
+        "input": "How many students of the Student_Club have attended the event \"Women's Soccer\"?",
+        "output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$starting_table_var$",
+                    "key_name": "event_event_name",
+                    "value": "Women's Soccer",
+                    "condition": "equal_to"
+                },
+                "label": "FILTERED_DF_0"
+            },
+            {
+                "name": "aggregate_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_0$",
+                    "key_name": "event_event_id",
+                    "distinct": false,
+                    "limit": -1,
+                    "aggregation_type": "count"
+                },
+                "label": "COUNT"
+            }
+        ],
+        "initialization_step": {
+            "name": "initialize_active_data",
+            "arguments": {
+                "condition_sequence": [
+                    [
+                        "T1.event_id",
+                        "T2.link_to_event",
+                        "INNER"
+                    ]
+                ],
+                "alias_to_table_dict": {
+                    "T1": {
+                        "original_table_name": "event",
+                        "modified_table_name": "event"
+                    },
+                    "T2": {
+                        "original_table_name": "attendance",
+                        "modified_table_name": "attendance"
+                    }
+                },
+                "database_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/invocable_api_hub/driver/../../db/cache/student_club.sqlite"
+            },
+            "label": "starting_table_var"
+        },
+        "predicted_output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$var_1$",
+                    "key_name": "event_event_name",
+                    "value": "Women's Soccer",
+                    "condition": "equal_to"
+                },
+                "label": "var_3"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$var_3$",
+                    "key_name": "attendance_link_to_member",
+                    "distinct": true
+                },
+                "label": "var_5"
+            }
+        ],
+        "gold_answer": 17,
+        "predicted_answer": null,
+        "llm_data": {
+            "max_new_tokens": 10024,
+            "min_new_tokens": 1,
+            "top_p": 0.1,
+            "temperature": 0.0,
+            "random_seed": 0,
+            "decoding_method": "greedy",
+            "stop_sequences": [
+                "\nObservation"
+            ],
+            "llm_name": "mistralai/mixtral-8x22B-instruct-v0.1"
+        },
+        "metadata": {
+            "gold_answer": 17,
+            "dataset": "student_club",
+            "source_file_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/sql_translation_output/dev/slot_filling_bird_student_club.json",
+            "sample_id": 3
+        }
+    },
+    {
+        "input": "Please list the phone numbers of the students from the Student_Club that has attended the event \"Women's Soccer\".",
+        "output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$starting_table_var$",
+                    "key_name": "event_event_name",
+                    "value": "Women's Soccer",
+                    "condition": "equal_to"
+                },
+                "label": "FILTERED_DF_0"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_0$",
+                    "key_name": "member_phone",
+                    "distinct": false,
+                    "limit": -1
+                },
+                "label": "SELECT_COL_0"
+            }
+        ],
+        "initialization_step": {
+            "name": "initialize_active_data",
+            "arguments": {
+                "condition_sequence": [
+                    [
+                        "T1.event_id",
+                        "T2.link_to_event",
+                        "INNER"
+                    ],
+                    [
+                        "T2.link_to_member",
+                        "T3.member_id",
+                        "INNER"
+                    ]
+                ],
+                "alias_to_table_dict": {
+                    "T1": {
+                        "original_table_name": "event",
+                        "modified_table_name": "event"
+                    },
+                    "T2": {
+                        "original_table_name": "attendance",
+                        "modified_table_name": "attendance"
+                    },
+                    "T3": {
+                        "original_table_name": "member",
+                        "modified_table_name": "member"
+                    }
+                },
+                "database_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/invocable_api_hub/driver/../../db/cache/student_club.sqlite"
+            },
+            "label": "starting_table_var"
+        },
+        "predicted_output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$var_1$",
+                    "key_name": "event_event_name",
+                    "value": "Women's Soccer",
+                    "condition": "equal_to"
+                },
+                "label": "var_2"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$var_2$",
+                    "key_name": "member_phone",
+                    "distinct": false,
+                    "limit": null
+                },
+                "label": "var_4"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$var_2$",
+                    "key_name": "member_phone",
+                    "distinct": false,
+                    "limit": 1000
+                },
+                "label": "var_5"
+            }
+        ],
+        "gold_answer": [
+            "905-555-5035",
+            "716-555-3845",
+            "442-555-5882",
+            "109-555-7016",
+            "435-555-8128",
+            "260-555-4328",
+            "475-555-3802",
+            "809-555-3360",
+            "540-555-4152",
+            "676-555-7843",
+            "887-555-7733",
+            "616-555-3916",
+            "954-555-6240",
+            "894-555-4529",
+            "727-555-2732",
+            "738-555-2267",
+            "724-555-5721"
+        ],
+        "predicted_answer": [
+            "905-555-5035",
+            "716-555-3845",
+            "442-555-5882",
+            "109-555-7016",
+            "435-555-8128",
+            "260-555-4328",
+            "475-555-3802",
+            "809-555-3360",
+            "540-555-4152",
+            "676-555-7843",
+            "887-555-7733",
+            "616-555-3916",
+            "954-555-6240",
+            "894-555-4529",
+            "727-555-2732",
+            "738-555-2267",
+            "724-555-5721"
+        ],
+        "llm_data": {
+            "max_new_tokens": 10024,
+            "min_new_tokens": 1,
+            "top_p": 0.1,
+            "temperature": 0.0,
+            "random_seed": 0,
+            "decoding_method": "greedy",
+            "stop_sequences": [
+                "\nObservation"
+            ],
+            "llm_name": "mistralai/mixtral-8x22B-instruct-v0.1"
+        },
+        "metadata": {
+            "gold_answer": [
+                "905-555-5035",
+                "716-555-3845",
+                "442-555-5882",
+                "109-555-7016",
+                "435-555-8128",
+                "260-555-4328",
+                "475-555-3802",
+                "809-555-3360",
+                "540-555-4152",
+                "676-555-7843",
+                "887-555-7733",
+                "616-555-3916",
+                "954-555-6240",
+                "894-555-4529",
+                "727-555-2732",
+                "738-555-2267",
+                "724-555-5721"
+            ],
+            "dataset": "student_club",
+            "source_file_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/sql_translation_output/dev/slot_filling_bird_student_club.json",
+            "sample_id": 4
+        }
+    },
+    {
+        "input": "Among the students from the Student_Club who attended the event \"Women's Soccer\", how many of them want a T-shirt that's in medium size?",
+        "output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$starting_table_var$",
+                    "key_name": "event_event_name",
+                    "value": "Women's Soccer",
+                    "condition": "equal_to"
+                },
+                "label": "FILTERED_DF_0"
+            },
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_0$",
+                    "key_name": "member_t_shirt_size",
+                    "value": "Medium",
+                    "condition": "equal_to"
+                },
+                "label": "FILTERED_DF_1"
+            },
+            {
+                "name": "aggregate_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_1$",
+                    "key_name": "event_event_id",
+                    "distinct": false,
+                    "limit": -1,
+                    "aggregation_type": "count"
+                },
+                "label": "COUNT"
+            }
+        ],
+        "initialization_step": {
+            "name": "initialize_active_data",
+            "arguments": {
+                "condition_sequence": [
+                    [
+                        "T1.event_id",
+                        "T2.link_to_event",
+                        "INNER"
+                    ],
+                    [
+                        "T2.link_to_member",
+                        "T3.member_id",
+                        "INNER"
+                    ]
+                ],
+                "alias_to_table_dict": {
+                    "T1": {
+                        "original_table_name": "event",
+                        "modified_table_name": "event"
+                    },
+                    "T2": {
+                        "original_table_name": "attendance",
+                        "modified_table_name": "attendance"
+                    },
+                    "T3": {
+                        "original_table_name": "member",
+                        "modified_table_name": "member"
+                    }
+                },
+                "database_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/invocable_api_hub/driver/../../db/cache/student_club.sqlite"
+            },
+            "label": "starting_table_var"
+        },
+        "predicted_output": [],
+        "gold_answer": 7,
+        "predicted_answer": "Final Answer: The number of students from the Student_Club who attended the \"Women's Soccer\" event and want a medium size T-shirt is [insert count here].",
+        "llm_data": {
+            "max_new_tokens": 10024,
+            "min_new_tokens": 1,
+            "top_p": 0.1,
+            "temperature": 0.0,
+            "random_seed": 0,
+            "decoding_method": "greedy",
+            "stop_sequences": [
+                "\nObservation"
+            ],
+            "llm_name": "mistralai/mixtral-8x22B-instruct-v0.1"
+        },
+        "metadata": {
+            "gold_answer": 7,
+            "dataset": "student_club",
+            "source_file_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/sql_translation_output/dev/slot_filling_bird_student_club.json",
+            "sample_id": 5
+        }
+    },
+    {
+        "input": "Please list the event names of all the events attended by Maya Mclean.",
+        "output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$starting_table_var$",
+                    "key_name": "member_first_name",
+                    "value": "Maya",
+                    "condition": "equal_to"
+                },
+                "label": "FILTERED_DF_0"
+            },
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_0$",
+                    "key_name": "member_last_name",
+                    "value": "Mclean",
+                    "condition": "equal_to"
+                },
+                "label": "FILTERED_DF_1"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_1$",
+                    "key_name": "event_event_name",
+                    "distinct": false,
+                    "limit": -1
+                },
+                "label": "SELECT_COL_0"
+            }
+        ],
+        "initialization_step": {
+            "name": "initialize_active_data",
+            "arguments": {
+                "condition_sequence": [
+                    [
+                        "T1.event_id",
+                        "T2.link_to_event",
+                        "INNER"
+                    ],
+                    [
+                        "T2.link_to_member",
+                        "T3.member_id",
+                        "INNER"
+                    ]
+                ],
+                "alias_to_table_dict": {
+                    "T1": {
+                        "original_table_name": "event",
+                        "modified_table_name": "event"
+                    },
+                    "T2": {
+                        "original_table_name": "attendance",
+                        "modified_table_name": "attendance"
+                    },
+                    "T3": {
+                        "original_table_name": "member",
+                        "modified_table_name": "member"
+                    }
+                },
+                "database_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/invocable_api_hub/driver/../../db/cache/student_club.sqlite"
+            },
+            "label": "starting_table_var"
+        },
+        "predicted_output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$var_1$",
+                    "key_name": [
+                        "member_first_name",
+                        "member_last_name"
+                    ],
+                    "value": [
+                        "Maya",
+                        "Mclean"
+                    ],
+                    "condition": [
+                        "equal_to",
+                        "equal_to"
+                    ]
+                },
+                "label": "var_2"
+            },
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$var_1$",
+                    "key_name": "member_first_name",
+                    "value": "Maya",
+                    "condition": "equal_to"
+                },
+                "label": "var_3"
+            },
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$var_3$",
+                    "key_name": "member_last_name",
+                    "value": "Mclean",
+                    "condition": "equal_to"
+                },
+                "label": "var_4"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$var_4$",
+                    "key_name": "event_event_name",
+                    "distinct": true,
+                    "limit": null
+                },
+                "label": "var_5"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$var_4$",
+                    "key_name": "event_event_name",
+                    "distinct": true,
+                    "limit": 1000
+                },
+                "label": "var_6"
+            }
+        ],
+        "gold_answer": [
+            "Women's Soccer",
+            "Laugh Out Loud",
+            "October Speaker",
+            "Football game",
+            "September Speaker",
+            "Registration",
+            "October Meeting",
+            "November Speaker",
+            "November Meeting",
+            "Kid's Care",
+            "Food Bank",
+            "Community Theater",
+            "Yearly Kickoff",
+            "September Meeting"
+        ],
+        "predicted_answer": [
+            "Women's Soccer",
+            "Laugh Out Loud",
+            "October Speaker",
+            "Football game",
+            "September Speaker",
+            "Registration",
+            "October Meeting",
+            "November Speaker",
+            "November Meeting",
+            "Kid's Care",
+            "Food Bank",
+            "Community Theater",
+            "Yearly Kickoff",
+            "September Meeting"
+        ],
+        "llm_data": {
+            "max_new_tokens": 10024,
+            "min_new_tokens": 1,
+            "top_p": 0.1,
+            "temperature": 0.0,
+            "random_seed": 0,
+            "decoding_method": "greedy",
+            "stop_sequences": [
+                "\nObservation"
+            ],
+            "llm_name": "mistralai/mixtral-8x22B-instruct-v0.1"
+        },
+        "metadata": {
+            "gold_answer": [
+                "Women's Soccer",
+                "Laugh Out Loud",
+                "October Speaker",
+                "Football game",
+                "September Speaker",
+                "Registration",
+                "October Meeting",
+                "November Speaker",
+                "November Meeting",
+                "Kid's Care",
+                "Food Bank",
+                "Community Theater",
+                "Yearly Kickoff",
+                "September Meeting"
+            ],
+            "dataset": "student_club",
+            "source_file_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/sql_translation_output/dev/slot_filling_bird_student_club.json",
+            "sample_id": 6
+        }
+    },
+    {
+        "input": "What is the most expensive item that was spent in support of club events?",
+        "output": [
+            {
+                "name": "sort_data",
+                "arguments": {
+                    "data_source": "$starting_table_var$",
+                    "key_name": "cost",
+                    "ascending": false
+                },
+                "label": "SORTED_DF"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$SORTED_DF$",
+                    "key_name": "expense_description",
+                    "distinct": false,
+                    "limit": 1
+                },
+                "label": "SELECT_COL_0"
+            }
+        ],
+        "initialization_step": {
+            "name": "initialize_active_data",
+            "arguments": {
+                "condition_sequence": [],
+                "alias_to_table_dict": {
+                    "": {
+                        "original_table_name": "expense",
+                        "modified_table_name": "expense"
+                    }
+                },
+                "database_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/invocable_api_hub/driver/../../db/cache/student_club.sqlite"
+            },
+            "label": "starting_table_var"
+        },
+        "predicted_output": [
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$var_1$",
+                    "key_name": "cost",
+                    "distinct": false,
+                    "limit": -1
+                },
+                "label": "var_2"
+            },
+            {
+                "name": "sort_data",
+                "arguments": {
+                    "data_source": "$var_1$",
+                    "key_name": "cost",
+                    "ascending": false
+                },
+                "label": "var_3"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$var_3$",
+                    "key_name": "expense_description",
+                    "distinct": false,
+                    "limit": 1
+                },
+                "label": "var_4"
+            }
+        ],
+        "gold_answer": "Club shirts",
+        "predicted_answer": "Club shirts",
+        "llm_data": {
+            "max_new_tokens": 10024,
+            "min_new_tokens": 1,
+            "top_p": 0.1,
+            "temperature": 0.0,
+            "random_seed": 0,
+            "decoding_method": "greedy",
+            "stop_sequences": [
+                "\nObservation"
+            ],
+            "llm_name": "mistralai/mixtral-8x22B-instruct-v0.1"
+        },
+        "metadata": {
+            "gold_answer": "Club shirts",
+            "dataset": "student_club",
+            "source_file_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/sql_translation_output/dev/slot_filling_bird_student_club.json",
+            "sample_id": 7
+        }
+    },
+    {
+        "input": "How many members of the Student_Club have majored Environmental Engineering?\n",
+        "output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$starting_table_var$",
+                    "key_name": "major_major_name",
+                    "value": "Environmental Engineering",
+                    "condition": "equal_to"
+                },
+                "label": "FILTERED_DF_0"
+            },
+            {
+                "name": "aggregate_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_0$",
+                    "key_name": "member_member_id",
+                    "distinct": false,
+                    "limit": -1,
+                    "aggregation_type": "count"
+                },
+                "label": "COUNT"
+            }
+        ],
+        "initialization_step": {
+            "name": "initialize_active_data",
+            "arguments": {
+                "condition_sequence": [
+                    [
+                        "T1.link_to_major",
+                        "T2.major_id",
+                        "INNER"
+                    ]
+                ],
+                "alias_to_table_dict": {
+                    "T1": {
+                        "original_table_name": "member",
+                        "modified_table_name": "member"
+                    },
+                    "T2": {
+                        "original_table_name": "major",
+                        "modified_table_name": "major"
+                    }
+                },
+                "database_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/invocable_api_hub/driver/../../db/cache/student_club.sqlite"
+            },
+            "label": "starting_table_var"
+        },
+        "predicted_output": [],
+        "gold_answer": 2,
+        "predicted_answer": "Final Answer: The number of members who have majored in Environmental Engineering is [insert the result of the last action here].",
+        "llm_data": {
+            "max_new_tokens": 10024,
+            "min_new_tokens": 1,
+            "top_p": 0.1,
+            "temperature": 0.0,
+            "random_seed": 0,
+            "decoding_method": "greedy",
+            "stop_sequences": [
+                "\nObservation"
+            ],
+            "llm_name": "mistralai/mixtral-8x22B-instruct-v0.1"
+        },
+        "metadata": {
+            "gold_answer": 2,
+            "dataset": "student_club",
+            "source_file_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/sql_translation_output/dev/slot_filling_bird_student_club.json",
+            "sample_id": 8
+        }
+    },
+    {
+        "input": "List the full name of all the members of the Student_Club who attended the \"Laugh Out Loud\" event.",
+        "output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$starting_table_var$",
+                    "key_name": "event_event_name",
+                    "value": "Laugh Out Loud",
+                    "condition": "equal_to"
+                },
+                "label": "FILTERED_DF_0"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_0$",
+                    "key_name": "member_first_name",
+                    "distinct": false,
+                    "limit": -1
+                },
+                "label": "SELECT_COL_0"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_0$",
+                    "key_name": "member_last_name",
+                    "distinct": false,
+                    "limit": -1
+                },
+                "label": "SELECT_COL_1"
+            }
+        ],
+        "initialization_step": {
+            "name": "initialize_active_data",
+            "arguments": {
+                "condition_sequence": [
+                    [
+                        "T1.member_id",
+                        "T2.link_to_member",
+                        "INNER"
+                    ],
+                    [
+                        "T2.link_to_event",
+                        "T3.event_id",
+                        "INNER"
+                    ]
+                ],
+                "alias_to_table_dict": {
+                    "T1": {
+                        "original_table_name": "member",
+                        "modified_table_name": "member"
+                    },
+                    "T2": {
+                        "original_table_name": "attendance",
+                        "modified_table_name": "attendance"
+                    },
+                    "T3": {
+                        "original_table_name": "event",
+                        "modified_table_name": "event"
+                    }
+                },
+                "database_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/invocable_api_hub/driver/../../db/cache/student_club.sqlite"
+            },
+            "label": "starting_table_var"
+        },
+        "predicted_output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$var_1$",
+                    "key_name": "event_event_name",
+                    "value": "Laugh Out Loud",
+                    "condition": "equal_to"
+                },
+                "label": "var_2"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$var_2$",
+                    "key_name": [
+                        "member_first_name",
+                        "member_last_name"
+                    ],
+                    "distinct": false,
+                    "limit": -1
+                },
+                "label": "var_3"
+            }
+        ],
+        "gold_answer": [
+            [
+                "Luisa",
+                "Carlo",
+                "Phillip",
+                "Matthew",
+                "Adele",
+                "Casey",
+                "Rafi",
+                "Katy",
+                "Emily",
+                "Edwardo",
+                "Amy",
+                "Mccauley",
+                "Maya",
+                "Garrett",
+                "Keaton",
+                "Keith",
+                "Madelyn",
+                "Annabella",
+                "Kevin",
+                "Sherri"
+            ],
+            [
+                "Guidi",
+                "Jacobs",
+                "Cullen",
+                "Snay",
+                "Deleon",
+                "Mason",
+                "Mckee",
+                "Balentine",
+                "Jaquith",
+                "Ing",
+                "Firth",
+                "Nash",
+                "Mclean",
+                "Gerke",
+                "Mccray",
+                "Dunlop",
+                "Nicholson",
+                "Warren",
+                "Pierce",
+                "Ramsey"
+            ]
+        ],
+        "predicted_answer": null,
+        "llm_data": {
+            "max_new_tokens": 10024,
+            "min_new_tokens": 1,
+            "top_p": 0.1,
+            "temperature": 0.0,
+            "random_seed": 0,
+            "decoding_method": "greedy",
+            "stop_sequences": [
+                "\nObservation"
+            ],
+            "llm_name": "mistralai/mixtral-8x22B-instruct-v0.1"
+        },
+        "metadata": {
+            "gold_answer": [
+                [
+                    "Luisa",
+                    "Carlo",
+                    "Phillip",
+                    "Matthew",
+                    "Adele",
+                    "Casey",
+                    "Rafi",
+                    "Katy",
+                    "Emily",
+                    "Edwardo",
+                    "Amy",
+                    "Mccauley",
+                    "Maya",
+                    "Garrett",
+                    "Keaton",
+                    "Keith",
+                    "Madelyn",
+                    "Annabella",
+                    "Kevin",
+                    "Sherri"
+                ],
+                [
+                    "Guidi",
+                    "Jacobs",
+                    "Cullen",
+                    "Snay",
+                    "Deleon",
+                    "Mason",
+                    "Mckee",
+                    "Balentine",
+                    "Jaquith",
+                    "Ing",
+                    "Firth",
+                    "Nash",
+                    "Mclean",
+                    "Gerke",
+                    "Mccray",
+                    "Dunlop",
+                    "Nicholson",
+                    "Warren",
+                    "Pierce",
+                    "Ramsey"
+                ]
+            ],
+            "dataset": "student_club",
+            "source_file_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/sql_translation_output/dev/slot_filling_bird_student_club.json",
+            "sample_id": 9
+        }
+    },
+    {
+        "input": "List the last name of all the students who majored Law and Constitutional Studies. \n",
+        "output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$starting_table_var$",
+                    "key_name": "major_major_name",
+                    "value": "Law and Constitutional Studies",
+                    "condition": "equal_to"
+                },
+                "label": "FILTERED_DF_0"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_0$",
+                    "key_name": "member_last_name",
+                    "distinct": false,
+                    "limit": -1
+                },
+                "label": "SELECT_COL_0"
+            }
+        ],
+        "initialization_step": {
+            "name": "initialize_active_data",
+            "arguments": {
+                "condition_sequence": [
+                    [
+                        "T1.link_to_major",
+                        "T2.major_id",
+                        "INNER"
+                    ]
+                ],
+                "alias_to_table_dict": {
+                    "T1": {
+                        "original_table_name": "member",
+                        "modified_table_name": "member"
+                    },
+                    "T2": {
+                        "original_table_name": "major",
+                        "modified_table_name": "major"
+                    }
+                },
+                "database_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/invocable_api_hub/driver/../../db/cache/student_club.sqlite"
+            },
+            "label": "starting_table_var"
+        },
+        "predicted_output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$var_1$",
+                    "key_name": "major_major_name",
+                    "value": "Law and Constitutional Studies",
+                    "condition": "equal_to"
+                },
+                "label": "var_3"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$var_3$",
+                    "key_name": "member_last_name",
+                    "distinct": false,
+                    "limit": null
+                },
+                "label": "var_6"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$var_3$",
+                    "key_name": "member_last_name",
+                    "distinct": false,
+                    "limit": 10000
+                },
+                "label": "var_7"
+            }
+        ],
+        "gold_answer": [
+            "Snay",
+            "Mccray"
+        ],
+        "predicted_answer": [
+            "Snay",
+            "Mccray"
+        ],
+        "llm_data": {
+            "max_new_tokens": 10024,
+            "min_new_tokens": 1,
+            "top_p": 0.1,
+            "temperature": 0.0,
+            "random_seed": 0,
+            "decoding_method": "greedy",
+            "stop_sequences": [
+                "\nObservation"
+            ],
+            "llm_name": "mistralai/mixtral-8x22B-instruct-v0.1"
+        },
+        "metadata": {
+            "gold_answer": [
+                "Snay",
+                "Mccray"
+            ],
+            "dataset": "student_club",
+            "source_file_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/sql_translation_output/dev/slot_filling_bird_student_club.json",
+            "sample_id": 10
+        }
+    },
+    {
+        "input": "What county did Sherri Ramsey grew up?",
+        "output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$starting_table_var$",
+                    "key_name": "member_first_name",
+                    "value": "Sherri",
+                    "condition": "equal_to"
+                },
+                "label": "FILTERED_DF_0"
+            },
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_0$",
+                    "key_name": "member_last_name",
+                    "value": "Ramsey",
+                    "condition": "equal_to"
+                },
+                "label": "FILTERED_DF_1"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_1$",
+                    "key_name": "zip_code_county",
+                    "distinct": false,
+                    "limit": -1
+                },
+                "label": "SELECT_COL_0"
+            }
+        ],
+        "initialization_step": {
+            "name": "initialize_active_data",
+            "arguments": {
+                "condition_sequence": [
+                    [
+                        "T1.zip",
+                        "T2.zip_code",
+                        "INNER"
+                    ]
+                ],
+                "alias_to_table_dict": {
+                    "T1": {
+                        "original_table_name": "member",
+                        "modified_table_name": "member"
+                    },
+                    "T2": {
+                        "original_table_name": "zip_code",
+                        "modified_table_name": "zip_code"
+                    }
+                },
+                "database_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/invocable_api_hub/driver/../../db/cache/student_club.sqlite"
+            },
+            "label": "starting_table_var"
+        },
+        "predicted_output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$var_1$",
+                    "key_name": [
+                        "member_first_name",
+                        "member_last_name"
+                    ],
+                    "value": [
+                        "Sherri",
+                        "Ramsey"
+                    ],
+                    "condition": "equal_to"
+                },
+                "label": "var_2"
+            },
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$var_1$",
+                    "key_name": "member_first_name",
+                    "value": "Sherri",
+                    "condition": "equal_to"
+                },
+                "label": "var_3"
+            }
+        ],
+        "gold_answer": "Middlesex County",
+        "predicted_answer": null,
+        "llm_data": {
+            "max_new_tokens": 10024,
+            "min_new_tokens": 1,
+            "top_p": 0.1,
+            "temperature": 0.0,
+            "random_seed": 0,
+            "decoding_method": "greedy",
+            "stop_sequences": [
+                "\nObservation"
+            ],
+            "llm_name": "mistralai/mixtral-8x22B-instruct-v0.1"
+        },
+        "metadata": {
+            "gold_answer": "Middlesex County",
+            "dataset": "student_club",
+            "source_file_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/sql_translation_output/dev/slot_filling_bird_student_club.json",
+            "sample_id": 11
+        }
+    },
+    {
+        "input": "What college offers the major that Tyler Hewitt took?",
+        "output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$starting_table_var$",
+                    "key_name": "member_first_name",
+                    "value": "Tyler",
+                    "condition": "equal_to"
+                },
+                "label": "FILTERED_DF_0"
+            },
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_0$",
+                    "key_name": "member_last_name",
+                    "value": "Hewitt",
+                    "condition": "equal_to"
+                },
+                "label": "FILTERED_DF_1"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_1$",
+                    "key_name": "major_college",
+                    "distinct": false,
+                    "limit": -1
+                },
+                "label": "SELECT_COL_0"
+            }
+        ],
+        "initialization_step": {
+            "name": "initialize_active_data",
+            "arguments": {
+                "condition_sequence": [
+                    [
+                        "T1.link_to_major",
+                        "T2.major_id",
+                        "INNER"
+                    ]
+                ],
+                "alias_to_table_dict": {
+                    "T1": {
+                        "original_table_name": "member",
+                        "modified_table_name": "member"
+                    },
+                    "T2": {
+                        "original_table_name": "major",
+                        "modified_table_name": "major"
+                    }
+                },
+                "database_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/invocable_api_hub/driver/../../db/cache/student_club.sqlite"
+            },
+            "label": "starting_table_var"
+        },
+        "predicted_output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$var_1$",
+                    "key_name": "member_first_name",
+                    "value": "Tyler",
+                    "condition": "equal_to"
+                },
+                "label": "var_3"
+            }
+        ],
+        "gold_answer": "College of Engineering",
+        "predicted_answer": "Final Answer: The college that offers the major that Tyler Hewitt took is [insert the college name from the observation].",
+        "llm_data": {
+            "max_new_tokens": 10024,
+            "min_new_tokens": 1,
+            "top_p": 0.1,
+            "temperature": 0.0,
+            "random_seed": 0,
+            "decoding_method": "greedy",
+            "stop_sequences": [
+                "\nObservation"
+            ],
+            "llm_name": "mistralai/mixtral-8x22B-instruct-v0.1"
+        },
+        "metadata": {
+            "gold_answer": "College of Engineering",
+            "dataset": "student_club",
+            "source_file_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/sql_translation_output/dev/slot_filling_bird_student_club.json",
+            "sample_id": 12
+        }
+    },
+    {
+        "input": "What is the amount of the funds that the Vice President received?",
+        "output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$starting_table_var$",
+                    "key_name": "member_position",
+                    "value": "Vice President",
+                    "condition": "equal_to"
+                },
+                "label": "FILTERED_DF_0"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_0$",
+                    "key_name": "income_amount",
+                    "distinct": false,
+                    "limit": -1
+                },
+                "label": "SELECT_COL_0"
+            }
+        ],
+        "initialization_step": {
+            "name": "initialize_active_data",
+            "arguments": {
+                "condition_sequence": [
+                    [
+                        "T1.member_id",
+                        "T2.link_to_member",
+                        "INNER"
+                    ]
+                ],
+                "alias_to_table_dict": {
+                    "T1": {
+                        "original_table_name": "member",
+                        "modified_table_name": "member"
+                    },
+                    "T2": {
+                        "original_table_name": "income",
+                        "modified_table_name": "income"
+                    }
+                },
+                "database_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/invocable_api_hub/driver/../../db/cache/student_club.sqlite"
+            },
+            "label": "starting_table_var"
+        },
+        "predicted_output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$var_1$",
+                    "key_name": "member_position",
+                    "value": "Vice President",
+                    "condition": "equal_to"
+                },
+                "label": "var_3"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$var_3$",
+                    "key_name": "income_amount",
+                    "distinct": false,
+                    "limit": -1
+                },
+                "label": "var_5"
+            }
+        ],
+        "gold_answer": 50,
+        "predicted_answer": 50,
+        "llm_data": {
+            "max_new_tokens": 10024,
+            "min_new_tokens": 1,
+            "top_p": 0.1,
+            "temperature": 0.0,
+            "random_seed": 0,
+            "decoding_method": "greedy",
+            "stop_sequences": [
+                "\nObservation"
+            ],
+            "llm_name": "mistralai/mixtral-8x22B-instruct-v0.1"
+        },
+        "metadata": {
+            "gold_answer": 50,
+            "dataset": "student_club",
+            "source_file_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/sql_translation_output/dev/slot_filling_bird_student_club.json",
+            "sample_id": 13
+        }
+    },
+    {
+        "input": "What city and state did the President of the Student_Club grow up?",
+        "output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$starting_table_var$",
+                    "key_name": "member_position",
+                    "value": "President",
+                    "condition": "equal_to"
+                },
+                "label": "FILTERED_DF_0"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_0$",
+                    "key_name": "zip_code_city",
+                    "distinct": false,
+                    "limit": -1
+                },
+                "label": "SELECT_COL_0"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_0$",
+                    "key_name": "zip_code_state",
+                    "distinct": false,
+                    "limit": -1
+                },
+                "label": "SELECT_COL_1"
+            }
+        ],
+        "initialization_step": {
+            "name": "initialize_active_data",
+            "arguments": {
+                "condition_sequence": [
+                    [
+                        "T1.zip",
+                        "T2.zip_code",
+                        "INNER"
+                    ]
+                ],
+                "alias_to_table_dict": {
+                    "T1": {
+                        "original_table_name": "member",
+                        "modified_table_name": "member"
+                    },
+                    "T2": {
+                        "original_table_name": "zip_code",
+                        "modified_table_name": "zip_code"
+                    }
+                },
+                "database_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/invocable_api_hub/driver/../../db/cache/student_club.sqlite"
+            },
+            "label": "starting_table_var"
+        },
+        "predicted_output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$var_1$",
+                    "key_name": "member_position",
+                    "value": "President",
+                    "condition": "equal_to"
+                },
+                "label": "var_2"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$var_2$",
+                    "key_name": [
+                        "zip_code_city",
+                        "zip_code_short_state"
+                    ],
+                    "distinct": false,
+                    "limit": 1
+                },
+                "label": "var_3"
+            }
+        ],
+        "gold_answer": [
+            "South Plainfield",
+            "New Jersey"
+        ],
+        "predicted_answer": null,
+        "llm_data": {
+            "max_new_tokens": 10024,
+            "min_new_tokens": 1,
+            "top_p": 0.1,
+            "temperature": 0.0,
+            "random_seed": 0,
+            "decoding_method": "greedy",
+            "stop_sequences": [
+                "\nObservation"
+            ],
+            "llm_name": "mistralai/mixtral-8x22B-instruct-v0.1"
+        },
+        "metadata": {
+            "gold_answer": [
+                "South Plainfield",
+                "New Jersey"
+            ],
+            "dataset": "student_club",
+            "source_file_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/sql_translation_output/dev/slot_filling_bird_student_club.json",
+            "sample_id": 14
+        }
+    },
+    {
+        "input": "What is the total budgeted amount for all category in \"October Speaker\" event?",
+        "output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$starting_table_var$",
+                    "key_name": "event_event_name",
+                    "value": "October Speaker",
+                    "condition": "equal_to"
+                },
+                "label": "FILTERED_DF_0"
+            },
+            {
+                "name": "aggregate_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_0$",
+                    "key_name": "budget_amount",
+                    "distinct": false,
+                    "limit": -1,
+                    "aggregation_type": "sum"
+                },
+                "label": "SUM"
+            }
+        ],
+        "initialization_step": {
+            "name": "initialize_active_data",
+            "arguments": {
+                "condition_sequence": [
+                    [
+                        "T1.event_id",
+                        "T2.link_to_event",
+                        "INNER"
+                    ]
+                ],
+                "alias_to_table_dict": {
+                    "T1": {
+                        "original_table_name": "event",
+                        "modified_table_name": "event"
+                    },
+                    "T2": {
+                        "original_table_name": "budget",
+                        "modified_table_name": "budget"
+                    }
+                },
+                "database_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/invocable_api_hub/driver/../../db/cache/student_club.sqlite"
+            },
+            "label": "starting_table_var"
+        },
+        "predicted_output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$var_1$",
+                    "key_name": "event_event_name",
+                    "value": "October Speaker",
+                    "condition": "equal_to"
+                },
+                "label": "var_3"
+            },
+            {
+                "name": "aggregate_data",
+                "arguments": {
+                    "data_source": "$var_3$",
+                    "key_name": "budget_amount",
+                    "aggregation_type": "sum",
+                    "distinct": false,
+                    "limit": null
+                },
+                "label": "var_5"
+            },
+            {
+                "name": "aggregate_data",
+                "arguments": {
+                    "data_source": "$var_3$",
+                    "key_name": "budget_amount",
+                    "aggregation_type": "sum",
+                    "distinct": false,
+                    "limit": null
+                },
+                "label": "var_6"
+            }
+        ],
+        "gold_answer": 265,
+        "predicted_answer": null,
+        "llm_data": {
+            "max_new_tokens": 10024,
+            "min_new_tokens": 1,
+            "top_p": 0.1,
+            "temperature": 0.0,
+            "random_seed": 0,
+            "decoding_method": "greedy",
+            "stop_sequences": [
+                "\nObservation"
+            ],
+            "llm_name": "mistralai/mixtral-8x22B-instruct-v0.1"
+        },
+        "metadata": {
+            "gold_answer": 265,
+            "dataset": "student_club",
+            "source_file_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/sql_translation_output/dev/slot_filling_bird_student_club.json",
+            "sample_id": 15
+        }
+    },
+    {
+        "input": "Give the location for \"Spring Budget Review\".",
+        "output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$starting_table_var$",
+                    "key_name": "event_name",
+                    "value": "Spring Budget Review",
+                    "condition": "equal_to"
+                },
+                "label": "FILTERED_DF_0"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_0$",
+                    "key_name": "location",
+                    "distinct": false,
+                    "limit": -1
+                },
+                "label": "SELECT_COL_0"
+            }
+        ],
+        "initialization_step": {
+            "name": "initialize_active_data",
+            "arguments": {
+                "condition_sequence": [],
+                "alias_to_table_dict": {
+                    "": {
+                        "original_table_name": "event",
+                        "modified_table_name": "event"
+                    }
+                },
+                "database_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/invocable_api_hub/driver/../../db/cache/student_club.sqlite"
+            },
+            "label": "starting_table_var"
+        },
+        "predicted_output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$var_1$",
+                    "key_name": "event_name",
+                    "value": "Spring Budget Review",
+                    "condition": "equal_to"
+                },
+                "label": "var_2"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$var_2$",
+                    "key_name": "location",
+                    "distinct": false,
+                    "limit": 1
+                },
+                "label": "var_3"
+            }
+        ],
+        "gold_answer": "Conference Room BA 452",
+        "predicted_answer": "Conference Room BA 452",
+        "llm_data": {
+            "max_new_tokens": 10024,
+            "min_new_tokens": 1,
+            "top_p": 0.1,
+            "temperature": 0.0,
+            "random_seed": 0,
+            "decoding_method": "greedy",
+            "stop_sequences": [
+                "\nObservation"
+            ],
+            "llm_name": "mistralai/mixtral-8x22B-instruct-v0.1"
+        },
+        "metadata": {
+            "gold_answer": "Conference Room BA 452",
+            "dataset": "student_club",
+            "source_file_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/sql_translation_output/dev/slot_filling_bird_student_club.json",
+            "sample_id": 16
+        }
+    },
+    {
+        "input": "What was the cost for the \"Posters\" on 2019/9/4?",
+        "output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$starting_table_var$",
+                    "key_name": "expense_description",
+                    "value": "Posters",
+                    "condition": "equal_to"
+                },
+                "label": "FILTERED_DF_0"
+            },
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_0$",
+                    "key_name": "expense_date",
+                    "value": "2019-09-04",
+                    "condition": "equal_to"
+                },
+                "label": "FILTERED_DF_1"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_1$",
+                    "key_name": "cost",
+                    "distinct": false,
+                    "limit": -1
+                },
+                "label": "SELECT_COL_0"
+            }
+        ],
+        "initialization_step": {
+            "name": "initialize_active_data",
+            "arguments": {
+                "condition_sequence": [],
+                "alias_to_table_dict": {
+                    "": {
+                        "original_table_name": "expense",
+                        "modified_table_name": "expense"
+                    }
+                },
+                "database_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/invocable_api_hub/driver/../../db/cache/student_club.sqlite"
+            },
+            "label": "starting_table_var"
+        },
+        "predicted_output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$var_1$",
+                    "key_name": "expense_description",
+                    "value": "Posters",
+                    "condition": "equal_to"
+                },
+                "label": "var_2"
+            },
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$var_2$",
+                    "key_name": "expense_date",
+                    "value": "2019/9/4",
+                    "condition": "equal_to"
+                },
+                "label": "var_3"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$var_3$",
+                    "key_name": "cost",
+                    "distinct": false,
+                    "limit": 1
+                },
+                "label": "var_4"
+            }
+        ],
+        "gold_answer": 67.81,
+        "predicted_answer": null,
+        "llm_data": {
+            "max_new_tokens": 10024,
+            "min_new_tokens": 1,
+            "top_p": 0.1,
+            "temperature": 0.0,
+            "random_seed": 0,
+            "decoding_method": "greedy",
+            "stop_sequences": [
+                "\nObservation"
+            ],
+            "llm_name": "mistralai/mixtral-8x22B-instruct-v0.1"
+        },
+        "metadata": {
+            "gold_answer": 67.81,
+            "dataset": "student_club",
+            "source_file_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/sql_translation_output/dev/slot_filling_bird_student_club.json",
+            "sample_id": 17
+        }
+    },
+    {
+        "input": "What was the notes of the fundraising on 2019/9/14?",
+        "output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$starting_table_var$",
+                    "key_name": "source",
+                    "value": "Fundraising",
+                    "condition": "equal_to"
+                },
+                "label": "FILTERED_DF_0"
+            },
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_0$",
+                    "key_name": "date_received",
+                    "value": "2019-09-14",
+                    "condition": "equal_to"
+                },
+                "label": "FILTERED_DF_1"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_1$",
+                    "key_name": "notes",
+                    "distinct": false,
+                    "limit": -1
+                },
+                "label": "SELECT_COL_0"
+            }
+        ],
+        "initialization_step": {
+            "name": "initialize_active_data",
+            "arguments": {
+                "condition_sequence": [],
+                "alias_to_table_dict": {
+                    "": {
+                        "original_table_name": "income",
+                        "modified_table_name": "income"
+                    }
+                },
+                "database_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/invocable_api_hub/driver/../../db/cache/student_club.sqlite"
+            },
+            "label": "starting_table_var"
+        },
+        "predicted_output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$var_1$",
+                    "key_name": "date_received",
+                    "value": "2019/9/14",
+                    "condition": "equal_to"
+                },
+                "label": "var_2"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$var_2$",
+                    "key_name": "notes",
+                    "distinct": false,
+                    "limit": null
+                },
+                "label": "var_3"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$var_2$",
+                    "key_name": "notes",
+                    "distinct": false,
+                    "limit": 1000
+                },
+                "label": "var_4"
+            }
+        ],
+        "gold_answer": "Secured donations to help pay for speaker gifts.",
+        "predicted_answer": null,
+        "llm_data": {
+            "max_new_tokens": 10024,
+            "min_new_tokens": 1,
+            "top_p": 0.1,
+            "temperature": 0.0,
+            "random_seed": 0,
+            "decoding_method": "greedy",
+            "stop_sequences": [
+                "\nObservation"
+            ],
+            "llm_name": "mistralai/mixtral-8x22B-instruct-v0.1"
+        },
+        "metadata": {
+            "gold_answer": "Secured donations to help pay for speaker gifts.",
+            "dataset": "student_club",
+            "source_file_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/sql_translation_output/dev/slot_filling_bird_student_club.json",
+            "sample_id": 18
+        }
+    },
+    {
+        "input": "How many majors are there in \"College of Humanities and Social Sciences\"?",
+        "output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$starting_table_var$",
+                    "key_name": "college",
+                    "value": "College of Humanities and Social Sciences",
+                    "condition": "equal_to"
+                },
+                "label": "FILTERED_DF_0"
+            },
+            {
+                "name": "aggregate_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_0$",
+                    "key_name": "major_name",
+                    "distinct": false,
+                    "limit": -1,
+                    "aggregation_type": "count"
+                },
+                "label": "COUNT"
+            }
+        ],
+        "initialization_step": {
+            "name": "initialize_active_data",
+            "arguments": {
+                "condition_sequence": [],
+                "alias_to_table_dict": {
+                    "": {
+                        "original_table_name": "major",
+                        "modified_table_name": "major"
+                    }
+                },
+                "database_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/invocable_api_hub/driver/../../db/cache/student_club.sqlite"
+            },
+            "label": "starting_table_var"
+        },
+        "predicted_output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$var_1$",
+                    "key_name": "college",
+                    "value": "College of Humanities and Social Sciences",
+                    "condition": "equal_to"
+                },
+                "label": "var_2"
+            },
+            {
+                "name": "aggregate_data",
+                "arguments": {
+                    "data_source": "$var_2$",
+                    "key_name": "major_id",
+                    "aggregation_type": "count",
+                    "distinct": true,
+                    "limit": null
+                },
+                "label": "var_3"
+            },
+            {
+                "name": "aggregate_data",
+                "arguments": {
+                    "data_source": "$var_2$",
+                    "key_name": "major_id",
+                    "aggregation_type": "count",
+                    "distinct": true,
+                    "limit": 1000000
+                },
+                "label": "var_5"
+            }
+        ],
+        "gold_answer": 24,
+        "predicted_answer": 24,
+        "llm_data": {
+            "max_new_tokens": 10024,
+            "min_new_tokens": 1,
+            "top_p": 0.1,
+            "temperature": 0.0,
+            "random_seed": 0,
+            "decoding_method": "greedy",
+            "stop_sequences": [
+                "\nObservation"
+            ],
+            "llm_name": "mistralai/mixtral-8x22B-instruct-v0.1"
+        },
+        "metadata": {
+            "gold_answer": 24,
+            "dataset": "student_club",
+            "source_file_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/sql_translation_output/dev/slot_filling_bird_student_club.json",
+            "sample_id": 19
+        }
+    },
+    {
+        "input": "Tell the phone number of \"Carlo Jacobs\".",
+        "output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$starting_table_var$",
+                    "key_name": "first_name",
+                    "value": "Carlo",
+                    "condition": "equal_to"
+                },
+                "label": "FILTERED_DF_0"
+            },
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_0$",
+                    "key_name": "last_name",
+                    "value": "Jacobs",
+                    "condition": "equal_to"
+                },
+                "label": "FILTERED_DF_1"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_1$",
+                    "key_name": "phone",
+                    "distinct": false,
+                    "limit": -1
+                },
+                "label": "SELECT_COL_0"
+            }
+        ],
+        "initialization_step": {
+            "name": "initialize_active_data",
+            "arguments": {
+                "condition_sequence": [],
+                "alias_to_table_dict": {
+                    "": {
+                        "original_table_name": "member",
+                        "modified_table_name": "member"
+                    }
+                },
+                "database_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/invocable_api_hub/driver/../../db/cache/student_club.sqlite"
+            },
+            "label": "starting_table_var"
+        },
+        "predicted_output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$var_1$",
+                    "key_name": "first_name",
+                    "value": "Carlo",
+                    "condition": "equal_to"
+                },
+                "label": "var_2"
+            },
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$var_2$",
+                    "key_name": "last_name",
+                    "value": "Jacobs",
+                    "condition": "equal_to"
+                },
+                "label": "var_3"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$var_3$",
+                    "key_name": "phone",
+                    "distinct": false,
+                    "limit": 1
+                },
+                "label": "var_6"
+            }
+        ],
+        "gold_answer": "928-555-2577",
+        "predicted_answer": "928-555-2577",
+        "llm_data": {
+            "max_new_tokens": 10024,
+            "min_new_tokens": 1,
+            "top_p": 0.1,
+            "temperature": 0.0,
+            "random_seed": 0,
+            "decoding_method": "greedy",
+            "stop_sequences": [
+                "\nObservation"
+            ],
+            "llm_name": "mistralai/mixtral-8x22B-instruct-v0.1"
+        },
+        "metadata": {
+            "gold_answer": "928-555-2577",
+            "dataset": "student_club",
+            "source_file_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/sql_translation_output/dev/slot_filling_bird_student_club.json",
+            "sample_id": 20
+        }
+    },
+    {
+        "input": "Tell the hometown county for \"Adela O'Gallagher\".",
+        "output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$starting_table_var$",
+                    "key_name": "member_first_name",
+                    "value": "Adela",
+                    "condition": "equal_to"
+                },
+                "label": "FILTERED_DF_0"
+            },
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_0$",
+                    "key_name": "member_last_name",
+                    "value": "O'Gallagher",
+                    "condition": "equal_to"
+                },
+                "label": "FILTERED_DF_1"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_1$",
+                    "key_name": "zip_code_county",
+                    "distinct": false,
+                    "limit": -1
+                },
+                "label": "SELECT_COL_0"
+            }
+        ],
+        "initialization_step": {
+            "name": "initialize_active_data",
+            "arguments": {
+                "condition_sequence": [
+                    [
+                        "T1.zip",
+                        "T2.zip_code",
+                        "INNER"
+                    ]
+                ],
+                "alias_to_table_dict": {
+                    "T1": {
+                        "original_table_name": "member",
+                        "modified_table_name": "member"
+                    },
+                    "T2": {
+                        "original_table_name": "zip_code",
+                        "modified_table_name": "zip_code"
+                    }
+                },
+                "database_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/invocable_api_hub/driver/../../db/cache/student_club.sqlite"
+            },
+            "label": "starting_table_var"
+        },
+        "predicted_output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$var_1$",
+                    "key_name": [
+                        "member_first_name",
+                        "member_last_name"
+                    ],
+                    "value": [
+                        "Adela",
+                        "O'Gallagher"
+                    ],
+                    "condition": [
+                        "equal_to",
+                        "equal_to"
+                    ]
+                },
+                "label": "var_2"
+            },
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$var_1$",
+                    "key_name": "member_first_name",
+                    "value": "Adela",
+                    "condition": "equal_to"
+                },
+                "label": "var_3"
+            }
+        ],
+        "gold_answer": "Hendricks County",
+        "predicted_answer": "Final Answer: The hometown county for \"Adela O'Gallagher\" is [hometown county].",
+        "llm_data": {
+            "max_new_tokens": 10024,
+            "min_new_tokens": 1,
+            "top_p": 0.1,
+            "temperature": 0.0,
+            "random_seed": 0,
+            "decoding_method": "greedy",
+            "stop_sequences": [
+                "\nObservation"
+            ],
+            "llm_name": "mistralai/mixtral-8x22B-instruct-v0.1"
+        },
+        "metadata": {
+            "gold_answer": "Hendricks County",
+            "dataset": "student_club",
+            "source_file_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/sql_translation_output/dev/slot_filling_bird_student_club.json",
+            "sample_id": 21
+        }
+    },
+    {
+        "input": "For all the budgets for \"November Meeting\", how many of them had exceeded the budget?",
+        "output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$starting_table_var$",
+                    "key_name": "event_event_name",
+                    "value": "November Meeting",
+                    "condition": "equal_to"
+                },
+                "label": "FILTERED_DF_0"
+            },
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_0$",
+                    "key_name": "budget_remaining",
+                    "value": 0.0,
+                    "condition": "less_than"
+                },
+                "label": "FILTERED_DF_1"
+            },
+            {
+                "name": "aggregate_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_1$",
+                    "key_name": "event_event_id",
+                    "distinct": false,
+                    "limit": -1,
+                    "aggregation_type": "count"
+                },
+                "label": "COUNT"
+            }
+        ],
+        "initialization_step": {
+            "name": "initialize_active_data",
+            "arguments": {
+                "condition_sequence": [
+                    [
+                        "T1.link_to_event",
+                        "T2.event_id",
+                        "INNER"
+                    ]
+                ],
+                "alias_to_table_dict": {
+                    "T1": {
+                        "original_table_name": "budget",
+                        "modified_table_name": "budget"
+                    },
+                    "T2": {
+                        "original_table_name": "event",
+                        "modified_table_name": "event"
+                    }
+                },
+                "database_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/invocable_api_hub/driver/../../db/cache/student_club.sqlite"
+            },
+            "label": "starting_table_var"
+        },
+        "predicted_output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$var_1$",
+                    "key_name": "event_event_name",
+                    "value": "November Meeting",
+                    "condition": "equal_to"
+                },
+                "label": "var_3"
+            },
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$var_3$",
+                    "key_name": "budget_spent",
+                    "value": "budget_amount",
+                    "condition": "greater_than"
+                },
+                "label": "var_5"
+            }
+        ],
+        "gold_answer": 1,
+        "predicted_answer": null,
+        "llm_data": {
+            "max_new_tokens": 10024,
+            "min_new_tokens": 1,
+            "top_p": 0.1,
+            "temperature": 0.0,
+            "random_seed": 0,
+            "decoding_method": "greedy",
+            "stop_sequences": [
+                "\nObservation"
+            ],
+            "llm_name": "mistralai/mixtral-8x22B-instruct-v0.1"
+        },
+        "metadata": {
+            "gold_answer": 1,
+            "dataset": "student_club",
+            "source_file_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/sql_translation_output/dev/slot_filling_bird_student_club.json",
+            "sample_id": 22
+        }
+    },
+    {
+        "input": "Provide the total number of the budget amount for \"September Speaker\" event.",
+        "output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$starting_table_var$",
+                    "key_name": "event_event_name",
+                    "value": "September Speaker",
+                    "condition": "equal_to"
+                },
+                "label": "FILTERED_DF_0"
+            },
+            {
+                "name": "aggregate_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_0$",
+                    "key_name": "budget_amount",
+                    "distinct": false,
+                    "limit": -1,
+                    "aggregation_type": "sum"
+                },
+                "label": "SUM"
+            }
+        ],
+        "initialization_step": {
+            "name": "initialize_active_data",
+            "arguments": {
+                "condition_sequence": [
+                    [
+                        "T1.link_to_event",
+                        "T2.event_id",
+                        "INNER"
+                    ]
+                ],
+                "alias_to_table_dict": {
+                    "T1": {
+                        "original_table_name": "budget",
+                        "modified_table_name": "budget"
+                    },
+                    "T2": {
+                        "original_table_name": "event",
+                        "modified_table_name": "event"
+                    }
+                },
+                "database_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/invocable_api_hub/driver/../../db/cache/student_club.sqlite"
+            },
+            "label": "starting_table_var"
+        },
+        "predicted_output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$var_1$",
+                    "key_name": "event_event_name",
+                    "value": "September Speaker",
+                    "condition": "equal_to"
+                },
+                "label": "var_2"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$var_2$",
+                    "key_name": "budget_amount",
+                    "distinct": false,
+                    "limit": -1
+                },
+                "label": "var_3"
+            }
+        ],
+        "gold_answer": 260,
+        "predicted_answer": null,
+        "llm_data": {
+            "max_new_tokens": 10024,
+            "min_new_tokens": 1,
+            "top_p": 0.1,
+            "temperature": 0.0,
+            "random_seed": 0,
+            "decoding_method": "greedy",
+            "stop_sequences": [
+                "\nObservation"
+            ],
+            "llm_name": "mistralai/mixtral-8x22B-instruct-v0.1"
+        },
+        "metadata": {
+            "gold_answer": 260,
+            "dataset": "student_club",
+            "source_file_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/sql_translation_output/dev/slot_filling_bird_student_club.json",
+            "sample_id": 23
+        }
+    },
+    {
+        "input": "What is the status of the event which bought \"Post Cards, Posters\" on 2019/8/20?",
+        "output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$starting_table_var$",
+                    "key_name": "expense_expense_description",
+                    "value": "Post Cards, Posters",
+                    "condition": "equal_to"
+                },
+                "label": "FILTERED_DF_0"
+            },
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_0$",
+                    "key_name": "expense_expense_date",
+                    "value": "2019-08-20",
+                    "condition": "equal_to"
+                },
+                "label": "FILTERED_DF_1"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_1$",
+                    "key_name": "budget_event_status",
+                    "distinct": false,
+                    "limit": -1
+                },
+                "label": "SELECT_COL_0"
+            }
+        ],
+        "initialization_step": {
+            "name": "initialize_active_data",
+            "arguments": {
+                "condition_sequence": [
+                    [
+                        "T1.budget_id",
+                        "T2.link_to_budget",
+                        "INNER"
+                    ]
+                ],
+                "alias_to_table_dict": {
+                    "T1": {
+                        "original_table_name": "budget",
+                        "modified_table_name": "budget"
+                    },
+                    "T2": {
+                        "original_table_name": "expense",
+                        "modified_table_name": "expense"
+                    }
+                },
+                "database_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/invocable_api_hub/driver/../../db/cache/student_club.sqlite"
+            },
+            "label": "starting_table_var"
+        },
+        "predicted_output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$var_1$",
+                    "key_name": "expense_expense_description",
+                    "value": "Post Cards, Posters",
+                    "condition": "equal_to"
+                },
+                "label": "var_2"
+            },
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$var_2$",
+                    "key_name": "expense_expense_date",
+                    "value": "2019/8/20",
+                    "condition": "equal_to"
+                },
+                "label": "var_3"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$var_3$",
+                    "key_name": "budget_event_status",
+                    "distinct": false,
+                    "limit": 1
+                },
+                "label": "var_6"
+            }
+        ],
+        "gold_answer": "Closed",
+        "predicted_answer": null,
+        "llm_data": {
+            "max_new_tokens": 10024,
+            "min_new_tokens": 1,
+            "top_p": 0.1,
+            "temperature": 0.0,
+            "random_seed": 0,
+            "decoding_method": "greedy",
+            "stop_sequences": [
+                "\nObservation"
+            ],
+            "llm_name": "mistralai/mixtral-8x22B-instruct-v0.1"
+        },
+        "metadata": {
+            "gold_answer": "Closed",
+            "dataset": "student_club",
+            "source_file_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/sql_translation_output/dev/slot_filling_bird_student_club.json",
+            "sample_id": 24
+        }
+    },
+    {
+        "input": "What was Brent Thomason's major?",
+        "output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$starting_table_var$",
+                    "key_name": "member_first_name",
+                    "value": "Brent",
+                    "condition": "equal_to"
+                },
+                "label": "FILTERED_DF_0"
+            },
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_0$",
+                    "key_name": "member_last_name",
+                    "value": "Thomason",
+                    "condition": "equal_to"
+                },
+                "label": "FILTERED_DF_1"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_1$",
+                    "key_name": "major_major_name",
+                    "distinct": false,
+                    "limit": -1
+                },
+                "label": "SELECT_COL_0"
+            }
+        ],
+        "initialization_step": {
+            "name": "initialize_active_data",
+            "arguments": {
+                "condition_sequence": [
+                    [
+                        "T1.link_to_major",
+                        "T2.major_id",
+                        "INNER"
+                    ]
+                ],
+                "alias_to_table_dict": {
+                    "T1": {
+                        "original_table_name": "member",
+                        "modified_table_name": "member"
+                    },
+                    "T2": {
+                        "original_table_name": "major",
+                        "modified_table_name": "major"
+                    }
+                },
+                "database_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/invocable_api_hub/driver/../../db/cache/student_club.sqlite"
+            },
+            "label": "starting_table_var"
+        },
+        "predicted_output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$var_1$",
+                    "key_name": "member_first_name",
+                    "value": "Brent",
+                    "condition": "equal_to"
+                },
+                "label": "var_2"
+            },
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$var_2$",
+                    "key_name": "member_last_name",
+                    "value": "Thomason",
+                    "condition": "equal_to"
+                },
+                "label": "var_3"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$var_3$",
+                    "key_name": "major_major_name",
+                    "distinct": false,
+                    "limit": 1
+                },
+                "label": "var_4"
+            }
+        ],
+        "gold_answer": "Business Education",
+        "predicted_answer": "Business Education",
+        "llm_data": {
+            "max_new_tokens": 10024,
+            "min_new_tokens": 1,
+            "top_p": 0.1,
+            "temperature": 0.0,
+            "random_seed": 0,
+            "decoding_method": "greedy",
+            "stop_sequences": [
+                "\nObservation"
+            ],
+            "llm_name": "mistralai/mixtral-8x22B-instruct-v0.1"
+        },
+        "metadata": {
+            "gold_answer": "Business Education",
+            "dataset": "student_club",
+            "source_file_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/sql_translation_output/dev/slot_filling_bird_student_club.json",
+            "sample_id": 25
+        }
+    },
+    {
+        "input": "For all the club members from \"Business\" major, how many of them wear medium size t-shirt?",
+        "output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$starting_table_var$",
+                    "key_name": "major_major_name",
+                    "value": "Business",
+                    "condition": "equal_to"
+                },
+                "label": "FILTERED_DF_0"
+            },
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_0$",
+                    "key_name": "member_t_shirt_size",
+                    "value": "Medium",
+                    "condition": "equal_to"
+                },
+                "label": "FILTERED_DF_1"
+            },
+            {
+                "name": "aggregate_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_1$",
+                    "key_name": "member_member_id",
+                    "distinct": false,
+                    "limit": -1,
+                    "aggregation_type": "count"
+                },
+                "label": "COUNT"
+            }
+        ],
+        "initialization_step": {
+            "name": "initialize_active_data",
+            "arguments": {
+                "condition_sequence": [
+                    [
+                        "T1.link_to_major",
+                        "T2.major_id",
+                        "INNER"
+                    ]
+                ],
+                "alias_to_table_dict": {
+                    "T1": {
+                        "original_table_name": "member",
+                        "modified_table_name": "member"
+                    },
+                    "T2": {
+                        "original_table_name": "major",
+                        "modified_table_name": "major"
+                    }
+                },
+                "database_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/invocable_api_hub/driver/../../db/cache/student_club.sqlite"
+            },
+            "label": "starting_table_var"
+        },
+        "predicted_output": [],
+        "gold_answer": 1,
+        "predicted_answer": "Final Answer: The number of club members from the \"Business\" major who wear medium size t-shirts is [insert the result of the aggregate_data function here].",
+        "llm_data": {
+            "max_new_tokens": 10024,
+            "min_new_tokens": 1,
+            "top_p": 0.1,
+            "temperature": 0.0,
+            "random_seed": 0,
+            "decoding_method": "greedy",
+            "stop_sequences": [
+                "\nObservation"
+            ],
+            "llm_name": "mistralai/mixtral-8x22B-instruct-v0.1"
+        },
+        "metadata": {
+            "gold_answer": 1,
+            "dataset": "student_club",
+            "source_file_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/sql_translation_output/dev/slot_filling_bird_student_club.json",
+            "sample_id": 26
+        }
+    },
+    {
+        "input": "What's Christof Nielson's zip code type?",
+        "output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$starting_table_var$",
+                    "key_name": "member_first_name",
+                    "value": "Christof",
+                    "condition": "equal_to"
+                },
+                "label": "FILTERED_DF_0"
+            },
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_0$",
+                    "key_name": "member_last_name",
+                    "value": "Nielson",
+                    "condition": "equal_to"
+                },
+                "label": "FILTERED_DF_1"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_1$",
+                    "key_name": "zip_code_type",
+                    "distinct": false,
+                    "limit": -1
+                },
+                "label": "SELECT_COL_0"
+            }
+        ],
+        "initialization_step": {
+            "name": "initialize_active_data",
+            "arguments": {
+                "condition_sequence": [
+                    [
+                        "T1.zip",
+                        "T2.zip_code",
+                        "INNER"
+                    ]
+                ],
+                "alias_to_table_dict": {
+                    "T1": {
+                        "original_table_name": "member",
+                        "modified_table_name": "member"
+                    },
+                    "T2": {
+                        "original_table_name": "zip_code",
+                        "modified_table_name": "zip_code"
+                    }
+                },
+                "database_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/invocable_api_hub/driver/../../db/cache/student_club.sqlite"
+            },
+            "label": "starting_table_var"
+        },
+        "predicted_output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$var_1$",
+                    "key_name": "member_last_name",
+                    "value": "Nielson",
+                    "condition": "equal_to"
+                },
+                "label": "var_3"
+            },
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$var_3$",
+                    "key_name": "member_first_name",
+                    "value": "Christof",
+                    "condition": "equal_to"
+                },
+                "label": "var_5"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$var_5$",
+                    "key_name": "zip_code_type",
+                    "distinct": false,
+                    "limit": 1
+                },
+                "label": "var_7"
+            }
+        ],
+        "gold_answer": "Standard",
+        "predicted_answer": "Standard",
+        "llm_data": {
+            "max_new_tokens": 10024,
+            "min_new_tokens": 1,
+            "top_p": 0.1,
+            "temperature": 0.0,
+            "random_seed": 0,
+            "decoding_method": "greedy",
+            "stop_sequences": [
+                "\nObservation"
+            ],
+            "llm_name": "mistralai/mixtral-8x22B-instruct-v0.1"
+        },
+        "metadata": {
+            "gold_answer": "Standard",
+            "dataset": "student_club",
+            "source_file_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/sql_translation_output/dev/slot_filling_bird_student_club.json",
+            "sample_id": 27
+        }
+    },
+    {
+        "input": "State the major name for the Vice President of the club.",
+        "output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$starting_table_var$",
+                    "key_name": "member_position",
+                    "value": "Vice President",
+                    "condition": "equal_to"
+                },
+                "label": "FILTERED_DF_0"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_0$",
+                    "key_name": "major_major_name",
+                    "distinct": false,
+                    "limit": -1
+                },
+                "label": "SELECT_COL_0"
+            }
+        ],
+        "initialization_step": {
+            "name": "initialize_active_data",
+            "arguments": {
+                "condition_sequence": [
+                    [
+                        "T1.link_to_major",
+                        "T2.major_id",
+                        "INNER"
+                    ]
+                ],
+                "alias_to_table_dict": {
+                    "T1": {
+                        "original_table_name": "member",
+                        "modified_table_name": "member"
+                    },
+                    "T2": {
+                        "original_table_name": "major",
+                        "modified_table_name": "major"
+                    }
+                },
+                "database_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/invocable_api_hub/driver/../../db/cache/student_club.sqlite"
+            },
+            "label": "starting_table_var"
+        },
+        "predicted_output": [],
+        "gold_answer": "Communication Studies",
+        "predicted_answer": null,
+        "llm_data": {
+            "max_new_tokens": 10024,
+            "min_new_tokens": 1,
+            "top_p": 0.1,
+            "temperature": 0.0,
+            "random_seed": 0,
+            "decoding_method": "greedy",
+            "stop_sequences": [
+                "\nObservation"
+            ],
+            "llm_name": "mistralai/mixtral-8x22B-instruct-v0.1"
+        },
+        "metadata": {
+            "gold_answer": "Communication Studies",
+            "dataset": "student_club",
+            "source_file_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/sql_translation_output/dev/slot_filling_bird_student_club.json",
+            "sample_id": 28
+        }
+    },
+    {
+        "input": "Where is the hometown state for \"Sacha Harrison\"?",
+        "output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$starting_table_var$",
+                    "key_name": "member_first_name",
+                    "value": "Sacha",
+                    "condition": "equal_to"
+                },
+                "label": "FILTERED_DF_0"
+            },
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_0$",
+                    "key_name": "member_last_name",
+                    "value": "Harrison",
+                    "condition": "equal_to"
+                },
+                "label": "FILTERED_DF_1"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_1$",
+                    "key_name": "zip_code_state",
+                    "distinct": false,
+                    "limit": -1
+                },
+                "label": "SELECT_COL_0"
+            }
+        ],
+        "initialization_step": {
+            "name": "initialize_active_data",
+            "arguments": {
+                "condition_sequence": [
+                    [
+                        "T1.zip",
+                        "T2.zip_code",
+                        "INNER"
+                    ]
+                ],
+                "alias_to_table_dict": {
+                    "T1": {
+                        "original_table_name": "member",
+                        "modified_table_name": "member"
+                    },
+                    "T2": {
+                        "original_table_name": "zip_code",
+                        "modified_table_name": "zip_code"
+                    }
+                },
+                "database_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/invocable_api_hub/driver/../../db/cache/student_club.sqlite"
+            },
+            "label": "starting_table_var"
+        },
+        "predicted_output": [],
+        "gold_answer": "New Jersey",
+        "predicted_answer": "Final Answer: The hometown state for \"Sacha Harrison\" is [state_name], where [state_name] will be determined after executing the APIs.",
+        "llm_data": {
+            "max_new_tokens": 10024,
+            "min_new_tokens": 1,
+            "top_p": 0.1,
+            "temperature": 0.0,
+            "random_seed": 0,
+            "decoding_method": "greedy",
+            "stop_sequences": [
+                "\nObservation"
+            ],
+            "llm_name": "mistralai/mixtral-8x22B-instruct-v0.1"
+        },
+        "metadata": {
+            "gold_answer": "New Jersey",
+            "dataset": "student_club",
+            "source_file_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/sql_translation_output/dev/slot_filling_bird_student_club.json",
+            "sample_id": 29
+        }
+    },
+    {
+        "input": "Which department was the President of the club in?",
+        "output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$starting_table_var$",
+                    "key_name": "member_position",
+                    "value": "President",
+                    "condition": "equal_to"
+                },
+                "label": "FILTERED_DF_0"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_0$",
+                    "key_name": "major_department",
+                    "distinct": false,
+                    "limit": -1
+                },
+                "label": "SELECT_COL_0"
+            }
+        ],
+        "initialization_step": {
+            "name": "initialize_active_data",
+            "arguments": {
+                "condition_sequence": [
+                    [
+                        "T1.link_to_major",
+                        "T2.major_id",
+                        "INNER"
+                    ]
+                ],
+                "alias_to_table_dict": {
+                    "T1": {
+                        "original_table_name": "member",
+                        "modified_table_name": "member"
+                    },
+                    "T2": {
+                        "original_table_name": "major",
+                        "modified_table_name": "major"
+                    }
+                },
+                "database_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/invocable_api_hub/driver/../../db/cache/student_club.sqlite"
+            },
+            "label": "starting_table_var"
+        },
+        "predicted_output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$var_1$",
+                    "key_name": "member_position",
+                    "value": "President",
+                    "condition": "equal_to"
+                },
+                "label": "var_3"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$var_3$",
+                    "key_name": "major_department",
+                    "distinct": false,
+                    "limit": 1
+                },
+                "label": "var_5"
+            }
+        ],
+        "gold_answer": "Liberal Arts Program",
+        "predicted_answer": "Liberal Arts Program",
+        "llm_data": {
+            "max_new_tokens": 10024,
+            "min_new_tokens": 1,
+            "top_p": 0.1,
+            "temperature": 0.0,
+            "random_seed": 0,
+            "decoding_method": "greedy",
+            "stop_sequences": [
+                "\nObservation"
+            ],
+            "llm_name": "mistralai/mixtral-8x22B-instruct-v0.1"
+        },
+        "metadata": {
+            "gold_answer": "Liberal Arts Program",
+            "dataset": "student_club",
+            "source_file_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/sql_translation_output/dev/slot_filling_bird_student_club.json",
+            "sample_id": 30
+        }
+    },
+    {
+        "input": "State the date Connor Hilton paid his/her dues.",
+        "output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$starting_table_var$",
+                    "key_name": "member_first_name",
+                    "value": "Connor",
+                    "condition": "equal_to"
+                },
+                "label": "FILTERED_DF_0"
+            },
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_0$",
+                    "key_name": "member_last_name",
+                    "value": "Hilton",
+                    "condition": "equal_to"
+                },
+                "label": "FILTERED_DF_1"
+            },
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_1$",
+                    "key_name": "income_source",
+                    "value": "Dues",
+                    "condition": "equal_to"
+                },
+                "label": "FILTERED_DF_2"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_2$",
+                    "key_name": "income_date_received",
+                    "distinct": false,
+                    "limit": -1
+                },
+                "label": "SELECT_COL_0"
+            }
+        ],
+        "initialization_step": {
+            "name": "initialize_active_data",
+            "arguments": {
+                "condition_sequence": [
+                    [
+                        "T1.member_id",
+                        "T2.link_to_member",
+                        "INNER"
+                    ]
+                ],
+                "alias_to_table_dict": {
+                    "T1": {
+                        "original_table_name": "member",
+                        "modified_table_name": "member"
+                    },
+                    "T2": {
+                        "original_table_name": "income",
+                        "modified_table_name": "income"
+                    }
+                },
+                "database_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/invocable_api_hub/driver/../../db/cache/student_club.sqlite"
+            },
+            "label": "starting_table_var"
+        },
+        "predicted_output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$var_1$",
+                    "key_name": "member_last_name",
+                    "value": "Hilton",
+                    "condition": "equal_to"
+                },
+                "label": "var_3"
+            },
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$var_3$",
+                    "key_name": "income_source",
+                    "value": "dues",
+                    "condition": "equal_to"
+                },
+                "label": "var_5"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$var_5$",
+                    "key_name": "income_date_received",
+                    "distinct": false,
+                    "limit": 1
+                },
+                "label": "var_7"
+            }
+        ],
+        "gold_answer": [
+            "2019-10-02",
+            "2019-09-12"
+        ],
+        "predicted_answer": null,
+        "llm_data": {
+            "max_new_tokens": 10024,
+            "min_new_tokens": 1,
+            "top_p": 0.1,
+            "temperature": 0.0,
+            "random_seed": 0,
+            "decoding_method": "greedy",
+            "stop_sequences": [
+                "\nObservation"
+            ],
+            "llm_name": "mistralai/mixtral-8x22B-instruct-v0.1"
+        },
+        "metadata": {
+            "gold_answer": [
+                "2019-10-02",
+                "2019-09-12"
+            ],
+            "dataset": "student_club",
+            "source_file_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/sql_translation_output/dev/slot_filling_bird_student_club.json",
+            "sample_id": 31
+        }
+    },
+    {
+        "input": "Who was the first one paid his/her dues? Tell the full name.",
+        "output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$starting_table_var$",
+                    "key_name": "income_source",
+                    "value": "Dues",
+                    "condition": "equal_to"
+                },
+                "label": "FILTERED_DF_0"
+            },
+            {
+                "name": "sort_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_0$",
+                    "key_name": "income_date_received",
+                    "ascending": true
+                },
+                "label": "SORTED_DF"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$SORTED_DF$",
+                    "key_name": "member_first_name",
+                    "distinct": false,
+                    "limit": 1
+                },
+                "label": "SELECT_COL_0"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$SORTED_DF$",
+                    "key_name": "member_last_name",
+                    "distinct": false,
+                    "limit": 1
+                },
+                "label": "SELECT_COL_1"
+            }
+        ],
+        "initialization_step": {
+            "name": "initialize_active_data",
+            "arguments": {
+                "condition_sequence": [
+                    [
+                        "T1.member_id",
+                        "T2.link_to_member",
+                        "INNER"
+                    ]
+                ],
+                "alias_to_table_dict": {
+                    "T1": {
+                        "original_table_name": "member",
+                        "modified_table_name": "member"
+                    },
+                    "T2": {
+                        "original_table_name": "income",
+                        "modified_table_name": "income"
+                    }
+                },
+                "database_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/invocable_api_hub/driver/../../db/cache/student_club.sqlite"
+            },
+            "label": "starting_table_var"
+        },
+        "predicted_output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$var_1$",
+                    "key_name": "income_source",
+                    "value": "dues",
+                    "condition": "equal_to"
+                },
+                "label": "var_2"
+            },
+            {
+                "name": "sort_data",
+                "arguments": {
+                    "data_source": "$var_2$",
+                    "key_name": "income_date_received",
+                    "ascending": true
+                },
+                "label": "var_3"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$var_2$",
+                    "key_name": [
+                        "income_source"
+                    ],
+                    "distinct": false,
+                    "limit": -1
+                },
+                "label": "var_4"
+            }
+        ],
+        "gold_answer": [
+            "Edwardo",
+            "Ing"
+        ],
+        "predicted_answer": null,
+        "llm_data": {
+            "max_new_tokens": 10024,
+            "min_new_tokens": 1,
+            "top_p": 0.1,
+            "temperature": 0.0,
+            "random_seed": 0,
+            "decoding_method": "greedy",
+            "stop_sequences": [
+                "\nObservation"
+            ],
+            "llm_name": "mistralai/mixtral-8x22B-instruct-v0.1"
+        },
+        "metadata": {
+            "gold_answer": [
+                "Edwardo",
+                "Ing"
+            ],
+            "dataset": "student_club",
+            "source_file_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/sql_translation_output/dev/slot_filling_bird_student_club.json",
+            "sample_id": 32
+        }
+    },
+    {
+        "input": "What is the total cost of the pizzas for all the events?",
+        "output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$starting_table_var$",
+                    "key_name": "expense_description",
+                    "value": "Pizza",
+                    "condition": "equal_to"
+                },
+                "label": "FILTERED_DF_0"
+            },
+            {
+                "name": "aggregate_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_0$",
+                    "key_name": "cost",
+                    "distinct": false,
+                    "limit": -1,
+                    "aggregation_type": "sum"
+                },
+                "label": "SUM"
+            }
+        ],
+        "initialization_step": {
+            "name": "initialize_active_data",
+            "arguments": {
+                "condition_sequence": [],
+                "alias_to_table_dict": {
+                    "": {
+                        "original_table_name": "expense",
+                        "modified_table_name": "expense"
+                    }
+                },
+                "database_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/invocable_api_hub/driver/../../db/cache/student_club.sqlite"
+            },
+            "label": "starting_table_var"
+        },
+        "predicted_output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$var_1$",
+                    "key_name": "expense_description",
+                    "value": "pizza",
+                    "condition": "contains"
+                },
+                "label": "var_3"
+            },
+            {
+                "name": "aggregate_data",
+                "arguments": {
+                    "data_source": "$var_3$",
+                    "key_name": "cost",
+                    "aggregation_type": "sum",
+                    "distinct": false,
+                    "limit": null
+                },
+                "label": "var_6"
+            },
+            {
+                "name": "aggregate_data",
+                "arguments": {
+                    "data_source": "$var_3$",
+                    "key_name": "cost",
+                    "aggregation_type": "sum",
+                    "distinct": false,
+                    "limit": 999999999
+                },
+                "label": "var_7"
+            }
+        ],
+        "gold_answer": 600.11,
+        "predicted_answer": 600.11,
+        "llm_data": {
+            "max_new_tokens": 10024,
+            "min_new_tokens": 1,
+            "top_p": 0.1,
+            "temperature": 0.0,
+            "random_seed": 0,
+            "decoding_method": "greedy",
+            "stop_sequences": [
+                "\nObservation"
+            ],
+            "llm_name": "mistralai/mixtral-8x22B-instruct-v0.1"
+        },
+        "metadata": {
+            "gold_answer": 600.11,
+            "dataset": "student_club",
+            "source_file_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/sql_translation_output/dev/slot_filling_bird_student_club.json",
+            "sample_id": 33
+        }
+    },
+    {
+        "input": "How many cities are there in Orange County, Virginia?",
+        "output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$starting_table_var$",
+                    "key_name": "county",
+                    "value": "Orange County",
+                    "condition": "equal_to"
+                },
+                "label": "FILTERED_DF_0"
+            },
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_0$",
+                    "key_name": "state",
+                    "value": "Virginia",
+                    "condition": "equal_to"
+                },
+                "label": "FILTERED_DF_1"
+            },
+            {
+                "name": "aggregate_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_1$",
+                    "key_name": "city",
+                    "distinct": false,
+                    "limit": -1,
+                    "aggregation_type": "count"
+                },
+                "label": "COUNT"
+            }
+        ],
+        "initialization_step": {
+            "name": "initialize_active_data",
+            "arguments": {
+                "condition_sequence": [],
+                "alias_to_table_dict": {
+                    "": {
+                        "original_table_name": "zip_code",
+                        "modified_table_name": "zip_code"
+                    }
+                },
+                "database_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/invocable_api_hub/driver/../../db/cache/student_club.sqlite"
+            },
+            "label": "starting_table_var"
+        },
+        "predicted_output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$var_1$",
+                    "key_name": "county",
+                    "value": "Orange County",
+                    "condition": "equal_to"
+                },
+                "label": "var_2"
+            }
+        ],
+        "gold_answer": 7,
+        "predicted_answer": null,
+        "llm_data": {
+            "max_new_tokens": 10024,
+            "min_new_tokens": 1,
+            "top_p": 0.1,
+            "temperature": 0.0,
+            "random_seed": 0,
+            "decoding_method": "greedy",
+            "stop_sequences": [
+                "\nObservation"
+            ],
+            "llm_name": "mistralai/mixtral-8x22B-instruct-v0.1"
+        },
+        "metadata": {
+            "gold_answer": 7,
+            "dataset": "student_club",
+            "source_file_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/sql_translation_output/dev/slot_filling_bird_student_club.json",
+            "sample_id": 34
+        }
+    },
+    {
+        "input": "List all of the College of Humanities and Social Sciences' departments.",
+        "output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$starting_table_var$",
+                    "key_name": "college",
+                    "value": "College of Humanities and Social Sciences",
+                    "condition": "equal_to"
+                },
+                "label": "FILTERED_DF_0"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_0$",
+                    "key_name": "department",
+                    "distinct": false,
+                    "limit": -1
+                },
+                "label": "SELECT_COL_0"
+            }
+        ],
+        "initialization_step": {
+            "name": "initialize_active_data",
+            "arguments": {
+                "condition_sequence": [],
+                "alias_to_table_dict": {
+                    "": {
+                        "original_table_name": "major",
+                        "modified_table_name": "major"
+                    }
+                },
+                "database_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/invocable_api_hub/driver/../../db/cache/student_club.sqlite"
+            },
+            "label": "starting_table_var"
+        },
+        "predicted_output": [],
+        "gold_answer": [
+            "Religious Studies Program",
+            "Journalism and Communication Department",
+            "Political Science Department",
+            "Languages, Philosophy and Communication Studies Department",
+            "Languages, Philosophy and Communication Studies Department",
+            "Liberal Arts Program",
+            "Languages, Philosophy and Communication Studies Department",
+            "Languages, Philosophy and Communication Studies Department",
+            "English Department",
+            "Aerospace Studies Program",
+            "Political Science Department",
+            "Sociology, Social Work and Anthropology Department",
+            "History Department",
+            "Asian Studies Program",
+            "Languages, Philosophy and Communication Studies Department",
+            "Languages, Philosophy and Communication Studies Department",
+            "Sociology, Social Work and Anthropology Department",
+            "Sociology, Social Work and Anthropology Department",
+            "Sociology, Social Work and Anthropology Department",
+            "Languages, Philosophy and Communication Studies Department",
+            "English Department",
+            "Military Science Program",
+            "Languages, Philosophy and Communication Studies Department",
+            "Political Science Department"
+        ],
+        "predicted_answer": null,
+        "llm_data": {
+            "max_new_tokens": 10024,
+            "min_new_tokens": 1,
+            "top_p": 0.1,
+            "temperature": 0.0,
+            "random_seed": 0,
+            "decoding_method": "greedy",
+            "stop_sequences": [
+                "\nObservation"
+            ],
+            "llm_name": "mistralai/mixtral-8x22B-instruct-v0.1"
+        },
+        "metadata": {
+            "gold_answer": [
+                "Religious Studies Program",
+                "Journalism and Communication Department",
+                "Political Science Department",
+                "Languages, Philosophy and Communication Studies Department",
+                "Languages, Philosophy and Communication Studies Department",
+                "Liberal Arts Program",
+                "Languages, Philosophy and Communication Studies Department",
+                "Languages, Philosophy and Communication Studies Department",
+                "English Department",
+                "Aerospace Studies Program",
+                "Political Science Department",
+                "Sociology, Social Work and Anthropology Department",
+                "History Department",
+                "Asian Studies Program",
+                "Languages, Philosophy and Communication Studies Department",
+                "Languages, Philosophy and Communication Studies Department",
+                "Sociology, Social Work and Anthropology Department",
+                "Sociology, Social Work and Anthropology Department",
+                "Sociology, Social Work and Anthropology Department",
+                "Languages, Philosophy and Communication Studies Department",
+                "English Department",
+                "Military Science Program",
+                "Languages, Philosophy and Communication Studies Department",
+                "Political Science Department"
+            ],
+            "dataset": "student_club",
+            "source_file_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/sql_translation_output/dev/slot_filling_bird_student_club.json",
+            "sample_id": 35
+        }
+    },
+    {
+        "input": "Where is Amy Firth's hometown?",
+        "output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$starting_table_var$",
+                    "key_name": "member_first_name",
+                    "value": "Amy",
+                    "condition": "equal_to"
+                },
+                "label": "FILTERED_DF_0"
+            },
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_0$",
+                    "key_name": "member_last_name",
+                    "value": "Firth",
+                    "condition": "equal_to"
+                },
+                "label": "FILTERED_DF_1"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_1$",
+                    "key_name": "zip_code_city",
+                    "distinct": false,
+                    "limit": -1
+                },
+                "label": "SELECT_COL_0"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_1$",
+                    "key_name": "zip_code_county",
+                    "distinct": false,
+                    "limit": -1
+                },
+                "label": "SELECT_COL_1"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_1$",
+                    "key_name": "zip_code_state",
+                    "distinct": false,
+                    "limit": -1
+                },
+                "label": "SELECT_COL_2"
+            }
+        ],
+        "initialization_step": {
+            "name": "initialize_active_data",
+            "arguments": {
+                "condition_sequence": [
+                    [
+                        "T1.zip",
+                        "T2.zip_code",
+                        "INNER"
+                    ]
+                ],
+                "alias_to_table_dict": {
+                    "T1": {
+                        "original_table_name": "member",
+                        "modified_table_name": "member"
+                    },
+                    "T2": {
+                        "original_table_name": "zip_code",
+                        "modified_table_name": "zip_code"
+                    }
+                },
+                "database_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/invocable_api_hub/driver/../../db/cache/student_club.sqlite"
+            },
+            "label": "starting_table_var"
+        },
+        "predicted_output": [],
+        "gold_answer": [
+            "Ellicott City",
+            "Howard County",
+            "Maryland"
+        ],
+        "predicted_answer": "Final Answer: The hometown of Amy Firth is [insert the retrieved hometown here].",
+        "llm_data": {
+            "max_new_tokens": 10024,
+            "min_new_tokens": 1,
+            "top_p": 0.1,
+            "temperature": 0.0,
+            "random_seed": 0,
+            "decoding_method": "greedy",
+            "stop_sequences": [
+                "\nObservation"
+            ],
+            "llm_name": "mistralai/mixtral-8x22B-instruct-v0.1"
+        },
+        "metadata": {
+            "gold_answer": [
+                "Ellicott City",
+                "Howard County",
+                "Maryland"
+            ],
+            "dataset": "student_club",
+            "source_file_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/sql_translation_output/dev/slot_filling_bird_student_club.json",
+            "sample_id": 36
+        }
+    },
+    {
+        "input": "List all the members who attended the event \"October Meeting\".",
+        "output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$starting_table_var$",
+                    "key_name": "event_event_name",
+                    "value": "October Meeting",
+                    "condition": "equal_to"
+                },
+                "label": "FILTERED_DF_0"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_0$",
+                    "key_name": "member_member_id",
+                    "distinct": true,
+                    "limit": -1
+                },
+                "label": "SELECT_COL_0"
+            }
+        ],
+        "initialization_step": {
+            "name": "initialize_active_data",
+            "arguments": {
+                "condition_sequence": [
+                    [
+                        "T1.event_id",
+                        "T2.link_to_event",
+                        "INNER"
+                    ],
+                    [
+                        "T2.link_to_member",
+                        "T3.member_id",
+                        "INNER"
+                    ]
+                ],
+                "alias_to_table_dict": {
+                    "T1": {
+                        "original_table_name": "event",
+                        "modified_table_name": "event"
+                    },
+                    "T2": {
+                        "original_table_name": "attendance",
+                        "modified_table_name": "attendance"
+                    },
+                    "T3": {
+                        "original_table_name": "member",
+                        "modified_table_name": "member"
+                    }
+                },
+                "database_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/invocable_api_hub/driver/../../db/cache/student_club.sqlite"
+            },
+            "label": "starting_table_var"
+        },
+        "predicted_output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$var_1$",
+                    "key_name": "event_event_name",
+                    "value": "October Meeting",
+                    "condition": "equal_to"
+                },
+                "label": "var_2"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$var_2$",
+                    "key_name": [
+                        "member_first_name",
+                        "member_last_name"
+                    ],
+                    "distinct": false,
+                    "limit": null
+                },
+                "label": "var_3"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$var_2$",
+                    "key_name": [
+                        "member_first_name",
+                        "member_last_name"
+                    ],
+                    "distinct": false,
+                    "limit": 1000000
+                },
+                "label": "var_4"
+            }
+        ],
+        "gold_answer": [
+            "recD078PnS3x2doBe",
+            "recP6DJPyi5donvXL",
+            "rec28ORZgcm1dtqBZ",
+            "recTjHY5xXhvkCdVT",
+            "recZ4PkGERzl9ziHO",
+            "recEFd8s6pkrTt4Pz",
+            "recEymrwCUKxiiosI",
+            "recQaxyXBQG5BBtD0",
+            "recT92PyyZCGq1R68",
+            "recJMazpPVexyFYTc",
+            "reccW7q1KkhSKZsea",
+            "recL94zpn6Xh6kQii",
+            "recf4UKTfipCzgcSA",
+            "recro8T1MPMwRadVH",
+            "recsTO4OZIF9rbubk",
+            "reco0mr8dXTgs5wWA",
+            "recuSfhAZIlKba4s2",
+            "recxBj3tjKTGHqucS",
+            "recUdRhbhcEO1Hk5r",
+            "rec4BLdZHS2Blfp4v",
+            "recWh2lJVOT6HjChK",
+            "rec280Sk7o31iG0Tx",
+            "rec3pH4DxMcWHMRB7"
+        ],
+        "predicted_answer": null,
+        "llm_data": {
+            "max_new_tokens": 10024,
+            "min_new_tokens": 1,
+            "top_p": 0.1,
+            "temperature": 0.0,
+            "random_seed": 0,
+            "decoding_method": "greedy",
+            "stop_sequences": [
+                "\nObservation"
+            ],
+            "llm_name": "mistralai/mixtral-8x22B-instruct-v0.1"
+        },
+        "metadata": {
+            "gold_answer": [
+                "recD078PnS3x2doBe",
+                "recP6DJPyi5donvXL",
+                "rec28ORZgcm1dtqBZ",
+                "recTjHY5xXhvkCdVT",
+                "recZ4PkGERzl9ziHO",
+                "recEFd8s6pkrTt4Pz",
+                "recEymrwCUKxiiosI",
+                "recQaxyXBQG5BBtD0",
+                "recT92PyyZCGq1R68",
+                "recJMazpPVexyFYTc",
+                "reccW7q1KkhSKZsea",
+                "recL94zpn6Xh6kQii",
+                "recf4UKTfipCzgcSA",
+                "recro8T1MPMwRadVH",
+                "recsTO4OZIF9rbubk",
+                "reco0mr8dXTgs5wWA",
+                "recuSfhAZIlKba4s2",
+                "recxBj3tjKTGHqucS",
+                "recUdRhbhcEO1Hk5r",
+                "rec4BLdZHS2Blfp4v",
+                "recWh2lJVOT6HjChK",
+                "rec280Sk7o31iG0Tx",
+                "rec3pH4DxMcWHMRB7"
+            ],
+            "dataset": "student_club",
+            "source_file_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/sql_translation_output/dev/slot_filling_bird_student_club.json",
+            "sample_id": 37
+        }
+    },
+    {
+        "input": "What does the person with the phone number \"809-555-3360\" major in?",
+        "output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$starting_table_var$",
+                    "key_name": "member_phone",
+                    "value": "809-555-3360",
+                    "condition": "equal_to"
+                },
+                "label": "FILTERED_DF_0"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$FILTERED_DF_0$",
+                    "key_name": "major_major_name",
+                    "distinct": false,
+                    "limit": -1
+                },
+                "label": "SELECT_COL_0"
+            }
+        ],
+        "initialization_step": {
+            "name": "initialize_active_data",
+            "arguments": {
+                "condition_sequence": [
+                    [
+                        "T1.link_to_major",
+                        "T2.major_id",
+                        "INNER"
+                    ]
+                ],
+                "alias_to_table_dict": {
+                    "T1": {
+                        "original_table_name": "member",
+                        "modified_table_name": "member"
+                    },
+                    "T2": {
+                        "original_table_name": "major",
+                        "modified_table_name": "major"
+                    }
+                },
+                "database_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/invocable_api_hub/driver/../../db/cache/student_club.sqlite"
+            },
+            "label": "starting_table_var"
+        },
+        "predicted_output": [
+            {
+                "name": "filter_data",
+                "arguments": {
+                    "data_source": "$var_1$",
+                    "key_name": "member_phone",
+                    "value": "809-555-3360",
+                    "condition": "equal_to"
+                },
+                "label": "var_2"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$var_2$",
+                    "key_name": "major_major_name",
+                    "distinct": false,
+                    "limit": 1
+                },
+                "label": "var_3"
+            }
+        ],
+        "gold_answer": "Agricultural Education",
+        "predicted_answer": "Agricultural Education",
+        "llm_data": {
+            "max_new_tokens": 10024,
+            "min_new_tokens": 1,
+            "top_p": 0.1,
+            "temperature": 0.0,
+            "random_seed": 0,
+            "decoding_method": "greedy",
+            "stop_sequences": [
+                "\nObservation"
+            ],
+            "llm_name": "mistralai/mixtral-8x22B-instruct-v0.1"
+        },
+        "metadata": {
+            "gold_answer": "Agricultural Education",
+            "dataset": "student_club",
+            "source_file_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/sql_translation_output/dev/slot_filling_bird_student_club.json",
+            "sample_id": 38
+        }
+    },
+    {
+        "input": "Which event has the highest budget amount?",
+        "output": [
+            {
+                "name": "sort_data",
+                "arguments": {
+                    "data_source": "$starting_table_var$",
+                    "key_name": "budget_amount",
+                    "ascending": false
+                },
+                "label": "SORTED_DF"
+            },
+            {
+                "name": "retrieve_data",
+                "arguments": {
+                    "data_source": "$SORTED_DF$",
+                    "key_name": "event_event_name",
+                    "distinct": false,
+                    "limit": 1
+                },
+                "label": "SELECT_COL_0"
+            }
+        ],
+        "initialization_step": {
+            "name": "initialize_active_data",
+            "arguments": {
+                "condition_sequence": [
+                    [
+                        "T1.link_to_event",
+                        "T2.event_id",
+                        "INNER"
+                    ]
+                ],
+                "alias_to_table_dict": {
+                    "T1": {
+                        "original_table_name": "budget",
+                        "modified_table_name": "budget"
+                    },
+                    "T2": {
+                        "original_table_name": "event",
+                        "modified_table_name": "event"
+                    }
+                },
+                "database_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/invocable_api_hub/driver/../../db/cache/student_club.sqlite"
+            },
+            "label": "starting_table_var"
+        },
+        "predicted_output": [
+            {
+                "name": "group_data_by",
+                "arguments": {
+                    "data_source": "$var_1$",
+                    "key_name": "event_event_id"
+                },
+                "label": "var_2"
+            },
+            {
+                "name": "aggregate_data",
+                "arguments": {
+                    "data_source": "$var_2$",
+                    "key_name": "budget_amount",
+                    "aggregation_type": "sum",
+                    "distinct": false,
+                    "limit": -1
+                },
+                "label": "var_3"
+            },
+            {
+                "name": "aggregate_data",
+                "arguments": {
+                    "data_source": "$var_2$",
+                    "key_name": "budget_amount",
+                    "aggregation_type": "sum",
+                    "distinct": false,
+                    "limit": -1
+                },
+                "label": "var_4"
+            },
+            {
+                "name": null,
+                "arguments": {},
+                "label": "var_5"
+            }
+        ],
+        "gold_answer": "Yearly Kickoff",
+        "predicted_answer": null,
+        "llm_data": {
+            "max_new_tokens": 10024,
+            "min_new_tokens": 1,
+            "top_p": 0.1,
+            "temperature": 0.0,
+            "random_seed": 0,
+            "decoding_method": "greedy",
+            "stop_sequences": [
+                "\nObservation"
+            ],
+            "llm_name": "mistralai/mixtral-8x22B-instruct-v0.1"
+        },
+        "metadata": {
+            "gold_answer": "Yearly Kickoff",
+            "dataset": "student_club",
+            "source_file_path": "/Users/benjaminelder/ai4ba/invocable-api-hub/sql_translation_output/dev/slot_filling_bird_student_club.json",
+            "sample_id": 39
+        }
+    }
+]

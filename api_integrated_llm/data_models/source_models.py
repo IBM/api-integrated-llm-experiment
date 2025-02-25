@@ -95,6 +95,7 @@ class EvaluationOutputResponseDataUnit(EvaluationOutputDataUnit):
     dataset_name: str = ""
     temperature: float = -1.0
     max_tokens: int = 1500
+    is_agent: bool = False
 
     @staticmethod
     def get_model_from_output_unit(
