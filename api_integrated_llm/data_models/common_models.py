@@ -1,12 +1,12 @@
 from datetime import timedelta
-from typing import Any
+from typing import Optional
 from pydantic import BaseModel
 
 
 class CommonErrorModel(BaseModel):
     error: str
-    file: str
-    payload: Any
+    file: Optional[str] = None
+    payload: Optional[str] = None
 
 
 class HttpResponseModel(BaseModel):

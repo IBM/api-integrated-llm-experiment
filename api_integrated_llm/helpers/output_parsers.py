@@ -1,6 +1,7 @@
 import json
 from typing import Any, Dict, List
 
+from api_integrated_llm.data_models.common_models import CommonErrorModel
 from api_integrated_llm.helpers.file_helper import (
     get_json_data_with_two_step_parsing,
     get_json_dict_from_txt,
@@ -150,7 +151,11 @@ def parse_granite_20b_function_calling_output(
             pred_func_calls = [json.dumps(func) for func in pred_func_calls]
     except Exception as e:
         print(e)
-        parsing_error_messages.append(str(e))
+        parsing_error_messages.append(
+            CommonErrorModel(
+                error=str(e), payload=prediction["generated_text"]
+            ).model_dump_json()
+        )
         num_errors_parsing_pred_intent += 1
         pred_has_parsing_errors = True
 
@@ -206,7 +211,11 @@ def parse_granite_3_output(
                 pred_func_calls.append(json.dumps(func))
     except Exception as e:
         print(e)
-        parsing_error_messages.append(str(e))
+        parsing_error_messages.append(
+            CommonErrorModel(
+                error=str(e), payload=prediction["generated_text"]
+            ).model_dump_json()
+        )
         num_errors_parsing_pred_intent += 1
         pred_has_parsing_errors = True
 
@@ -260,7 +269,11 @@ def parse_llama_3_output(
             pred_func_calls = [json.dumps(func) for func in pred_func_calls]
     except Exception as e:
         print(e)
-        parsing_error_messages.append(str(e))
+        parsing_error_messages.append(
+            CommonErrorModel(
+                error=str(e), payload=prediction["generated_text"]
+            ).model_dump_json()
+        )
         num_errors_parsing_pred_intent += 1
         pred_has_parsing_errors = True
 
@@ -346,7 +359,11 @@ def parse_llama_3_70b_instruct(
                 pred_has_parsing_errors = True
         except Exception as e1:
             print(e1)
-            parsing_error_messages.append(str(e))
+            parsing_error_messages.append(
+                CommonErrorModel(
+                    error=str(e1), payload=prediction["generated_text"]
+                ).model_dump_json()
+            )
             num_errors_parsing_pred_intent += 1
             pred_has_parsing_errors = True
 
@@ -411,7 +428,11 @@ def parse_mistral_7b_instruct_v0_3(
                 pred_func_calls = [json.dumps(func) for func in pred_func_calls]
         except Exception as e1:
             print(e1)
-            parsing_error_messages.append(str(e1))
+            parsing_error_messages.append(
+                CommonErrorModel(
+                    error=str(e1), payload=prediction["generated_text"]
+                ).model_dump_json()
+            )
             num_errors_parsing_pred_intent += 1
             pred_has_parsing_errors = True
 
