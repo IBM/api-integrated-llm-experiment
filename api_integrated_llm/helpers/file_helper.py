@@ -378,7 +378,9 @@ def get_jsonl_list_from_string(
     return jsonl_list
 
 
-def get_json_data_with_two_step_parsing(txt: str, should_return_list: bool) -> Optional[
+def get_json_data_with_two_step_parsing(
+    txt: str, should_return_list: bool
+) -> Optional[
     Union[
         List[Union[List[Dict[str, Any]], Dict[str, Any]]],
         List[Dict[str, Any]],

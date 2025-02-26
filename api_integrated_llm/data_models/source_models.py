@@ -116,6 +116,15 @@ class EvaluationOutputResponseDataUnit(EvaluationOutputDataUnit):
             self.llm_model_id[:],
         )
 
+    def get_dataset_basic_info(self) -> Tuple[str, str, Path, float, int]:
+        return (
+            self.llm_model_id[:],
+            self.dataset_name[:],
+            Path(self.source_file_path),
+            self.temperature,
+            self.max_tokens,
+        )
+
 
 class ScorerOuputModel(BaseModel):
     p_intent: float
