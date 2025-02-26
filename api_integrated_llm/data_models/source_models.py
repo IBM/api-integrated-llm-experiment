@@ -143,6 +143,7 @@ class ScorerOuputModel(BaseModel):
     num_errors_parsing_gold_slot: int
     num_pred_examples_w_parsing_errors: int
     error_messages: List[str]
+    parsing_error_messages: List[str]
     model_temperature: int
     model_max_tokens: int
     evaluation_source: List[EvaluationOutputResponseDataUnit]

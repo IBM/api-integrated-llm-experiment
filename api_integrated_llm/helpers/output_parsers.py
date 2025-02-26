@@ -121,6 +121,7 @@ def parse_granite_20b_function_calling_output(
     pred_func_calls, gold_func_calls = [], []
     pred_dict_list, gold_dict_list = [], []  # type: ignore
     gold_dict_list = get_output_list(prediction=prediction)
+    parsing_error_messages: List[str] = []
     if skip_grounding:
         gold_func_calls = [json.dumps(func) for func in gold_dict_list]
     else:
@@ -149,6 +150,7 @@ def parse_granite_20b_function_calling_output(
             pred_func_calls = [json.dumps(func) for func in pred_func_calls]
     except Exception as e:
         print(e)
+        parsing_error_messages.append(str(e))
         num_errors_parsing_pred_intent += 1
         pred_has_parsing_errors = True
 
@@ -159,6 +161,7 @@ def parse_granite_20b_function_calling_output(
         gold_dict_list,
         num_errors_parsing_pred_intent,
         pred_has_parsing_errors,
+        parsing_error_messages,
     )
 
 
@@ -172,6 +175,7 @@ def parse_granite_3_output(
     pred_func_calls, gold_func_calls = [], []
     pred_dict_list, gold_dict_list = [], []  # type: ignore
     gold_dict_list = get_output_list(prediction=prediction)
+    parsing_error_messages: List[str] = []
     if skip_grounding:
         gold_func_calls = [json.dumps(func) for func in gold_dict_list]
     else:
@@ -202,6 +206,7 @@ def parse_granite_3_output(
                 pred_func_calls.append(json.dumps(func))
     except Exception as e:
         print(e)
+        parsing_error_messages.append(str(e))
         num_errors_parsing_pred_intent += 1
         pred_has_parsing_errors = True
 
@@ -212,6 +217,7 @@ def parse_granite_3_output(
         gold_dict_list,
         num_errors_parsing_pred_intent,
         pred_has_parsing_errors,
+        parsing_error_messages,
     )
 
 
@@ -225,6 +231,7 @@ def parse_llama_3_output(
     pred_func_calls, gold_func_calls = [], []
     pred_dict_list, gold_dict_list = [], []  # type: ignore
     gold_dict_list = get_output_list(prediction=prediction)
+    parsing_error_messages: List[str] = []
 
     if skip_grounding:
         gold_func_calls = [json.dumps(func) for func in gold_dict_list]
@@ -253,6 +260,7 @@ def parse_llama_3_output(
             pred_func_calls = [json.dumps(func) for func in pred_func_calls]
     except Exception as e:
         print(e)
+        parsing_error_messages.append(str(e))
         num_errors_parsing_pred_intent += 1
         pred_has_parsing_errors = True
 
@@ -263,6 +271,7 @@ def parse_llama_3_output(
         gold_dict_list,
         num_errors_parsing_pred_intent,
         pred_has_parsing_errors,
+        parsing_error_messages,
     )
 
 
@@ -276,6 +285,7 @@ def parse_llama_3_70b_instruct(
     pred_func_calls, gold_func_calls = [], []
     pred_dict_list, gold_dict_list = [], []  # type: ignore
     gold_dict_list = get_output_list(prediction=prediction)
+    parsing_error_messages: List[str] = []
 
     if skip_grounding:
         gold_func_calls = [json.dumps(func) for func in gold_dict_list]
@@ -336,6 +346,7 @@ def parse_llama_3_70b_instruct(
                 pred_has_parsing_errors = True
         except Exception as e1:
             print(e1)
+            parsing_error_messages.append(str(e))
             num_errors_parsing_pred_intent += 1
             pred_has_parsing_errors = True
 
@@ -346,6 +357,7 @@ def parse_llama_3_70b_instruct(
         gold_dict_list,
         num_errors_parsing_pred_intent,
         pred_has_parsing_errors,
+        parsing_error_messages,
     )
 
 
@@ -359,6 +371,7 @@ def parse_mistral_7b_instruct_v0_3(
     pred_func_calls, gold_func_calls = [], []
     pred_dict_list, gold_dict_list = [], []  # type: ignore
     gold_dict_list = get_output_list(prediction=prediction)
+    parsing_error_messages: List[str] = []
 
     if skip_grounding:
         gold_func_calls = [json.dumps(func) for func in gold_dict_list]
@@ -398,6 +411,7 @@ def parse_mistral_7b_instruct_v0_3(
                 pred_func_calls = [json.dumps(func) for func in pred_func_calls]
         except Exception as e1:
             print(e1)
+            parsing_error_messages.append(str(e1))
             num_errors_parsing_pred_intent += 1
             pred_has_parsing_errors = True
 
@@ -408,4 +422,5 @@ def parse_mistral_7b_instruct_v0_3(
         gold_dict_list,
         num_errors_parsing_pred_intent,
         pred_has_parsing_errors,
+        parsing_error_messages,
     )

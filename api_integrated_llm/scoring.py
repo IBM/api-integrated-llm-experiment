@@ -205,11 +205,12 @@ def parse_output_from_language_models(
     model_name: str,
     is_single_intent_detection: bool = False,
     is_agent: bool = False,
-) -> Tuple[List[Any], List[Any], List[Any], List[Any], Any, Any]:
+) -> Tuple[List[Any], List[Any], List[Any], List[Any], Any, Any, List[str]]:
     num_errors_parsing_pred_intent = 0
     pred_has_parsing_errors = False
     pred_func_calls, gold_func_calls = [], []
     pred_dict_list, gold_dict_list = [], []
+    parsing_error_messages: List[str] = []
     num_errors_parsing_pred_intent_res = 0
     model_name_lower_cased = model_name.lower()
     if is_agent:
@@ -220,6 +221,7 @@ def parse_output_from_language_models(
             gold_dict_list,
             num_errors_parsing_pred_intent_res,
             pred_has_parsing_errors,
+            parsing_error_messages,
         ) = parse_llama_3_output(
             prediction=prediction,
             num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
@@ -235,6 +237,7 @@ def parse_output_from_language_models(
                 gold_dict_list,
                 num_errors_parsing_pred_intent_res,
                 pred_has_parsing_errors,
+                parsing_error_messages,
             ) = parse_granite_20b_function_calling_output(
                 prediction=prediction,
                 num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
@@ -249,6 +252,7 @@ def parse_output_from_language_models(
                 gold_dict_list,
                 num_errors_parsing_pred_intent_res,
                 pred_has_parsing_errors,
+                parsing_error_messages,
             ) = parse_granite_3_output(
                 prediction=prediction,
                 num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
@@ -264,6 +268,7 @@ def parse_output_from_language_models(
                 gold_dict_list,
                 num_errors_parsing_pred_intent_res,
                 pred_has_parsing_errors,
+                parsing_error_messages,
             ) = parse_llama_3_70b_instruct(
                 prediction=prediction,
                 num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
@@ -278,6 +283,7 @@ def parse_output_from_language_models(
                 gold_dict_list,
                 num_errors_parsing_pred_intent_res,
                 pred_has_parsing_errors,
+                parsing_error_messages,
             ) = parse_llama_3_output(
                 prediction=prediction,
                 num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
@@ -292,6 +298,7 @@ def parse_output_from_language_models(
             gold_dict_list,
             num_errors_parsing_pred_intent_res,
             pred_has_parsing_errors,
+            parsing_error_messages,
         ) = parse_mistral_7b_instruct_v0_3(
             prediction=prediction,
             num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
@@ -306,6 +313,7 @@ def parse_output_from_language_models(
             gold_dict_list,
             num_errors_parsing_pred_intent_res,
             pred_has_parsing_errors,
+            parsing_error_messages,
         ) = parse_llama_3_output(
             prediction=prediction,
             num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
@@ -320,6 +328,7 @@ def parse_output_from_language_models(
             gold_dict_list,
             num_errors_parsing_pred_intent_res,
             pred_has_parsing_errors,
+            parsing_error_messages,
         ) = parse_llama_3_output(
             prediction=prediction,
             num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
@@ -334,6 +343,7 @@ def parse_output_from_language_models(
         gold_dict_list,
         num_errors_parsing_pred_intent_res,
         pred_has_parsing_errors,
+        parsing_error_messages,
     )
 
 
@@ -509,6 +519,7 @@ def get_item_metrics(
     List[float],
     int,
     List[str],
+    List[str],
 ]:
     gold_output_intent = []
     pred_output_intent = []
@@ -523,6 +534,7 @@ def get_item_metrics(
     win_rate_list = []
     num_pred_examples_w_parsing_errors = 0
     error_messages: List[str] = []
+    parsing_error_messages: List[str] = []
 
     for prediction, prediction_model in list(
         map(
@@ -538,6 +550,7 @@ def get_item_metrics(
                 gold_dict_list,
                 model_num_errors_parsing_pred_intent,
                 pred_has_parsing_errors,
+                instance_parsing_error_messages,
             ) = parse_output_from_language_models(
                 prediction=prediction,
                 model_name=model_name[:],
@@ -545,6 +558,7 @@ def get_item_metrics(
                 is_agent=prediction_model.is_agent,
             )
             num_errors_parsing_pred_intent += model_num_errors_parsing_pred_intent
+            parsing_error_messages.extend(instance_parsing_error_messages)
         except Exception as e:
             print(e)
             error_messages.append(
@@ -630,6 +644,7 @@ def get_item_metrics(
         win_rate_list,
         num_pred_examples_w_parsing_errors,
         error_messages,
+        parsing_error_messages,
     )
 
 
@@ -706,6 +721,7 @@ def calculate_scores(
         win_rate_list,
         num_pred_examples_w_parsing_errors,
         error_messages,
+        parsing_error_messages,
     ) = get_item_metrics(
         predictions_input=predictions_input,
         model_name=model_name,
@@ -751,6 +767,7 @@ def calculate_scores(
         num_errors_parsing_gold_slot=num_errors_parsing_gold_slot,
         num_pred_examples_w_parsing_errors=num_pred_examples_w_parsing_errors,
         error_messages=error_messages,
+        parsing_error_messages=parsing_error_messages,
         model_temperature=model_temperature,
         model_max_tokens=model_max_tokens,
         evaluation_source=list(
