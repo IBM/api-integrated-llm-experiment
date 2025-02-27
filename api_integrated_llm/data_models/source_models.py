@@ -134,7 +134,6 @@ class ScorerOuputModel(BaseModel):
     r_slot: Optional[float]
     f1_slot: Optional[float]
     num_examples: int
-    accuracy_combined: float
     percentage_times_full_score: float
     win_rate: Optional[float]
     num_errors_parsing_pred_intent: int
