@@ -16,6 +16,7 @@ def test_parse_llama_3_output_single_intent() -> None:
                 "data",
                 "test_output",
                 "evaluation",
+                "llm",
                 "llama",
                 "real_estate_properties_nestful_format_cosql.jsonl",
             )
@@ -29,6 +30,7 @@ def test_parse_llama_3_output_single_intent() -> None:
         gold_dict_list,
         num_errors_parsing_pred_intent,
         pred_has_parsing_errors,
+        parsing_error_messages,
     ) = parse_llama_3_output(
         prediction=data_list[0],
         num_errors_parsing_pred_intent=0,
@@ -47,6 +49,7 @@ def test_parse_llama_3_output_multi_intent() -> None:
                 "data",
                 "test_output",
                 "evaluation",
+                "llm",
                 "llama",
                 "real_estate_properties_nestful_format_cosql.jsonl",
             )
@@ -60,6 +63,7 @@ def test_parse_llama_3_output_multi_intent() -> None:
         gold_dict_list,
         num_errors_parsing_pred_intent,
         pred_has_parsing_errors,
+        parsing_error_messages,
     ) = parse_llama_3_output(
         prediction=data_list[0],
         num_errors_parsing_pred_intent=0,

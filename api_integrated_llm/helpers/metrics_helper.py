@@ -1,6 +1,13 @@
+from collections import Counter
+from typing import List, Tuple, Union
 import numpy as np
 from sklearn.metrics import f1_score, precision_score, recall_score
 from sklearn.preprocessing import MultiLabelBinarizer
+
+from api_integrated_llm.data_models.scorer_models import (
+    ConfusionMatrixMode,
+    ConfusionMatrixModel,
+)
 
 binarizer = MultiLabelBinarizer()
 
@@ -25,6 +32,119 @@ def compute_score_sklearn(gold_output, pred_output):
     )
 
     return precision_macro, recall_macro, f1_score_macro
+
+
+def check_coverage(
+    gold: List[Union[str, float, int, bool]], pred: List[Union[str, float, int, bool]]
+) -> Tuple[bool, bool]:
+    is_non_zero_gold = False
+    is_covered = False
+    if len(gold) > 0:
+        is_non_zero_gold = True
+        gold_set = set(gold)
+        pred_set = set(pred)
+        if gold_set.issubset(pred_set):
+            is_covered = True
+
+    return is_non_zero_gold, is_covered
+
+
+def get_confusion_matrix_cells(
+    gold: List[Union[str, float, int, bool]],
+    pred: List[Union[str, float, int, bool]],
+    mode: ConfusionMatrixMode,
+) -> Tuple[int, int, int, int]:
+    true_positive = 0
+    false_positive = 0
+    true_negative = 0
+    false_negative = 0
+
+    if len(gold) == 0 and len(pred) == 0:
+        true_positive = 1
+        false_positive = 0
+        true_negative = 0
+        false_negative = 0
+    else:
+        if mode == ConfusionMatrixMode.SET or mode == ConfusionMatrixMode.MULTISET:
+            gold_dict = Counter(gold)
+            pred_dict = Counter(pred)
+
+            for key, frequency in gold_dict.items():
+                if key in pred_dict:
+                    if mode == ConfusionMatrixMode.SET:
+                        true_positive += 1
+                    else:  # mode == ConfusionMatrixMode.MULTISET:
+                        true_positive += min(frequency, pred_dict[key])
+                        false_negative += max(0, frequency - pred_dict[key])
+                        false_positive += max(0, pred_dict[key] - frequency)
+
+                    pred_dict.pop(key)  # remove visited key in prediction dictionary
+                else:  # key not in pred_dict
+                    false_negative += (
+                        1 if mode == ConfusionMatrixMode.SET else frequency
+                    )
+
+            for (
+                key,
+                frequency,
+            ) in (
+                pred_dict.items()
+            ):  # handle all keys in prediction not existing in gold
+                false_positive += 1 if mode == ConfusionMatrixMode.SET else frequency
+        elif mode == ConfusionMatrixMode.LIST:  # list mode: sequence-aware approach
+            num_matches = 0
+            for idx, value in enumerate(gold):
+                if len(pred) > idx:
+                    if value == pred[idx]:
+                        num_matches += 1
+                    else:
+                        break
+                else:
+                    break
+            true_positive += num_matches
+            false_positive += max(0, len(pred) - num_matches)
+            false_negative += max(0, len(gold) - num_matches)
+        else:
+            raise Exception(
+                "Undefined confusion matrix mode at get_confusion_matrix_cells()"
+            )
+
+    return (true_positive, false_positive, true_negative, false_negative)
+
+
+def get_confision_matrix_list(
+    gold_answers: List[List[Union[str, float, int, bool]]],
+    predicted_answers: List[List[Union[str, float, int, bool]]],
+    mode: ConfusionMatrixMode = ConfusionMatrixMode.SET,
+) -> Tuple[List[ConfusionMatrixModel], int, int]:
+    confusion_matrix_models: List[ConfusionMatrixModel] = []
+    nonZeroGold = 0
+    covered = 0
+
+    for gold, pred in zip(gold_answers, predicted_answers):
+        matrix = ConfusionMatrixModel(mode=mode)
+
+        # check coverage
+        matrix.is_non_zero_gold, matrix.is_covered = check_coverage(
+            gold=gold, pred=pred
+        )
+        nonZeroGold += 1 if matrix.is_non_zero_gold else 0
+        covered += 1 if matrix.is_covered else 0
+
+        (
+            matrix.true_positive,
+            matrix.false_positive,
+            matrix.true_negative,
+            matrix.false_negative,
+        ) = get_confusion_matrix_cells(
+            gold=gold,
+            pred=pred,
+            mode=mode,
+        )
+
+        confusion_matrix_models.append(matrix)
+
+    return confusion_matrix_models, nonZeroGold, covered
 
 
 def _compute_confusion_mat(gold_answers: list, predicted_answers: list):
