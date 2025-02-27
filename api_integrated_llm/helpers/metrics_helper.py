@@ -49,6 +49,65 @@ def check_coverage(
     return is_non_zero_gold, is_covered
 
 
+def get_confusion_matrix_cells(
+    gold: List[Union[str, float, int, bool]],
+    pred: List[Union[str, float, int, bool]],
+    mode: ConfusionMatrixMode,
+) -> Tuple[int, int, int, int]:
+    true_positive = 0
+    false_positive = 0
+    true_negative = 0
+    false_negative = 0
+
+    if len(gold) == 0 and len(pred) == 0:
+        true_positive = 1
+        false_positive = 0
+        true_negative = 0
+        false_negative = 0
+    else:
+        if mode == ConfusionMatrixMode.SET or mode == ConfusionMatrixMode.MULTISET:
+            gold_dict = Counter(gold)
+            pred_dict = Counter(pred)
+
+            for key, frequency in gold_dict.items():
+                if key in pred_dict:
+                    if mode == ConfusionMatrixMode.SET:
+                        true_positive += 1
+                    else:  # mode == ConfusionMatrixMode.MULTISET:
+                        true_positive += min(frequency, pred_dict[key])
+                        false_negative += max(0, frequency - pred_dict[key])
+                        false_positive += max(0, pred_dict[key] - frequency)
+
+                    pred_dict.pop(key)  # remove visited key in prediction dictionary
+                else:  # key not in pred_dict
+                    false_negative += (
+                        1 if mode == ConfusionMatrixMode.SET else frequency
+                    )
+
+            for (
+                key,
+                frequency,
+            ) in (
+                pred_dict.items()
+            ):  # handle all keys in prediction not existing in gold
+                false_positive += 1 if mode == ConfusionMatrixMode.Set else frequency
+
+        if mode == ConfusionMatrixMode.LIST:  # list mode: sequence-aware approach
+            num_matches = 0
+            for idx, value in enumerate(gold):
+                if len(pred) > idx:
+                    if value == pred[idx]:
+                        num_matches += 1
+                    else:
+                        break
+                else:
+                    break
+            true_positive += num_matches
+            false_negative += max(0, len(pred) - num_matches)
+
+    return (true_positive, false_positive, true_negative, false_negative)
+
+
 def get_confision_matrix_list(
     gold_answers: List[List[Union[str, float, int, bool]]],
     predicted_answers: List[List[Union[str, float, int, bool]]],
@@ -68,45 +127,16 @@ def get_confision_matrix_list(
         nonZeroGold += 1 if matrix.is_non_zero_gold else 0
         covered += 1 if matrix.is_covered else 0
 
-        # calculate confusion matrix
-        if len(gold) == 0 and len(pred) == 0:
-            matrix.true_positive = 1
-            matrix.false_positive = 0
-            matrix.true_negative = 0
-            matrix.false_negative = 0
-        else:
-            if mode == ConfusionMatrixMode.SET or mode == ConfusionMatrixMode.MULTISET:
-                gold_dict = Counter(gold)
-                pred_dict = Counter(pred)
-
-                for key, frequency in gold_dict.items():
-                    if key in pred_dict:
-                        if mode == ConfusionMatrixMode.SET:
-                            matrix.true_positive += 1
-                        else:  # mode == ConfusionMatrixMode.MULTISET:
-                            matrix.true_positive += min(frequency, pred_dict[key])
-                            matrix.false_negative += max(0, frequency - pred_dict[key])
-                            matrix.false_positive += max(0, pred_dict[key] - frequency)
-
-                        pred_dict.pop(
-                            key
-                        )  # remove visited key in prediction dictionary
-                    else:  # key not in pred_dict
-                        matrix.false_negative += (
-                            1 if mode == ConfusionMatrixMode.SET else frequency
-                        )
-
-                for (
-                    key,
-                    frequency,
-                ) in (
-                    pred_dict.items()
-                ):  # handle all keys in prediction not existing in gold
-                    matrix.false_positive += (
-                        1 if mode == ConfusionMatrixMode.Set else frequency
-                    )
-            else:  # list mode
-                pass
+        (
+            matrix.true_positive,
+            matrix.false_positive,
+            matrix.true_negative,
+            matrix.false_negative,
+        ) = get_confusion_matrix_cells(
+            gold=gold,
+            pred=pred,
+            mode=mode,
+        )
 
         confusion_matrix_models.append(matrix)
 
