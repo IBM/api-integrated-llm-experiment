@@ -91,8 +91,7 @@ def get_confusion_matrix_cells(
                 pred_dict.items()
             ):  # handle all keys in prediction not existing in gold
                 false_positive += 1 if mode == ConfusionMatrixMode.SET else frequency
-
-        if mode == ConfusionMatrixMode.LIST:  # list mode: sequence-aware approach
+        elif mode == ConfusionMatrixMode.LIST:  # list mode: sequence-aware approach
             num_matches = 0
             for idx, value in enumerate(gold):
                 if len(pred) > idx:
@@ -105,6 +104,10 @@ def get_confusion_matrix_cells(
             true_positive += num_matches
             false_positive += max(0, len(pred) - num_matches)
             false_negative += max(0, len(gold) - num_matches)
+        else:
+            raise Exception(
+                "Undefined confusion matrix mode at get_confusion_matrix_cells()"
+            )
 
     return (true_positive, false_positive, true_negative, false_negative)
 
