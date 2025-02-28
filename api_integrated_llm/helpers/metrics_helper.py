@@ -1,13 +1,14 @@
 from collections import Counter
 from typing import List, Tuple
-from sklearn.preprocessing import MultiLabelBinarizer
+
+# from sklearn.preprocessing import MultiLabelBinarizer
 
 from api_integrated_llm.data_models.scorer_models import (
     ConfusionMatrixMode,
     ConfusionMatrixModel,
 )
 
-binarizer = MultiLabelBinarizer()
+# binarizer = MultiLabelBinarizer()
 
 
 def check_coverage(gold: List[str], pred: List[str]) -> Tuple[bool, bool]:
