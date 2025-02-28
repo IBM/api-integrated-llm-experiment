@@ -141,6 +141,7 @@ class ScorerOuputModel(BaseModel):
     num_errors_parsing_pred_slot: int
     num_errors_parsing_gold_slot: int
     num_pred_examples_w_parsing_errors: int
+    num_gold_examples_w_parsing_errors: int
     error_messages: List[str]
     parsing_error_messages: List[str]
     model_temperature: int

@@ -314,7 +314,7 @@ def get_api_lists_from_func_calls(
 
 def get_slot_info(
     gold_func_calls: List[Any], pred_func_calls: List[Any], intents_only: bool
-) -> Tuple[List[List[str]], List[List[str]], List[str], int, int, bool]:
+) -> Tuple[List[List[str]], List[List[str]], List[str], int, int, bool, bool]:
     gold_output_slot: List[List[str]] = []
     pred_output_slot: List[List[str]] = []
     error_messages: List[str] = []
@@ -365,6 +365,7 @@ def get_slot_info(
         num_errors_parsing_gold_slot,
         num_errors_parsing_pred_slot,
         pred_has_parsing_errors,
+        gold_has_parsing_errors,
     )
 
 
@@ -388,6 +389,7 @@ def get_item_metrics(
     int,
     List[float],
     int,
+    int,
     List[str],
     List[str],
 ]:
@@ -402,6 +404,7 @@ def get_item_metrics(
     all_num_times_full_score = 0
     win_rate_list: List[float] = []
     num_pred_examples_w_parsing_errors = 0
+    num_gold_examples_w_parsing_errors = 0
     error_messages: List[str] = []
     parsing_error_messages: List[str] = []
 
@@ -412,6 +415,7 @@ def get_item_metrics(
         )
     ):
         gold_has_parsing_errors = False
+        pred_has_parsing_errors = False
         try:
             (
                 pred_func_calls,
@@ -475,7 +479,8 @@ def get_item_metrics(
             slot_error_messages,
             instance_num_errors_parsing_gold_slot,
             instance_num_errors_parsing_pred_slot,
-            has_parsing_errors,
+            has_parsing_errors_pred,
+            has_parsing_errors_gold,
         ) = get_slot_info(
             gold_func_calls=gold_func_calls,
             pred_func_calls=pred_func_calls,
@@ -486,10 +491,11 @@ def get_item_metrics(
         error_messages.extend(slot_error_messages)
         num_errors_parsing_gold_slot += instance_num_errors_parsing_gold_slot
         num_errors_parsing_pred_slot += instance_num_errors_parsing_pred_slot
-        pred_has_parsing_errors = pred_has_parsing_errors or has_parsing_errors
+        pred_has_parsing_errors = pred_has_parsing_errors or has_parsing_errors_pred
+        gold_has_parsing_errors = gold_has_parsing_errors or has_parsing_errors_gold
 
-        if pred_has_parsing_errors:
-            num_pred_examples_w_parsing_errors += 1
+        num_pred_examples_w_parsing_errors += 1 if pred_has_parsing_errors else 0
+        num_gold_examples_w_parsing_errors += 1 if gold_has_parsing_errors else 0
 
         ## Calculate WinRate here
         # win_rate_list.append(win_score)
@@ -506,6 +512,7 @@ def get_item_metrics(
         all_num_times_full_score,
         win_rate_list,
         num_pred_examples_w_parsing_errors,
+        num_gold_examples_w_parsing_errors,
         error_messages,
         parsing_error_messages,
     )
@@ -582,6 +589,7 @@ def calculate_scores(
         all_num_times_full_score,
         win_rate_list,
         num_pred_examples_w_parsing_errors,
+        num_gold_examples_w_parsing_errors,
         error_messages,
         parsing_error_messages,
     ) = get_item_metrics(
@@ -627,6 +635,7 @@ def calculate_scores(
         num_errors_parsing_pred_slot=num_errors_parsing_pred_slot,
         num_errors_parsing_gold_slot=num_errors_parsing_gold_slot,
         num_pred_examples_w_parsing_errors=num_pred_examples_w_parsing_errors,
+        num_gold_examples_w_parsing_errors=num_gold_examples_w_parsing_errors,
         error_messages=error_messages,
         parsing_error_messages=parsing_error_messages,
         model_temperature=model_temperature,
