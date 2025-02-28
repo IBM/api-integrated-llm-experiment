@@ -1,7 +1,9 @@
+from collections import OrderedDict
+from copy import deepcopy
 import os
 import json
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 from api_integrated_llm.data_models.common_models import CommonErrorModel
 from api_integrated_llm.data_models.source_models import (
@@ -25,6 +27,7 @@ from api_integrated_llm.helpers.metrics_helper import (
 from api_integrated_llm.helpers.file_helper import (
     get_base_models_from_jsonl,
     get_dataset_name_from_file_path,
+    get_uuid4_str,
     write_json,
     write_jsonl,
 )
@@ -184,99 +187,176 @@ def parse_output_from_language_models(
     )
 
 
-def get_api_names(
-    gold_func_calls: List[Any], pred_func_calls: List[Any]
-) -> Tuple[List[str], List[str], int, int, bool]:
-    gold_apis_names, pred_apis_names = [], []
-    pred_has_parsing_errors = False
-    num_errors_parsing_pred_intent = 0
-    num_errors_parsing_gold_intent = 0
-    for f in pred_func_calls:
-        if not f:
-            continue
-        try:
-            if f.strip() == '{"name": "dummy", "arguments": {}}':
-                continue
-            f = json.loads(f.replace("<|endoftext|>", "").strip())
-            pred_apis_names.append(str(f["name"]))
-        except:
-            # pred_apis_names.append('random_' + str(randrange(100)))
-            num_errors_parsing_pred_intent += 1
-            pred_has_parsing_errors = True
-            pass
-    for f in gold_func_calls:
-        if not f:
-            continue
-        try:
-            f = json.loads(f.replace("<|endoftext|>", "").replace("null", "{}").strip())
-            gold_apis_names.append(str(f["name"]))
-        except Exception as e:  # cases with empty gold output
-            print(e)
-            num_errors_parsing_gold_intent += 1
-            pass
+def get_function_dict(content: Any) -> Optional[Dict[str, Any]]:
+    if content is None or not isinstance(content, str):
+        return None
+    # legacy: only for pred
+    # if f.strip() == '{"name": "dummy", "arguments": {}}':
+    #     continue
+    return json.loads(
+        content.replace("<|endoftext|>", "").replace("null", "{}").strip(),
+        object_pairs_hook=OrderedDict,  # to preserve the order in json string
+    )
+
+
+def get_function_obj(
+    content: Any, field_to_extract: Optional[str]
+) -> Tuple[Optional[Dict[str, Any]], Optional[str]]:
+    obj: Optional[Dict[str, Any]] = None
+    error_message: Optional[str] = None
+    try:
+        obj = get_function_dict(content=content)
+    except Exception as e:
+        error_message = str(e)
+
+    if obj is None:
+        error_message = "function content is not str"
+    elif field_to_extract not in obj:
+        obj = None
+        error_message = f"{field_to_extract} does not exist in a parsed object"
+
+    return obj, error_message
+
+
+def get_default_obj(field_to_extract: str) -> Union[str, Dict[str, Any]]:
+    return get_uuid4_str() if field_to_extract == "name" else {}
+
+
+def get_api_field_value(
+    content: Any, field_to_extract: str
+) -> Tuple[Union[str, Dict[str, Any]], int, bool]:
+    obj, error_message = get_function_obj(
+        content=content, field_to_extract=field_to_extract
+    )
+    obj_extracted = ""
+
+    if obj is not None:
+        obj_extracted = (
+            obj[field_to_extract]
+            if (error_message is not None and field_to_extract in obj)
+            else get_default_obj(field_to_extract=field_to_extract)
+        )
+
+    if field_to_extract == "name":
+        obj_extracted = str(obj_extracted)
+
+    num_errors = 1 if obj is None else 0
+    has_parsing_errors = obj is None
+
+    return obj_extracted, num_errors, has_parsing_errors
+
+
+def get_api_contents(
+    func_calls: List[Any], field_to_extract: str
+) -> Tuple[List[Union[str, Dict[str, Any]]], int, bool]:
+    apis_contents: List[Union[str, Dict[str, Any]]] = []
+    has_parsing_errors_contents = False
+    num_errors_contents = 0
+
+    for content in func_calls:
+        (obj_extracted, num_errors, has_parsing_errors) = get_api_field_value(
+            content=content, field_to_extract=field_to_extract
+        )
+        apis_contents.append(obj_extracted)
+        num_errors_contents += num_errors
+        has_parsing_errors_contents = has_parsing_errors_contents or has_parsing_errors
 
     return (
-        gold_apis_names,
-        pred_apis_names,
-        num_errors_parsing_gold_intent,
-        num_errors_parsing_pred_intent,
-        pred_has_parsing_errors,
+        apis_contents,
+        num_errors_contents,
+        has_parsing_errors_contents,
+    )
+
+
+def get_api_lists_from_func_calls(
+    func_calls: List[Any],
+) -> Tuple[List[Tuple[str, List[str]]], int, bool]:
+    api_list: List[Tuple[str, List[str]]] = []
+    error_messages: List[str] = []
+    num_errors_parsing_slot = 0
+    has_parsing_errors_slot = False
+
+    for content in func_calls:
+        name_extracted, num_errors_name, has_no_name = get_api_field_value(
+            content=content, field_to_extract="name"
+        )
+
+        if has_no_name or not isinstance(name_extracted, str):
+            num_errors_parsing_slot += num_errors_name
+            has_parsing_errors_slot = has_parsing_errors_slot or has_no_name
+            error_messages.append("predicted function has no name")
+            continue
+
+        (
+            arguments_extracted,
+            num_errors_arguments,
+            has_no_arguments,
+        ) = get_api_field_value(content=content, field_to_extract="arguments")
+
+        if (not has_no_arguments) and isinstance(arguments_extracted, dict):
+            arguments: List[str] = []
+            for arg, val in arguments_extracted.items():
+                argument_str = f"{arg} = {val}"
+                arguments.append(argument_str)
+            api_list.append((name_extracted, arguments))
+        else:
+            api_list.append((name_extracted, []))
+            num_errors_parsing_slot += num_errors_arguments
+            has_parsing_errors_slot = has_parsing_errors_slot or has_no_arguments
+            error_messages.append("predicted function has no valid arguments")
+
+    return (
+        api_list,
+        num_errors_parsing_slot,
+        has_parsing_errors_slot,
     )
 
 
 def get_slot_info(
     gold_func_calls: List[Any], pred_func_calls: List[Any], intents_only: bool
-) -> Tuple[List[Any], List[Any], List[str], int, int, bool]:
-    gold_output_slot = []
-    pred_output_slot = []
+) -> Tuple[List[List[str]], List[List[str]], List[str], int, int, bool]:
+    gold_output_slot: List[List[str]] = []
+    pred_output_slot: List[List[str]] = []
     error_messages: List[str] = []
     num_errors_parsing_gold_slot = 0
     num_errors_parsing_pred_slot = 0
     pred_has_parsing_errors = False
+    gold_has_parsing_errors = False
 
     if not intents_only:
-        pred_api_map, gold_api_map = {}, {}  # type: ignore
-        for f in pred_func_calls:
-            if f.strip() == '{"name": "dummy", "arguments": {}}':
-                continue
-            try:
-                if not f:
-                    continue
-                f = json.loads(f.replace("<|endoftext|>", "").strip())
-                if type(f) != dict or "name" not in f:
-                    raise Exception("'name' not in predicted function call")
-                api_name = f["name"]
-                pred_api_map[api_name] = []
-                for arg, val in f["arguments"].items():
-                    pred_api_map[f["name"]].append(f"{arg} = {val}")
-            except Exception as e:
-                num_errors_parsing_pred_slot += 1
-                pred_has_parsing_errors = True
-                error_messages.append(str(e))
-                pass
-        for f in gold_func_calls:
-            if not f:
-                continue
-            try:
-                f = json.loads(
-                    f.replace("<|endoftext|>", "").replace("null", "{}").strip()
-                )
-                gold_api_map[f["name"]] = []
-                for arg, val in f["arguments"].items():
-                    gold_api_map[f["name"]].append(f"{arg} = {val}")
-            except:  # cases with empty gold output
-                num_errors_parsing_gold_slot += 1
-                error_messages.append("gold output is empty")
-                pass
-        for key in set(pred_api_map.keys()).union(gold_api_map.keys()):
-            if key in pred_api_map:
-                pred_output_slot.append(pred_api_map[key])
+        (
+            pred_api_lists,
+            instance_num_errors_parsing_slot,
+            instance_has_parsing_errors_slot,
+        ) = get_api_lists_from_func_calls(
+            func_calls=pred_func_calls,
+        )
+
+        num_errors_parsing_pred_slot += instance_num_errors_parsing_slot
+        pred_has_parsing_errors = (
+            pred_has_parsing_errors or instance_has_parsing_errors_slot
+        )
+
+        (
+            gold_api_lists,
+            instance_num_errors_parsing_slot,
+            instance_has_parsing_errors_slot,
+        ) = get_api_lists_from_func_calls(
+            func_calls=gold_func_calls,
+        )
+        num_errors_parsing_gold_slot += instance_num_errors_parsing_slot
+        gold_has_parsing_errors = (
+            gold_has_parsing_errors or instance_has_parsing_errors_slot
+        )
+
+        pred_api_dict = {api_name: arguments for api_name, arguments in pred_api_lists}
+
+        for gold_api_name, gold_arguments in gold_api_lists:
+            if gold_api_name in pred_api_dict:
+                pred_output_slot.append(pred_api_dict[gold_api_name])
             else:
-                pred_output_slot.append([])
-            if key in gold_api_map:
-                gold_output_slot.append(gold_api_map[key])
-            else:
-                gold_output_slot.append([])
+                pred_output_slot.append([])  # no matching api is found
+            gold_output_slot.append(deepcopy(gold_arguments))
 
     return (
         gold_output_slot,
@@ -319,7 +399,6 @@ def get_item_metrics(
     num_errors_parsing_gold_intent = 0
     num_errors_parsing_pred_slot = 0
     num_errors_parsing_gold_slot = 0
-    # all_accuracy_combined = []
     all_num_times_full_score = 0
     win_rate_list: List[float] = []
     num_pred_examples_w_parsing_errors = 0
@@ -332,6 +411,7 @@ def get_item_metrics(
             predictions_input,
         )
     ):
+        gold_has_parsing_errors = False
         try:
             (
                 pred_func_calls,
@@ -361,14 +441,28 @@ def get_item_metrics(
 
         (
             gold_apis_names,
-            pred_apis_names,
             instance_num_errors_parsing_gold_intent,
-            instance_num_errors_parsing_pred_intent,
-            has_parsing_errors,
-        ) = get_api_names(
-            gold_func_calls=gold_func_calls, pred_func_calls=pred_func_calls
+            instance_gold_has_parsing_errors,
+        ) = get_api_contents(
+            func_calls=gold_func_calls,
+            field_to_extract="name",
         )
-        pred_has_parsing_errors = pred_has_parsing_errors or has_parsing_errors
+
+        (
+            pred_apis_names,
+            instance_num_errors_parsing_pred_intent,
+            instance_pred_has_parsing_errors,
+        ) = get_api_contents(
+            func_calls=pred_func_calls,
+            field_to_extract="name",
+        )
+
+        pred_has_parsing_errors = (
+            pred_has_parsing_errors or instance_pred_has_parsing_errors
+        )
+        gold_has_parsing_errors = (
+            gold_has_parsing_errors or instance_gold_has_parsing_errors
+        )
         num_errors_parsing_gold_intent += instance_num_errors_parsing_gold_intent
         num_errors_parsing_pred_intent += instance_num_errors_parsing_pred_intent
 
@@ -580,7 +674,7 @@ def check_single_intent(evaluator_output_file_path: Path) -> bool:
 def scoring(
     evaluator_output_file_paths: List[Path],
     output_folder_path: Path,
-    win_rate_flag: bool = False,
+    win_rate_flag: bool = True,
 ) -> None:
     for evaluator_output_file_path in evaluator_output_file_paths:
         dataset_name = get_dataset_name_from_file_path(

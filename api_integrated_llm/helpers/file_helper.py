@@ -1,3 +1,4 @@
+from collections import OrderedDict
 from datetime import datetime
 import hashlib
 import os
@@ -96,7 +97,9 @@ def get_base_models_from_jsonl(
         json_list = list(f)
 
     for json_str in json_list:
-        tmp_dict = json.loads(json_str)
+        tmp_dict = json.loads(
+            json_str, object_pairs_hook=OrderedDict
+        )  # to preserve the order in json string)
         try:
             model = base_model.model_validate(tmp_dict)
             outputs.append(model)
@@ -141,7 +144,9 @@ def get_models_from_jsonl(file_path: Path, model: BaseModel) -> List[BaseModel]:
         json_list = list(f)
 
     for json_str in json_list:
-        tmp_dict = json.loads(json_str)
+        tmp_dict = json.loads(
+            json_str, object_pairs_hook=OrderedDict
+        )  # to preserve the order in json string)
         outputs.append(model.model_validate(tmp_dict))
     return outputs
 
@@ -152,7 +157,9 @@ def get_list_dict_from_jsonl(file_path: Path) -> List[Dict[str, Any]]:
         json_list = list(f)
 
     for json_str in json_list:
-        tmp_dict = json.loads(json_str)
+        tmp_dict = json.loads(
+            json_str, object_pairs_hook=OrderedDict
+        )  # to preserve the order in json string)
         outputs.append(tmp_dict)
     return outputs
 
@@ -350,7 +357,10 @@ def get_json_dict_from_txt(txt: str) -> Union[Dict[str, Any], List[Dict[str, Any
             if start_idx >= end_idx:
                 raise Exception("text does not contain json string")
 
-            json_dict = json.loads(txt[start_idx : (end_idx + 1)])  # noqa: E203
+            json_dict = json.loads(
+                txt[start_idx : (end_idx + 1)],  # noqa: E203
+                object_pairs_hook=OrderedDict,
+            )
         except Exception as e:
             print(e)
             raise Exception("text does not contain a valid json string")
@@ -361,7 +371,10 @@ def get_json_dict_from_txt(txt: str) -> Union[Dict[str, Any], List[Dict[str, Any
             end_idx = txt.rfind("]")
 
             if start_idx < end_idx:
-                json_dict = json.loads(txt[start_idx : (end_idx + 1)])  # noqa: E203
+                json_dict = json.loads(
+                    txt[start_idx : (end_idx + 1)],  # noqa: E203
+                    object_pairs_hook=OrderedDict,
+                )
         except Exception as e:
             print(e)
             raise Exception("text does not contain a valid json string")
