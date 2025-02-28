@@ -3,12 +3,17 @@ from copy import deepcopy
 import os
 import json
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple, Union, cast
 
 from api_integrated_llm.data_models.common_models import CommonErrorModel
+from api_integrated_llm.data_models.scorer_models import (
+    ConfusionMatrixMode,
+    ConfusionMetrixMetricsModel,
+    MicroConfusionMetrixMetricsModel,
+    ScorerOuputModel,
+)
 from api_integrated_llm.data_models.source_models import (
     EvaluationOutputResponseDataUnit,
-    ScorerOuputModel,
 )
 from api_integrated_llm.helpers.output_parsers import (
     parse_granite_20b_function_calling_output,
@@ -21,8 +26,7 @@ from api_integrated_llm.helpers.scorer_helper import (
     get_evaluation_output_response_data_units_from_json,
 )
 from api_integrated_llm.helpers.metrics_helper import (
-    compute_score,
-    compute_score_sklearn,
+    get_confision_matrix_from_answers,
 )
 from api_integrated_llm.helpers.file_helper import (
     get_base_models_from_jsonl,
@@ -378,10 +382,10 @@ def get_item_metrics(
     win_rate_flag: bool,
     spec_path: Path,
 ) -> Tuple[
-    List[Any],
-    List[Any],
-    List[Any],
-    List[Any],
+    List[List[str]],
+    List[List[str]],
+    List[List[str]],
+    List[List[str]],
     int,
     int,
     int,
@@ -393,10 +397,10 @@ def get_item_metrics(
     List[str],
     List[str],
 ]:
-    gold_output_intent = []
-    pred_output_intent = []
-    gold_output_slot = []
-    pred_output_slot = []
+    gold_output_intent: List[List[str]] = []
+    pred_output_intent: List[List[str]] = []
+    gold_output_slot: List[List[str]] = []
+    pred_output_slot: List[List[str]] = []
     num_errors_parsing_pred_intent = 0
     num_errors_parsing_gold_intent = 0
     num_errors_parsing_pred_slot = 0
@@ -470,8 +474,8 @@ def get_item_metrics(
         num_errors_parsing_gold_intent += instance_num_errors_parsing_gold_intent
         num_errors_parsing_pred_intent += instance_num_errors_parsing_pred_intent
 
-        gold_output_intent.append(gold_apis_names)
-        pred_output_intent.append(pred_apis_names)
+        gold_output_intent.append(cast(List[str], gold_apis_names))
+        pred_output_intent.append(cast(List[str], pred_apis_names))
 
         (
             instance_gold_output_slot,
@@ -486,8 +490,8 @@ def get_item_metrics(
             pred_func_calls=pred_func_calls,
             intents_only=intents_only,
         )
-        gold_output_slot.extend(instance_gold_output_slot)
-        pred_output_slot.extend(instance_pred_output_slot)
+        gold_output_slot.extend(cast(List[List[str]], instance_gold_output_slot))
+        pred_output_slot.extend(cast(List[List[str]], instance_pred_output_slot))
         error_messages.extend(slot_error_messages)
         num_errors_parsing_gold_slot += instance_num_errors_parsing_gold_slot
         num_errors_parsing_pred_slot += instance_num_errors_parsing_pred_slot
@@ -518,54 +522,47 @@ def get_item_metrics(
     )
 
 
-def get_metrics_confusion_matirx(
-    sklearn_metrics: bool,
-    intents_only: bool,
-    gold_output_intent: List[Any],
-    pred_output_intent: List[Any],
-    gold_output_slot: List[Any],
-    pred_output_slot: List[Any],
-) -> Tuple[
-    Optional[float],
-    Optional[float],
-    Optional[float],
-    Optional[float],
-    Optional[float],
-    Optional[float],
-]:
-    p_intent, r_intent, f1_intent, p_slot, r_slot, f1_slot = (
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-    )
-
-    if not sklearn_metrics:
-        p_intent, r_intent, f1_intent = compute_score(
-            gold_output_intent, pred_output_intent
-        )
-    else:
-        p_intent, r_intent, f1_intent = compute_score_sklearn(
-            gold_output_intent, pred_output_intent
-        )
-
-    if not intents_only:
-        if not sklearn_metrics:
-            p_slot, r_slot, f1_slot = compute_score(gold_output_slot, pred_output_slot)
-        else:
-            p_slot, r_slot, f1_slot = compute_score_sklearn(
-                gold_output_slot, pred_output_slot
+def get_micro_confusion_matrix_metrics(
+    gold_output_intent: List[List[str]],
+    pred_output_intent: List[List[str]],
+    gold_output_slot: List[List[str]],
+    pred_output_slot: List[List[str]],
+) -> MicroConfusionMetrixMetricsModel:
+    return MicroConfusionMetrixMetricsModel(
+        intent_set_metrics=ConfusionMetrixMetricsModel.get_confusion_matrix_metrics_micro(
+            get_confision_matrix_from_answers(
+                gold_answers=gold_output_intent,
+                predicted_answers=pred_output_intent,
+                mode=ConfusionMatrixMode.SET,
             )
-
-    return (p_intent, r_intent, f1_intent, p_slot, r_slot, f1_slot)
+        ),
+        intent_multiset_metrics=ConfusionMetrixMetricsModel.get_confusion_matrix_metrics_micro(
+            get_confision_matrix_from_answers(
+                gold_answers=gold_output_intent,
+                predicted_answers=pred_output_intent,
+                mode=ConfusionMatrixMode.MULTISET,
+            )
+        ),
+        intent_list_metrics=ConfusionMetrixMetricsModel.get_confusion_matrix_metrics_micro(
+            get_confision_matrix_from_answers(
+                gold_answers=gold_output_intent,
+                predicted_answers=pred_output_intent,
+                mode=ConfusionMatrixMode.LIST,
+            )
+        ),
+        slot_set_metrics=ConfusionMetrixMetricsModel.get_confusion_matrix_metrics_micro(
+            get_confision_matrix_from_answers(
+                gold_answers=gold_output_slot,
+                predicted_answers=pred_output_slot,
+                mode=ConfusionMatrixMode.SET,
+            )
+        ),
+    )
 
 
 def calculate_scores(
     predictions_input: List[EvaluationOutputResponseDataUnit],
     intents_only: bool = False,
-    sklearn_metrics: bool = True,
     win_rate_flag: bool = True,
     is_single_intent_detection: bool = False,
 ) -> ScorerOuputModel:
@@ -602,16 +599,7 @@ def calculate_scores(
         spec_path=spec_path,
     )
 
-    (
-        p_intent,
-        r_intent,
-        f1_intent,
-        p_slot,
-        r_slot,
-        f1_slot,
-    ) = get_metrics_confusion_matirx(
-        sklearn_metrics=sklearn_metrics,
-        intents_only=intents_only,
+    confusion_metrix_matrics_micro_model = get_micro_confusion_matrix_metrics(
         gold_output_intent=gold_output_intent,
         pred_output_intent=pred_output_intent,
         gold_output_slot=gold_output_slot,
@@ -621,12 +609,7 @@ def calculate_scores(
     num_samples = len(predictions_input)
 
     return ScorerOuputModel(
-        p_intent=p_intent,
-        r_intent=r_intent,
-        f1_intent=f1_intent,
-        p_slot=p_slot,
-        r_slot=r_slot,
-        f1_slot=f1_slot,
+        confusion_metrix_matrics_micro=confusion_metrix_matrics_micro_model,
         num_examples=num_samples,
         percentage_times_full_score=(all_num_times_full_score / num_samples),
         win_rate=((sum(win_rate_list) / len(win_rate_list)) if win_rate_flag else None),
@@ -729,7 +712,6 @@ def scoring(
                 ),
                 base_model=calculate_scores(
                     data,
-                    sklearn_metrics=(not is_single_intent_detection),
                     win_rate_flag=win_rate_flag,
                     is_single_intent_detection=is_single_intent_detection,
                 ),

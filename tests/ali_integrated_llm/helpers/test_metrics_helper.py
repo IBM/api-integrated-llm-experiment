@@ -1,7 +1,7 @@
 from api_integrated_llm.data_models.scorer_models import ConfusionMatrixMode
 from api_integrated_llm.helpers.metrics_helper import (
     check_coverage,
-    get_confision_matrix_list,
+    get_confision_matrix_from_answers,
     get_confusion_matrix_cells,
 )
 
@@ -171,18 +171,16 @@ def test_get_confusion_matrix_cells_list_no_perfect_match_false_positive() -> No
     assert fn == 4
 
 
-def test_get_confision_matrix_list() -> None:
-    confusion_matrix_models, nonZeroGold, covered = get_confision_matrix_list(
+def test_get_confision_matrix_from_answers() -> None:
+    confusion_matrix_model = get_confision_matrix_from_answers(
         gold_answers=[["a", "b", "a", "c", "d"]],
         predicted_answers=[["a", "c", "d", "k"]],
         mode=ConfusionMatrixMode.LIST,
     )
 
-    assert len(confusion_matrix_models) == 1
-    assert nonZeroGold == 1
-    assert covered == 0
-
-    assert confusion_matrix_models[0].true_positive == 1
-    assert confusion_matrix_models[0].false_positive == 3
-    assert confusion_matrix_models[0].true_negative == 0
-    assert confusion_matrix_models[0].false_negative == 4
+    assert confusion_matrix_model.num_non_zero_gold == 1
+    assert confusion_matrix_model.num_is_covered == 0
+    assert confusion_matrix_model.true_positive == 1
+    assert confusion_matrix_model.false_positive == 3
+    assert confusion_matrix_model.true_negative == 0
+    assert confusion_matrix_model.false_negative == 4

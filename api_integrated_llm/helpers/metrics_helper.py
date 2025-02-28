@@ -1,7 +1,5 @@
 from collections import Counter
-from typing import List, Tuple, Union
-import numpy as np
-from sklearn.metrics import f1_score, precision_score, recall_score
+from typing import List, Tuple
 from sklearn.preprocessing import MultiLabelBinarizer
 
 from api_integrated_llm.data_models.scorer_models import (
@@ -12,31 +10,7 @@ from api_integrated_llm.data_models.scorer_models import (
 binarizer = MultiLabelBinarizer()
 
 
-def compute_score_sklearn(gold_output, pred_output):
-    binarizer.fit(gold_output)
-
-    f1_score_macro = f1_score(
-        binarizer.transform(gold_output),
-        binarizer.transform(pred_output),
-        average="macro",
-    )
-    precision_macro = precision_score(
-        binarizer.transform(gold_output),
-        binarizer.transform(pred_output),
-        average="macro",
-    )
-    recall_macro = recall_score(
-        binarizer.transform(gold_output),
-        binarizer.transform(pred_output),
-        average="macro",
-    )
-
-    return precision_macro, recall_macro, f1_score_macro
-
-
-def check_coverage(
-    gold: List[Union[str, float, int, bool]], pred: List[Union[str, float, int, bool]]
-) -> Tuple[bool, bool]:
+def check_coverage(gold: List[str], pred: List[str]) -> Tuple[bool, bool]:
     is_non_zero_gold = False
     is_covered = False
     if len(gold) > 0:
@@ -50,8 +24,8 @@ def check_coverage(
 
 
 def get_confusion_matrix_cells(
-    gold: List[Union[str, float, int, bool]],
-    pred: List[Union[str, float, int, bool]],
+    gold: List[str],
+    pred: List[str],
     mode: ConfusionMatrixMode,
 ) -> Tuple[int, int, int, int]:
     true_positive = 0
@@ -112,159 +86,123 @@ def get_confusion_matrix_cells(
     return (true_positive, false_positive, true_negative, false_negative)
 
 
-def get_confision_matrix_list(
-    gold_answers: List[List[Union[str, float, int, bool]]],
-    predicted_answers: List[List[Union[str, float, int, bool]]],
+def get_confision_matrix_from_answers(
+    gold_answers: List[List[str]],
+    predicted_answers: List[List[str]],
     mode: ConfusionMatrixMode = ConfusionMatrixMode.SET,
-) -> Tuple[List[ConfusionMatrixModel], int, int]:
-    confusion_matrix_models: List[ConfusionMatrixModel] = []
-    nonZeroGold = 0
-    covered = 0
+) -> ConfusionMatrixModel:
+    matrix = ConfusionMatrixModel(mode=mode)
 
     for gold, pred in zip(gold_answers, predicted_answers):
-        matrix = ConfusionMatrixModel(mode=mode)
-
-        # check coverage
-        matrix.is_non_zero_gold, matrix.is_covered = check_coverage(
-            gold=gold, pred=pred
-        )
-        nonZeroGold += 1 if matrix.is_non_zero_gold else 0
-        covered += 1 if matrix.is_covered else 0
-
+        is_non_zero_gold, is_covered = check_coverage(gold=gold, pred=pred)
+        matrix.num_non_zero_gold += 1 if is_non_zero_gold else 0
+        matrix.num_is_covered += 1 if is_covered else 0
         (
-            matrix.true_positive,
-            matrix.false_positive,
-            matrix.true_negative,
-            matrix.false_negative,
+            true_positive,
+            false_positive,
+            true_negative,
+            false_negative,
         ) = get_confusion_matrix_cells(
             gold=gold,
             pred=pred,
             mode=mode,
         )
 
-        confusion_matrix_models.append(matrix)
+        matrix.true_positive += true_positive
+        matrix.true_negative += true_negative
+        matrix.false_positive += false_positive
+        matrix.false_negative += false_negative
 
-    return confusion_matrix_models, nonZeroGold, covered
-
-
-def _compute_confusion_mat(gold_answers: list, predicted_answers: list):
-    """
-    Returns number of True Positive, False Positive, False Negative per question, and coverage stats. Private function
-    """
-
-    num_TP = []
-    num_FP = []
-    num_FN = []
-    nonZeroGold = 0
-    covered = 0
-
-    for gold, pred in zip(gold_answers, predicted_answers):
-        tp, fp, fn = 0, 0, 0
-        for e in pred:
-            if e in gold:
-                tp += 1
-            else:
-                fp += 1
-        for e in gold:
-            if e not in pred:
-                fn += 1
-
-        if len(gold) == 0:
-            if len(pred) == 0:
-                tp, fp, fn = 1, 0, 0
-            else:
-                tp, fp, fn = -1, 0, 0
-        else:
-            nonZeroGold += 1
-            if gold.issubset(pred):
-                covered += 1
-
-        if len(pred) == 0:
-            if len(gold) != 0:
-                tp, fp, fn = -2, 0, 0
-
-        num_TP.append(tp)
-        num_FP.append(fp)
-        num_FN.append(fn)
-
-    return num_TP, num_FP, num_FN, nonZeroGold, covered
+    return matrix
 
 
-def _compute_metrics(
-    num_TP: list, num_FP: list, num_FN: list, nonZeroGold: int, covered: int
-):
-    """
-    Computes [micro, macro] x [Precision, Recall, F1], Private function
-    """
+# def _compute_confusion_mat(gold_answers: list, predicted_answers: list):
+#     """
+#     Returns number of True Positive, False Positive, False Negative per question, and coverage stats. Private function
+#     """
 
-    prec_micro, recall_micro, f1_micro = 0.0, 0.0, 0.0
-    prec_macro, recall_macro, f1_macro = 0.0, 0.0, 0.0
+#     num_TP = []
+#     num_FP = []
+#     num_FN = []
+#     nonZeroGold = 0
+#     covered = 0
 
-    tp, fp, fn = [np.array(x).astype(float) for x in (num_TP, num_FP, num_FN)]
+#     for gold, pred in zip(gold_answers, predicted_answers):
+#         tp, fp, fn = 0, 0, 0
+#         for e in pred:
+#             if e in gold:
+#                 tp += 1
+#             else:
+#                 fp += 1
+#         for e in gold:
+#             if e not in pred:
+#                 fn += 1
 
-    prec_macro = np.nan_to_num(tp / (tp + fp))
-    recall_macro = np.nan_to_num(tp / (tp + fn))
-    idxs_special_case1 = np.where(tp == -1)[0]
-    idxs_special_case2 = np.where(tp == -2)[0]
-    prec_macro[idxs_special_case1] = 0.0  # type: ignore
-    recall_macro[idxs_special_case1] = 1.0  # type: ignore
-    prec_macro[idxs_special_case2] = 1.0  # type: ignore
-    recall_macro[idxs_special_case2] = 0.0  # type: ignore
-    f1_macro = np.nan_to_num(
-        2 * prec_macro * recall_macro / (prec_macro + recall_macro)
-    )
-    tp[idxs_special_case1] = 0
-    tp[idxs_special_case2] = 0
+#         if len(gold) == 0:
+#             if len(pred) == 0:
+#                 tp, fp, fn = 1, 0, 0
+#             else:
+#                 tp, fp, fn = -1, 0, 0
+#         else:
+#             nonZeroGold += 1
+#             if gold.issubset(pred):
+#                 covered += 1
 
-    prec_micro = np.nan_to_num(tp.sum() / (tp.sum() + fp.sum()))
-    recall_micro = np.nan_to_num(tp.sum() / (tp.sum() + fn.sum()))
-    f1_micro = np.nan_to_num(
-        2 * prec_micro * recall_micro / (prec_micro + recall_micro)
-    )
+#         if len(pred) == 0:
+#             if len(gold) != 0:
+#                 tp, fp, fn = -2, 0, 0
 
-    all_metrics = {
-        "micro": {"precision": prec_micro, "recall": recall_micro, "f1": f1_micro},
-        "macro": {
-            "precision": {
-                "score": prec_macro.mean(),
-            },
-            "recall": {"score": recall_macro.mean()},
-            "f1": {"score": f1_macro.mean()},
-            # 'f1-QALD': f1_macro_qald
-        },
-        "Non-empty gold": nonZeroGold,
-        "Covered": covered,
-    }
+#         num_TP.append(tp)
+#         num_FP.append(fp)
+#         num_FN.append(fn)
 
-    return all_metrics
+#     return num_TP, num_FP, num_FN, nonZeroGold, covered
 
 
-def compute_p_r_f1_metrics(gold_answers: list, predicted_answers: list):
-    """
-    Use this to compute the metrics, expects list of sets
-    gold_answers:        [ {q1_ans1, q1_ans2, ...}, {q2_ans1, ...}, ...]
-    predicted_answers :  [ {q1_ans1, q1_ans2, ...}, {q2_ans1, ...}, ...]
-    """
-    tp, fp, fn, nonZeroGold, covered = _compute_confusion_mat(
-        gold_answers, predicted_answers
-    )
-    return _compute_metrics(tp, fp, fn, nonZeroGold, covered)
+# def _compute_metrics(
+#     num_TP: list, num_FP: list, num_FN: list, nonZeroGold: int, covered: int
+# ):
+#     """
+#     Computes [micro, macro] x [Precision, Recall, F1], Private function
+#     """
 
+#     prec_micro, recall_micro, f1_micro = 0.0, 0.0, 0.0
+#     prec_macro, recall_macro, f1_macro = 0.0, 0.0, 0.0
 
-def compute_score(gold_output, pred_output):
-    # print('Internal Evaluation Metrics: ')
-    system_answers_sets = []
-    for answer in gold_output:
-        system_answers_sets.append(set(answer))
-    gold_answers_sets = []
-    for answer in pred_output:
-        gold_answers_sets.append(set(answer))
+#     tp, fp, fn = [np.array(x).astype(float) for x in (num_TP, num_FP, num_FN)]
 
-    metrics_results = compute_p_r_f1_metrics(system_answers_sets, gold_answers_sets)
-    # print('Macro || Prec : {:.3f} | Recall : {:.3f} | F1 : {:.3f}'.format(
-    #     metrics_results['macro']['precision']['score'], metrics_results['macro']['recall']['score'], metrics_results['macro']['f1']['score']))
-    return (
-        metrics_results["macro"]["precision"]["score"],
-        metrics_results["macro"]["recall"]["score"],
-        metrics_results["macro"]["f1"]["score"],
-    )
+#     prec_macro = np.nan_to_num(tp / (tp + fp))
+#     recall_macro = np.nan_to_num(tp / (tp + fn))
+#     idxs_special_case1 = np.where(tp == -1)[0]
+#     idxs_special_case2 = np.where(tp == -2)[0]
+#     prec_macro[idxs_special_case1] = 0.0  # type: ignore
+#     recall_macro[idxs_special_case1] = 1.0  # type: ignore
+#     prec_macro[idxs_special_case2] = 1.0  # type: ignore
+#     recall_macro[idxs_special_case2] = 0.0  # type: ignore
+#     f1_macro = np.nan_to_num(
+#         2 * prec_macro * recall_macro / (prec_macro + recall_macro)
+#     )
+#     tp[idxs_special_case1] = 0
+#     tp[idxs_special_case2] = 0
+
+#     prec_micro = np.nan_to_num(tp.sum() / (tp.sum() + fp.sum()))
+#     recall_micro = np.nan_to_num(tp.sum() / (tp.sum() + fn.sum()))
+#     f1_micro = np.nan_to_num(
+#         2 * prec_micro * recall_micro / (prec_micro + recall_micro)
+#     )
+
+#     all_metrics = {
+#         "micro": {"precision": prec_micro, "recall": recall_micro, "f1": f1_micro},
+#         "macro": {
+#             "precision": {
+#                 "score": prec_macro.mean(),
+#             },
+#             "recall": {"score": recall_macro.mean()},
+#             "f1": {"score": f1_macro.mean()},
+#             # 'f1-QALD': f1_macro_qald
+#         },
+#         "Non-empty gold": nonZeroGold,
+#         "Covered": covered,
+#     }
+
+#     return all_metrics

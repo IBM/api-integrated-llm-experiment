@@ -124,30 +124,3 @@ class EvaluationOutputResponseDataUnit(EvaluationOutputDataUnit):
             self.temperature,
             self.max_tokens,
         )
-
-
-class ScorerOuputModel(BaseModel):
-    p_intent: float
-    r_intent: float
-    f1_intent: float
-    p_slot: Optional[float]
-    r_slot: Optional[float]
-    f1_slot: Optional[float]
-    num_examples: int
-    percentage_times_full_score: float
-    win_rate: Optional[float]
-    num_errors_parsing_pred_intent: int
-    num_errors_parsing_gold_intent: int
-    num_errors_parsing_pred_slot: int
-    num_errors_parsing_gold_slot: int
-    num_pred_examples_w_parsing_errors: int
-    num_gold_examples_w_parsing_errors: int
-    error_messages: List[str]
-    parsing_error_messages: List[str]
-    model_temperature: int
-    model_max_tokens: int
-    evaluation_source: List[EvaluationOutputResponseDataUnit]
-    gold_output_intent: List[Any]
-    pred_output_intent: List[Any]
-    gold_output_slot: List[Any]
-    pred_output_slot: List[Any]
