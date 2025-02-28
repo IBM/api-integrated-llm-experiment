@@ -354,9 +354,9 @@ def get_slot_info(
         for gold_api_name, gold_arguments in gold_api_lists:
             if gold_api_name in pred_api_dict:
                 pred_output_slot.append(pred_api_dict[gold_api_name])
-            else:
-                pred_output_slot.append([])  # no matching api is found
-            gold_output_slot.append(deepcopy(gold_arguments))
+                gold_output_slot.append(deepcopy(gold_arguments))
+            # Do not panaliize twice (once for API names and once for slots)
+            # when predicted api_name does not exist
 
     return (
         gold_output_slot,
