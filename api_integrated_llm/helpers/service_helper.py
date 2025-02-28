@@ -1,4 +1,3 @@
-from collections import OrderedDict
 from copy import deepcopy
 from datetime import timedelta
 import json
@@ -57,7 +56,7 @@ async def get_response_from_post_request_async(
             timeout=timeout,
         )
         lag = response_model.elapsed
-        payload = json.loads(response_model.response_txt, object_pairs_hook=OrderedDict)
+        payload = json.loads(response_model.response_txt)
 
         if "response" in payload:  # single response from ollama
             text_response = payload["response"]
@@ -93,7 +92,7 @@ def get_response_from_post_request(
             else requests.post(url, json=obj, headers=headers, timeout=timeout)
         )
         lag = response.elapsed
-        payload = json.loads(response.text, object_pairs_hook=OrderedDict)
+        payload = json.loads(response.text)
 
         if "response" in payload:  # single response from ollama
             text_response = payload["response"]

@@ -1,4 +1,3 @@
-from collections import OrderedDict
 import json
 from typing import Any, Dict, List
 
@@ -100,7 +99,6 @@ def ground_seq_nested_repsonse(api_list):
                         elif type(v) == dict and check_label_in_slot(l, json.dumps(v)):
                             v = json.loads(
                                 json.dumps(v).replace(l, a),
-                                object_pairs_hook=OrderedDict,
                             )
                         new_s_v.append(v)
                     s_v = new_s_v
@@ -142,9 +140,7 @@ def parse_granite_20b_function_calling_output(
         ):  # single intent detection
             pred_dict_list = [pred_dict_list[0]]
 
-        pred_dict_list = [
-            json.loads(p, object_pairs_hook=OrderedDict) for p in pred_str_list if p
-        ]
+        pred_dict_list = [json.loads(p) for p in pred_str_list if p]
         pred_dict_list = [p for p in pred_dict_list if not p["name"] == "var_result"]
         if skip_grounding:
             pred_func_calls = [json.dumps(func) for func in pred_dict_list]
@@ -425,7 +421,6 @@ def parse_mistral_7b_instruct_v0_3(
             pred = prediction["generated_text"].strip()
             pred_dict_list = json.loads(
                 pred.replace("\n", "").replace("\_", "_"),  # noqa: W605,
-                object_pairs_hook=OrderedDict,  # to preserve the order in json string
             )  # noqa: W605
             if skip_grounding:
                 pred_func_calls = [json.dumps(func) for func in pred_dict_list]

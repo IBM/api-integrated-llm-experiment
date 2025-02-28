@@ -1,4 +1,3 @@
-from collections import OrderedDict
 from copy import deepcopy
 import os
 import json
@@ -198,8 +197,7 @@ def get_function_dict(content: Any) -> Optional[Dict[str, Any]]:
     # if f.strip() == '{"name": "dummy", "arguments": {}}':
     #     continue
     return json.loads(
-        content.replace("<|endoftext|>", "").replace("null", "{}").strip(),
-        object_pairs_hook=OrderedDict,  # to preserve the order in json string
+        content.replace("<|endoftext|>", "").replace("null", "{}").strip()
     )
 
 
@@ -237,7 +235,7 @@ def get_api_field_value(
     if obj is not None:
         obj_extracted = (
             obj[field_to_extract]
-            if (error_message is not None and field_to_extract in obj)
+            if (error_message is None and field_to_extract in obj)
             else get_default_obj(field_to_extract=field_to_extract)
         )
 

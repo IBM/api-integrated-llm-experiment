@@ -97,9 +97,7 @@ def get_base_models_from_jsonl(
         json_list = list(f)
 
     for json_str in json_list:
-        tmp_dict = json.loads(
-            json_str, object_pairs_hook=OrderedDict
-        )  # to preserve the order in json string)
+        tmp_dict = json.loads(json_str)
         try:
             model = base_model.model_validate(tmp_dict)
             outputs.append(model)
@@ -144,9 +142,7 @@ def get_models_from_jsonl(file_path: Path, model: BaseModel) -> List[BaseModel]:
         json_list = list(f)
 
     for json_str in json_list:
-        tmp_dict = json.loads(
-            json_str, object_pairs_hook=OrderedDict
-        )  # to preserve the order in json string)
+        tmp_dict = json.loads(json_str)
         outputs.append(model.model_validate(tmp_dict))
     return outputs
 
@@ -157,9 +153,7 @@ def get_list_dict_from_jsonl(file_path: Path) -> List[Dict[str, Any]]:
         json_list = list(f)
 
     for json_str in json_list:
-        tmp_dict = json.loads(
-            json_str, object_pairs_hook=OrderedDict
-        )  # to preserve the order in json string)
+        tmp_dict = json.loads(json_str)
         outputs.append(tmp_dict)
     return outputs
 
