@@ -1,3 +1,4 @@
+from collections import OrderedDict
 from datetime import datetime
 import hashlib
 import os
@@ -350,7 +351,10 @@ def get_json_dict_from_txt(txt: str) -> Union[Dict[str, Any], List[Dict[str, Any
             if start_idx >= end_idx:
                 raise Exception("text does not contain json string")
 
-            json_dict = json.loads(txt[start_idx : (end_idx + 1)])  # noqa: E203
+            json_dict = json.loads(
+                txt[start_idx : (end_idx + 1)],  # noqa: E203
+                object_pairs_hook=OrderedDict,
+            )
         except Exception as e:
             print(e)
             raise Exception("text does not contain a valid json string")
@@ -361,7 +365,10 @@ def get_json_dict_from_txt(txt: str) -> Union[Dict[str, Any], List[Dict[str, Any
             end_idx = txt.rfind("]")
 
             if start_idx < end_idx:
-                json_dict = json.loads(txt[start_idx : (end_idx + 1)])  # noqa: E203
+                json_dict = json.loads(
+                    txt[start_idx : (end_idx + 1)],  # noqa: E203
+                    object_pairs_hook=OrderedDict,
+                )
         except Exception as e:
             print(e)
             raise Exception("text does not contain a valid json string")

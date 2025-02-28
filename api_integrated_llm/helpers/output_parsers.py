@@ -97,7 +97,9 @@ def ground_seq_nested_repsonse(api_list):
                             v = v.replace(l, a)
                         # elif type(v) == dict and l in json.dumps(v):
                         elif type(v) == dict and check_label_in_slot(l, json.dumps(v)):
-                            v = json.loads(json.dumps(v).replace(l, a))
+                            v = json.loads(
+                                json.dumps(v).replace(l, a),
+                            )
                         new_s_v.append(v)
                     s_v = new_s_v
                     # break
@@ -418,7 +420,7 @@ def parse_mistral_7b_instruct_v0_3(
         try:
             pred = prediction["generated_text"].strip()
             pred_dict_list = json.loads(
-                pred.replace("\n", "").replace("\_", "_")  # noqa: W605
+                pred.replace("\n", "").replace("\_", "_"),  # noqa: W605,
             )  # noqa: W605
             if skip_grounding:
                 pred_func_calls = [json.dumps(func) for func in pred_dict_list]
