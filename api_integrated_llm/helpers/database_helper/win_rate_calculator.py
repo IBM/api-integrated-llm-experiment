@@ -1,19 +1,26 @@
-import json
 import os
 from pathlib import Path
-from typing import Optional
+from typing import Any, Dict, List, Optional, Tuple
 
-from api_integrated_llm.helpers.database_helper.metrics_helper.winrate_helper import (
+from api_integrated_llm.data_models.source_models import (
+    EvaluationOutputResponseDataUnit,
+    QuerySourceModel,
+)
+from api_integrated_llm.helpers.database_helper.metrics_helper.win_rate_helper import (
     evaluate_win_rate,
-    inference_call,
     setup,
 )
+from api_integrated_llm.helpers.file_helper import get_base_model_from_json
 
 
 def get_winrate(
-    input_file: Path, db_path: Path, dataset_name: str = "superhero"
-) -> Optional[float]:
+    response_units: List[EvaluationOutputResponseDataUnit],
+    source_file: Path,
+    db_path: Path,
+    dataset_name: str = "superhero",
+) -> Tuple[Optional[float], int, str]:
     win_rate: Optional[float] = None
+    error_message: str = ""
     # """
 
     # Usage:
@@ -26,29 +33,36 @@ def get_winrate(
     #     - d: dataset name
 
     # """
-    # input_file = args.source_file
-    # db_path = args.database_directory
-    # dataset_name = args.dataset
-    builder, cache_file = setup(input_file, db_path)
-
-    with open(input_file) as f:
-        payloads = json.load(f)[
-            "data"
-        ]  # grab ['agent_data'] instead of ['data'] for react agent in tool-response_reflection
-
-    for p in payloads:
-        p["initialization_step"]["arguments"]["database_path"] = os.path.join(
-            cache_file, dataset_name + ".sqlite"
+    try:
+        builder, cache_file = setup(source_file, db_path)
+        source_model: QuerySourceModel = get_base_model_from_json(
+            file_path=source_file,
+            base_model=QuerySourceModel,
         )
+        sample_id_response_dict = {
+            response_unit.sample_id: response_unit.generated_text
+            for response_unit in response_units
+        }
 
-    with open("invocable_api_hub/driver/react_sql.txt", "r") as f:
-        prompt_template = f.read().strip()
+        for datum in source_model.data:
+            datum.initialization_step = {
+                "arguments": {
+                    "database_path": os.path.join(cache_file, dataset_name + ".sqlite")
+                }
+            }
 
-    # Dummy model inference results
-    for p in payloads:
-        model_output = inference_call(p, prompt_template, builder, "")
-        p["model_output"] = model_output  # add model response here
+        payloads: List[Dict[str, Any]] = []
+        for datum in source_model.data:
+            if datum.sample_id in sample_id_response_dict:
+                payload = datum.model_dump()
+                payload["model_output"] = sample_id_response_dict[payload["sample_id"]]
+                payload["initialization_step"]["arguments"][
+                    "database_path"
+                ] = os.path.join(cache_file, dataset_name + ".sqlite")
+                payloads.append(payload)
+        if len(payloads) > 0:
+            win_rate = evaluate_win_rate(payloads, builder)
+    except Exception as e:
+        error_message = str(e)
 
-    win_rate = evaluate_win_rate(payloads, builder)
-
-    return win_rate
+    return win_rate, len(payloads), error_message
