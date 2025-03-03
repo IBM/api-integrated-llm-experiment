@@ -134,7 +134,7 @@ api-integrated-llm -m parser -pif <INPUT_FOLDER_PATH> -of <OUTPUT_FOLDER_PATH> -
 ### Example Usage:
 
 ```bash
-api-integrated-llm -m parser -pif /Users/jungkookang/Documents/projects/api_integrated_llm_experiment/tests/data/test_output/evaluation/llm -of /Users/jungkookang/Documents/projects/api_integrated_llm_experiment/output/parsing -si\n
+api-integrated-llm -m parser -pif /Users/jungkookang/Documents/projects/api_integrated_llm_experiment/tests/data/test_output/evaluation/llm -of /Users/jungkookang/Documents/projects/api_integrated_llm_experiment/output/parsing -si
 ```
 
 ### Example Input/Output Files:
