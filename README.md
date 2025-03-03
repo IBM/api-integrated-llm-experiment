@@ -145,8 +145,6 @@ api-integrated-llm -m parser -pif /Users/jungkookang/Documents/projects/api_inte
 
 ## Scorer
 
-Parser can be used by providing 1. the path of the folder (`-pif` flag) containing scorer input files (evaluator output files or parser output files) in JSONL and the output folder path (`of` flag). `-si` flag indicate that the input files are for single intent detection. Both input and output files are JSONL, and each line in the files follow `EvaluationOutputResponseDataUnit` schema defined in `api_integrated_llm/data_models/source_models.py`. `Parser` sets `predicted_function_calls`, `gold_function_calls`, and `num_preciedtion_parsing_errors` fields in `EvaluationOutputResponseDataUnit`. The following command shows how to use `Parser`.
-
 ### Usage:
 
 Run the scorer with the following command:
