@@ -743,6 +743,8 @@ def parsing(
             )
 
         except Exception as e:
+            print(e)
+            print(evaluator_output_file_paths)
             handle_scoring_process_exception(
                 output_root_path=output_folder_path,
                 e=e,
