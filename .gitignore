@@ -13,6 +13,7 @@ output/
 # source folder
 source/evaluation/
 test_evaluation/
+databases/
 
 # etc
 .DS_Store
