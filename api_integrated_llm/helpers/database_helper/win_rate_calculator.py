@@ -15,9 +15,9 @@ from api_integrated_llm.helpers.file_helper import get_base_model_from_json
 
 def get_winrate(
     response_units: List[EvaluationOutputResponseDataUnit],
-    source_file: Path,  # source data file
     db_path: Path,  # database path
     dataset_name: str = "superhero",  # dataset name
+    source_file_search_path: Optional[Path] = None,
 ) -> Tuple[Optional[float], int, str]:
     win_rate: Optional[float] = None
     error_message: str = ""
@@ -34,6 +34,10 @@ def get_winrate(
 
     # """
     try:
+        source_file = response_units[0].source_file_path
+
+        # TODO: find a source file in source_file_search_path here
+
         builder, cache_file = setup(source_file, db_path)
         source_model: QuerySourceModel = get_base_model_from_json(
             file_path=source_file,
