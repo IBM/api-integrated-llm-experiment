@@ -489,3 +489,13 @@ def save_as_csv(func):
     wrapper.__doc__ = update_docstring(func.__doc__, input=False, output=True)
     wrapper.__name__ = func.__name__
     return wrapper
+
+
+def get_hash(data: Dict[Any, Any]) -> str:
+    dhash = hashlib.md5()
+    dhash.update(json.dumps(data, sort_keys=True).encode())
+    return dhash.hexdigest()
+
+
+def get_hash_str(input: str) -> str:
+    return str(hash(input))

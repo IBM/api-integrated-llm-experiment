@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Union
 from pydantic import BaseModel
 
-from api_integrated_llm.helpers.file_helper import get_uuid4_str
+from api_integrated_llm.helpers.file_helper import get_hash, get_uuid4_str
 
 
 class PropertyItem(BaseModel):
@@ -70,6 +70,9 @@ class QuerySourceDataModel(BaseModel):
             tools=self.tools,
         )
 
+    def get_hash(self) -> str:
+        return get_hash(self.model_dump_json())
+
 
 class QuerySourceModel(BaseModel):
     data: Optional[List[QuerySourceDataModel]] = None
@@ -86,6 +89,7 @@ class EvaluationOutputDataUnit(BaseModel):
     input: str
     output: Optional[Union[List[QueryItemDataModel], str]] = None
     gold_answer: Optional[Union[List[Any], str, int, float]] = None
+    query_source_data_model: Optional[QuerySourceDataModel] = None
 
 
 class EvaluationOutputResponseDataUnit(EvaluationOutputDataUnit):
@@ -96,6 +100,7 @@ class EvaluationOutputResponseDataUnit(EvaluationOutputDataUnit):
     temperature: float = -1.0
     max_tokens: int = 1500
     is_agent: bool = False
+    query_source_data_model: Optional[QuerySourceDataModel] = None
 
     @staticmethod
     def get_model_from_output_unit(

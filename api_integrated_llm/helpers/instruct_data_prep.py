@@ -187,6 +187,7 @@ def instruct_data(
                 ),
                 output=sample.output,
                 gold_answer=sample.gold_answer,
+                query_source_data_model=sample.model_copy(deep=True),
             )
         )
 
