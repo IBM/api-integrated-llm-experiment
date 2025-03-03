@@ -9,7 +9,7 @@ from api_integrated_llm.helpers.file_helper import (
     get_dict_from_json,
     get_files_in_folder,
 )
-from api_integrated_llm.scoring import scoring
+from api_integrated_llm.scoring import parsing, scoring
 
 
 project_root_path = Path(__file__).parent.parent.parent.resolve()
@@ -37,10 +37,49 @@ def get_arguments() -> argparse.Namespace:
     )
 
     parser.add_argument(
+        "-eof",
+        "--evaluator_output_folder",
+        type=Path,
+        help="Evaluator output folder path",
+        default=project_root_path,
+    )
+
+    parser.add_argument(
+        "-pif",
+        "--parser_input_folder",
+        type=Path,
+        help="Parser input folder path",
+        default=project_root_path,
+    )
+
+    parser.add_argument(
+        "-of",
+        "--output_folder",
+        type=Path,
+        help="Output folder path",
+        default=project_root_path,
+    )
+
+    parser.add_argument(
+        "-sif",
+        "--scorer_input_folder",
+        type=Path,
+        help="Scorer input folder path",
+        default=project_root_path,
+    )
+
+    parser.add_argument(
         "-ig",
         "--ignore",
         action=argparse.BooleanOptionalAction,
         help='Ignore data points marked as "ignore"',
+    )
+
+    parser.add_argument(
+        "-si",
+        "--single_intent",
+        action=argparse.BooleanOptionalAction,
+        help="Single intent dataset",
     )
 
     parser.add_argument(
@@ -77,16 +116,70 @@ def get_llm_configuration(llm_configuration_file_path: Path) -> Dict[str, Any]:
     )
 
 
+def check_args(args) -> bool:
+    should_stop = False
+    if args.mode == CliModeModel.SCORER:
+        if args.output_folder == project_root_path:
+            print("output_folder should be defined")
+            should_stop = True
+        if args.scorer_input_folder == project_root_path:
+            print("scorer input folder_folder should be defined")
+            should_stop = True
+    elif args.mode == CliModeModel.PARSER:
+        if args.output_folder == project_root_path:
+            print("output_folder should be defined")
+            should_stop = True
+        if args.parser_input_folder == project_root_path:
+            print("parser input folder should be defined")
+            should_stop = True
+    return should_stop
+
+
 def cli() -> None:
     args = get_arguments()
+
+    if check_args(args):
+        return
+
     source_folder_path = Path(os.path.join(args.root, "source"))
-    output_folder_path = Path(os.path.join(args.root, "output"))
-    evaluation_folder_path = Path(
-        os.path.join(
-            output_folder_path,
-            "evaluation",
-        )
+    output_folder_path = (
+        Path(os.path.join(args.root, "output"))
+        if args.output_folder == project_root_path
+        else args.output_folder
     )
+    evaluation_folder_path = (
+        Path(
+            os.path.join(
+                output_folder_path,
+                "evaluation",
+            )
+        )
+        if args.evaluator_output_folder == project_root_path
+        else args.evaluator_output_folder
+    )
+
+    parser_input_folder_path = (
+        Path(
+            os.path.join(
+                output_folder_path,
+                "evaluation",
+            )
+        )
+        if args.parser_input_folder == project_root_path
+        else args.parser_input_folder
+    )
+
+    scorer_input_folder_path = (
+        Path(
+            os.path.join(
+                output_folder_path,
+                "evaluation",
+            )
+        )
+        if args.scorer_input_folder == project_root_path
+        else args.scorer_input_folder
+    )
+
     if args.mode == CliModeModel.DEFAULT or args.mode == CliModeModel.EVALUATOR:
         evaluate(
             model_id_info_dict=(
@@ -130,12 +223,27 @@ def cli() -> None:
             should_ignore=args.ignore,
         )
 
+    if args.mode == CliModeModel.PARSER:
+        print(f"Parser input folder: {parser_input_folder_path}")
+        print(f"Parser output folder: {output_folder_path}")
+        parsing(
+            evaluator_output_file_paths=get_files_in_folder(  # type: ignore
+                folder_path=parser_input_folder_path,
+                file_extension="jsonl",
+            ),
+            output_folder_path=Path(os.path.join(output_folder_path)),
+            is_single_intent_detection=args.single_intent,
+        )
+
     if args.mode == CliModeModel.DEFAULT or args.mode == CliModeModel.SCORER:
+        print(f"Scorer input folder: {scorer_input_folder_path}")
+        print(f"Scorer output folder: {output_folder_path}")
         scoring(
             evaluator_output_file_paths=get_files_in_folder(  # type: ignore
-                folder_path=evaluation_folder_path,
+                folder_path=scorer_input_folder_path,
                 file_extension="jsonl",
             ),
             output_folder_path=Path(os.path.join(output_folder_path, "scoring")),
             win_rate_flag=False,
+            is_single_intent_detection=args.single_intent,
         )
