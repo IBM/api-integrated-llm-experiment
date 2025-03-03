@@ -165,9 +165,10 @@ def get_payloads_winrate(
     for datum in source_model.data:
         if datum.sample_id in sample_id_response_dict:
             payload = datum.model_dump()
-            payload["model_output"] = sample_id_response_dict[payload["sample_id"]]
             payload["initialization_step"]["arguments"]["database_path"] = os.path.join(
                 cache_file, dataset_name + ".sqlite"
             )
+            payload["output"]  # place pred_func_calls
+            # output field is gold answer
             payloads.append(payload)
     return payloads

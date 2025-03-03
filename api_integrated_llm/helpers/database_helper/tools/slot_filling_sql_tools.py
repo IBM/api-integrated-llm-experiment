@@ -1,10 +1,8 @@
 import re
-from typing import Any, Literal, Union
+from typing import Literal, Union
 
 import numpy as np
 import pandas as pd
-
-agg_operation: Any
 
 
 def group_data_by(data: dict, key_name: str) -> dict:
@@ -346,17 +344,17 @@ def sort_data(data: dict, key_name: str = "", ascending: bool = False) -> dict:
         sorted_data = df.sort_values(by=key_name, ascending=ascending, kind="mergesort")
         return sorted_data.to_dict(orient="list")
 
-    groups = list(data.keys())
-    assert isinstance(data[groups[0]], dict)
-    assert key_name in data[groups[0]].keys()
-    for group in groups:
-        vals = data[group][key_name]
-        global agg_operation
-        grouped_val = agg_operation(vals)
-        lth = len(
-            data[group][key_name]
-        )  # lth needs to match original length, not distinct length
-        data[group][key_name] = [grouped_val] * lth
+    # groups = list(data.keys())
+    # assert isinstance(data[groups[0]], dict)
+    # assert key_name in data[groups[0]].keys()
+    # for group in groups:
+    #     vals = data[group][key_name]
+    #     # global agg_operation
+    #     grouped_val = agg_operation(vals)
+    #     lth = len(
+    #         data[group][key_name]
+    #     )  # lth needs to match original length, not distinct length
+    #     data[group][key_name] = [grouped_val] * lth
 
     return data
 
