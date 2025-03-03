@@ -558,6 +558,37 @@ def get_micro_confusion_matrix_metrics(
     )
 
 
+def parsing_only(
+    predictions_input: List[EvaluationOutputResponseDataUnit],
+    is_single_intent_detection: bool = False,
+) -> List[EvaluationOutputResponseDataUnit]:
+    parsed_outputs: List[EvaluationOutputResponseDataUnit] = []
+    for datum in predictions_input:
+        (
+            pred_func_calls,
+            gold_func_calls,
+            _,
+            _,
+            model_num_errors_parsing_pred_intent,
+            _,
+            _,
+        ) = parse_output_from_language_models(
+            prediction=datum.model_dump(),
+            model_name=datum.llm_model_id,
+            is_single_intent_detection=is_single_intent_detection,
+            is_agent=datum.is_agent,
+        )
+        parsed_output = datum.model_copy(deep=True)
+        parsed_output.predicted_function_calls = pred_func_calls
+        parsed_output.gold_function_calls = gold_func_calls
+        parsed_output.num_preciedtion_parsing_errors = (
+            model_num_errors_parsing_pred_intent
+        )
+        parsed_outputs.append(parsed_output)
+
+    return parsed_outputs
+
+
 def calculate_scores(
     predictions_input: List[EvaluationOutputResponseDataUnit],
     intents_only: bool = False,
@@ -659,6 +690,105 @@ def handle_scoring_process_exception(
 
 def check_single_intent(evaluator_output_file_path: Path) -> bool:
     return "rest" in str(evaluator_output_file_path)
+
+
+def parsing(
+    evaluator_output_file_paths: List[Path],
+    output_folder_path: Path,
+) -> None:
+    for evaluator_output_file_path in evaluator_output_file_paths:
+        try:
+            data: List[EvaluationOutputResponseDataUnit] = get_base_models_from_jsonl(
+                file_path=evaluator_output_file_path,
+                base_model=EvaluationOutputResponseDataUnit,
+            )
+
+            if data is None or len(data) == 0:
+                raise Exception(
+                    f"No evaluation data found at {evaluator_output_file_path}"
+                )
+
+            write_jsonl(
+                file_path=output_folder_path,
+                jsons=parsing_only(predictions_input=data),
+                should_append=False,
+            )
+
+        except Exception as e:
+            handle_scoring_process_exception(
+                output_root_path=output_folder_path,
+                e=e,
+                model_name="default_model",
+                dataset_name="default_dataset",
+                evaluator_output_file_path=evaluator_output_file_path,
+                temperature_str="default_temperature",
+                max_tokens_str="default_max_tokens",
+            )
+
+
+def scoring_only(
+    evaluator_output_file_paths: List[Path],
+    output_folder_path: Path,
+    win_rate_flag: bool = True,
+) -> None:
+    for evaluator_output_file_path in evaluator_output_file_paths:
+        dataset_name = get_dataset_name_from_file_path(
+            file_path=evaluator_output_file_path
+        )
+        temperature_str = "default_temperature"
+        max_tokens_str = "default_max_tokens"
+        model_name = "default_model"
+        try:
+            data: List[EvaluationOutputResponseDataUnit] = (
+                get_base_models_from_jsonl(
+                    file_path=evaluator_output_file_path,
+                    base_model=EvaluationOutputResponseDataUnit,
+                )
+                if str(evaluator_output_file_path).endswith("jsonl")
+                else get_evaluation_output_response_data_units_from_json(
+                    file_path=evaluator_output_file_path,
+                )
+            )
+
+            if data is None or len(data) == 0:
+                raise Exception(
+                    f"No evaluation data found at {evaluator_output_file_path}"
+                )
+
+            temperature_str, max_tokens_str, dataset_name, model_name = data[
+                0
+            ].get_basic_strs()
+
+            is_single_intent_detection = check_single_intent(
+                evaluator_output_file_path=evaluator_output_file_path
+            )
+
+            write_json(
+                file_path=Path(
+                    os.path.join(
+                        output_folder_path,
+                        model_name,
+                        temperature_str,
+                        max_tokens_str,
+                        (dataset_name + "_scoring_output.json"),
+                    )
+                ),
+                base_model=calculate_scores(
+                    data,
+                    win_rate_flag=win_rate_flag,
+                    is_single_intent_detection=is_single_intent_detection,
+                ),
+            )
+        except Exception as e:
+            handle_scoring_process_exception(
+                output_root_path=output_folder_path,
+                e=e,
+                model_name=model_name,
+                dataset_name=dataset_name,
+                evaluator_output_file_path=evaluator_output_file_path,
+                temperature_str=temperature_str,
+                max_tokens_str=max_tokens_str,
+            )
 
 
 def scoring(

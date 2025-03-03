@@ -9,7 +9,7 @@ from api_integrated_llm.helpers.file_helper import (
     get_dict_from_json,
     get_files_in_folder,
 )
-from api_integrated_llm.scoring import scoring
+from api_integrated_llm.scoring import parsing, scoring
 
 
 project_root_path = Path(__file__).parent.parent.parent.resolve()
@@ -33,6 +33,22 @@ def get_arguments() -> argparse.Namespace:
         "--root",
         type=Path,
         help="Dataset root absolute path",
+        default=project_root_path,
+    )
+
+    parser.add_argument(
+        "-eof",
+        "--evaluator_output_folder",
+        type=Path,
+        help="Evaluator output folder path",
+        default=project_root_path,
+    )
+
+    parser.add_argument(
+        "-of",
+        "--output_folder",
+        type=Path,
+        help="Output folder path",
         default=project_root_path,
     )
 
@@ -80,13 +96,22 @@ def get_llm_configuration(llm_configuration_file_path: Path) -> Dict[str, Any]:
 def cli() -> None:
     args = get_arguments()
     source_folder_path = Path(os.path.join(args.root, "source"))
-    output_folder_path = Path(os.path.join(args.root, "output"))
-    evaluation_folder_path = Path(
-        os.path.join(
-            output_folder_path,
-            "evaluation",
-        )
+    output_folder_path = (
+        Path(os.path.join(args.root, "output"))
+        if args.output_folder == project_root_path
+        else args.output_folder
     )
+    evaluation_folder_path = (
+        Path(
+            os.path.join(
+                output_folder_path,
+                "evaluation",
+            )
+        )
+        if args.evaluator_output_folder == project_root_path
+        else args.evaluator_output_folder
+    )
+
     if args.mode == CliModeModel.DEFAULT or args.mode == CliModeModel.EVALUATOR:
         evaluate(
             model_id_info_dict=(
@@ -128,6 +153,15 @@ def cli() -> None:
             should_generate_random_example=args.random_example,
             num_examples=args.number_random_example,
             should_ignore=args.ignore,
+        )
+
+    if args.mode == CliModeModel.PARSER:
+        parsing(
+            evaluator_output_file_paths=get_files_in_folder(  # type: ignore
+                folder_path=evaluation_folder_path,
+                file_extension="jsonl",
+            ),
+            output_folder_path=Path(os.path.join(output_folder_path)),
         )
 
     if args.mode == CliModeModel.DEFAULT or args.mode == CliModeModel.SCORER:

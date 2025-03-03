@@ -96,6 +96,9 @@ class EvaluationOutputResponseDataUnit(EvaluationOutputDataUnit):
     temperature: float = -1.0
     max_tokens: int = 1500
     is_agent: bool = False
+    predicted_function_calls: Optional[List[Dict[str, Any]]] = None
+    gold_function_calls: Optional[List[Dict[str, Any]]] = None
+    num_preciedtion_parsing_errors: Optional[int] = None
 
     @staticmethod
     def get_model_from_output_unit(
