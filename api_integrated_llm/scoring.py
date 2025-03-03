@@ -624,6 +624,7 @@ def calculate_scores(
         spec_path,
         model_temperature,
         model_max_tokens,
+        _,
     ) = predictions_input[0].get_dataset_basic_info()
 
     (
@@ -728,16 +729,19 @@ def parsing(
                     f"No evaluation data found at {evaluator_output_file_path}"
                 )
 
+            temperature_str, max_tokens_str, _, model_name, agent_str = data[
+                0
+            ].get_basic_strs()
+
             write_jsonl(
                 file_path=Path(
                     os.path.join(
                         output_folder_path,
-                        (
-                            ("agent_" if data[0].is_agent else "llm_")
-                            + data[0].llm_model_id
-                            + "_"
-                            + str(evaluator_output_file_path).split("/")[-1]
-                        ),
+                        agent_str,
+                        model_name,
+                        temperature_str,
+                        max_tokens_str,
+                        str(evaluator_output_file_path).split("/")[-1],
                     )
                 ),
                 jsons=parsing_only(
@@ -791,7 +795,7 @@ def scoring(
                     f"No evaluation data found at {evaluator_output_file_path}"
                 )
 
-            temperature_str, max_tokens_str, dataset_name, model_name = data[
+            temperature_str, max_tokens_str, dataset_name, model_name, agent_str = data[
                 0
             ].get_basic_strs()
 
@@ -799,7 +803,8 @@ def scoring(
                 file_path=Path(
                     os.path.join(
                         output_folder_path,
-                        model_name,
+                        agent_str,
+                        model_name.split("/")[-1],
                         temperature_str,
                         max_tokens_str,
                         (dataset_name + "_scoring_output.json"),
