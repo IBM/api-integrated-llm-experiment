@@ -111,19 +111,21 @@ class EvaluationOutputResponseDataUnit(EvaluationOutputDataUnit):
             gold_answer=data_model.gold_answer,
         )
 
-    def get_basic_strs(self) -> Tuple[str, str, str, str]:
+    def get_basic_strs(self) -> Tuple[str, str, str, str, str]:
         return (
             ("temperature_" + str(self.temperature).replace(".", "_")),
             ("maxtokens_" + str(self.max_tokens)),
             self.dataset_name[:],
-            self.llm_model_id[:],
+            self.llm_model_id.split("/")[-1],
+            ("agent" if self.is_agent else "llm"),
         )
 
-    def get_dataset_basic_info(self) -> Tuple[str, str, Path, float, int]:
+    def get_dataset_basic_info(self) -> Tuple[str, str, Path, float, int, str]:
         return (
-            self.llm_model_id[:],
+            self.llm_model_id.split("/")[-1],
             self.dataset_name[:],
             Path(self.source_file_path),
             self.temperature,
             self.max_tokens,
+            ("agent" if self.is_agent else "llm"),
         )
