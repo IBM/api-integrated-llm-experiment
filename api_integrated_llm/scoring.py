@@ -39,10 +39,6 @@ from api_integrated_llm.helpers.file_helper import (
 project_root_path = Path(__file__).parent.resolve()
 
 
-def listit(t):
-    return list(map(listit, t)) if isinstance(t, (list, tuple)) else t
-
-
 def parse_output_from_language_models(
     prediction: Dict[str, Any],
     model_name: str,
@@ -56,7 +52,26 @@ def parse_output_from_language_models(
     parsing_error_messages: List[str] = []
     num_errors_parsing_pred_intent_res = 0
     model_name_lower_cased = model_name.lower()
-    if is_agent:
+
+    if (
+        "predicted_function_calls" in prediction
+        and prediction["predicted_function_calls"] is not None
+    ):
+        pred_func_calls = prediction["predicted_function_calls"]
+        gold_func_calls = (
+            prediction["gold_function_calls"]
+            if "gold_function_calls" in prediction
+            and prediction["gold_function_calls"] is not None
+            else []
+        )
+        num_errors_parsing_pred_intent_res = (
+            prediction["num_preciedtion_parsing_errors"]
+            if "num_preciedtion_parsing_errors" in prediction
+            and prediction["num_preciedtion_parsing_errors"] is not None
+            else 0
+        )
+        pred_has_parsing_errors = num_errors_parsing_pred_intent_res > 0
+    elif is_agent:
         (
             pred_func_calls,
             gold_func_calls,
@@ -574,7 +589,7 @@ def parsing_only(
             _,
         ) = parse_output_from_language_models(
             prediction=datum.model_dump(),
-            model_name=datum.llm_model_id,
+            model_name=datum.llm_model_id.split("/")[-1],
             is_single_intent_detection=is_single_intent_detection,
             is_agent=datum.is_agent,
         )
@@ -709,7 +724,12 @@ def parsing(
                 )
 
             write_jsonl(
-                file_path=output_folder_path,
+                file_path=Path(
+                    os.path.join(
+                        output_folder_path,
+                        str(evaluator_output_file_path).split("/")[-1],
+                    )
+                ),
                 jsons=parsing_only(predictions_input=data),
                 should_append=False,
             )
