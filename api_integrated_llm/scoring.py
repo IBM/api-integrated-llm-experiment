@@ -732,12 +732,9 @@ def parsing(
                 file_path=Path(
                     os.path.join(
                         output_folder_path,
-                        (
-                            ("agent_" if data[0].is_agent else "llm_")
-                            + data[0].llm_model_id
-                            + "_"
-                            + str(evaluator_output_file_path).split("/")[-1]
-                        ),
+                        ("agent_" if data[0].is_agent else "llm_"),
+                        data[0].llm_model_id,
+                        str(evaluator_output_file_path).split("/")[-1],
                     )
                 ),
                 jsons=parsing_only(
