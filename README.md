@@ -150,7 +150,7 @@ api-integrated-llm -m parser -pif /Users/jungkookang/Documents/projects/api_inte
 Run the scorer with the following command:
 
 ```bash
-api-integrated-llm -m parser -sif <INPUT_FOLDER_PATH> -of <OUTPUT_FOLDER_PATH> -si
+api-integrated-llm -m scorer -sif <INPUT_FOLDER_PATH> -of <OUTPUT_FOLDER_PATH> -si
 ```
 
 ### Flags: 
