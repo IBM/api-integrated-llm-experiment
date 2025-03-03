@@ -1,4 +1,3 @@
-import os
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -8,6 +7,7 @@ from api_integrated_llm.data_models.source_models import (
 )
 from api_integrated_llm.helpers.database_helper.metrics_helper.win_rate_helper import (
     evaluate_win_rate,
+    get_payloads_winrate,
     setup,
 )
 from api_integrated_llm.helpers.file_helper import get_base_model_from_json
@@ -15,9 +15,9 @@ from api_integrated_llm.helpers.file_helper import get_base_model_from_json
 
 def get_winrate(
     response_units: List[EvaluationOutputResponseDataUnit],
-    source_file: Path,
-    db_path: Path,
-    dataset_name: str = "superhero",
+    source_file: Path,  # source data file
+    db_path: Path,  # database path
+    dataset_name: str = "superhero",  # dataset name
 ) -> Tuple[Optional[float], int, str]:
     win_rate: Optional[float] = None
     error_message: str = ""
@@ -39,27 +39,13 @@ def get_winrate(
             file_path=source_file,
             base_model=QuerySourceModel,
         )
-        sample_id_response_dict = {
-            response_unit.sample_id: response_unit.generated_text
-            for response_unit in response_units
-        }
+        payloads: List[Dict[str, Any]] = get_payloads_winrate(
+            response_units=response_units,
+            source_model=source_model,
+            cache_file=cache_file,
+            dataset_name=dataset_name,
+        )
 
-        for datum in source_model.data:
-            datum.initialization_step = {
-                "arguments": {
-                    "database_path": os.path.join(cache_file, dataset_name + ".sqlite")
-                }
-            }
-
-        payloads: List[Dict[str, Any]] = []
-        for datum in source_model.data:
-            if datum.sample_id in sample_id_response_dict:
-                payload = datum.model_dump()
-                payload["model_output"] = sample_id_response_dict[payload["sample_id"]]
-                payload["initialization_step"]["arguments"][
-                    "database_path"
-                ] = os.path.join(cache_file, dataset_name + ".sqlite")
-                payloads.append(payload)
         if len(payloads) > 0:
             win_rate = evaluate_win_rate(payloads, builder)
     except Exception as e:

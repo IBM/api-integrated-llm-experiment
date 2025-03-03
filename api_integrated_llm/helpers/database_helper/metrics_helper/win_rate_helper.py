@@ -1,6 +1,11 @@
 import json
 import os
+from typing import Any, Dict, List
 
+from api_integrated_llm.data_models.source_models import (
+    EvaluationOutputResponseDataUnit,
+    QuerySourceModel,
+)
 from api_integrated_llm.helpers.database_helper.database_builders.sql_dataset_builder import (
     SqlDatasetBuilder,
 )
@@ -143,3 +148,26 @@ def evaluate_win_rate(payloads: list[dict], builder: SqlDatasetBuilder):
         valid.append(validated)
 
     return sum(valid) / len(valid)
+
+
+def get_payloads_winrate(
+    response_units: List[EvaluationOutputResponseDataUnit],
+    source_model: QuerySourceModel,
+    cache_file: Any,
+    dataset_name: str,
+) -> List[Dict[str, Any]]:
+    sample_id_response_dict = {
+        response_unit.sample_id: response_unit.generated_text
+        for response_unit in response_units
+    }
+
+    payloads: List[Dict[str, Any]] = []
+    for datum in source_model.data:
+        if datum.sample_id in sample_id_response_dict:
+            payload = datum.model_dump()
+            payload["model_output"] = sample_id_response_dict[payload["sample_id"]]
+            payload["initialization_step"]["arguments"]["database_path"] = os.path.join(
+                cache_file, dataset_name + ".sqlite"
+            )
+            payloads.append(payload)
+    return payloads
