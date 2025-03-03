@@ -44,20 +44,28 @@ def parse_output_from_language_models(
     model_name: str,
     is_single_intent_detection: bool = False,
     is_agent: bool = False,
-) -> Tuple[List[Any], List[Any], List[Any], List[Any], Any, Any, List[str]]:
+) -> Tuple[List[Any], List[Any], List[Any], List[Any], int, Any, List[str]]:
     num_errors_parsing_pred_intent = 0
     pred_has_parsing_errors = False
     pred_func_calls, gold_func_calls = [], []
     pred_dict_list, gold_dict_list = [], []
     parsing_error_messages: List[str] = []
-    num_errors_parsing_pred_intent_res = 0
+    num_errors_parsing_pred_intent_res: int = 0
     model_name_lower_cased = model_name.lower()
 
     if (
-        "predicted_function_calls" in prediction
-        and prediction["predicted_function_calls"] is not None
+        "num_preciedtion_parsing_errors" in prediction
+        and prediction["num_preciedtion_parsing_errors"] is not None
     ):
-        pred_func_calls = prediction["predicted_function_calls"]
+        pred_func_calls = (
+            prediction["predicted_function_calls"]
+            if "predicted_function_calls" in prediction
+            and prediction["predicted_function_calls"] is not None
+            else []
+        )
+        if is_single_intent_detection and len(pred_func_calls) > 0:
+            pred_func_calls = [pred_func_calls[0]]
+
         gold_func_calls = (
             prediction["gold_function_calls"]
             if "gold_function_calls" in prediction
@@ -575,7 +583,7 @@ def get_micro_confusion_matrix_metrics(
 
 def parsing_only(
     predictions_input: List[EvaluationOutputResponseDataUnit],
-    is_single_intent_detection: bool = False,
+    is_single_intent_detection: bool,
 ) -> List[EvaluationOutputResponseDataUnit]:
     parsed_outputs: List[EvaluationOutputResponseDataUnit] = []
     for datum in predictions_input:
@@ -594,8 +602,8 @@ def parsing_only(
             is_agent=datum.is_agent,
         )
         parsed_output = datum.model_copy(deep=True)
-        parsed_output.predicted_function_calls = pred_func_calls
-        parsed_output.gold_function_calls = gold_func_calls
+        parsed_output.predicted_function_calls = cast(List[str], pred_func_calls)
+        parsed_output.gold_function_calls = cast(List[str], gold_func_calls)
         parsed_output.num_preciedtion_parsing_errors = (
             model_num_errors_parsing_pred_intent
         )
@@ -703,13 +711,10 @@ def handle_scoring_process_exception(
     )
 
 
-def check_single_intent(evaluator_output_file_path: Path) -> bool:
-    return "rest" in str(evaluator_output_file_path)
-
-
 def parsing(
     evaluator_output_file_paths: List[Path],
     output_folder_path: Path,
+    is_single_intent_detection: bool,
 ) -> None:
     for evaluator_output_file_path in evaluator_output_file_paths:
         try:
@@ -730,7 +735,10 @@ def parsing(
                         str(evaluator_output_file_path).split("/")[-1],
                     )
                 ),
-                jsons=parsing_only(predictions_input=data),
+                jsons=parsing_only(
+                    predictions_input=data,
+                    is_single_intent_detection=is_single_intent_detection,
+                ),
                 should_append=False,
             )
 
@@ -746,75 +754,11 @@ def parsing(
             )
 
 
-def scoring_only(
-    evaluator_output_file_paths: List[Path],
-    output_folder_path: Path,
-    win_rate_flag: bool = True,
-) -> None:
-    for evaluator_output_file_path in evaluator_output_file_paths:
-        dataset_name = get_dataset_name_from_file_path(
-            file_path=evaluator_output_file_path
-        )
-        temperature_str = "default_temperature"
-        max_tokens_str = "default_max_tokens"
-        model_name = "default_model"
-        try:
-            data: List[EvaluationOutputResponseDataUnit] = (
-                get_base_models_from_jsonl(
-                    file_path=evaluator_output_file_path,
-                    base_model=EvaluationOutputResponseDataUnit,
-                )
-                if str(evaluator_output_file_path).endswith("jsonl")
-                else get_evaluation_output_response_data_units_from_json(
-                    file_path=evaluator_output_file_path,
-                )
-            )
-
-            if data is None or len(data) == 0:
-                raise Exception(
-                    f"No evaluation data found at {evaluator_output_file_path}"
-                )
-
-            temperature_str, max_tokens_str, dataset_name, model_name = data[
-                0
-            ].get_basic_strs()
-
-            is_single_intent_detection = check_single_intent(
-                evaluator_output_file_path=evaluator_output_file_path
-            )
-
-            write_json(
-                file_path=Path(
-                    os.path.join(
-                        output_folder_path,
-                        model_name,
-                        temperature_str,
-                        max_tokens_str,
-                        (dataset_name + "_scoring_output.json"),
-                    )
-                ),
-                base_model=calculate_scores(
-                    data,
-                    win_rate_flag=win_rate_flag,
-                    is_single_intent_detection=is_single_intent_detection,
-                ),
-            )
-        except Exception as e:
-            handle_scoring_process_exception(
-                output_root_path=output_folder_path,
-                e=e,
-                model_name=model_name,
-                dataset_name=dataset_name,
-                evaluator_output_file_path=evaluator_output_file_path,
-                temperature_str=temperature_str,
-                max_tokens_str=max_tokens_str,
-            )
-
-
 def scoring(
     evaluator_output_file_paths: List[Path],
     output_folder_path: Path,
     win_rate_flag: bool = True,
+    is_single_intent_detection=False,
 ) -> None:
     for evaluator_output_file_path in evaluator_output_file_paths:
         dataset_name = get_dataset_name_from_file_path(
@@ -843,10 +787,6 @@ def scoring(
             temperature_str, max_tokens_str, dataset_name, model_name = data[
                 0
             ].get_basic_strs()
-
-            is_single_intent_detection = check_single_intent(
-                evaluator_output_file_path=evaluator_output_file_path
-            )
 
             write_json(
                 file_path=Path(

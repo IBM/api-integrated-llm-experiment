@@ -96,8 +96,8 @@ class EvaluationOutputResponseDataUnit(EvaluationOutputDataUnit):
     temperature: float = -1.0
     max_tokens: int = 1500
     is_agent: bool = False
-    predicted_function_calls: Optional[List[str]] = None
-    gold_function_calls: Optional[List[str]] = None
+    predicted_function_calls: List[str] = []
+    gold_function_calls: List[str] = []
     num_preciedtion_parsing_errors: Optional[int] = None
 
     @staticmethod
