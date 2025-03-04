@@ -40,7 +40,7 @@ def get_confusion_matrix_cells(
         true_negative = 0
         false_negative = 0
     else:
-        if mode == ConfusionMatrixMode.SET or mode == ConfusionMatrixMode.MULTISET:
+        if mode == ConfusionMatrixMode.SET or mode == ConfusionMatrixMode.COUNTER:
             gold_dict = Counter(gold)
             pred_dict = Counter(pred)
 
@@ -48,7 +48,7 @@ def get_confusion_matrix_cells(
                 if key in pred_dict:
                     if mode == ConfusionMatrixMode.SET:
                         true_positive += 1
-                    else:  # mode == ConfusionMatrixMode.MULTISET:
+                    else:  # mode == ConfusionMatrixMode.COUNTER:
                         true_positive += min(frequency, pred_dict[key])
                         false_negative += max(0, frequency - pred_dict[key])
                         false_positive += max(0, pred_dict[key] - frequency)
