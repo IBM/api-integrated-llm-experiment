@@ -556,11 +556,10 @@ def calculate_scores(
 def handle_scoring_process_exception(
     output_root_path: Path,
     e: Exception,
-    model_name: str,
-    dataset_name: str,
     evaluator_output_file_path: Path,
     temperature_str: str,
     max_tokens_str: str,
+    output_file_name: str,
 ) -> None:
     print(e)
     write_jsonl(
@@ -568,10 +567,10 @@ def handle_scoring_process_exception(
             os.path.join(
                 output_root_path,
                 "error",
-                model_name,
+                get_uuid4_str(),
                 temperature_str,
                 max_tokens_str,
-                dataset_name + "_scoring" + ".json",
+                output_file_name + ".json",
             )
         ),
         jsons=[CommonErrorModel(error=str(e), file=str(evaluator_output_file_path))],
@@ -625,11 +624,10 @@ def parsing(
             handle_scoring_process_exception(
                 output_root_path=output_folder_path,
                 e=e,
-                model_name="default_model",
-                dataset_name="default_dataset",
                 evaluator_output_file_path=evaluator_output_file_path,
                 temperature_str="default_temperature",
                 max_tokens_str="default_max_tokens",
+                output_file_name=output_file_name,
             )
 
 
@@ -694,9 +692,8 @@ def scoring(
             handle_scoring_process_exception(
                 output_root_path=output_folder_path,
                 e=e,
-                model_name=model_name,
-                dataset_name=dataset_name,
                 evaluator_output_file_path=evaluator_output_file_path,
                 temperature_str=temperature_str,
                 max_tokens_str=max_tokens_str,
+                output_file_name=output_file_name,
             )
