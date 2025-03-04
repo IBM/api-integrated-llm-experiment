@@ -17,6 +17,7 @@ from api_integrated_llm.data_models.source_models import (
 )
 
 # from api_integrated_llm.helpers.database_helper.win_rate_calculator import get_winrate
+from api_integrated_llm.helpers.database_helper.win_rate_calculator import get_winrate
 from api_integrated_llm.helpers.output_parsers import parse_output_from_language_models
 from api_integrated_llm.helpers.scorer_helper import (
     get_evaluation_output_response_data_units_from_json,
@@ -239,7 +240,6 @@ def get_item_metrics(
     model_name: str,
     dataset_name: str,
     is_single_intent_detection: bool,
-    win_rate_flag: bool,
     spec_path: Path,
 ) -> Tuple[
     List[List[str]],
@@ -251,7 +251,6 @@ def get_item_metrics(
     int,
     int,
     int,
-    List[float],
     int,
     int,
     List[str],
@@ -268,7 +267,6 @@ def get_item_metrics(
     num_errors_parsing_pred_slot = 0
     num_errors_parsing_gold_slot = 0
     all_num_times_full_score = 0
-    win_rate_list: List[float] = []
     num_pred_examples_w_parsing_errors = 0
     num_gold_examples_w_parsing_errors = 0
     error_messages: List[str] = []
@@ -385,7 +383,6 @@ def get_item_metrics(
         num_errors_parsing_pred_slot,
         num_errors_parsing_gold_slot,
         all_num_times_full_score,
-        win_rate_list,
         num_pred_examples_w_parsing_errors,
         num_gold_examples_w_parsing_errors,
         error_messages,
@@ -466,6 +463,8 @@ def parsing_only(
 
 def calculate_scores(
     predictions_input: List[EvaluationOutputResponseDataUnit],
+    db_path: Optional[Path] = None,
+    source_file_search_path: Optional[Path] = None,
     win_rate_flag: bool = True,
     is_single_intent_detection: bool = False,
 ) -> ScorerOuputModel:
@@ -488,7 +487,6 @@ def calculate_scores(
         num_errors_parsing_pred_slot,
         num_errors_parsing_gold_slot,
         all_num_times_full_score,
-        win_rate_list,
         num_pred_examples_w_parsing_errors,
         num_gold_examples_w_parsing_errors,
         error_messages,
@@ -500,7 +498,6 @@ def calculate_scores(
         model_name=model_name,
         dataset_name=dataset_name,
         is_single_intent_detection=is_single_intent_detection,
-        win_rate_flag=win_rate_flag,
         spec_path=spec_path,
     )
 
@@ -512,12 +509,27 @@ def calculate_scores(
     )
 
     num_samples = len(predictions_input)
+    error_messages_win_rate: List[str] = []
+    win_rate: Optional[float] = None
+    num_sequences_processed_win_rate: Optional[int] = None
+    if win_rate_flag and db_path is not None and source_file_search_path is not None:
+        # calculate winrate here
+        (
+            win_rate,
+            num_sequences_processed_win_rate,
+            error_messages_win_rate,
+        ) = get_winrate(
+            predictions_input=predictions_input,
+            predicted_function_calls=predicted_function_calls,
+            sample_ids=sample_ids,
+            db_path=db_path,  # database path
+            source_file_search_path=source_file_search_path,
+        )
 
     return ScorerOuputModel(
         confusion_metrix_matrics_micro=confusion_metrix_matrics_micro_model,
         num_examples=num_samples,
         percentage_times_full_score=(all_num_times_full_score / num_samples),
-        win_rate=((sum(win_rate_list) / len(win_rate_list)) if win_rate_flag else None),
         num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
         num_errors_parsing_gold_intent=num_errors_parsing_gold_intent,
         num_errors_parsing_pred_slot=num_errors_parsing_pred_slot,
@@ -535,6 +547,9 @@ def calculate_scores(
         pred_output_intent=pred_output_intent,
         gold_output_slot=gold_output_slot,
         pred_output_slot=pred_output_slot,
+        win_rate=win_rate,
+        num_sequences_processed_win_rate=num_sequences_processed_win_rate,
+        error_messages_win_rate=error_messages_win_rate,
     )
 
 
@@ -620,10 +635,13 @@ def parsing(
 def scoring(
     evaluator_output_file_paths: List[Path],
     output_folder_path: Path,
+    db_path: Optional[Path] = None,
+    source_file_search_path: Optional[Path] = None,
     win_rate_flag: bool = True,
     is_single_intent_detection=False,
 ) -> None:
     for evaluator_output_file_path in evaluator_output_file_paths:
+        # set dataset name here
         dataset_name = get_dataset_name_from_file_path(
             file_path=evaluator_output_file_path
         )
@@ -664,6 +682,8 @@ def scoring(
                 ),
                 base_model=calculate_scores(
                     data,
+                    db_path=db_path,
+                    source_file_search_path=source_file_search_path,
                     win_rate_flag=win_rate_flag,
                     is_single_intent_detection=is_single_intent_detection,
                 ),

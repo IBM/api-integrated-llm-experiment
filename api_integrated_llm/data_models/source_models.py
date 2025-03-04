@@ -119,15 +119,17 @@ class EvaluationOutputResponseDataUnit(EvaluationOutputDataUnit):
         return (
             ("temperature_" + str(self.temperature).replace(".", "_")),
             ("maxtokens_" + str(self.max_tokens)),
-            self.dataset_name[:],
+            self.dataset_name,
             self.llm_model_id.split("/")[-1],
             ("agent" if self.is_agent else "llm"),
         )
 
-    def get_dataset_basic_info(self) -> Tuple[str, str, Path, float, int, str]:
+    def get_dataset_basic_info(
+        self,
+    ) -> Tuple[str, str, Path, float, int, str]:
         return (
             self.llm_model_id.split("/")[-1],
-            self.dataset_name[:],
+            self.dataset_name,
             Path(self.source_file_path),
             self.temperature,
             self.max_tokens,

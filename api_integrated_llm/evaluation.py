@@ -65,7 +65,7 @@ async def get_output_list(
     agent_str = "llm"
     output_list: List[EvaluationOutputResponseDataUnit] = []
     try:
-        test_data = instruct_data(
+        test_data, dataset = instruct_data(
             prompt_file_path=prompt_file_path,
             model_name=model_name,
             evaluation_input_file_path=evaluation_input_file_path,  # type: ignore
@@ -76,7 +76,7 @@ async def get_output_list(
             should_ignore=should_ignore,
         )
 
-        if model_obj["inference_type"] == "RITS":
+        if model_obj["inference_type"] == "RITS" and len(test_data) > 0:
             responses = await get_responses_from_async(
                 test_data=test_data,
                 model_obj=model_obj,
@@ -86,11 +86,11 @@ async def get_output_list(
 
             output_list.extend(
                 get_evaluation_output_units_from_responses(
-                    model_name=model_name,
+                    model_name=model_name.split("/")[-1],
                     test_data=test_data,
                     responses=responses,
                     evaluation_input_file_path=evaluation_input_file_path,
-                    dataset_name=dataset_name,
+                    dataset_name=dataset if dataset is not None else "default_dataset",
                     temperature=temperature,
                     max_tokens=max_tokens,
                 )
@@ -108,7 +108,7 @@ async def get_output_list(
                     model_name,
                     temperature_str,
                     max_tokens_str,
-                    dataset_name + "_evaluation" + ".json",
+                    evaluation_input_file_path.split("/")[-1].split(".")[0] + ".json",
                 )
             ),
             dic={"error": str(e)},

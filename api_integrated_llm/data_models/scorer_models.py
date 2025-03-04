@@ -92,7 +92,6 @@ class ScorerOuputModel(BaseModel):
     confusion_metrix_matrics_micro: MicroConfusionMetrixMetricsModel
     num_examples: int
     percentage_times_full_score: float
-    win_rate: Optional[float]
     num_errors_parsing_pred_intent: int
     num_errors_parsing_gold_intent: int
     num_errors_parsing_pred_slot: int
@@ -108,3 +107,6 @@ class ScorerOuputModel(BaseModel):
     pred_output_intent: List[List[Union[str, Dict[str, Any]]]]
     gold_output_slot: List[List[Union[str, Dict[str, Any]]]]
     pred_output_slot: List[List[Union[str, Dict[str, Any]]]]
+    win_rate: Optional[float] = None
+    num_sequences_processed_win_rate: Optional[int] = None
+    error_messages_win_rate: Optional[List[str]] = None
