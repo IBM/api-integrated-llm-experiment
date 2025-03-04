@@ -53,7 +53,7 @@ def test_parse_sources_add_sample_id() -> None:
                 "data",
                 "source",
                 "evaluation",
-                "sequencing_bird_superhero_mod.json",
+                "sequencing_bird_superhero.json",
             )
         ),
         base_model=obj,
