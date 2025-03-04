@@ -231,7 +231,7 @@ def cli() -> None:
                 folder_path=parser_input_folder_path,
                 file_extension="jsonl",
             ),
-            output_folder_path=Path(os.path.join(output_folder_path)),
+            output_folder_path=Path(os.path.join(output_folder_path, "parsing")),
             is_single_intent_detection=args.single_intent,
         )
 
