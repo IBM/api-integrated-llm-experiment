@@ -242,8 +242,10 @@ def cli() -> None:
         )
 
     if args.mode == CliModeModel.PARSER:
+        print("\n")
         print(f"Parser input folder: {parser_input_folder_path}")
         print(f"Parser output folder: {output_folder_path}")
+        print("\n")
         parsing(
             evaluator_output_file_paths=get_files_in_folder(  # type: ignore
                 folder_path=parser_input_folder_path,
@@ -254,8 +256,10 @@ def cli() -> None:
         )
 
     if args.mode == CliModeModel.DEFAULT or args.mode == CliModeModel.SCORER:
+        print("\n")
         print(f"Scorer input folder: {scorer_input_folder_path}")
         print(f"Scorer output folder: {output_folder_path}")
+        print("\n")
         scoring(
             evaluator_output_file_paths=get_files_in_folder(  # type: ignore
                 folder_path=scorer_input_folder_path,
