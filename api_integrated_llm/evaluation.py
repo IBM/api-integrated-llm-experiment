@@ -113,7 +113,7 @@ async def get_output_list(
                     model_name,
                     temperature_str,
                     max_tokens_str,
-                    output_file_name + ".json",
+                    output_file_name + "_" + get_uuid4_str() + ".json",
                 )
             ),
             dic={"error": str(e)},
