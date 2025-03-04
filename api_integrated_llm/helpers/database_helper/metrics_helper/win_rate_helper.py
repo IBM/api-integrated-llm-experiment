@@ -1,9 +1,10 @@
+from copy import deepcopy
 import json
 import os
-from typing import Any, Dict, List
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 from api_integrated_llm.data_models.source_models import (
-    EvaluationOutputResponseDataUnit,
     QuerySourceModel,
 )
 from api_integrated_llm.helpers.database_helper.database_builders.sql_dataset_builder import (
@@ -19,6 +20,7 @@ from api_integrated_llm.helpers.database_helper.core_components.driver_component
     validate_api_output,
     check_equality_without_order,
 )
+from api_integrated_llm.helpers.file_helper import get_json_dict_from_txt
 
 
 def setup(input_file: str, db_path: str):
@@ -150,25 +152,53 @@ def evaluate_win_rate(payloads: list[dict], builder: SqlDatasetBuilder):
     return sum(valid) / len(valid)
 
 
+def parse_sequence(function_list: List[Any]) -> Tuple[List[Dict[str, Any]], List[str]]:
+    function_dict_list: List[Dict[str, Any]] = []
+    error_messages: List[str] = []
+    for content in function_list:
+        json_dict: Optional[Dict[str, Any]] = None
+        try:
+            if isinstance(content, str):
+                parsed_content = get_json_dict_from_txt(txt=content)
+                if not isinstance(parsed_content, dict):
+                    error_messages.append("Parsed function is not list: {content}")
+                    continue
+                json_dict = parsed_content
+            elif isinstance(content, dict):
+                json_dict = content
+        except Exception as e:
+            error_messages.append(f"Exception: {str(e)} \n content: {content}")
+
+        if json_dict is not None:
+            function_dict_list.append(json_dict)
+    return function_dict_list, error_messages
+
+
 def get_payloads_winrate(
-    response_units: List[EvaluationOutputResponseDataUnit],
     source_model: QuerySourceModel,
-    cache_file: Any,
+    cache_folder_path: Path,
     dataset_name: str,
-) -> List[Dict[str, Any]]:
-    sample_id_response_dict = {
-        response_unit.sample_id: response_unit.generated_text
-        for response_unit in response_units
+    predicted_function_calls_tuple: List[Tuple[Union[str, int], List[Any]]],
+) -> Tuple[List[Dict[str, Any]], List[str]]:
+    error_messages: List[str] = []
+    sample_id_predicted_function_calls_dict = {
+        str(sample_id): deepcopy(predicted_function_calls)
+        for sample_id, predicted_function_calls in predicted_function_calls_tuple
     }
 
     payloads: List[Dict[str, Any]] = []
     for datum in source_model.data:
-        if datum.sample_id in sample_id_response_dict:
-            payload = datum.model_dump()
-            payload["initialization_step"]["arguments"]["database_path"] = os.path.join(
-                cache_file, dataset_name + ".sqlite"
+        smaple_id_str = str(datum.sample_id)
+        if smaple_id_str in sample_id_predicted_function_calls_dict:
+            sequence, error_messages_instance = parse_sequence(
+                function_list=sample_id_predicted_function_calls_dict[smaple_id_str]
             )
-            payload["output"]  # place pred_func_calls
-            # output field is gold answer
-            payloads.append(payload)
-    return payloads
+            error_messages.extend(error_messages_instance)
+            if len(error_messages_instance) == 0:
+                payload = datum.model_dump()
+                payload["initialization_step"]["arguments"][
+                    "database_path"
+                ] = os.path.join(cache_folder_path, dataset_name + ".sqlite")
+                payload["output"] = sequence
+                payloads.append(payload)
+    return payloads, error_messages
