@@ -175,3 +175,18 @@ api-integrated-llm -m scorer -sif /Users/jungkookang/Documents/projects/api_inte
 
 - Example input files for the scorer are located at `tests/data/test_output/evaluation/llm` and `tests/data/test_output/parsing`.
 - Example output files for the parser are located at `tests/data/test_output/scoring`.
+
+## Win Rate Calculator
+
+This win rate calculator, found at `api-integrated-llm-experiment`, is based on Ben Elder's code (https://github.ibm.com/AI4BA/invocable-api-hub/blob/sql/invocable_api_hub/driver/run_example.py). It has been significantly modified for use in `api-integrated-llm-experiment`.
+
+To use the win rate calculator, you need three things:
+1. Source data file (retrieved from LLMs or Agents)
+2. Output files from evaluation or parsing
+3. Database folder
+
+Ensure that your source data contains the following:
+- `QuerySourceDataModel` in `api_integrated_llm/data_models/source_models.py` should have a unique `sample_id`.
+- `QuerySourceModel` in `api_integrated_llm/data_models/source_models.py` should have a valid dataset name.
+
+The win rate calculation algorithm uses `sample_id` to locate necessary data in the source data, and the dataset's name is used to determine which folder contains the corresponding database contents.
