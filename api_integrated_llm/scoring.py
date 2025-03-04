@@ -567,10 +567,9 @@ def handle_scoring_process_exception(
             os.path.join(
                 output_root_path,
                 "error",
-                get_uuid4_str(),
                 temperature_str,
                 max_tokens_str,
-                output_file_name + ".json",
+                output_file_name + "_" + get_uuid4_str() + ".json",
             )
         ),
         jsons=[CommonErrorModel(error=str(e), file=str(evaluator_output_file_path))],

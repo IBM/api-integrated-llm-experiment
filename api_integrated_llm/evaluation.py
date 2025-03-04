@@ -64,6 +64,8 @@ async def get_output_list(
     agent_str = "llm"
     output_list: List[EvaluationOutputResponseDataUnit] = []
     output_file_name = str(evaluation_input_file_path).split("/")[-1].split(".")[0]
+    hash_str = get_uuid4_str()
+
     try:
         test_data, dataset = instruct_data(
             prompt_file_path=prompt_file_path,
@@ -84,7 +86,6 @@ async def get_output_list(
                 max_tokens=max_tokens,
             )
 
-            hash_str = get_uuid4_str()
             output_list.extend(
                 get_evaluation_output_units_from_responses(
                     model_name=model_name.split("/")[-1],
@@ -113,7 +114,7 @@ async def get_output_list(
                     model_name,
                     temperature_str,
                     max_tokens_str,
-                    output_file_name + "_" + get_uuid4_str() + ".json",
+                    output_file_name + "_" + hash_str + ".json",
                 )
             ),
             dic={"error": str(e)},
