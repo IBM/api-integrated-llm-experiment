@@ -648,6 +648,7 @@ def scoring(
         temperature_str = "default_temperature"
         max_tokens_str = "default_max_tokens"
         model_name = "default_model"
+        output_file_name = str(evaluator_output_file_path).split("/")[-1].split(".")[0]
         try:
             data: List[EvaluationOutputResponseDataUnit] = (
                 get_base_models_from_jsonl(
@@ -677,7 +678,7 @@ def scoring(
                         model_name.split("/")[-1],
                         temperature_str,
                         max_tokens_str,
-                        (dataset_name + "_scoring_output.json"),
+                        (output_file_name + ".json"),
                     )
                 ),
                 base_model=calculate_scores(

@@ -63,7 +63,7 @@ async def get_output_list(
     max_tokens_str = f"maxtoken_{max_tokens}"
     agent_str = "llm"
     output_list: List[EvaluationOutputResponseDataUnit] = []
-    output_file_name = evaluation_input_file_path.split("/")[-1].split(".")[0]
+    output_file_name = str(evaluation_input_file_path).split("/")[-1].split(".")[0]
     try:
         test_data, dataset = instruct_data(
             prompt_file_path=prompt_file_path,
