@@ -1,7 +1,7 @@
 import argparse
 from pathlib import Path
 import os
-from typing import Any, Dict
+from typing import Any, Dict, Tuple, cast
 from api_integrated_llm.data_models.cli_models import CliModeModel
 from api_integrated_llm.evaluation import evaluate
 from api_integrated_llm.helpers.benchmark_helper import get_model_id_obj_dict
@@ -135,12 +135,7 @@ def check_args(args) -> bool:
     return should_stop
 
 
-def cli() -> None:
-    args = get_arguments()
-
-    if check_args(args):
-        return
-
+def get_paths(args) -> Tuple[Path, Path, Path, Path, Path]:
     source_folder_path = Path(os.path.join(args.root, "source"))
     output_folder_path = (
         Path(os.path.join(args.root, "output"))
@@ -179,6 +174,29 @@ def cli() -> None:
         if args.scorer_input_folder == project_root_path
         else args.scorer_input_folder
     )
+
+    return (
+        source_folder_path,
+        cast(Path, output_folder_path),
+        cast(Path, evaluation_folder_path),
+        cast(Path, parser_input_folder_path),
+        cast(Path, scorer_input_folder_path),
+    )
+
+
+def cli() -> None:
+    args = get_arguments()
+
+    if check_args(args):
+        return
+
+    (
+        source_folder_path,
+        output_folder_path,
+        evaluation_folder_path,
+        parser_input_folder_path,
+        scorer_input_folder_path,
+    ) = get_paths(args)
 
     if args.mode == CliModeModel.DEFAULT or args.mode == CliModeModel.EVALUATOR:
         evaluate(
@@ -231,7 +249,7 @@ def cli() -> None:
                 folder_path=parser_input_folder_path,
                 file_extension="jsonl",
             ),
-            output_folder_path=Path(os.path.join(output_folder_path)),
+            output_folder_path=Path(os.path.join(output_folder_path, "parsing")),
             is_single_intent_detection=args.single_intent,
         )
 
