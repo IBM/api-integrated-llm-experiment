@@ -10,7 +10,7 @@ from api_integrated_llm.data_models.source_models import (
 
 class ConfusionMatrixMode(str, Enum):
     SET = "set"
-    MULTISET = "multiset"
+    COUNTER = "counter"
     LIST = "list"
 
     def __str__(self):
@@ -83,7 +83,7 @@ class ConfusionMetrixMetricsModel(BaseModel):
 
 class MicroConfusionMetrixMetricsModel(BaseModel):
     intent_set_metrics: ConfusionMetrixMetricsModel = ConfusionMetrixMetricsModel()
-    intent_multiset_metrics: ConfusionMetrixMetricsModel = ConfusionMetrixMetricsModel()
+    intent_counter_metrics: ConfusionMetrixMetricsModel = ConfusionMetrixMetricsModel()
     intent_list_metrics: ConfusionMetrixMetricsModel = ConfusionMetrixMetricsModel()
     slot_set_metrics: ConfusionMetrixMetricsModel = ConfusionMetrixMetricsModel()
 

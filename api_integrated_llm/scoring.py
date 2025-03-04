@@ -1,8 +1,9 @@
+from collections import deque
 from copy import deepcopy
 import os
 import json
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple, Union, cast
+from typing import Any, Deque, Dict, List, Optional, Tuple, Union, cast
 
 from api_integrated_llm.data_models.common_models import CommonErrorModel
 from api_integrated_llm.data_models.scorer_models import (
@@ -337,9 +338,20 @@ def get_api_lists_from_func_calls(
     )
 
 
+def get_api_dict_with_list_as_value(
+    api_lists: List[Tuple[str, List[str]]]
+) -> Dict[str, Deque[List[str]]]:
+    api_dict: Dict[str, Deque[List[str]]] = {}
+    for api_name, arguments in api_lists:
+        if api_name not in api_dict:
+            api_dict[api_name] = deque()
+        api_dict[api_name].append(deepcopy(arguments))
+    return api_dict
+
+
 def get_slot_info(
     gold_func_calls: List[Any], pred_func_calls: List[Any], intents_only: bool
-) -> Tuple[List[List[str]], List[List[str]], List[str], int, int, bool, bool]:
+) -> Tuple[List[List[str]], List[List[str]], List[str], int, int, bool, bool,]:
     gold_output_slot: List[List[str]] = []
     pred_output_slot: List[List[str]] = []
     error_messages: List[str] = []
@@ -374,11 +386,18 @@ def get_slot_info(
             gold_has_parsing_errors or instance_has_parsing_errors_slot
         )
 
-        pred_api_dict = {api_name: arguments for api_name, arguments in pred_api_lists}
+        pred_api_dict: Dict[str, Deque[List[str]]] = get_api_dict_with_list_as_value(
+            api_lists=pred_api_lists
+        )
 
         for gold_api_name, gold_arguments in gold_api_lists:
             if gold_api_name in pred_api_dict:
-                pred_output_slot.append(pred_api_dict[gold_api_name])
+                pred_arguments = pred_api_dict[gold_api_name].popleft()
+
+                if len(pred_api_dict[gold_api_name]) == 0:
+                    pred_api_dict.pop(gold_api_name, "")
+
+                pred_output_slot.append(deepcopy(pred_arguments))
                 gold_output_slot.append(deepcopy(gold_arguments))
             # Do not panaliize twice (once for API names and once for slots)
             # when predicted api_name does not exist
@@ -445,7 +464,7 @@ def get_item_metrics(
             (
                 pred_func_calls,
                 gold_func_calls,
-                pred_dict_list,
+                _,
                 gold_dict_list,
                 model_num_errors_parsing_pred_intent,
                 pred_has_parsing_errors,
@@ -557,11 +576,11 @@ def get_micro_confusion_matrix_metrics(
                 mode=ConfusionMatrixMode.SET,
             )
         ),
-        intent_multiset_metrics=ConfusionMetrixMetricsModel.get_confusion_matrix_metrics_micro(
+        intent_counter_metrics=ConfusionMetrixMetricsModel.get_confusion_matrix_metrics_micro(
             get_confision_matrix_from_answers(
                 gold_answers=gold_output_intent,
                 predicted_answers=pred_output_intent,
-                mode=ConfusionMatrixMode.MULTISET,
+                mode=ConfusionMatrixMode.COUNTER,
             )
         ),
         intent_list_metrics=ConfusionMetrixMetricsModel.get_confusion_matrix_metrics_micro(
