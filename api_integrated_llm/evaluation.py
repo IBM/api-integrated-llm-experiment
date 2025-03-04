@@ -9,7 +9,7 @@ from api_integrated_llm.data_models.source_models import (
     EvaluationOutputResponseDataUnit,
 )
 from api_integrated_llm.helpers.file_helper import (
-    get_file_name_without_extension,
+    get_uuid4_str,
     write_json_from_dict,
     write_jsonl,
 )
@@ -52,7 +52,6 @@ async def get_output_list(
     error_folder_path: Path,
     output_folder_path: Path,
     model_name: str,
-    dataset_name: str,
     should_generate_random_example: bool,
     num_examples: int,
     should_ignore: bool,
@@ -64,6 +63,7 @@ async def get_output_list(
     max_tokens_str = f"maxtoken_{max_tokens}"
     agent_str = "llm"
     output_list: List[EvaluationOutputResponseDataUnit] = []
+    output_file_name = evaluation_input_file_path.split("/")[-1].split(".")[0]
     try:
         test_data, dataset = instruct_data(
             prompt_file_path=prompt_file_path,
@@ -84,13 +84,18 @@ async def get_output_list(
                 max_tokens=max_tokens,
             )
 
+            hash_str = get_uuid4_str()
             output_list.extend(
                 get_evaluation_output_units_from_responses(
                     model_name=model_name.split("/")[-1],
                     test_data=test_data,
                     responses=responses,
                     evaluation_input_file_path=evaluation_input_file_path,
-                    dataset_name=dataset if dataset is not None else "default_dataset",
+                    dataset_name=(
+                        dataset
+                        if dataset is not None
+                        else f"default_dataset_{hash_str}"
+                    ),
                     temperature=temperature,
                     max_tokens=max_tokens,
                 )
@@ -108,7 +113,7 @@ async def get_output_list(
                     model_name,
                     temperature_str,
                     max_tokens_str,
-                    evaluation_input_file_path.split("/")[-1].split(".")[0] + ".json",
+                    output_file_name + ".json",
                 )
             ),
             dic={"error": str(e)},
@@ -127,7 +132,7 @@ async def get_output_list(
                 model_name,
                 temperature_str,
                 max_tokens_str,
-                dataset_name + ".jsonl",
+                output_file_name + ".jsonl",
             )
         ),
         jsons=output_list,
@@ -158,9 +163,6 @@ def evaluate(
             for evaluation_input_file_path in evaluation_input_file_paths:
                 tasks = []
                 for model_name, model_obj in model_id_info_dict.items():
-                    dataset_name = get_file_name_without_extension(
-                        file_path=evaluation_input_file_path  # type: ignore
-                    )
                     tasks.append(
                         get_output_list(
                             prompt_file_path=deepcopy(prompt_file_path),
@@ -174,7 +176,6 @@ def evaluate(
                             error_folder_path=deepcopy(error_folder_path),
                             output_folder_path=deepcopy(output_folder_path),
                             model_name=model_name[:],
-                            dataset_name=dataset_name[:],
                             should_generate_random_example=should_generate_random_example,
                             num_examples=num_examples,
                             should_ignore=should_ignore,
