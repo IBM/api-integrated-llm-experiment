@@ -59,9 +59,10 @@ async def get_output_list(
     model_obj,
     temperature: float,
     max_tokens: int,
-    temperature_str: str,
-    max_tokens_str: str,
 ) -> None:
+    temperature_str = f"temperature_{temperature}"
+    max_tokens_str = f"maxtoken_{max_tokens}"
+    agent_str = "llm"
     output_list: List[EvaluationOutputResponseDataUnit] = []
     try:
         test_data = instruct_data(
@@ -113,10 +114,16 @@ async def get_output_list(
             dic={"error": str(e)},
         )
 
+    if len(output_list) > 0:
+        temperature_str, max_tokens_str, _, model_name, agent_str = output_list[
+            0
+        ].get_basic_strs()
+
     write_jsonl(
         file_path=Path(
             os.path.join(
                 output_folder_path,
+                agent_str,
                 model_name,
                 temperature_str,
                 max_tokens_str,
@@ -144,10 +151,9 @@ def evaluate(
 
     for temperature in temperatures:
         print(f"Temperature: {temperature}")
-        temperature_str = "temperature_" + str(temperature).replace(".", "_")
+
         for max_tokens in max_tokens_list:
             print(f"Max tokens: {max_tokens}")
-            max_tokens_str = "maxtokens_" + str(max_tokens)
 
             for evaluation_input_file_path in evaluation_input_file_paths:
                 tasks = []
@@ -175,8 +181,6 @@ def evaluate(
                             model_obj=deepcopy(model_obj),
                             temperature=temperature,
                             max_tokens=max_tokens,
-                            temperature_str=temperature_str[:],
-                            max_tokens_str=max_tokens_str[:],
                         )
                     )
 
