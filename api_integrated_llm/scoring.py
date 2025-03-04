@@ -585,6 +585,7 @@ def parsing(
     is_single_intent_detection: bool,
 ) -> None:
     for evaluator_output_file_path in evaluator_output_file_paths:
+        output_file_name = str(evaluator_output_file_path).split("/")[-1].split(".")[0]
         try:
             data: List[EvaluationOutputResponseDataUnit] = get_base_models_from_jsonl(
                 file_path=evaluator_output_file_path,
@@ -608,7 +609,7 @@ def parsing(
                         model_name,
                         temperature_str,
                         max_tokens_str,
-                        str(evaluator_output_file_path).split("/")[-1],
+                        (output_file_name + ".jsonl"),
                     )
                 ),
                 jsons=parsing_only(
