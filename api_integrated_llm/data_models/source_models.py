@@ -75,6 +75,7 @@ class QuerySourceModel(BaseModel):
     data: Optional[List[QuerySourceDataModel]] = None
     global_api_pool: Optional[Dict[str, Any]] = None
     win_rate: Optional[float] = None
+    dataset: Optional[str] = None
 
 
 class ExampleDataModel(BaseModel):
