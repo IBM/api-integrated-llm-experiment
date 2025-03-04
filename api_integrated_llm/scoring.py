@@ -350,7 +350,7 @@ def get_api_dict_with_list_as_value(
 
 
 def get_slot_info(
-    gold_func_calls: List[Any], pred_func_calls: List[Any], intents_only: bool
+    gold_func_calls: List[Any], pred_func_calls: List[Any]
 ) -> Tuple[List[List[str]], List[List[str]], List[str], int, int, bool, bool,]:
     gold_output_slot: List[List[str]] = []
     pred_output_slot: List[List[str]] = []
@@ -360,47 +360,46 @@ def get_slot_info(
     pred_has_parsing_errors = False
     gold_has_parsing_errors = False
 
-    if not intents_only:
-        (
-            pred_api_lists,
-            instance_num_errors_parsing_slot,
-            instance_has_parsing_errors_slot,
-        ) = get_api_lists_from_func_calls(
-            func_calls=pred_func_calls,
-        )
+    (
+        pred_api_lists,
+        instance_num_errors_parsing_slot,
+        instance_has_parsing_errors_slot,
+    ) = get_api_lists_from_func_calls(
+        func_calls=pred_func_calls,
+    )
 
-        num_errors_parsing_pred_slot += instance_num_errors_parsing_slot
-        pred_has_parsing_errors = (
-            pred_has_parsing_errors or instance_has_parsing_errors_slot
-        )
+    num_errors_parsing_pred_slot += instance_num_errors_parsing_slot
+    pred_has_parsing_errors = (
+        pred_has_parsing_errors or instance_has_parsing_errors_slot
+    )
 
-        (
-            gold_api_lists,
-            instance_num_errors_parsing_slot,
-            instance_has_parsing_errors_slot,
-        ) = get_api_lists_from_func_calls(
-            func_calls=gold_func_calls,
-        )
-        num_errors_parsing_gold_slot += instance_num_errors_parsing_slot
-        gold_has_parsing_errors = (
-            gold_has_parsing_errors or instance_has_parsing_errors_slot
-        )
+    (
+        gold_api_lists,
+        instance_num_errors_parsing_slot,
+        instance_has_parsing_errors_slot,
+    ) = get_api_lists_from_func_calls(
+        func_calls=gold_func_calls,
+    )
+    num_errors_parsing_gold_slot += instance_num_errors_parsing_slot
+    gold_has_parsing_errors = (
+        gold_has_parsing_errors or instance_has_parsing_errors_slot
+    )
 
-        pred_api_dict: Dict[str, Deque[List[str]]] = get_api_dict_with_list_as_value(
-            api_lists=pred_api_lists
-        )
+    pred_api_dict: Dict[str, Deque[List[str]]] = get_api_dict_with_list_as_value(
+        api_lists=pred_api_lists
+    )
 
-        for gold_api_name, gold_arguments in gold_api_lists:
-            if gold_api_name in pred_api_dict:
-                pred_arguments = pred_api_dict[gold_api_name].popleft()
+    for gold_api_name, gold_arguments in gold_api_lists:
+        if gold_api_name in pred_api_dict:
+            pred_arguments = pred_api_dict[gold_api_name].popleft()
 
-                if len(pred_api_dict[gold_api_name]) == 0:
-                    pred_api_dict.pop(gold_api_name, "")
+            if len(pred_api_dict[gold_api_name]) == 0:
+                pred_api_dict.pop(gold_api_name, "")
 
-                pred_output_slot.append(deepcopy(pred_arguments))
-                gold_output_slot.append(deepcopy(gold_arguments))
-            # Do not panaliize twice (once for API names and once for slots)
-            # when predicted api_name does not exist
+            pred_output_slot.append(deepcopy(pred_arguments))
+            gold_output_slot.append(deepcopy(gold_arguments))
+        # Do not panaliize twice (once for API names and once for slots)
+        # when predicted api_name does not exist
 
     return (
         gold_output_slot,
@@ -418,7 +417,6 @@ def get_item_metrics(
     model_name: str,
     dataset_name: str,
     is_single_intent_detection: bool,
-    intents_only: bool,
     win_rate_flag: bool,
     spec_path: Path,
 ) -> Tuple[
@@ -528,7 +526,6 @@ def get_item_metrics(
         ) = get_slot_info(
             gold_func_calls=gold_func_calls,
             pred_func_calls=pred_func_calls,
-            intents_only=intents_only,
         )
         gold_output_slot.extend(cast(List[List[str]], instance_gold_output_slot))
         pred_output_slot.extend(cast(List[List[str]], instance_pred_output_slot))
@@ -633,7 +630,6 @@ def parsing_only(
 
 def calculate_scores(
     predictions_input: List[EvaluationOutputResponseDataUnit],
-    intents_only: bool = False,
     win_rate_flag: bool = True,
     is_single_intent_detection: bool = False,
 ) -> ScorerOuputModel:
@@ -666,7 +662,6 @@ def calculate_scores(
         model_name=model_name,
         dataset_name=dataset_name,
         is_single_intent_detection=is_single_intent_detection,
-        intents_only=intents_only,
         win_rate_flag=win_rate_flag,
         spec_path=spec_path,
     )
