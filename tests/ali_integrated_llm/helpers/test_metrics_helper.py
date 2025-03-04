@@ -84,7 +84,7 @@ def test_get_confusion_matrix_cells_multiset_non_empty() -> None:
     tp, fp, tn, fn = get_confusion_matrix_cells(
         gold=["a", "b", "a", "c", "d"],
         pred=["a", "b", "c", "d"],
-        mode=ConfusionMatrixMode.MULTISET,
+        mode=ConfusionMatrixMode.COUNTER,
     )
 
     assert tp == 4
@@ -110,7 +110,7 @@ def test_get_confusion_matrix_cells_multiset_no_perfect_match_false_negative() -
     tp, fp, tn, fn = get_confusion_matrix_cells(
         gold=["a", "b", "a", "c", "d"],
         pred=["a", "c", "d"],
-        mode=ConfusionMatrixMode.MULTISET,
+        mode=ConfusionMatrixMode.COUNTER,
     )
 
     assert tp == 3
