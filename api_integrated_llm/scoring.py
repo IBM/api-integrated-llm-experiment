@@ -18,7 +18,9 @@ from api_integrated_llm.data_models.source_models import (
 
 # from api_integrated_llm.helpers.database_helper.win_rate_calculator import get_winrate
 from api_integrated_llm.helpers.database_helper.win_rate_calculator import get_winrate
-from api_integrated_llm.helpers.output_parsers import parse_output_from_language_models
+from api_integrated_llm.helpers.output_parsers import (
+    parse_output_from_language_models,
+)
 from api_integrated_llm.helpers.scorer_helper import (
     get_evaluation_output_response_data_units_from_json,
 )
