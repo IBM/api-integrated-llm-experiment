@@ -64,8 +64,6 @@ def parse_output_from_language_models(
             and prediction["predicted_function_calls"] is not None
             else []
         )
-        if is_single_intent_detection and len(pred_func_calls) > 0:
-            pred_func_calls = [pred_func_calls[0]]
 
         gold_func_calls = (
             prediction["gold_function_calls"]
@@ -92,7 +90,6 @@ def parse_output_from_language_models(
         ) = parse_llama_3_output(
             prediction=prediction,
             num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
-            is_single_intent_detection=is_single_intent_detection,
             skip_grounding=is_single_intent_detection,
         )
     elif "granite" in model_name_lower_cased:
@@ -108,7 +105,6 @@ def parse_output_from_language_models(
             ) = parse_granite_20b_function_calling_output(
                 prediction=prediction,
                 num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
-                is_single_intent_detection=is_single_intent_detection,
                 skip_grounding=is_single_intent_detection,
             )
         else:
@@ -123,7 +119,6 @@ def parse_output_from_language_models(
             ) = parse_granite_3_output(
                 prediction=prediction,
                 num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
-                is_single_intent_detection=is_single_intent_detection,
                 skip_grounding=is_single_intent_detection,
             )
     elif "llama" in model_name_lower_cased:
@@ -139,7 +134,6 @@ def parse_output_from_language_models(
             ) = parse_llama_3_70b_instruct(
                 prediction=prediction,
                 num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
-                is_single_intent_detection=is_single_intent_detection,
                 skip_grounding=is_single_intent_detection,
             )
         else:
@@ -154,7 +148,6 @@ def parse_output_from_language_models(
             ) = parse_llama_3_output(
                 prediction=prediction,
                 num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
-                is_single_intent_detection=is_single_intent_detection,
                 skip_grounding=is_single_intent_detection,
             )
     elif "mistral" in model_name_lower_cased or "mixtral" in model_name_lower_cased:
@@ -169,7 +162,6 @@ def parse_output_from_language_models(
         ) = parse_mistral_7b_instruct_v0_3(
             prediction=prediction,
             num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
-            is_single_intent_detection=is_single_intent_detection,
             skip_grounding=is_single_intent_detection,
         )
     elif "deepseek" in model_name_lower_cased:
@@ -184,7 +176,6 @@ def parse_output_from_language_models(
         ) = parse_llama_3_output(
             prediction=prediction,
             num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
-            is_single_intent_detection=is_single_intent_detection,
             skip_grounding=is_single_intent_detection,
         )
     else:
@@ -199,9 +190,11 @@ def parse_output_from_language_models(
         ) = parse_llama_3_output(
             prediction=prediction,
             num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
-            is_single_intent_detection=is_single_intent_detection,
             skip_grounding=is_single_intent_detection,
         )
+
+    if is_single_intent_detection and len(pred_func_calls) > 0:
+        pred_func_calls = [pred_func_calls[0]]
 
     return (
         pred_func_calls,
