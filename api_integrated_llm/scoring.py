@@ -459,7 +459,6 @@ def calculate_scores(
     source_file_search_path: Optional[Path] = None,
     is_single_intent_detection: bool = False,
 ) -> ScorerOuputModel:
-    num_failed_function_execution_list: List[int] = []
     (
         model_name,
         dataset_name,
@@ -504,6 +503,7 @@ def calculate_scores(
     error_messages_win_rate: List[str] = []
     win_rate: Optional[float] = None
     num_sequences_processed_win_rate: Optional[int] = None
+    num_failed_function_execution_list: List[int] = []
     if db_path is not None and source_file_search_path is not None:
         (
             win_rate,
