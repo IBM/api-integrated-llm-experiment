@@ -15,12 +15,11 @@ from api_integrated_llm.data_models.scorer_models import (
 from api_integrated_llm.data_models.source_models import (
     EvaluationOutputResponseDataUnit,
 )
+
+# from api_integrated_llm.helpers.database_helper.win_rate_calculator import get_win_rate
+from api_integrated_llm.helpers.database_helper.win_rate_calculator import get_win_rate
 from api_integrated_llm.helpers.output_parsers import (
-    parse_granite_20b_function_calling_output,
-    parse_granite_3_output,
-    parse_llama_3_70b_instruct,
-    parse_llama_3_output,
-    parse_mistral_7b_instruct_v0_3,
+    parse_output_from_language_models,
 )
 from api_integrated_llm.helpers.scorer_helper import (
     get_evaluation_output_response_data_units_from_json,
@@ -30,7 +29,6 @@ from api_integrated_llm.helpers.metrics_helper import (
 )
 from api_integrated_llm.helpers.file_helper import (
     get_base_models_from_jsonl,
-    get_dataset_name_from_file_path,
     get_uuid4_str,
     write_json,
     write_jsonl,
@@ -38,173 +36,6 @@ from api_integrated_llm.helpers.file_helper import (
 
 
 project_root_path = Path(__file__).parent.resolve()
-
-
-def parse_output_from_language_models(
-    prediction: Dict[str, Any],
-    model_name: str,
-    is_single_intent_detection: bool = False,
-    is_agent: bool = False,
-) -> Tuple[List[Any], List[Any], List[Any], List[Any], int, Any, List[str]]:
-    num_errors_parsing_pred_intent = 0
-    pred_has_parsing_errors = False
-    pred_func_calls, gold_func_calls = [], []
-    pred_dict_list, gold_dict_list = [], []
-    parsing_error_messages: List[str] = []
-    num_errors_parsing_pred_intent_res: int = 0
-    model_name_lower_cased = model_name.lower()
-
-    if (
-        "num_preciedtion_parsing_errors" in prediction
-        and prediction["num_preciedtion_parsing_errors"] is not None
-    ):
-        pred_func_calls = (
-            prediction["predicted_function_calls"]
-            if "predicted_function_calls" in prediction
-            and prediction["predicted_function_calls"] is not None
-            else []
-        )
-
-        gold_func_calls = (
-            prediction["gold_function_calls"]
-            if "gold_function_calls" in prediction
-            and prediction["gold_function_calls"] is not None
-            else []
-        )
-        num_errors_parsing_pred_intent_res = (
-            prediction["num_preciedtion_parsing_errors"]
-            if "num_preciedtion_parsing_errors" in prediction
-            and prediction["num_preciedtion_parsing_errors"] is not None
-            else 0
-        )
-        pred_has_parsing_errors = num_errors_parsing_pred_intent_res > 0
-    elif is_agent:
-        (
-            pred_func_calls,
-            gold_func_calls,
-            pred_dict_list,
-            gold_dict_list,
-            num_errors_parsing_pred_intent_res,
-            pred_has_parsing_errors,
-            parsing_error_messages,
-        ) = parse_llama_3_output(
-            prediction=prediction,
-            num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
-            skip_grounding=is_single_intent_detection,
-        )
-    elif "granite" in model_name_lower_cased:
-        if "functioncalling" in model_name_lower_cased:
-            (
-                pred_func_calls,
-                gold_func_calls,
-                pred_dict_list,
-                gold_dict_list,
-                num_errors_parsing_pred_intent_res,
-                pred_has_parsing_errors,
-                parsing_error_messages,
-            ) = parse_granite_20b_function_calling_output(
-                prediction=prediction,
-                num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
-                skip_grounding=is_single_intent_detection,
-            )
-        else:
-            (
-                pred_func_calls,
-                gold_func_calls,
-                pred_dict_list,
-                gold_dict_list,
-                num_errors_parsing_pred_intent_res,
-                pred_has_parsing_errors,
-                parsing_error_messages,
-            ) = parse_granite_3_output(
-                prediction=prediction,
-                num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
-                skip_grounding=is_single_intent_detection,
-            )
-    elif "llama" in model_name_lower_cased:
-        if "llama-3-70b" in model_name_lower_cased:
-            (
-                pred_func_calls,
-                gold_func_calls,
-                pred_dict_list,
-                gold_dict_list,
-                num_errors_parsing_pred_intent_res,
-                pred_has_parsing_errors,
-                parsing_error_messages,
-            ) = parse_llama_3_70b_instruct(
-                prediction=prediction,
-                num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
-                skip_grounding=is_single_intent_detection,
-            )
-        else:
-            (
-                pred_func_calls,
-                gold_func_calls,
-                pred_dict_list,
-                gold_dict_list,
-                num_errors_parsing_pred_intent_res,
-                pred_has_parsing_errors,
-                parsing_error_messages,
-            ) = parse_llama_3_output(
-                prediction=prediction,
-                num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
-                skip_grounding=is_single_intent_detection,
-            )
-    elif "mistral" in model_name_lower_cased or "mixtral" in model_name_lower_cased:
-        (
-            pred_func_calls,
-            gold_func_calls,
-            pred_dict_list,
-            gold_dict_list,
-            num_errors_parsing_pred_intent_res,
-            pred_has_parsing_errors,
-            parsing_error_messages,
-        ) = parse_mistral_7b_instruct_v0_3(
-            prediction=prediction,
-            num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
-            skip_grounding=is_single_intent_detection,
-        )
-    elif "deepseek" in model_name_lower_cased:
-        (
-            pred_func_calls,
-            gold_func_calls,
-            pred_dict_list,
-            gold_dict_list,
-            num_errors_parsing_pred_intent_res,
-            pred_has_parsing_errors,
-            parsing_error_messages,
-        ) = parse_llama_3_output(
-            prediction=prediction,
-            num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
-            skip_grounding=is_single_intent_detection,
-        )
-    else:
-        (
-            pred_func_calls,
-            gold_func_calls,
-            pred_dict_list,
-            gold_dict_list,
-            num_errors_parsing_pred_intent_res,
-            pred_has_parsing_errors,
-            parsing_error_messages,
-        ) = parse_llama_3_output(
-            prediction=prediction,
-            num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
-            skip_grounding=is_single_intent_detection,
-        )
-
-    if is_single_intent_detection and len(pred_func_calls) > 0:
-        pred_func_calls = [pred_func_calls[0]]
-
-    return (
-        pred_func_calls,
-        gold_func_calls,
-        pred_dict_list,
-        gold_dict_list,
-        num_errors_parsing_pred_intent_res,
-        pred_has_parsing_errors,
-        parsing_error_messages,
-    )
 
 
 def get_function_dict(content: Any) -> Optional[Dict[str, Any]]:
@@ -343,7 +174,7 @@ def get_api_dict_with_list_as_value(
 
 
 def get_slot_info(
-    gold_func_calls: List[Any], pred_func_calls: List[Any], intents_only: bool
+    gold_func_calls: List[Any], pred_func_calls: List[Any]
 ) -> Tuple[List[List[str]], List[List[str]], List[str], int, int, bool, bool,]:
     gold_output_slot: List[List[str]] = []
     pred_output_slot: List[List[str]] = []
@@ -353,47 +184,46 @@ def get_slot_info(
     pred_has_parsing_errors = False
     gold_has_parsing_errors = False
 
-    if not intents_only:
-        (
-            pred_api_lists,
-            instance_num_errors_parsing_slot,
-            instance_has_parsing_errors_slot,
-        ) = get_api_lists_from_func_calls(
-            func_calls=pred_func_calls,
-        )
+    (
+        pred_api_lists,
+        instance_num_errors_parsing_slot,
+        instance_has_parsing_errors_slot,
+    ) = get_api_lists_from_func_calls(
+        func_calls=pred_func_calls,
+    )
 
-        num_errors_parsing_pred_slot += instance_num_errors_parsing_slot
-        pred_has_parsing_errors = (
-            pred_has_parsing_errors or instance_has_parsing_errors_slot
-        )
+    num_errors_parsing_pred_slot += instance_num_errors_parsing_slot
+    pred_has_parsing_errors = (
+        pred_has_parsing_errors or instance_has_parsing_errors_slot
+    )
 
-        (
-            gold_api_lists,
-            instance_num_errors_parsing_slot,
-            instance_has_parsing_errors_slot,
-        ) = get_api_lists_from_func_calls(
-            func_calls=gold_func_calls,
-        )
-        num_errors_parsing_gold_slot += instance_num_errors_parsing_slot
-        gold_has_parsing_errors = (
-            gold_has_parsing_errors or instance_has_parsing_errors_slot
-        )
+    (
+        gold_api_lists,
+        instance_num_errors_parsing_slot,
+        instance_has_parsing_errors_slot,
+    ) = get_api_lists_from_func_calls(
+        func_calls=gold_func_calls,
+    )
+    num_errors_parsing_gold_slot += instance_num_errors_parsing_slot
+    gold_has_parsing_errors = (
+        gold_has_parsing_errors or instance_has_parsing_errors_slot
+    )
 
-        pred_api_dict: Dict[str, Deque[List[str]]] = get_api_dict_with_list_as_value(
-            api_lists=pred_api_lists
-        )
+    pred_api_dict: Dict[str, Deque[List[str]]] = get_api_dict_with_list_as_value(
+        api_lists=pred_api_lists
+    )
 
-        for gold_api_name, gold_arguments in gold_api_lists:
-            if gold_api_name in pred_api_dict:
-                pred_arguments = pred_api_dict[gold_api_name].popleft()
+    for gold_api_name, gold_arguments in gold_api_lists:
+        if gold_api_name in pred_api_dict:
+            pred_arguments = pred_api_dict[gold_api_name].popleft()
 
-                if len(pred_api_dict[gold_api_name]) == 0:
-                    pred_api_dict.pop(gold_api_name, "")
+            if len(pred_api_dict[gold_api_name]) == 0:
+                pred_api_dict.pop(gold_api_name, "")
 
-                pred_output_slot.append(deepcopy(pred_arguments))
-                gold_output_slot.append(deepcopy(gold_arguments))
-            # Do not panaliize twice (once for API names and once for slots)
-            # when predicted api_name does not exist
+            pred_output_slot.append(deepcopy(pred_arguments))
+            gold_output_slot.append(deepcopy(gold_arguments))
+        # Do not panaliize twice (once for API names and once for slots)
+        # when predicted api_name does not exist
 
     return (
         gold_output_slot,
@@ -411,8 +241,6 @@ def get_item_metrics(
     model_name: str,
     dataset_name: str,
     is_single_intent_detection: bool,
-    intents_only: bool,
-    win_rate_flag: bool,
     spec_path: Path,
 ) -> Tuple[
     List[List[str]],
@@ -424,11 +252,12 @@ def get_item_metrics(
     int,
     int,
     int,
-    List[float],
     int,
     int,
     List[str],
     List[str],
+    List[Any],
+    List[List[Any]],
 ]:
     gold_output_intent: List[List[str]] = []
     pred_output_intent: List[List[str]] = []
@@ -439,11 +268,12 @@ def get_item_metrics(
     num_errors_parsing_pred_slot = 0
     num_errors_parsing_gold_slot = 0
     all_num_times_full_score = 0
-    win_rate_list: List[float] = []
     num_pred_examples_w_parsing_errors = 0
     num_gold_examples_w_parsing_errors = 0
     error_messages: List[str] = []
     parsing_error_messages: List[str] = []
+    sample_ids: List[Any] = []
+    predicted_function_calls: List[List[Any]] = []
 
     for prediction, prediction_model in list(
         map(
@@ -458,7 +288,7 @@ def get_item_metrics(
                 pred_func_calls,
                 gold_func_calls,
                 _,
-                gold_dict_list,
+                _,
                 model_num_errors_parsing_pred_intent,
                 pred_has_parsing_errors,
                 instance_parsing_error_messages,
@@ -470,6 +300,8 @@ def get_item_metrics(
             )
             num_errors_parsing_pred_intent += model_num_errors_parsing_pred_intent
             parsing_error_messages.extend(instance_parsing_error_messages)
+            predicted_function_calls.append(pred_func_calls)
+            sample_ids.append(prediction_model.sample_id)
         except Exception as e:
             print(e)
             error_messages.append(
@@ -521,7 +353,6 @@ def get_item_metrics(
         ) = get_slot_info(
             gold_func_calls=gold_func_calls,
             pred_func_calls=pred_func_calls,
-            intents_only=intents_only,
         )
         gold_output_slot.extend(cast(List[List[str]], instance_gold_output_slot))
         pred_output_slot.extend(cast(List[List[str]], instance_pred_output_slot))
@@ -534,9 +365,6 @@ def get_item_metrics(
         num_pred_examples_w_parsing_errors += 1 if pred_has_parsing_errors else 0
         num_gold_examples_w_parsing_errors += 1 if gold_has_parsing_errors else 0
 
-        ## Calculate WinRate here
-        # win_rate_list.append(win_score)
-
     return (
         gold_output_intent,
         pred_output_intent,
@@ -547,11 +375,12 @@ def get_item_metrics(
         num_errors_parsing_pred_slot,
         num_errors_parsing_gold_slot,
         all_num_times_full_score,
-        win_rate_list,
         num_pred_examples_w_parsing_errors,
         num_gold_examples_w_parsing_errors,
         error_messages,
         parsing_error_messages,
+        sample_ids,
+        predicted_function_calls,
     )
 
 
@@ -626,8 +455,8 @@ def parsing_only(
 
 def calculate_scores(
     predictions_input: List[EvaluationOutputResponseDataUnit],
-    intents_only: bool = False,
-    win_rate_flag: bool = True,
+    db_path: Optional[Path] = None,
+    source_file_search_path: Optional[Path] = None,
     is_single_intent_detection: bool = False,
 ) -> ScorerOuputModel:
     (
@@ -649,18 +478,17 @@ def calculate_scores(
         num_errors_parsing_pred_slot,
         num_errors_parsing_gold_slot,
         all_num_times_full_score,
-        win_rate_list,
         num_pred_examples_w_parsing_errors,
         num_gold_examples_w_parsing_errors,
         error_messages,
         parsing_error_messages,
+        sample_ids,
+        predicted_function_calls,
     ) = get_item_metrics(
         predictions_input=predictions_input,
         model_name=model_name,
         dataset_name=dataset_name,
         is_single_intent_detection=is_single_intent_detection,
-        intents_only=intents_only,
-        win_rate_flag=win_rate_flag,
         spec_path=spec_path,
     )
 
@@ -672,12 +500,27 @@ def calculate_scores(
     )
 
     num_samples = len(predictions_input)
+    error_messages_win_rate: List[str] = []
+    win_rate: Optional[float] = None
+    num_sequences_processed_win_rate: Optional[int] = None
+    if db_path is not None and source_file_search_path is not None:
+        (
+            win_rate,
+            num_sequences_processed_win_rate,
+            error_messages_win_rate,
+            num_failed_function_execution_list,
+        ) = get_win_rate(
+            predictions_input=predictions_input,
+            predicted_function_calls=predicted_function_calls,
+            sample_ids=sample_ids,
+            db_path=db_path,  # database path
+            source_file_search_path=source_file_search_path,
+        )
 
     return ScorerOuputModel(
         confusion_metrix_matrics_micro=confusion_metrix_matrics_micro_model,
         num_examples=num_samples,
         percentage_times_full_score=(all_num_times_full_score / num_samples),
-        win_rate=((sum(win_rate_list) / len(win_rate_list)) if win_rate_flag else None),
         num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
         num_errors_parsing_gold_intent=num_errors_parsing_gold_intent,
         num_errors_parsing_pred_slot=num_errors_parsing_pred_slot,
@@ -695,17 +538,20 @@ def calculate_scores(
         pred_output_intent=pred_output_intent,
         gold_output_slot=gold_output_slot,
         pred_output_slot=pred_output_slot,
+        win_rate=win_rate,
+        num_sequences_processed_win_rate=num_sequences_processed_win_rate,
+        error_messages_win_rate=error_messages_win_rate,
+        num_failed_function_execution_list=num_failed_function_execution_list,
     )
 
 
 def handle_scoring_process_exception(
     output_root_path: Path,
     e: Exception,
-    model_name: str,
-    dataset_name: str,
     evaluator_output_file_path: Path,
     temperature_str: str,
     max_tokens_str: str,
+    output_file_name: str,
 ) -> None:
     print(e)
     write_jsonl(
@@ -713,10 +559,9 @@ def handle_scoring_process_exception(
             os.path.join(
                 output_root_path,
                 "error",
-                model_name,
                 temperature_str,
                 max_tokens_str,
-                dataset_name + "_scoring" + ".json",
+                output_file_name + "_" + get_uuid4_str() + ".json",
             )
         ),
         jsons=[CommonErrorModel(error=str(e), file=str(evaluator_output_file_path))],
@@ -730,6 +575,7 @@ def parsing(
     is_single_intent_detection: bool,
 ) -> None:
     for evaluator_output_file_path in evaluator_output_file_paths:
+        output_file_name = str(evaluator_output_file_path).split("/")[-1].split(".")[0]
         try:
             data: List[EvaluationOutputResponseDataUnit] = get_base_models_from_jsonl(
                 file_path=evaluator_output_file_path,
@@ -753,7 +599,7 @@ def parsing(
                         model_name,
                         temperature_str,
                         max_tokens_str,
-                        str(evaluator_output_file_path).split("/")[-1],
+                        (output_file_name + ".jsonl"),
                     )
                 ),
                 jsons=parsing_only(
@@ -769,27 +615,25 @@ def parsing(
             handle_scoring_process_exception(
                 output_root_path=output_folder_path,
                 e=e,
-                model_name="default_model",
-                dataset_name="default_dataset",
                 evaluator_output_file_path=evaluator_output_file_path,
                 temperature_str="default_temperature",
                 max_tokens_str="default_max_tokens",
+                output_file_name=output_file_name,
             )
 
 
 def scoring(
     evaluator_output_file_paths: List[Path],
     output_folder_path: Path,
-    win_rate_flag: bool = True,
+    db_path: Optional[Path] = None,
+    source_file_search_path: Optional[Path] = None,
     is_single_intent_detection=False,
 ) -> None:
     for evaluator_output_file_path in evaluator_output_file_paths:
-        dataset_name = get_dataset_name_from_file_path(
-            file_path=evaluator_output_file_path
-        )
         temperature_str = "default_temperature"
         max_tokens_str = "default_max_tokens"
         model_name = "default_model"
+        output_file_name = str(evaluator_output_file_path).split("/")[-1].split(".")[0]
         try:
             data: List[EvaluationOutputResponseDataUnit] = (
                 get_base_models_from_jsonl(
@@ -819,12 +663,13 @@ def scoring(
                         model_name.split("/")[-1],
                         temperature_str,
                         max_tokens_str,
-                        (dataset_name + "_scoring_output.json"),
+                        (output_file_name + ".json"),
                     )
                 ),
                 base_model=calculate_scores(
                     data,
-                    win_rate_flag=win_rate_flag,
+                    db_path=db_path,
+                    source_file_search_path=source_file_search_path,
                     is_single_intent_detection=is_single_intent_detection,
                 ),
             )
@@ -832,9 +677,8 @@ def scoring(
             handle_scoring_process_exception(
                 output_root_path=output_folder_path,
                 e=e,
-                model_name=model_name,
-                dataset_name=dataset_name,
                 evaluator_output_file_path=evaluator_output_file_path,
                 temperature_str=temperature_str,
                 max_tokens_str=max_tokens_str,
+                output_file_name=output_file_name,
             )

@@ -1,4 +1,5 @@
 from datetime import datetime
+import functools
 import hashlib
 import os
 from pathlib import Path
@@ -9,6 +10,7 @@ import json
 from typing import List
 import uuid
 from pydantic import BaseModel
+import pandas as pd
 
 
 def get_uuid4_str() -> str:
@@ -319,11 +321,6 @@ def get_file_name_without_extension(file_path: Path) -> str:
     return "".join(file_name.split(".")[:-1])
 
 
-def get_dataset_name_from_file_path(file_path: Path) -> str:
-    file_name = str(file_path).split("/")[-1]
-    return file_name.replace(".jsonl", "")
-
-
 def get_json_dict_from_txt(txt: str) -> Union[Dict[str, Any], List[Dict[str, Any]]]:
     json_dict: Union[Dict[str, Any], List[Dict[str, Any]]] = {}
     start_idx_list = txt.find("[")
@@ -417,3 +414,80 @@ def get_json_data_with_two_step_parsing(
     if should_return_list and res is not None and not isinstance(res, list):
         res = [res]
     return res
+
+
+def update_docstring(docstring: str, input: bool = True, output: bool = True) -> str:
+    lines = docstring.split("\n")
+    nextline = False
+    newlines = []
+    for l in lines:  # noqa: E741
+        if input and l.strip().startswith("data ("):
+            l = "    data_source (str): The location of the data file in csv format. "  # noqa: E741
+        if output and l.strip().startswith("Returns:"):
+            nextline = True
+            newlines.append(l)
+            continue
+        if nextline:
+            l = (  # noqa: E741
+                "    str: The path to a csv file containing "
+                + l.split(":", 1)[1].lower()
+            )
+            nextline = False
+        newlines.append(l)
+    newstr = "\n".join(newlines)
+    return newstr
+
+
+def load_csv_as_dataframe(func):
+    def wrapper(data_source: str, *args, **kwargs):
+        df = pd.read_csv(data_source, low_memory=False)
+        dic = df.to_dict(orient="list")
+        result = func(dic, *args, **kwargs)
+        try:
+            pd_result = pd.DataFrame(result)
+            pd_result.to_csv("temp.csv", index=False)
+            return "temp.csv"
+        except:
+            return result
+
+    wrapper.__doc__ = update_docstring(func.__doc__, input=True, output=True)
+    wrapper.__name__ = func.__name__
+    return wrapper
+
+
+def load_from_csv(func):
+    @functools.wraps(func)
+    def wrapper(data_source: str, *args, **kwargs):
+        df = pd.read_csv(data_source, low_memory=False)
+        result = func(df.to_dict(orient="list"), *args, **kwargs)
+        return result
+
+    wrapper.__doc__ = update_docstring(func.__doc__, input=True, output=False)
+    wrapper.__name__ = func.__name__
+    return wrapper
+
+
+def save_as_csv(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        result = func(*args, **kwargs)
+        try:
+            pd_result = pd.DataFrame(result)
+            pd_result.to_csv("temp.csv", index=False)
+            return "temp.csv"
+        except:
+            return result
+
+    wrapper.__doc__ = update_docstring(func.__doc__, input=False, output=True)
+    wrapper.__name__ = func.__name__
+    return wrapper
+
+
+def get_hash(data: Dict[Any, Any]) -> str:
+    dhash = hashlib.md5()
+    dhash.update(json.dumps(data, sort_keys=True).encode())
+    return dhash.hexdigest()
+
+
+def get_hash_str(input: str) -> str:
+    return str(hash(input))

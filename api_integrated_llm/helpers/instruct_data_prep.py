@@ -1,6 +1,6 @@
 import json
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 
 
 from api_integrated_llm.data_models.source_models import (
@@ -121,7 +121,7 @@ def instruct_data(
     should_generate_random_example: bool = False,
     num_examples: int = 1,
     should_ignore: bool = True,
-) -> List[EvaluationOutputDataUnit]:
+) -> Tuple[List[EvaluationOutputDataUnit], Optional[str]]:
     examples = get_examples(
         example_file_path=example_file_path,  # type: ignore
         evaluation_input_file_paths=evaluation_input_file_paths,  # type: ignore
@@ -142,12 +142,12 @@ def instruct_data(
         file_path=evaluation_input_file_path,
         base_model=QuerySourceModel,
     )
-
+    dataset = source_model.dataset
     test_data: List[EvaluationOutputDataUnit] = []
     example_str = get_example_str(examples)
 
     if source_model.data is None:
-        return test_data
+        return test_data, None
 
     for sample in source_model.data:
         if should_ignore and sample.ignore is not None and sample.ignore:
@@ -190,4 +190,4 @@ def instruct_data(
             )
         )
 
-    return test_data
+    return test_data, dataset

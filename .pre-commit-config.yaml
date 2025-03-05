@@ -30,7 +30,7 @@ repos:
       - id: mypy
         additional_dependencies: [pydantic, types-requests]
         args: [--ignore-missing-imports,--follow-import=skip,--strict-optional,--disable-error-code=attr-defined,--disable-error-code=unused-ignore]
-        # exclude: mock_external_service/
+        exclude: api_integrated_llm/helpers/database_helper/
 
   - repo: https://github.com/ibm/detect-secrets
     rev: 0.13.1+ibm.62.dss

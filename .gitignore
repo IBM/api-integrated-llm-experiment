@@ -9,10 +9,12 @@ error/
 
 # output folder
 output/
+temp.csv
 
 # source folder
 source/evaluation/
 test_evaluation/
+databases/
 
 # etc
 .DS_Store

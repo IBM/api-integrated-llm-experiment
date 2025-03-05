@@ -1,5 +1,5 @@
 import json
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Tuple
 
 from api_integrated_llm.data_models.common_models import CommonErrorModel
 from api_integrated_llm.helpers.file_helper import (
@@ -382,7 +382,6 @@ def parse_mistral_7b_instruct_v0_3(
             pred_func_calls = [json.dumps(func) for func in pred_dict_list]
         else:
             pred_func_calls = ground_seq_nested_repsonse(pred_dict_list)
-            # pred_func_calls = pred_dict_list
             pred_func_calls = [json.dumps(func) for func in pred_func_calls]
     except Exception as e:
         print(e)
@@ -395,7 +394,6 @@ def parse_mistral_7b_instruct_v0_3(
                 pred_func_calls = [json.dumps(func) for func in pred_dict_list]
             else:
                 pred_func_calls = ground_seq_nested_repsonse(pred_dict_list)
-                # pred_func_calls = pred_dict_list
                 pred_func_calls = [json.dumps(func) for func in pred_func_calls]
         except Exception as e1:
             print(e1)
@@ -413,6 +411,173 @@ def parse_mistral_7b_instruct_v0_3(
         pred_dict_list,
         gold_dict_list,
         num_errors_parsing_pred_intent,
+        pred_has_parsing_errors,
+        parsing_error_messages,
+    )
+
+
+def parse_output_from_language_models(
+    prediction: Dict[str, Any],
+    model_name: str,
+    is_single_intent_detection: bool = False,
+    is_agent: bool = False,
+) -> Tuple[List[Any], List[Any], List[Any], List[Any], int, Any, List[str]]:
+    num_errors_parsing_pred_intent = 0
+    pred_has_parsing_errors = False
+    pred_func_calls, gold_func_calls = [], []
+    pred_dict_list, gold_dict_list = [], []
+    parsing_error_messages: List[str] = []
+    num_errors_parsing_pred_intent_res: int = 0
+    model_name_lower_cased = model_name.lower()
+
+    if (
+        "num_preciedtion_parsing_errors" in prediction
+        and prediction["num_preciedtion_parsing_errors"] is not None
+    ):
+        pred_func_calls = (
+            prediction["predicted_function_calls"]
+            if "predicted_function_calls" in prediction
+            and prediction["predicted_function_calls"] is not None
+            else []
+        )
+
+        gold_func_calls = (
+            prediction["gold_function_calls"]
+            if "gold_function_calls" in prediction
+            and prediction["gold_function_calls"] is not None
+            else []
+        )
+        num_errors_parsing_pred_intent_res = (
+            prediction["num_preciedtion_parsing_errors"]
+            if "num_preciedtion_parsing_errors" in prediction
+            and prediction["num_preciedtion_parsing_errors"] is not None
+            else 0
+        )
+        pred_has_parsing_errors = num_errors_parsing_pred_intent_res > 0
+    elif is_agent:
+        (
+            pred_func_calls,
+            gold_func_calls,
+            pred_dict_list,
+            gold_dict_list,
+            num_errors_parsing_pred_intent_res,
+            pred_has_parsing_errors,
+            parsing_error_messages,
+        ) = parse_llama_3_output(
+            prediction=prediction,
+            num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
+            skip_grounding=is_single_intent_detection,
+        )
+    elif "granite" in model_name_lower_cased:
+        if "functioncalling" in model_name_lower_cased:
+            (
+                pred_func_calls,
+                gold_func_calls,
+                pred_dict_list,
+                gold_dict_list,
+                num_errors_parsing_pred_intent_res,
+                pred_has_parsing_errors,
+                parsing_error_messages,
+            ) = parse_granite_20b_function_calling_output(
+                prediction=prediction,
+                num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
+                skip_grounding=is_single_intent_detection,
+            )
+        else:
+            (
+                pred_func_calls,
+                gold_func_calls,
+                pred_dict_list,
+                gold_dict_list,
+                num_errors_parsing_pred_intent_res,
+                pred_has_parsing_errors,
+                parsing_error_messages,
+            ) = parse_granite_3_output(
+                prediction=prediction,
+                num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
+                skip_grounding=is_single_intent_detection,
+            )
+    elif "llama" in model_name_lower_cased:
+        if "llama-3-70b" in model_name_lower_cased:
+            (
+                pred_func_calls,
+                gold_func_calls,
+                pred_dict_list,
+                gold_dict_list,
+                num_errors_parsing_pred_intent_res,
+                pred_has_parsing_errors,
+                parsing_error_messages,
+            ) = parse_llama_3_70b_instruct(
+                prediction=prediction,
+                num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
+                skip_grounding=is_single_intent_detection,
+            )
+        else:
+            (
+                pred_func_calls,
+                gold_func_calls,
+                pred_dict_list,
+                gold_dict_list,
+                num_errors_parsing_pred_intent_res,
+                pred_has_parsing_errors,
+                parsing_error_messages,
+            ) = parse_llama_3_output(
+                prediction=prediction,
+                num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
+                skip_grounding=is_single_intent_detection,
+            )
+    elif "mistral" in model_name_lower_cased or "mixtral" in model_name_lower_cased:
+        (
+            pred_func_calls,
+            gold_func_calls,
+            pred_dict_list,
+            gold_dict_list,
+            num_errors_parsing_pred_intent_res,
+            pred_has_parsing_errors,
+            parsing_error_messages,
+        ) = parse_mistral_7b_instruct_v0_3(
+            prediction=prediction,
+            num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
+            skip_grounding=is_single_intent_detection,
+        )
+    elif "deepseek" in model_name_lower_cased:
+        (
+            pred_func_calls,
+            gold_func_calls,
+            pred_dict_list,
+            gold_dict_list,
+            num_errors_parsing_pred_intent_res,
+            pred_has_parsing_errors,
+            parsing_error_messages,
+        ) = parse_llama_3_output(
+            prediction=prediction,
+            num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
+            skip_grounding=is_single_intent_detection,
+        )
+    else:
+        (
+            pred_func_calls,
+            gold_func_calls,
+            pred_dict_list,
+            gold_dict_list,
+            num_errors_parsing_pred_intent_res,
+            pred_has_parsing_errors,
+            parsing_error_messages,
+        ) = parse_llama_3_output(
+            prediction=prediction,
+            num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
+            skip_grounding=is_single_intent_detection,
+        )
+
+    if is_single_intent_detection and len(pred_func_calls) > 0:
+        pred_func_calls = [pred_func_calls[0]]
+
+    return (
+        pred_func_calls,
+        gold_func_calls,
+        pred_dict_list,
+        gold_dict_list,
+        num_errors_parsing_pred_intent_res,
         pred_has_parsing_errors,
         parsing_error_messages,
     )

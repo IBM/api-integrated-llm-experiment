@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Union
 from pydantic import BaseModel
 
-from api_integrated_llm.helpers.file_helper import get_uuid4_str
+from api_integrated_llm.helpers.file_helper import get_hash, get_uuid4_str
 
 
 class PropertyItem(BaseModel):
@@ -70,6 +70,9 @@ class QuerySourceDataModel(BaseModel):
             tools=self.tools,
         )
 
+    def get_hash(self) -> str:
+        return get_hash(self.model_dump_json())
+
 
 class QuerySourceModel(BaseModel):
     data: Optional[List[QuerySourceDataModel]] = None
@@ -116,15 +119,17 @@ class EvaluationOutputResponseDataUnit(EvaluationOutputDataUnit):
         return (
             ("temperature_" + str(self.temperature).replace(".", "_")),
             ("maxtokens_" + str(self.max_tokens)),
-            self.dataset_name[:],
+            self.dataset_name,
             self.llm_model_id.split("/")[-1],
             ("agent" if self.is_agent else "llm"),
         )
 
-    def get_dataset_basic_info(self) -> Tuple[str, str, Path, float, int, str]:
+    def get_dataset_basic_info(
+        self,
+    ) -> Tuple[str, str, Path, float, int, str]:
         return (
             self.llm_model_id.split("/")[-1],
-            self.dataset_name[:],
+            self.dataset_name,
             Path(self.source_file_path),
             self.temperature,
             self.max_tokens,
