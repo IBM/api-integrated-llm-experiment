@@ -53,24 +53,25 @@ def get_dataset_name(source_file_path: str) -> str:
     return dataset_name
 
 
-def get_winrate(
+def get_win_rate(
     predictions_input: List[EvaluationOutputResponseDataUnit],
     predicted_function_calls: List[List[Any]],
     sample_ids: List[Any],
     db_path: Path,  # database path
     source_file_search_path: Path,
-) -> Tuple[Optional[float], int, List[str]]:
+) -> Tuple[Optional[float], int, List[str], List[int]]:
     """
     returns winrate, the number of sequences evaluated, and error messages
     """
 
     win_rate: Optional[float] = None
     error_messages: List[str] = []
+    num_failed_function_execution_list: List[int] = []
 
     if len(predicted_function_calls) != len(sample_ids):
         error_messages.append(
             "The number of sample_IDs do not match the number of"
-            + " predicted function calls at get_winrate()"
+            + " predicted function calls at get_win_rate()"
         )
         return win_rate, 0, error_messages
 
@@ -98,8 +99,12 @@ def get_winrate(
         error_messages.extend(error_messages_instance)
 
         if len(payloads) > 0:
-            win_rate = evaluate_win_rate(payloads, builder)
+            win_rate, error_messages, num_failed_function_execution = evaluate_win_rate(
+                payloads, builder
+            )
+            error_messages.extend(error_messages)
+            num_failed_function_execution_list.append(num_failed_function_execution)
     except Exception as e:
         error_messages.append(str(e))
 
-    return win_rate, len(payloads), error_messages
+    return win_rate, len(payloads), error_messages, num_failed_function_execution_list

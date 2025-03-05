@@ -16,8 +16,8 @@ from api_integrated_llm.data_models.source_models import (
     EvaluationOutputResponseDataUnit,
 )
 
-# from api_integrated_llm.helpers.database_helper.win_rate_calculator import get_winrate
-from api_integrated_llm.helpers.database_helper.win_rate_calculator import get_winrate
+# from api_integrated_llm.helpers.database_helper.win_rate_calculator import get_win_rate
+from api_integrated_llm.helpers.database_helper.win_rate_calculator import get_win_rate
 from api_integrated_llm.helpers.output_parsers import (
     parse_output_from_language_models,
 )
@@ -508,7 +508,8 @@ def calculate_scores(
             win_rate,
             num_sequences_processed_win_rate,
             error_messages_win_rate,
-        ) = get_winrate(
+            num_failed_function_execution_list,
+        ) = get_win_rate(
             predictions_input=predictions_input,
             predicted_function_calls=predicted_function_calls,
             sample_ids=sample_ids,
@@ -540,6 +541,7 @@ def calculate_scores(
         win_rate=win_rate,
         num_sequences_processed_win_rate=num_sequences_processed_win_rate,
         error_messages_win_rate=error_messages_win_rate,
+        num_failed_function_execution_list=num_failed_function_execution_list,
     )
 
 

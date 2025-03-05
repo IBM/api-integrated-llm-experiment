@@ -97,25 +97,35 @@ def execute_single_api(api_name: str, api_args: dict, api_pool: dict[str, callab
 
 def execute_api_stack(apis: list[dict], api_pool: dict[str, callable]):
     output_dict = {}
-    for api in apis:
-        api_args_filled_in = {}
-        for arg_key, arg_val in api["arguments"].items():
-            if (
-                isinstance(arg_val, str)
-                and arg_val.startswith("$")
-                and arg_val.endswith("$")
-            ):
-                arg_val = arg_val.lstrip("$").rstrip("$")
-                api_args_filled_in[arg_key] = output_dict[
-                    arg_val
-                ]  # Throw an error if the necessary argument isn't found
-            else:
-                api_args_filled_in[arg_key] = arg_val
-        output = execute_single_api(api["name"], api_args_filled_in, api_pool)
-        # Update the output dict with the result of this call
-        output_dict[api["label"]] = output
+    error_messages = []
+    num_failed_function_execution = 0
+    try:
+        for api in apis:
+            api_args_filled_in = {}
+            for arg_key, arg_val in api["arguments"].items():
+                if (
+                    isinstance(arg_val, str)
+                    and arg_val.startswith("$")
+                    and arg_val.endswith("$")
+                ):
+                    arg_val = arg_val.lstrip("$").rstrip("$")
+                    api_args_filled_in[arg_key] = output_dict[
+                        arg_val
+                    ]  # Throw an error if the necessary argument isn't found
+                else:
+                    api_args_filled_in[arg_key] = arg_val
+            try:
+                output = execute_single_api(api["name"], api_args_filled_in, api_pool)
+                output_dict[api["label"]] = output
+            except Exception as e:
+                num_failed_function_execution += 1
+                error_messages.append(f"single_function execution failed: {str(e)}")
+            # Update the output dict with the result of this call
 
-    return output_dict
+    except Exception as e:
+        error_messages.append(f"single_function execution failed: {str(e)}")
+
+    return (output_dict, error_messages, num_failed_function_execution)
 
 
 def safe_cast(obj):
@@ -190,7 +200,9 @@ def validate_api_output(required_api_calls: list, api_pool: dict[str, callable])
                 api["arguments"][k] = safe_cast(v)
 
     # Execute the required api calls and simplify
-    api_result_dict = execute_api_stack(required_api_calls, api_pool)
+    api_result_dict, error_messages, num_failed_function_execution = execute_api_stack(
+        required_api_calls, api_pool
+    )
 
     # All outputs that aren't in inputs to another call will be stitched together
     # into the final output in the order in which they appear
@@ -210,7 +222,7 @@ def validate_api_output(required_api_calls: list, api_pool: dict[str, callable])
 
     if len(output_results_list) == 1:
         output_results_list = output_results_list[0]
-    return output_results_list
+    return output_results_list, error_messages, num_failed_function_execution
 
 
 def simplify_and_check_serialization(api_results):
@@ -270,7 +282,9 @@ def validate_output(
     api_pool: dict[str, callable],
 ):
     query_results = validate_sql_output(database_file=database_file, query=query)
-    api_results = validate_api_output(required_api_calls, api_pool)
+    api_results, error_messages, num_failed_function_execution = validate_api_output(
+        required_api_calls, api_pool
+    )
     correct_answer = check_equality_without_order(
         results_version_1=query_results, results_version_2=api_results
     )

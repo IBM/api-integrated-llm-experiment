@@ -110,3 +110,4 @@ class ScorerOuputModel(BaseModel):
     win_rate: Optional[float] = None
     num_sequences_processed_win_rate: Optional[int] = None
     error_messages_win_rate: Optional[List[str]] = None
+    num_failed_function_execution_list: Optional[List[int]] = None

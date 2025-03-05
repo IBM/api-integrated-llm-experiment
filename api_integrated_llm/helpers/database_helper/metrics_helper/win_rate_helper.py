@@ -20,7 +20,7 @@ from api_integrated_llm.helpers.database_helper.core_components.driver_component
     validate_api_output,
     check_equality_without_order,
 )
-from api_integrated_llm.helpers.file_helper import get_json_dict_from_txt
+from api_integrated_llm.helpers.file_helper import get_json_dict_from_txt, get_uuid4_str
 
 
 def setup(input_file: str, db_path: str):
@@ -126,7 +126,23 @@ def inference_call(
     return agent_trajectory
 
 
-def evaluate_win_rate(payloads: list[dict], builder: SqlDatasetBuilder):
+def get_repaired_function_calls(
+    required_api_calls: List[Dict[str, Any]]
+) -> List[Dict[str, Any]]:
+    repaired_function_calls = []
+    for function_call in required_api_calls:
+        call = deepcopy(function_call)
+        if "name" not in call:
+            call["name"] = get_uuid4_str()
+        if "arguments" not in call:
+            call["arguments"] = {}
+        repaired_function_calls.append(call)
+    return repaired_function_calls
+
+
+def evaluate_win_rate(
+    payloads: list[dict], builder: SqlDatasetBuilder
+) -> Tuple[float, List[str], int]:
     valid = []
     for p in payloads:
         # Set the database path to the cache file of the initialized builder.
@@ -135,21 +151,28 @@ def evaluate_win_rate(payloads: list[dict], builder: SqlDatasetBuilder):
             "database_path"
         ] = builder.loader.cache_file
 
+        if "arguments" not in p:
+            p["arguments"] = {}  # handle alternative payload
+
         # If we used the original output sequence here, instead of the model output, it would just check the correctness of the data point
         required_api_calls = [p["initialization_step"]]
         required_api_calls.extend(
             p["output"]
         )  # ie. change 'model_output' to just 'output', and the win_rate should be 1.0
-
+        required_api_calls = get_repaired_function_calls(
+            required_api_calls=required_api_calls
+        )
         # This dictionary has [key, value] == [tool_name, tool (executable python function)]
         # It is needed for evaluating the win rate, it is NOT consumed by the tool calling model
         api_pool, _ = builder.set_query_specific_api_pool([p["initialization_step"]])
 
-        api_result = validate_api_output(required_api_calls, api_pool)
+        api_result, error_messages, num_failed_function_execution = validate_api_output(
+            required_api_calls, api_pool
+        )
         validated = check_equality_without_order(api_result, p["gold_answer"])
         valid.append(validated)
 
-    return sum(valid) / len(valid)
+    return (sum(valid) / len(valid)), error_messages, num_failed_function_execution
 
 
 def parse_sequence(function_list: List[Any]) -> Tuple[List[Dict[str, Any]], List[str]]:

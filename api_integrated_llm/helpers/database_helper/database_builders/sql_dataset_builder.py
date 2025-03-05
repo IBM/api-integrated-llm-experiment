@@ -207,23 +207,29 @@ class SqlDatasetBuilder(DatasetBuilder):
         raise NotImplementedError()
 
     def add_read_from_file_decorator(self, apis: dict) -> dict:
+        new_apis = {}
         for api_name, api in apis.items():
-            if api_name == "initialize_active_data":
-                apis[api_name] = save_as_csv(deepcopy(api))
-            elif api_name.startswith("get_"):
-                signature = inspect.signature(api)
-                param_names = [p.name for p in signature.parameters.values()]
-                assert "data" in param_names
-                apis[api_name] = load_from_csv(deepcopy(api))
-            elif api_name in ["retrieve_data", "aggregate_data"]:
-                apis[api_name] = load_from_csv(deepcopy(api))
-            else:
-                signature = inspect.signature(api)
-                for param in signature.parameters.values():
-                    if param.name == "data":
-                        apis[api_name] = load_csv_as_dataframe(deepcopy(api))
-                        break
-        return apis
+            try:
+                if api_name == "initialize_active_data":
+                    apis[api_name] = save_as_csv(deepcopy(api))
+                elif api_name.startswith("get_"):
+                    signature = inspect.signature(api)
+                    param_names = [p.name for p in signature.parameters.values()]
+                    assert "data" in param_names
+                    apis[api_name] = load_from_csv(deepcopy(api))
+                elif api_name in ["retrieve_data", "aggregate_data"]:
+                    apis[api_name] = load_from_csv(deepcopy(api))
+                else:
+                    signature = inspect.signature(api)
+                    for param in signature.parameters.values():
+                        if param.name == "data":
+                            apis[api_name] = load_csv_as_dataframe(deepcopy(api))
+                            break
+                new_apis[api_name] = deepcopy(apis[api_name])
+            except Exception as e:
+                print(str(e))
+
+        return new_apis
 
     def simplify_alias_to_table_dict(self, alias_to_table_dict):
         simple_dict = {}

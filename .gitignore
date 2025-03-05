@@ -9,6 +9,7 @@ error/
 
 # output folder
 output/
+temp.csv
 
 # source folder
 source/evaluation/
