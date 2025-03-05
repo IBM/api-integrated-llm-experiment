@@ -24,7 +24,6 @@ def test_scorer_llm_evaluator_output() -> None:
             file_extension="jsonl",
         ),
         output_folder_path=Path(os.path.join(project_root_path, "output", "scoring")),  # type: ignore
-        win_rate_flag=False,
     )
 
 
@@ -43,7 +42,6 @@ def test_scorer_agent() -> None:
             file_extension="json",
         ),
         output_folder_path=Path(os.path.join(project_root_path, "output", "scoring_from_parsing")),  # type: ignore
-        win_rate_flag=False,
     )
 
 
@@ -63,9 +61,27 @@ def test_scorer_with_parser_output() -> None:
             file_extension="jsonl",
         ),
         output_folder_path=Path(os.path.join(project_root_path, "output", "scoring")),  # type: ignore
-        win_rate_flag=False,
         is_single_intent_detection=True,
     )
+
+
+# def test_scorer_with_win_rate() -> None:
+#     scoring(
+#         evaluator_output_file_paths=get_files_in_folder(  # type: ignore
+#             folder_path=Path(
+#                 os.path.join(
+#                     project_root_path,
+#                     "tests",
+#                     "data",
+#                     "test_output",
+#                     "evaluation_win_rate",
+#                 )
+#             ),
+#             file_extension="jsonl",
+#         ),
+#         output_folder_path=Path(os.path.join(project_root_path, "output", "scoring")),  # type: ignore
+#         is_single_intent_detection=True,
+#     )
 
 
 def test_parser_only() -> None:

@@ -66,7 +66,7 @@ def get_winrate(
     win_rate: Optional[float] = None
     error_messages: List[str] = []
 
-    if len(predictions_input) != len(sample_ids):
+    if len(predicted_function_calls) != len(sample_ids):
         error_messages.append(
             "The number of sample_IDs do not match the number of"
             + " predicted function calls at get_winrate()"
@@ -81,16 +81,15 @@ def get_winrate(
 
         dataset_name = get_dataset_name(source_file_path=source_file_path)
         builder, cache_file = setup(source_file_path, db_path)
-        source_model: QuerySourceModel = get_base_model_from_json(
-            file_path=Path(source_file_path),
-            base_model=QuerySourceModel,
-        )
         predicted_function_calls_tuple = [
             (sample_id, function_calls)
             for sample_id, function_calls in zip(sample_ids, predicted_function_calls)
         ]
         payloads, error_messages_instance = get_payloads_winrate(
-            source_model=source_model,
+            source_model=get_base_model_from_json(
+                file_path=Path(source_file_path),
+                base_model=QuerySourceModel,
+            ),
             cache_file=cache_file,
             dataset_name=dataset_name,
             predicted_function_calls_tuple=predicted_function_calls_tuple,

@@ -322,11 +322,6 @@ def get_file_name_without_extension(file_path: Path) -> str:
     return "".join(file_name.split(".")[:-1])
 
 
-def get_dataset_name_from_file_path(file_path: Path) -> str:
-    file_name = str(file_path).split("/")[-1]
-    return file_name.replace(".jsonl", "")
-
-
 def get_json_dict_from_txt(txt: str) -> Union[Dict[str, Any], List[Dict[str, Any]]]:
     json_dict: Union[Dict[str, Any], List[Dict[str, Any]]] = {}
     start_idx_list = txt.find("[")

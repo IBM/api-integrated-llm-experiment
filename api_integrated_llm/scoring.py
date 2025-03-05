@@ -29,7 +29,6 @@ from api_integrated_llm.helpers.metrics_helper import (
 )
 from api_integrated_llm.helpers.file_helper import (
     get_base_models_from_jsonl,
-    get_dataset_name_from_file_path,
     get_uuid4_str,
     write_json,
     write_jsonl,
@@ -458,7 +457,6 @@ def calculate_scores(
     predictions_input: List[EvaluationOutputResponseDataUnit],
     db_path: Optional[Path] = None,
     source_file_search_path: Optional[Path] = None,
-    win_rate_flag: bool = True,
     is_single_intent_detection: bool = False,
 ) -> ScorerOuputModel:
     (
@@ -505,8 +503,7 @@ def calculate_scores(
     error_messages_win_rate: List[str] = []
     win_rate: Optional[float] = None
     num_sequences_processed_win_rate: Optional[int] = None
-    if win_rate_flag and db_path is not None and source_file_search_path is not None:
-        # calculate winrate here
+    if db_path is not None and source_file_search_path is not None:
         (
             win_rate,
             num_sequences_processed_win_rate,
@@ -628,14 +625,9 @@ def scoring(
     output_folder_path: Path,
     db_path: Optional[Path] = None,
     source_file_search_path: Optional[Path] = None,
-    win_rate_flag: bool = True,
     is_single_intent_detection=False,
 ) -> None:
     for evaluator_output_file_path in evaluator_output_file_paths:
-        # set dataset name here
-        dataset_name = get_dataset_name_from_file_path(
-            file_path=evaluator_output_file_path
-        )
         temperature_str = "default_temperature"
         max_tokens_str = "default_max_tokens"
         model_name = "default_model"
@@ -676,7 +668,6 @@ def scoring(
                     data,
                     db_path=db_path,
                     source_file_search_path=source_file_search_path,
-                    win_rate_flag=win_rate_flag,
                     is_single_intent_detection=is_single_intent_detection,
                 ),
             )

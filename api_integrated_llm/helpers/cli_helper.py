@@ -266,6 +266,5 @@ def cli() -> None:
                 file_extension="jsonl",
             ),
             output_folder_path=Path(os.path.join(output_folder_path, "scoring")),
-            win_rate_flag=False,
             is_single_intent_detection=args.single_intent,
         )
