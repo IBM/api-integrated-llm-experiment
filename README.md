@@ -44,11 +44,9 @@ api-integrated-llm -h
 ## Command Line Interface (CLI)
 
 ```
-usage: api-integrated-llm [-h] [-m {default,evaluator,scorer,parser}] [-rt ROOT]
-                          [-eof EVALUATOR_OUTPUT_FOLDER] [-pif PARSER_INPUT_FOLDER] [-of OUTPUT_FOLDER]
-                          [-sif SCORER_INPUT_FOLDER] [-ig | --ignore | --no-ignore]
-                          [-si | --single_intent | --no-single_intent]
-                          [-er | --random_example | --no-random_example] [-nr NUMBER_RANDOM_EXAMPLE]
+usage: api-integrated-llm [-h] [-m {default,evaluator,scorer,parser}] [-rt ROOT] [-eof EVALUATOR_OUTPUT_FOLDER] [-pif PARSER_INPUT_FOLDER]
+                          [-of OUTPUT_FOLDER] [-sif SCORER_INPUT_FOLDER] [-dsf DATABASES_FOLDER] [-sf SOURCE_FOLDER] [-ig | --ignore | --no-ignore]
+                          [-si | --single_intent | --no-single_intent] [-er | --random_example | --no-random_example] [-nr NUMBER_RANDOM_EXAMPLE]
                           [-ep EXAMPLE_FILE_PATH]
 
 API Integrated LLM CLI
@@ -58,7 +56,7 @@ options:
   -m {default,evaluator,scorer,parser}, --mode {default,evaluator,scorer,parser}
                         Cli mode
   -rt ROOT, --root ROOT
-                        Dataset root absolute path
+                        Dataset root folder absolute path
   -eof EVALUATOR_OUTPUT_FOLDER, --evaluator_output_folder EVALUATOR_OUTPUT_FOLDER
                         Evaluator output folder path
   -pif PARSER_INPUT_FOLDER, --parser_input_folder PARSER_INPUT_FOLDER
@@ -67,6 +65,10 @@ options:
                         Output folder path
   -sif SCORER_INPUT_FOLDER, --scorer_input_folder SCORER_INPUT_FOLDER
                         Scorer input folder path
+  -dsf DATABASES_FOLDER, --databases_folder DATABASES_FOLDER
+                        Databases folder path
+  -sf SOURCE_FOLDER, --source_folder SOURCE_FOLDER
+                        Source folder path
   -ig, --ignore, --no-ignore
                         Ignore data points marked as "ignore"
   -si, --single_intent, --no-single_intent
