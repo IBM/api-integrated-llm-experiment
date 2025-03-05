@@ -163,7 +163,7 @@ def get_api_lists_from_func_calls(
 
 
 def get_api_dict_with_list_as_value(
-    api_lists: List[Tuple[str, List[str]]]
+    api_lists: List[Tuple[str, List[str]]],
 ) -> Dict[str, Deque[List[str]]]:
     api_dict: Dict[str, Deque[List[str]]] = {}
     for api_name, arguments in api_lists:
@@ -459,6 +459,7 @@ def calculate_scores(
     source_file_search_path: Optional[Path] = None,
     is_single_intent_detection: bool = False,
 ) -> ScorerOuputModel:
+    num_failed_function_execution_list: List[int] = []
     (
         model_name,
         dataset_name,
