@@ -59,7 +59,7 @@ def get_prompt_dict(
     path_str = str(evaluation_input_file_path)
     if "rest" in path_str:
         return prompt_dict_all["icl"]
-    if "sequencing" in path_str:
+    if "sequencing" in path_str or "slot_filling" in path_str:
         return prompt_dict_all["sequencing"]
     return prompt_dict_all["icl"]
 
