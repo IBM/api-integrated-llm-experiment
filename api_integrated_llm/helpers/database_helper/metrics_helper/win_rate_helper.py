@@ -188,17 +188,22 @@ def get_payloads_winrate(
 
     payloads: List[Dict[str, Any]] = []
     for datum in source_model.data:
-        smaple_id_str = str(datum.sample_id)
-        if smaple_id_str in sample_id_predicted_function_calls_dict:
-            sequence, error_messages_instance = parse_sequence(
-                function_list=sample_id_predicted_function_calls_dict[smaple_id_str]
-            )
-            error_messages.extend(error_messages_instance)
-            if len(error_messages_instance) == 0:
-                payload = datum.model_dump()
-                payload["initialization_step"]["arguments"][
-                    "database_path"
-                ] = os.path.join(cache_folder_path, dataset_name + ".sqlite")
-                payload["output"] = sequence
-                payloads.append(payload)
+        sample_id_str = str(datum.sample_id)
+        if sample_id_str in sample_id_predicted_function_calls_dict:
+            try:
+                sequence, error_messages_instance = parse_sequence(
+                    function_list=sample_id_predicted_function_calls_dict[sample_id_str]
+                )
+                error_messages.extend(error_messages_instance)
+                if len(error_messages_instance) == 0:
+                    payload = datum.model_dump()
+                    payload["initialization_step"]["arguments"][
+                        "database_path"
+                    ] = os.path.join(cache_folder_path, dataset_name + ".sqlite")
+                    payload["output"] = sequence
+                    payloads.append(payload)
+            except Exception as e:
+                error_messages.append(
+                    f"Exception thrown with {sample_id_str}: {str(e)}"
+                )
     return payloads, error_messages

@@ -26,10 +26,11 @@ def get_source_file_path(
         folder_path=Path(os.path.join(source_file_search_path)),
         file_extension="json",
     )
+    source_file_name = source_file_path.split("/")[-1]
 
     for candidate_source_file_path in candidtate_source_file_paths:
         file_path_str = str(candidate_source_file_path)
-        if source_file_path in file_path_str:
+        if source_file_name in file_path_str:
             source_file_path = file_path_str
         break
     return source_file_path
@@ -80,7 +81,7 @@ def get_winrate(
         )
 
         dataset_name = get_dataset_name(source_file_path=source_file_path)
-        builder, cache_file = setup(source_file_path, db_path)
+        builder, cache_folder_path = setup(source_file_path, db_path)
         predicted_function_calls_tuple = [
             (sample_id, function_calls)
             for sample_id, function_calls in zip(sample_ids, predicted_function_calls)
@@ -90,7 +91,7 @@ def get_winrate(
                 file_path=Path(source_file_path),
                 base_model=QuerySourceModel,
             ),
-            cache_file=cache_file,
+            cache_folder_path=Path(cache_folder_path),
             dataset_name=dataset_name,
             predicted_function_calls_tuple=predicted_function_calls_tuple,
         )
