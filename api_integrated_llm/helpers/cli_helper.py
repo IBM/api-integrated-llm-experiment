@@ -1,7 +1,7 @@
 import argparse
 from pathlib import Path
 import os
-from typing import Any, Dict, Tuple, cast
+from typing import Any, Dict, Optional, Tuple, cast
 from api_integrated_llm.data_models.cli_models import CliModeModel
 from api_integrated_llm.evaluation import evaluate
 from api_integrated_llm.helpers.benchmark_helper import get_model_id_obj_dict
@@ -32,7 +32,7 @@ def get_arguments() -> argparse.Namespace:
         "-rt",
         "--root",
         type=Path,
-        help="Dataset root absolute path",
+        help="Dataset root folder absolute path",
         default=project_root_path,
     )
 
@@ -65,6 +65,22 @@ def get_arguments() -> argparse.Namespace:
         "--scorer_input_folder",
         type=Path,
         help="Scorer input folder path",
+        default=project_root_path,
+    )
+
+    parser.add_argument(
+        "-dsf",
+        "--databases_folder",
+        type=Path,
+        help="Databases folder path",
+        default=project_root_path,
+    )
+
+    parser.add_argument(
+        "-sf",
+        "--source_folder",
+        type=Path,
+        help="Source folder path",
         default=project_root_path,
     )
 
@@ -135,8 +151,10 @@ def check_args(args) -> bool:
     return should_stop
 
 
-def get_paths(args) -> Tuple[Path, Path, Path, Path, Path]:
-    source_folder_path = Path(os.path.join(args.root, "source"))
+def get_paths(
+    args,
+) -> Tuple[Path, Path, Path, Path, Path, Optional[Path], Optional[Path]]:
+    root_folder_path = Path(os.path.join(args.root, "source"))
     output_folder_path = (
         Path(os.path.join(args.root, "output"))
         if args.output_folder == project_root_path
@@ -175,12 +193,30 @@ def get_paths(args) -> Tuple[Path, Path, Path, Path, Path]:
         else args.scorer_input_folder
     )
 
+    source_folder_path = (
+        None if args.source_folder == project_root_path else args.source_folder
+    )
+
+    database_folder_path = (
+        None if args.databases_folder == project_root_path else args.databases_folder
+    )
+
     return (
-        source_folder_path,
+        root_folder_path,
         cast(Path, output_folder_path),
         cast(Path, evaluation_folder_path),
         cast(Path, parser_input_folder_path),
         cast(Path, scorer_input_folder_path),
+        (
+            cast(Path, source_folder_path)
+            if source_folder_path is not None
+            else source_folder_path
+        ),
+        (
+            cast(Path, database_folder_path)
+            if database_folder_path is not None
+            else database_folder_path
+        ),
     )
 
 
@@ -191,11 +227,13 @@ def cli() -> None:
         return
 
     (
-        source_folder_path,
+        root_folder_path,
         output_folder_path,
         evaluation_folder_path,
         parser_input_folder_path,
         scorer_input_folder_path,
+        source_folder_path,
+        database_folder_path,
     ) = get_paths(args)
 
     if args.mode == CliModeModel.DEFAULT or args.mode == CliModeModel.EVALUATOR:
@@ -204,7 +242,7 @@ def cli() -> None:
                 get_llm_configuration(
                     llm_configuration_file_path=Path(
                         os.path.join(
-                            source_folder_path,
+                            root_folder_path,
                             "configurations",
                             "llm_configurations.json",
                         )
@@ -212,13 +250,13 @@ def cli() -> None:
                 )
             ),
             evaluation_input_file_paths=get_files_in_folder(
-                folder_path=Path(os.path.join(source_folder_path, "evaluation")),
+                folder_path=Path(os.path.join(root_folder_path, "evaluation")),
                 file_extension="json",
             ),
             example_file_path=(
                 Path(
                     os.path.join(
-                        source_folder_path, "prompts", "examples", "examples.json"
+                        root_folder_path, "prompts", "examples", "examples.json"
                     )
                 )
                 if args.example_file_path == project_root_path
@@ -226,7 +264,7 @@ def cli() -> None:
             ),
             output_folder_path=evaluation_folder_path,
             prompt_file_path=Path(
-                os.path.join(source_folder_path, "prompts", "prompts.json")
+                os.path.join(root_folder_path, "prompts", "prompts.json")
             ),
             error_folder_path=Path(
                 os.path.join(
@@ -266,5 +304,7 @@ def cli() -> None:
                 file_extension="jsonl",
             ),
             output_folder_path=Path(os.path.join(output_folder_path, "scoring")),
+            db_path=database_folder_path,
+            source_file_search_path=source_folder_path,
             is_single_intent_detection=args.single_intent,
         )
