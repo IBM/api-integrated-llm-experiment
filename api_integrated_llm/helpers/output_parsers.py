@@ -382,7 +382,6 @@ def parse_mistral_7b_instruct_v0_3(
             pred_func_calls = [json.dumps(func) for func in pred_dict_list]
         else:
             pred_func_calls = ground_seq_nested_repsonse(pred_dict_list)
-            # pred_func_calls = pred_dict_list
             pred_func_calls = [json.dumps(func) for func in pred_func_calls]
     except Exception as e:
         print(e)
@@ -395,7 +394,6 @@ def parse_mistral_7b_instruct_v0_3(
                 pred_func_calls = [json.dumps(func) for func in pred_dict_list]
             else:
                 pred_func_calls = ground_seq_nested_repsonse(pred_dict_list)
-                # pred_func_calls = pred_dict_list
                 pred_func_calls = [json.dumps(func) for func in pred_func_calls]
         except Exception as e1:
             print(e1)

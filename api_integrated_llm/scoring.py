@@ -366,15 +366,6 @@ def get_item_metrics(
         num_pred_examples_w_parsing_errors += 1 if pred_has_parsing_errors else 0
         num_gold_examples_w_parsing_errors += 1 if gold_has_parsing_errors else 0
 
-    #         ## Calculate WinRate here
-    #         win_rate, num_sequences_evaluated, error_messages_win_rate = get_winrate(
-    #     predictions_input=predictions_input,
-    #     predicted_function_calls=predicted_function_calls,
-    #     sample_ids=sample_ids,
-    #     db_path=""#: Path,  # database path
-    #     source_file_search_path: Path,
-    #     dataset_name: str,  # dataset name "superhero"
-    # )
     return (
         gold_output_intent,
         pred_output_intent,
