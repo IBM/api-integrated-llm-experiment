@@ -1,9 +1,8 @@
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Optional
 
 from api_integrated_llm.data_models.scorer_models import (
     AggegatorOutputModel,
-    MetaMetricsAggregationModel,
 )
 from api_integrated_llm.helpers.file_helper import write_json
 from api_integrated_llm.helpers.metrics_aggregator_helper import (
@@ -16,7 +15,7 @@ from api_integrated_llm.helpers.metrics_aggregator_helper import (
 
 def aggregate_metrics(
     metrics_aggregator_input_path: Path,
-    metrics_aggregator_output_path: Path,
+    metrics_aggregator_output_file_path: Path,
     metrics_aggregation_configuration_file_path: Optional[Path],
 ) -> bool:
     metrics_objs, metrics_configuration_obj, has_error = get_metrics_aggregator_inputs(
@@ -28,24 +27,26 @@ def aggregate_metrics(
         return has_error
 
     try:
-        aggregated_metrics: Dict[str, MetaMetricsAggregationModel] = {
-            "compute_mode_meta_metrics": get_agent_meta_metrics_aggregation_model(
-                path_model_list=metrics_objs,
-            ),
-            "gold_output_length": get_output_length_meta_metrics_aggregation_model(
-                path_model_list=metrics_objs
-            ),
-        }
+        output_model = AggegatorOutputModel()
+        output_model.aggregated_metrics[
+            "compute_mode_meta_metrics"
+        ] = get_agent_meta_metrics_aggregation_model(
+            path_model_list=metrics_objs,
+        )
+        output_model.aggregated_metrics[
+            "gold_output_length"
+        ] = get_output_length_meta_metrics_aggregation_model(
+            path_model_list=metrics_objs,
+        )
         for category_mode, categoris in metrics_configuration_obj.items():
-            aggregated_metrics[
+            output_model.aggregated_metrics[
                 category_mode
             ] = get_category_meta_metrics_aggregation_model(
                 path_model_list=metrics_objs, categories=categoris
             )
-
         write_json(
-            file_path=metrics_aggregator_output_path,
-            base_model=AggegatorOutputModel(aggregate_metrics=aggregated_metrics),
+            file_path=metrics_aggregator_output_file_path,
+            base_model=output_model,
         )
     except Exception as e:
         has_error = True

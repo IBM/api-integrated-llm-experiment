@@ -334,7 +334,11 @@ def get_macro_metrics_aggregation_dict(
             metrics_model_acc.add(metrics_model=metrics_model, num_samples=num_samples)
 
         metrics_model_acc.set_f1()
-        metrics_aggregation_dict[category] = metrics_model_acc
+        metrics_aggregation_dict[category] = (
+            metrics_model_acc
+            if len(metrics_model_list) > 0
+            else ConfusionMetrixMetricsModel()
+        )
 
     return metrics_aggregation_dict
 
