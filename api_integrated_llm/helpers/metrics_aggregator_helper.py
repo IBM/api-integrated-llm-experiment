@@ -138,25 +138,22 @@ def get_macro_metrics_aggregation_dict(
 def get_aggregated_metrics(
     metircs_obj_list: List[Tuple[Path, ConfusionMetrixMetricsModel]],
     categories: List[str],
-) -> Tuple[MetricsAggregationModel, bool]:
+) -> Optional[MetricsAggregationModel]:
     categories_dict, has_error = get_categories_dict(
         metircs_obj_list=metircs_obj_list,
         categories=categories,
     )
 
     if has_error:
-        return MetricsAggregationModel(), has_error
+        return None
 
-    return (
-        MetricsAggregationModel(
-            micro=get_micro_metrics_aggregation_dict(
-                categories_dict=categories_dict,
-            ),
-            macro=get_macro_metrics_aggregation_dict(
-                categories_dict=categories_dict,
-            ),
-            categories=deepcopy(categories),
-            raw_data=categories_dict,
+    return MetricsAggregationModel(
+        micro=get_micro_metrics_aggregation_dict(
+            categories_dict=categories_dict,
         ),
-        has_error,
+        macro=get_macro_metrics_aggregation_dict(
+            categories_dict=categories_dict,
+        ),
+        categories=deepcopy(categories),
+        raw_data=categories_dict,
     )
