@@ -10,6 +10,7 @@ from api_integrated_llm.data_models.scorer_models import (
     ConfusionMetrixMetricsModel,
     MetaMetricsAggregationModel,
     MetricsAggregationModel,
+    MicroConfusionMetrixMetricsByOutputLengthContainerModel,
     MicroConfusionMetrixMetricsModel,
     ScorerOuputModel,
 )
@@ -71,6 +72,56 @@ def get_metrics_aggregator_inputs(
         metrics_objs,
         cast(Dict[str, List[str]], metrics_configuration_obj),
         has_error,
+    )
+
+
+def get_output_length_metrics_categories_dict(
+    path_model_list: List[Tuple[Path, ScorerOuputModel]],
+) -> MicroConfusionMetrixMetricsByOutputLengthContainerModel:
+    intent_set_metrics: Dict[str, List[ConfusionMetrixMetricsModel]] = {}
+    intent_counter_metrics: Dict[str, List[ConfusionMetrixMetricsModel]] = {}
+    intent_list_metrics: Dict[str, List[ConfusionMetrixMetricsModel]] = {}
+    slot_set_metrics: Dict[str, List[ConfusionMetrixMetricsModel]] = {}
+
+    for _, score_output_model in path_model_list:
+        meta_model = (
+            score_output_model.confusion_metrix_matrics_micro_model_by_output_length
+        )
+
+        if meta_model is not None:
+            for frequency, metrics_model in meta_model.intent_set_metrics.items():
+                frequency_str = str(frequency)
+                if frequency_str not in intent_set_metrics:
+                    intent_set_metrics[frequency_str] = [metrics_model]
+                else:
+                    intent_set_metrics[frequency_str].append(metrics_model)
+
+            for frequency, metrics_model in meta_model.intent_counter_metrics.items():
+                frequency_str = str(frequency)
+                if frequency_str not in intent_counter_metrics:
+                    intent_counter_metrics[frequency_str] = [metrics_model]
+                else:
+                    intent_counter_metrics[frequency_str].append(metrics_model)
+
+            for frequency, metrics_model in meta_model.intent_list_metrics.items():
+                frequency_str = str(frequency)
+                if frequency_str not in intent_list_metrics:
+                    intent_list_metrics[frequency_str] = [metrics_model]
+                else:
+                    intent_list_metrics[frequency_str].append(metrics_model)
+
+            for frequency, metrics_model in meta_model.slot_set_metrics.items():
+                frequency_str = str(frequency)
+                if frequency_str not in slot_set_metrics:
+                    slot_set_metrics[frequency_str] = [metrics_model]
+                else:
+                    slot_set_metrics[frequency_str].append(metrics_model)
+
+    return MicroConfusionMetrixMetricsByOutputLengthContainerModel(
+        intent_set_metrics=intent_set_metrics,
+        intent_counter_metrics=intent_counter_metrics,
+        intent_list_metrics=intent_list_metrics,
+        slot_set_metrics=slot_set_metrics,
     )
 
 
@@ -164,8 +215,9 @@ def get_meta_metrics(
     intent_counter_dict: Dict[str, List[ConfusionMetrixMetricsModel]],
     intent_list_dict: Dict[str, List[ConfusionMetrixMetricsModel]],
     slot_set_dict: Dict[str, List[ConfusionMetrixMetricsModel]],
-    categories: List[str],
+    categories: Optional[List[str]] = None,
 ) -> MetaMetricsAggregationModel:
+    output_categories = deepcopy(categories) if categories is not None else []
     return MetaMetricsAggregationModel(
         intent_set_metrics=MetricsAggregationModel(
             micro=get_micro_metrics_aggregation_dict(
@@ -174,7 +226,7 @@ def get_meta_metrics(
             macro=get_macro_metrics_aggregation_dict(
                 categories_dict=intent_set_dict,
             ),
-            categories=deepcopy(categories),
+            categories=output_categories,
             raw_data=intent_set_dict,
         ),
         intent_counter_metrics=MetricsAggregationModel(
@@ -184,7 +236,7 @@ def get_meta_metrics(
             macro=get_macro_metrics_aggregation_dict(
                 categories_dict=intent_counter_dict,
             ),
-            categories=deepcopy(categories),
+            categories=output_categories,
             raw_data=intent_counter_dict,
         ),
         intent_list_metrics=MetricsAggregationModel(
@@ -194,7 +246,7 @@ def get_meta_metrics(
             macro=get_macro_metrics_aggregation_dict(
                 categories_dict=intent_list_dict,
             ),
-            categories=deepcopy(categories),
+            categories=output_categories,
             raw_data=intent_list_dict,
         ),
         slot_set_metrics=MetricsAggregationModel(
@@ -204,7 +256,7 @@ def get_meta_metrics(
             macro=get_macro_metrics_aggregation_dict(
                 categories_dict=slot_set_dict,
             ),
-            categories=deepcopy(categories),
+            categories=output_categories,
             raw_data=slot_set_dict,
         ),
     )
@@ -308,6 +360,21 @@ def get_aggregated_metrics(
         ),
         categories=deepcopy(categories),
         raw_data=categories_dict,
+    )
+
+
+def get_output_length_meta_metrics_aggregation_model(
+    path_model_list: List[Tuple[Path, ScorerOuputModel]],
+) -> MetaMetricsAggregationModel:
+    container_model = get_output_length_metrics_categories_dict(
+        path_model_list=path_model_list,
+    )
+
+    return get_meta_metrics(
+        intent_set_dict=container_model.intent_set_metrics,
+        intent_counter_dict=container_model.intent_counter_metrics,
+        intent_list_dict=container_model.intent_list_metrics,
+        slot_set_dict=container_model.slot_set_metrics,
     )
 
 

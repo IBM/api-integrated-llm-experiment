@@ -149,6 +149,67 @@ class MicroConfusionMetrixMetricsByOutputLengthModel(BaseModel):
     intent_list_metrics: Dict[int, ConfusionMetrixMetricsModel] = dict()
     slot_set_metrics: Dict[int, ConfusionMetrixMetricsModel] = dict()
 
+    def add_metrics(
+        self, metrics_model: MicroConfusionMetrixMetricsByOutputLengthModel
+    ) -> None:
+        for frequency, micro_model in metrics_model.intent_set_metrics.items():
+            if frequency in self.intent_set_metrics:
+                if (
+                    self.intent_set_metrics[frequency].confusion_matrix is not None
+                    and micro_model.confusion_matrix is not None
+                ):
+                    self.intent_set_metrics[frequency].confusion_matrix.add(  # type: ignore
+                        confusion_matrix=micro_model.confusion_matrix
+                    )
+            else:
+                if micro_model.confusion_matrix is not None:
+                    self.intent_set_metrics[frequency] = micro_model.model_copy(
+                        deep=True
+                    )
+
+        for frequency, micro_model in metrics_model.intent_counter_metrics.items():
+            if frequency in self.intent_counter_metrics:
+                if (
+                    self.intent_counter_metrics[frequency].confusion_matrix is not None
+                    and micro_model.confusion_matrix is not None
+                ):
+                    self.intent_counter_metrics[frequency].confusion_matrix.add(  # type: ignore
+                        confusion_matrix=micro_model.confusion_matrix
+                    )
+            else:
+                if micro_model.confusion_matrix is not None:
+                    self.intent_counter_metrics[frequency] = micro_model.model_copy(
+                        deep=True
+                    )
+
+        for frequency, micro_model in metrics_model.intent_list_metrics.items():
+            if frequency in self.intent_list_metrics:
+                if (
+                    self.intent_list_metrics[frequency].confusion_matrix is not None
+                    and micro_model.confusion_matrix is not None
+                ):
+                    self.intent_list_metrics[frequency].confusion_matrix.add(  # type: ignore
+                        confusion_matrix=micro_model.confusion_matrix
+                    )
+            else:
+                if micro_model.confusion_matrix is not None:
+                    self.intent_list_metrics[frequency] = micro_model.model_copy(
+                        deep=True
+                    )
+
+        for frequency, micro_model in metrics_model.slot_set_metrics.items():
+            if frequency in self.slot_set_metrics:
+                if (
+                    self.slot_set_metrics[frequency].confusion_matrix is not None
+                    and micro_model.confusion_matrix is not None
+                ):
+                    self.slot_set_metrics[frequency].confusion_matrix.add(  # type: ignore
+                        confusion_matrix=micro_model.confusion_matrix
+                    )
+            else:
+                if micro_model.confusion_matrix is not None:
+                    self.slot_set_metrics[frequency] = micro_model.model_copy(deep=True)
+
 
 class ScorerOuputModel(BaseModel):
     confusion_metrix_matrics_micro: MicroConfusionMetrixMetricsModel
@@ -183,6 +244,13 @@ class MetricsAggregationModel(BaseModel):
     macro: Dict[str, ConfusionMetrixMetricsModel] = dict()
     categories: List[str] = []
     raw_data: Dict[str, List[ConfusionMetrixMetricsModel]] = dict()
+
+
+class MicroConfusionMetrixMetricsByOutputLengthContainerModel(BaseModel):
+    intent_set_metrics: Dict[str, List[ConfusionMetrixMetricsModel]] = dict()
+    intent_counter_metrics: Dict[str, List[ConfusionMetrixMetricsModel]] = dict()
+    intent_list_metrics: Dict[str, List[ConfusionMetrixMetricsModel]] = dict()
+    slot_set_metrics: Dict[str, List[ConfusionMetrixMetricsModel]] = dict()
 
 
 class MetaMetricsAggregationModel(BaseModel):

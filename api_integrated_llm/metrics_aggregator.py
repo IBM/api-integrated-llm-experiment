@@ -10,6 +10,7 @@ from api_integrated_llm.helpers.metrics_aggregator_helper import (
     get_agent_meta_metrics_aggregation_model,
     get_category_meta_metrics_aggregation_model,
     get_metrics_aggregator_inputs,
+    get_output_length_meta_metrics_aggregation_model,
 )
 
 
@@ -30,7 +31,10 @@ def aggregate_metrics(
         aggregated_metrics: Dict[str, MetaMetricsAggregationModel] = {
             "compute_mode_meta_metrics": get_agent_meta_metrics_aggregation_model(
                 path_model_list=metrics_objs,
-            )
+            ),
+            "gold_output_length": get_output_length_meta_metrics_aggregation_model(
+                path_model_list=metrics_objs
+            ),
         }
         for category_mode, categoris in metrics_configuration_obj.items():
             aggregated_metrics[
