@@ -1,6 +1,6 @@
 from copy import deepcopy
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple, cast
+from typing import Dict, List, Optional, Set, Tuple, cast
 
 from api_integrated_llm.data_models.metrics_models import (
     DefaultMetricsAggregationConfiguration,
@@ -8,13 +8,24 @@ from api_integrated_llm.data_models.metrics_models import (
 from api_integrated_llm.data_models.scorer_models import (
     ConfusionMatrixModel,
     ConfusionMetrixMetricsModel,
+    MetaMetricsAggregationModel,
     MetricsAggregationModel,
+    MicroConfusionMetrixMetricsModel,
     ScorerOuputModel,
 )
 from api_integrated_llm.helpers.file_helper import (
     get_base_models_from_folder_tuple,
     get_dict_from_json,
 )
+
+
+def get_llm_model_names(metrics_objs: List[Tuple[Path, ScorerOuputModel]]) -> List[str]:
+    llm_model_names: Set[str] = set()
+    for _, obj in metrics_objs:
+        if len(obj.evaluation_source) > 0:
+            llm_model_names.add(obj.evaluation_source[0].llm_model_id.lower())
+
+    return list(llm_model_names)
 
 
 def get_metrics_aggregator_inputs(
@@ -37,6 +48,10 @@ def get_metrics_aggregator_inputs(
     )
 
     metrics_configuration_obj = DefaultMetricsAggregationConfiguration().get_dict()
+    metrics_configuration_obj["file_name"] = list(
+        set([str(tmp_path).split("/")[-1] for tmp_path, _ in metrics_objs])
+    )
+    metrics_configuration_obj["llm"] = get_llm_model_names(metrics_objs=metrics_objs)
 
     if metrics_aggregation_configuration_file_path is not None:
         try:
@@ -51,10 +66,147 @@ def get_metrics_aggregator_inputs(
         except Exception as e:
             has_error = True
             print(f"Metrics Aggregation Configuration File Parsing failed: {str(e)}")
+
     return (
         metrics_objs,
         cast(Dict[str, List[str]], metrics_configuration_obj),
         has_error,
+    )
+
+
+def get_agent_metrics_categories_dict(
+    path_model_list: List[Tuple[Path, ScorerOuputModel]],
+) -> Dict[str, List[MicroConfusionMetrixMetricsModel]]:
+    agent = "agent"
+    llm = "llm"
+    metrics_categories_dict: Dict[str, List[MicroConfusionMetrixMetricsModel]] = {
+        agent: [],
+        llm: [],
+    }
+
+    for _, score_output_model in path_model_list:
+        if (
+            len(score_output_model.evaluation_source) > 0
+            and score_output_model.evaluation_source[0].is_agent
+        ):
+            metrics_categories_dict[agent].append(
+                score_output_model.confusion_metrix_matrics_micro.model_copy(deep=True)
+            )
+        else:
+            metrics_categories_dict[llm].append(
+                score_output_model.confusion_metrix_matrics_micro.model_copy(deep=True)
+            )
+
+    return metrics_categories_dict
+
+
+def get_category_metrics_categories_dict(
+    path_model_list: List[Tuple[Path, ScorerOuputModel]], categories: List[str]
+) -> Dict[str, List[MicroConfusionMetrixMetricsModel]]:
+    lowered_categories = [category.lower() for category in categories]
+    metrics_categories_dict: Dict[str, List[MicroConfusionMetrixMetricsModel]] = {
+        category: [] for category in lowered_categories
+    }
+
+    for path, score_output_model in path_model_list:
+        path_str = str(path).lower()
+        for category in lowered_categories:
+            if category in path_str:
+                metrics_categories_dict[category].append(
+                    score_output_model.confusion_metrix_matrics_micro.model_copy(
+                        deep=True
+                    )
+                )
+
+    return metrics_categories_dict
+
+
+def get_meta_metrics_dict(
+    metrics_categories_dict: Dict[str, List[MicroConfusionMetrixMetricsModel]],
+) -> Tuple[
+    Dict[str, List[ConfusionMetrixMetricsModel]],
+    Dict[str, List[ConfusionMetrixMetricsModel]],
+    Dict[str, List[ConfusionMetrixMetricsModel]],
+    Dict[str, List[ConfusionMetrixMetricsModel]],
+]:
+    categories = list(metrics_categories_dict.keys())
+    intent_set_dict: Dict[str, List[ConfusionMetrixMetricsModel]] = {
+        category: [] for category in categories
+    }
+    intent_counter_dict: Dict[str, List[ConfusionMetrixMetricsModel]] = {
+        category: [] for category in categories
+    }
+    intent_list_dict: Dict[str, List[ConfusionMetrixMetricsModel]] = {
+        category: [] for category in categories
+    }
+    slot_set_dict: Dict[str, List[ConfusionMetrixMetricsModel]] = {
+        category: [] for category in categories
+    }
+
+    for category, model_list in metrics_categories_dict.items():
+        for model in model_list:
+            intent_set_dict[category].append(
+                model.intent_set_metrics.model_copy(deep=True)
+            )
+            intent_counter_dict[category].append(
+                model.intent_counter_metrics.model_copy(deep=True)
+            )
+            intent_list_dict[category].append(
+                model.intent_list_metrics.model_copy(deep=True)
+            )
+            slot_set_dict[category].append(model.slot_set_metrics.model_copy(deep=True))
+
+    return intent_set_dict, intent_counter_dict, intent_list_dict, slot_set_dict
+
+
+def get_meta_metrics(
+    intent_set_dict: Dict[str, List[ConfusionMetrixMetricsModel]],
+    intent_counter_dict: Dict[str, List[ConfusionMetrixMetricsModel]],
+    intent_list_dict: Dict[str, List[ConfusionMetrixMetricsModel]],
+    slot_set_dict: Dict[str, List[ConfusionMetrixMetricsModel]],
+    categories: List[str],
+) -> MetaMetricsAggregationModel:
+    return MetaMetricsAggregationModel(
+        intent_set_metrics=MetricsAggregationModel(
+            micro=get_micro_metrics_aggregation_dict(
+                categories_dict=intent_set_dict,
+            ),
+            macro=get_macro_metrics_aggregation_dict(
+                categories_dict=intent_set_dict,
+            ),
+            categories=deepcopy(categories),
+            raw_data=intent_set_dict,
+        ),
+        intent_counter_metrics=MetricsAggregationModel(
+            micro=get_micro_metrics_aggregation_dict(
+                categories_dict=intent_counter_dict,
+            ),
+            macro=get_macro_metrics_aggregation_dict(
+                categories_dict=intent_counter_dict,
+            ),
+            categories=deepcopy(categories),
+            raw_data=intent_counter_dict,
+        ),
+        intent_list_metrics=MetricsAggregationModel(
+            micro=get_micro_metrics_aggregation_dict(
+                categories_dict=intent_list_dict,
+            ),
+            macro=get_macro_metrics_aggregation_dict(
+                categories_dict=intent_list_dict,
+            ),
+            categories=deepcopy(categories),
+            raw_data=intent_list_dict,
+        ),
+        slot_set_metrics=MetricsAggregationModel(
+            micro=get_micro_metrics_aggregation_dict(
+                categories_dict=slot_set_dict,
+            ),
+            macro=get_macro_metrics_aggregation_dict(
+                categories_dict=slot_set_dict,
+            ),
+            categories=deepcopy(categories),
+            raw_data=slot_set_dict,
+        ),
     )
 
 
@@ -156,4 +308,49 @@ def get_aggregated_metrics(
         ),
         categories=deepcopy(categories),
         raw_data=categories_dict,
+    )
+
+
+def get_agent_meta_metrics_aggregation_model(
+    path_model_list: List[Tuple[Path, ScorerOuputModel]],
+) -> MetaMetricsAggregationModel:
+    metrics_categories_dict = get_agent_metrics_categories_dict(
+        path_model_list=path_model_list
+    )
+    categories = list(metrics_categories_dict.keys())
+    (
+        intent_set_dict,
+        intent_counter_dict,
+        intent_list_dict,
+        slot_set_dict,
+    ) = get_meta_metrics_dict(metrics_categories_dict=metrics_categories_dict)
+
+    return get_meta_metrics(
+        intent_set_dict=intent_set_dict,
+        intent_counter_dict=intent_counter_dict,
+        intent_list_dict=intent_list_dict,
+        slot_set_dict=slot_set_dict,
+        categories=categories,
+    )
+
+
+def get_category_meta_metrics_aggregation_model(
+    path_model_list: List[Tuple[Path, ScorerOuputModel]], categories: List[str]
+) -> MetaMetricsAggregationModel:
+    metrics_categories_dict = get_category_metrics_categories_dict(
+        path_model_list=path_model_list, categories=categories
+    )
+    (
+        intent_set_dict,
+        intent_counter_dict,
+        intent_list_dict,
+        slot_set_dict,
+    ) = get_meta_metrics_dict(metrics_categories_dict=metrics_categories_dict)
+
+    return get_meta_metrics(
+        intent_set_dict=intent_set_dict,
+        intent_counter_dict=intent_counter_dict,
+        intent_list_dict=intent_list_dict,
+        slot_set_dict=slot_set_dict,
+        categories=categories,
     )

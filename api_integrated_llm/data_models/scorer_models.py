@@ -162,3 +162,14 @@ class MetricsAggregationModel(BaseModel):
     macro: Dict[str, ConfusionMetrixMetricsModel] = dict()
     categories: List[str] = []
     raw_data: Dict[str, List[ConfusionMetrixMetricsModel]] = dict()
+
+
+class MetaMetricsAggregationModel(BaseModel):
+    intent_set_metrics: MetricsAggregationModel = MetricsAggregationModel()
+    intent_counter_metrics: MetricsAggregationModel = MetricsAggregationModel()
+    intent_list_metrics: MetricsAggregationModel = MetricsAggregationModel()
+    slot_set_metrics: MetricsAggregationModel = MetricsAggregationModel()
+
+
+class AggegatorOutputModel(BaseModel):
+    aggregated_metrics: Dict[str, MetaMetricsAggregationModel] = dict()

@@ -13,6 +13,13 @@ class DatasetCategory(str, Enum):
         return str(self.value)
 
 
+class ComputeCategory(str, Enum):
+    AGENT = "agent"
+
+    def __str__(self):
+        return str(self.value)
+
+
 class SubtaskCategory(str, Enum):
     SEQUENCING = "sequencing"
     SLOT_FILLING = "slot-filling"
