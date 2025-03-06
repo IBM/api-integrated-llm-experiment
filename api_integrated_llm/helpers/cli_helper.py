@@ -339,7 +339,10 @@ def cli() -> None:
             source_file_search_path=source_folder_path,
             is_single_intent_detection=args.single_intent,
         )
-    if args.mode == CliModeModel.DEFAULT or args.mode == CliModeModel.SCORER:
+    if (
+        args.mode == CliModeModel.DEFAULT
+        or args.mode == CliModeModel.METRICS_AGGREGATOR
+    ):
         print("\n")
         print(
             f"Metrics aggregator input folder: {metrics_aggregator_input_folder_path}"
