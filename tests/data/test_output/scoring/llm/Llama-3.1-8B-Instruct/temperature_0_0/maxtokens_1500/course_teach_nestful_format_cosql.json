@@ -61,6 +61,91 @@
       }
     }
   },
+  "confusion_metrix_matrics_micro_model_by_output_length": {
+    "intent_set_metrics": {
+      "1": {
+        "accuracy": 0.5555555555555556,
+        "precision": 0.7142857142857143,
+        "recall": 0.7142857142857143,
+        "f1": 0.7142857142857143,
+        "confusion_matrix": {
+          "true_positive": 5,
+          "false_positive": 2,
+          "true_negative": 0,
+          "false_negative": 2,
+          "mode": "set",
+          "num_non_zero_gold": 7,
+          "num_is_covered": 5
+        }
+      }
+    },
+    "intent_counter_metrics": {
+      "1": {
+        "accuracy": 0.5555555555555556,
+        "precision": 0.7142857142857143,
+        "recall": 0.7142857142857143,
+        "f1": 0.7142857142857143,
+        "confusion_matrix": {
+          "true_positive": 5,
+          "false_positive": 2,
+          "true_negative": 0,
+          "false_negative": 2,
+          "mode": "counter",
+          "num_non_zero_gold": 7,
+          "num_is_covered": 5
+        }
+      }
+    },
+    "intent_list_metrics": {
+      "1": {
+        "accuracy": 0.5555555555555556,
+        "precision": 0.7142857142857143,
+        "recall": 0.7142857142857143,
+        "f1": 0.7142857142857143,
+        "confusion_matrix": {
+          "true_positive": 5,
+          "false_positive": 2,
+          "true_negative": 0,
+          "false_negative": 2,
+          "mode": "list",
+          "num_non_zero_gold": 7,
+          "num_is_covered": 5
+        }
+      }
+    },
+    "slot_set_metrics": {
+      "0": {
+        "accuracy": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "confusion_matrix": {
+          "true_positive": 4,
+          "false_positive": 0,
+          "true_negative": 0,
+          "false_negative": 0,
+          "mode": "set",
+          "num_non_zero_gold": 0,
+          "num_is_covered": 0
+        }
+      },
+      "1": {
+        "accuracy": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "confusion_matrix": {
+          "true_positive": 1,
+          "false_positive": 0,
+          "true_negative": 0,
+          "false_negative": 0,
+          "mode": "set",
+          "num_non_zero_gold": 1,
+          "num_is_covered": 1
+        }
+      }
+    }
+  },
   "num_examples": 7,
   "percentage_times_full_score": 0.0,
   "num_errors_parsing_pred_intent": 0,

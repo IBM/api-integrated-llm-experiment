@@ -1,5 +1,5 @@
 from collections import Counter
-from typing import List, Tuple
+from typing import Dict, List, Tuple
 
 
 from api_integrated_llm.data_models.scorer_models import (
@@ -112,6 +112,39 @@ def get_confision_matrix_from_answers(
         matrix.false_negative += false_negative
 
     return matrix
+
+
+def get_confision_matrix_from_answers_by_output_length(
+    gold_answers: List[List[str]],
+    predicted_answers: List[List[str]],
+    mode: ConfusionMatrixMode = ConfusionMatrixMode.SET,
+) -> Dict[int, ConfusionMatrixModel]:
+    output: Dict[int, ConfusionMatrixModel] = dict()
+
+    for gold, pred in zip(gold_answers, predicted_answers):
+        gold_length = len(gold)
+        if gold_length not in output:
+            output[gold_length] = ConfusionMatrixModel(mode=mode)
+        is_non_zero_gold, is_covered = check_coverage(gold=gold, pred=pred)
+        output[gold_length].num_non_zero_gold += 1 if is_non_zero_gold else 0
+        output[gold_length].num_is_covered += 1 if is_covered else 0
+        (
+            true_positive,
+            false_positive,
+            true_negative,
+            false_negative,
+        ) = get_confusion_matrix_cells(
+            gold=gold,
+            pred=pred,
+            mode=mode,
+        )
+
+        output[gold_length].true_positive += true_positive
+        output[gold_length].true_negative += true_negative
+        output[gold_length].false_positive += false_positive
+        output[gold_length].false_negative += false_negative
+
+    return output
 
 
 # def _compute_confusion_mat(gold_answers: list, predicted_answers: list):

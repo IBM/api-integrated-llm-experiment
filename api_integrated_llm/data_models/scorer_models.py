@@ -101,6 +101,17 @@ class ConfusionMetrixMetricsModel(BaseModel):
             )
         return ConfusionMetrixMetricsModel()
 
+    @staticmethod
+    def get_confusion_matrix_metrics_micro_by_output_length(
+        confusion_matrix_dict: Dict[int, ConfusionMatrixModel],
+    ) -> Dict[int, ConfusionMetrixMetricsModel]:
+        return {
+            frequency: ConfusionMetrixMetricsModel.get_confusion_matrix_metrics_micro(
+                confusion_matrix=metrics_model,
+            )
+            for frequency, metrics_model in confusion_matrix_dict.items()
+        }
+
     def add(self, metrics_model: ConfusionMetrixMetricsModel, num_samples: int) -> None:
         if num_samples > 0:
             if self.accuracy is not None and metrics_model.accuracy is not None:
@@ -132,8 +143,18 @@ class MicroConfusionMetrixMetricsModel(BaseModel):
     slot_set_metrics: ConfusionMetrixMetricsModel = ConfusionMetrixMetricsModel()
 
 
+class MicroConfusionMetrixMetricsByOutputLengthModel(BaseModel):
+    intent_set_metrics: Dict[int, ConfusionMetrixMetricsModel] = dict()
+    intent_counter_metrics: Dict[int, ConfusionMetrixMetricsModel] = dict()
+    intent_list_metrics: Dict[int, ConfusionMetrixMetricsModel] = dict()
+    slot_set_metrics: Dict[int, ConfusionMetrixMetricsModel] = dict()
+
+
 class ScorerOuputModel(BaseModel):
     confusion_metrix_matrics_micro: MicroConfusionMetrixMetricsModel
+    confusion_metrix_matrics_micro_model_by_output_length: Optional[
+        MicroConfusionMetrixMetricsByOutputLengthModel
+    ] = None
     num_examples: int
     percentage_times_full_score: float
     num_errors_parsing_pred_intent: int

@@ -9,6 +9,7 @@ from api_integrated_llm.data_models.common_models import CommonErrorModel
 from api_integrated_llm.data_models.scorer_models import (
     ConfusionMatrixMode,
     ConfusionMetrixMetricsModel,
+    MicroConfusionMetrixMetricsByOutputLengthModel,
     MicroConfusionMetrixMetricsModel,
     ScorerOuputModel,
 )
@@ -26,6 +27,7 @@ from api_integrated_llm.helpers.scorer_helper import (
 )
 from api_integrated_llm.helpers.metrics_helper import (
     get_confision_matrix_from_answers,
+    get_confision_matrix_from_answers_by_output_length,
 )
 from api_integrated_llm.helpers.file_helper import (
     get_base_models_from_jsonl,
@@ -422,6 +424,44 @@ def get_micro_confusion_matrix_metrics(
     )
 
 
+def get_micro_confusion_matrix_metrics_by_output_length(
+    gold_output_intent: List[List[str]],
+    pred_output_intent: List[List[str]],
+    gold_output_slot: List[List[str]],
+    pred_output_slot: List[List[str]],
+) -> MicroConfusionMetrixMetricsByOutputLengthModel:
+    return MicroConfusionMetrixMetricsByOutputLengthModel(
+        intent_set_metrics=ConfusionMetrixMetricsModel.get_confusion_matrix_metrics_micro_by_output_length(
+            get_confision_matrix_from_answers_by_output_length(
+                gold_answers=gold_output_intent,
+                predicted_answers=pred_output_intent,
+                mode=ConfusionMatrixMode.SET,
+            )
+        ),
+        intent_counter_metrics=ConfusionMetrixMetricsModel.get_confusion_matrix_metrics_micro_by_output_length(
+            get_confision_matrix_from_answers_by_output_length(
+                gold_answers=gold_output_intent,
+                predicted_answers=pred_output_intent,
+                mode=ConfusionMatrixMode.COUNTER,
+            )
+        ),
+        intent_list_metrics=ConfusionMetrixMetricsModel.get_confusion_matrix_metrics_micro_by_output_length(
+            get_confision_matrix_from_answers_by_output_length(
+                gold_answers=gold_output_intent,
+                predicted_answers=pred_output_intent,
+                mode=ConfusionMatrixMode.LIST,
+            )
+        ),
+        slot_set_metrics=ConfusionMetrixMetricsModel.get_confusion_matrix_metrics_micro_by_output_length(
+            get_confision_matrix_from_answers_by_output_length(
+                gold_answers=gold_output_slot,
+                predicted_answers=pred_output_slot,
+                mode=ConfusionMatrixMode.SET,
+            )
+        ),
+    )
+
+
 def parsing_only(
     predictions_input: List[EvaluationOutputResponseDataUnit],
     is_single_intent_detection: bool,
@@ -499,6 +539,15 @@ def calculate_scores(
         pred_output_slot=pred_output_slot,
     )
 
+    confusion_metrix_matrics_micro_model_by_output_length = (
+        get_micro_confusion_matrix_metrics_by_output_length(
+            gold_output_intent=gold_output_intent,
+            pred_output_intent=pred_output_intent,
+            gold_output_slot=gold_output_slot,
+            pred_output_slot=pred_output_slot,
+        )
+    )
+
     num_samples = len(predictions_input)
     error_messages_win_rate: List[str] = []
     win_rate: Optional[float] = None
@@ -520,6 +569,7 @@ def calculate_scores(
 
     return ScorerOuputModel(
         confusion_metrix_matrics_micro=confusion_metrix_matrics_micro_model,
+        confusion_metrix_matrics_micro_model_by_output_length=confusion_metrix_matrics_micro_model_by_output_length,
         num_examples=num_samples,
         percentage_times_full_score=(all_num_times_full_score / num_samples),
         num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
