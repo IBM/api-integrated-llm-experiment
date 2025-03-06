@@ -5,7 +5,7 @@ import os
 from pathlib import Path
 import pickle
 import pprint
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, Optional, Tuple, Union
 import json
 from typing import List
 import uuid
@@ -256,6 +256,29 @@ def get_base_models_from_folder(
                 file_path=Path(file_path), base_model=base_model
             )
             models.append(source_raw)
+        except Exception as e:
+            print(e)
+
+    return models
+
+
+def get_base_models_from_folder_tuple(
+    folder_path: Path,
+    file_extension: str,
+    base_model: BaseModel,
+) -> List[Tuple[Path, BaseModel]]:
+    json_file_paths = get_files_in_folder(
+        folder_path=folder_path,
+        file_extension=file_extension,
+    )
+    models: List[Tuple[Path, BaseModel]] = []
+
+    for file_path in json_file_paths:
+        try:
+            source_raw = get_base_model_from_json(
+                file_path=Path(file_path), base_model=base_model
+            )
+            models.append((file_path, source_raw))
         except Exception as e:
             print(e)
 

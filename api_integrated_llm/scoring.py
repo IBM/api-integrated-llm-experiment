@@ -629,7 +629,11 @@ def scoring(
     db_path: Optional[Path] = None,
     source_file_search_path: Optional[Path] = None,
     is_single_intent_detection=False,
-) -> None:
+) -> bool:
+    """
+    returns the state of exception
+    """
+    has_exception = False
     for evaluator_output_file_path in evaluator_output_file_paths:
         temperature_str = "default_temperature"
         max_tokens_str = "default_max_tokens"
@@ -675,6 +679,7 @@ def scoring(
                 ),
             )
         except Exception as e:
+            has_exception = True
             handle_scoring_process_exception(
                 output_root_path=output_folder_path,
                 e=e,
@@ -683,3 +688,4 @@ def scoring(
                 max_tokens_str=max_tokens_str,
                 output_file_name=output_file_name,
             )
+    return has_exception
