@@ -6,9 +6,11 @@ from api_integrated_llm.data_models.cli_models import CliModeModel
 from api_integrated_llm.evaluation import evaluate
 from api_integrated_llm.helpers.benchmark_helper import get_model_id_obj_dict
 from api_integrated_llm.helpers.file_helper import (
+    get_date_time_str,
     get_dict_from_json,
     get_files_in_folder,
 )
+from api_integrated_llm.metrics_aggregator import aggregate_metrics
 from api_integrated_llm.scoring import parsing, scoring
 
 
@@ -73,6 +75,14 @@ def get_arguments() -> argparse.Namespace:
         "--databases_folder",
         type=Path,
         help="Databases folder path",
+        default=project_root_path,
+    )
+
+    parser.add_argument(
+        "-maif",
+        "--metrics_aggregator_input_folder",
+        type=Path,
+        help="Metrics aggregator input folder path",
         default=project_root_path,
     )
 
@@ -148,12 +158,20 @@ def check_args(args) -> bool:
         if args.parser_input_folder == project_root_path:
             print("parser input folder should be defined")
             should_stop = True
+    elif args.mode == CliModeModel.METRICS_AGGREGATOR:
+        if args.output_folder == project_root_path:
+            print("output_folder should be defined")
+            should_stop = True
+        if args.metrics_aggregator_input_folder == project_root_path:
+            print("metrics aggregator input folder should be defined")
+            should_stop = True
+
     return should_stop
 
 
 def get_paths(
     args,
-) -> Tuple[Path, Path, Path, Path, Path, Optional[Path], Optional[Path]]:
+) -> Tuple[Path, Path, Path, Path, Path, Optional[Path], Optional[Path], Path]:
     root_folder_path = Path(os.path.join(args.root, "source"))
     output_folder_path = (
         Path(os.path.join(args.root, "output"))
@@ -201,6 +219,17 @@ def get_paths(
         None if args.databases_folder == project_root_path else args.databases_folder
     )
 
+    metrics_aggregator_input_folder_path = (
+        Path(
+            os.path.join(
+                output_folder_path,
+                "evaluation",
+            )
+        )
+        if args.metrics_aggregator_input_folder == project_root_path
+        else args.metrics_aggregator_input_folder
+    )
+
     return (
         root_folder_path,
         cast(Path, output_folder_path),
@@ -217,6 +246,7 @@ def get_paths(
             if database_folder_path is not None
             else database_folder_path
         ),
+        metrics_aggregator_input_folder_path,
     )
 
 
@@ -234,6 +264,7 @@ def cli() -> None:
         scorer_input_folder_path,
         source_folder_path,
         database_folder_path,
+        metrics_aggregator_input_folder_path,
     ) = get_paths(args)
 
     if args.mode == CliModeModel.DEFAULT or args.mode == CliModeModel.EVALUATOR:
@@ -307,4 +338,26 @@ def cli() -> None:
             db_path=database_folder_path,
             source_file_search_path=source_folder_path,
             is_single_intent_detection=args.single_intent,
+        )
+    if (
+        args.mode == CliModeModel.DEFAULT
+        or args.mode == CliModeModel.METRICS_AGGREGATOR
+    ):
+        print("\n")
+        print(
+            f"Metrics aggregator input folder: {metrics_aggregator_input_folder_path}"
+        )
+        print(f"Scorer output folder: {output_folder_path}")
+        print("\n")
+        time_str = get_date_time_str()
+        aggregate_metrics(
+            metrics_aggregator_input_path=metrics_aggregator_input_folder_path,
+            metrics_aggregator_output_file_path=Path(
+                os.path.join(
+                    output_folder_path,
+                    "metrics_aggregation",
+                    f"metrics_aggregation_{time_str}.json",
+                )
+            ),
+            metrics_aggregation_configuration_file_path=None,
         )

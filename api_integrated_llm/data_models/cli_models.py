@@ -6,6 +6,7 @@ class CliModeModel(str, Enum):
     EVALUATOR = "evaluator"
     SCORER = "scorer"
     PARSER = "parser"
+    METRICS_AGGREGATOR = "metrics_aggregator"
 
     def __str__(self):
         return str(self.value)

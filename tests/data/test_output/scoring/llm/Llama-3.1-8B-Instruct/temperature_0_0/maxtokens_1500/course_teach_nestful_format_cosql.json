@@ -1,0 +1,432 @@
+{
+  "confusion_metrix_matrics_micro": {
+    "intent_set_metrics": {
+      "accuracy": 0.5555555555555556,
+      "precision": 0.7142857142857143,
+      "recall": 0.7142857142857143,
+      "f1": 0.7142857142857143,
+      "confusion_matrix": {
+        "true_positive": 5,
+        "false_positive": 2,
+        "true_negative": 0,
+        "false_negative": 2,
+        "mode": "set",
+        "num_non_zero_gold": 7,
+        "num_is_covered": 5
+      }
+    },
+    "intent_counter_metrics": {
+      "accuracy": 0.5555555555555556,
+      "precision": 0.7142857142857143,
+      "recall": 0.7142857142857143,
+      "f1": 0.7142857142857143,
+      "confusion_matrix": {
+        "true_positive": 5,
+        "false_positive": 2,
+        "true_negative": 0,
+        "false_negative": 2,
+        "mode": "counter",
+        "num_non_zero_gold": 7,
+        "num_is_covered": 5
+      }
+    },
+    "intent_list_metrics": {
+      "accuracy": 0.5555555555555556,
+      "precision": 0.7142857142857143,
+      "recall": 0.7142857142857143,
+      "f1": 0.7142857142857143,
+      "confusion_matrix": {
+        "true_positive": 5,
+        "false_positive": 2,
+        "true_negative": 0,
+        "false_negative": 2,
+        "mode": "list",
+        "num_non_zero_gold": 7,
+        "num_is_covered": 5
+      }
+    },
+    "slot_set_metrics": {
+      "accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "confusion_matrix": {
+        "true_positive": 5,
+        "false_positive": 0,
+        "true_negative": 0,
+        "false_negative": 0,
+        "mode": "set",
+        "num_non_zero_gold": 1,
+        "num_is_covered": 1
+      }
+    }
+  },
+  "confusion_metrix_matrics_micro_model_by_output_length": {
+    "intent_set_metrics": {
+      "1": {
+        "accuracy": 0.5555555555555556,
+        "precision": 0.7142857142857143,
+        "recall": 0.7142857142857143,
+        "f1": 0.7142857142857143,
+        "confusion_matrix": {
+          "true_positive": 5,
+          "false_positive": 2,
+          "true_negative": 0,
+          "false_negative": 2,
+          "mode": "set",
+          "num_non_zero_gold": 7,
+          "num_is_covered": 5
+        }
+      }
+    },
+    "intent_counter_metrics": {
+      "1": {
+        "accuracy": 0.5555555555555556,
+        "precision": 0.7142857142857143,
+        "recall": 0.7142857142857143,
+        "f1": 0.7142857142857143,
+        "confusion_matrix": {
+          "true_positive": 5,
+          "false_positive": 2,
+          "true_negative": 0,
+          "false_negative": 2,
+          "mode": "counter",
+          "num_non_zero_gold": 7,
+          "num_is_covered": 5
+        }
+      }
+    },
+    "intent_list_metrics": {
+      "1": {
+        "accuracy": 0.5555555555555556,
+        "precision": 0.7142857142857143,
+        "recall": 0.7142857142857143,
+        "f1": 0.7142857142857143,
+        "confusion_matrix": {
+          "true_positive": 5,
+          "false_positive": 2,
+          "true_negative": 0,
+          "false_negative": 2,
+          "mode": "list",
+          "num_non_zero_gold": 7,
+          "num_is_covered": 5
+        }
+      }
+    },
+    "slot_set_metrics": {
+      "0": {
+        "accuracy": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "confusion_matrix": {
+          "true_positive": 4,
+          "false_positive": 0,
+          "true_negative": 0,
+          "false_negative": 0,
+          "mode": "set",
+          "num_non_zero_gold": 0,
+          "num_is_covered": 0
+        }
+      },
+      "1": {
+        "accuracy": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "confusion_matrix": {
+          "true_positive": 1,
+          "false_positive": 0,
+          "true_negative": 0,
+          "false_negative": 0,
+          "mode": "set",
+          "num_non_zero_gold": 1,
+          "num_is_covered": 1
+        }
+      }
+    }
+  },
+  "num_examples": 7,
+  "percentage_times_full_score": 0.0,
+  "num_errors_parsing_pred_intent": 0,
+  "num_errors_parsing_gold_intent": 0,
+  "num_errors_parsing_pred_slot": 0,
+  "num_errors_parsing_gold_slot": 0,
+  "num_pred_examples_w_parsing_errors": 0,
+  "num_gold_examples_w_parsing_errors": 0,
+  "error_messages": [],
+  "parsing_error_messages": [],
+  "model_temperature": 0,
+  "model_max_tokens": 1500,
+  "evaluation_source": [
+    {
+      "sample_id": 0,
+      "input": "<|begin_of_text|><|start_header_id|>system<|end_header_id|>\n\nYou are an expert in composing functions. You are given a question and a set of possible functions.\nBased on the question, you will need to make one function/tool call to achieve the purpose.\nIf none of the function can be used, point it out. If the given question lacks the parameters required by the function, also point it out. You should only return the function call in tools call sections.\n\nIf you decide to invoke any of the function, you MUST put it in the format of [{\"name\": \"func_name1\", \"arguments\": {\"argument1\": \"value1\", \"argument2\": \"value2\"}, \"label\": \"$var_1\"}]\n\nYou SHOULD NOT include any other text in the response.\n\nHere is a list of functions in JSON format that you can invoke.\n\n[{\"name\": \"get_teacher_course_count_v1_cosql_course_teach_teacher_course_count_get\", \"description\": \"Get teacher names and their course counts\", \"arguments\": {}}, {\"name\": \"get_teacher_count_v1_cosql_course_teach_teacher_count_get\", \"description\": \"Get the count of teachers\", \"arguments\": {}}, {\"name\": \"get_course_arrange_count_v1_cosql_course_teach_course_arrange_count_get\", \"description\": \"Get the count of course arrangements\", \"arguments\": {}}, {\"name\": \"get_teacher_course_count_filtered_v1_cosql_course_teach_teacher_course_count_filtered_get\", \"description\": \"Get teacher names and their course counts with a filter\", \"arguments\": {\"course_name\": {\"type\": \"string\", \"description\": \"Name of the course\", \"title\": \"Course Name\"}}}, {\"name\": \"get_teacher_names_ages_v1_cosql_course_teach_teacher_names_ages_get\", \"description\": \"Get teacher names and ages\", \"arguments\": {}}, {\"name\": \"get_course_starting_dates_v1_cosql_course_teach_course_starting_dates_get\", \"description\": \"Get course starting dates for a specific course\", \"arguments\": {\"course_name\": {\"type\": \"string\", \"description\": \"Name of the course\", \"title\": \"Course Name\"}}}, {\"name\": \"get_teacher_course_ids_v1_cosql_course_teach_teacher_course_ids_get\", \"description\": \"Get teacher names and course IDs\", \"arguments\": {}}, {\"name\": \"get_teacher_names_age_filter_v1_cosql_course_teach_teacher_names_age_filter_get\", \"description\": \"Get teacher names with age filter\", \"arguments\": {\"age\": {\"type\": \"integer\", \"description\": \"Age filter\", \"title\": \"Age\"}}}, {\"name\": \"get_teacher_courses_ordered_v1_cosql_course_teach_teacher_courses_ordered_get\", \"description\": \"Get teacher names and courses ordered by name\", \"arguments\": {}}, {\"name\": \"get_youngest_teacher_hometown_v1_cosql_course_teach_youngest_teacher_hometown_get\", \"description\": \"Get the hometown of the youngest teacher\", \"arguments\": {}}, {\"name\": \"get_youngest_teacher_name_v1_cosql_course_teach_youngest_teacher_name_get\", \"description\": \"Get the name of the youngest teacher\", \"arguments\": {}}, {\"name\": \"get_teacher_age_v1_cosql_course_teach_teacher_age_get\", \"description\": \"Get the age of a specific teacher\", \"arguments\": {\"teacher_name\": {\"type\": \"string\", \"description\": \"Name of the teacher\", \"title\": \"Teacher Name\"}}}, {\"name\": \"get_teacher_names_min_course_count_v1_cosql_course_teach_teacher_names_min_course_count_get\", \"description\": \"Get teacher names with a minimum course count\", \"arguments\": {\"min_count\": {\"type\": \"integer\", \"description\": \"Minimum course count\", \"title\": \"Min Count\"}}}, {\"name\": \"get_teacher_age_hometown_min_course_count_v1_cosql_course_teach_teacher_age_hometown_min_course_count_get\", \"description\": \"Get teacher age and hometown with a minimum course count\", \"arguments\": {\"min_count\": {\"type\": \"integer\", \"description\": \"Minimum course count\", \"title\": \"Min Count\"}}}, {\"name\": \"get_highest_teacher_grade_v1_cosql_course_teach_highest_teacher_grade_get\", \"description\": \"Get the highest grade of a teacher\", \"arguments\": {}}, {\"name\": \"get_course_count_v1_cosql_course_teach_course_count_get\", \"description\": \"Get the count of courses\", \"arguments\": {}}, {\"name\": \"get_course_names_v1_cosql_course_teach_course_names_get\", \"description\": \"Get all course names\", \"arguments\": {}}, {\"name\": \"get_teacher_id_count_v1_cosql_course_teach_teacher_id_count_get\", \"description\": \"Get the count of teachers\", \"arguments\": {}}, {\"name\": \"get_teacher_names_for_course_v1_cosql_course_teach_teacher_names_for_course_get\", \"description\": \"Get teacher names for a specific course\", \"arguments\": {\"course_name\": {\"type\": \"string\", \"description\": \"Name of the course\", \"title\": \"Course Name\"}}}]\n<|eot_id|><|start_header_id|>user<|end_header_id|>\n\nShow names of teachers and the number of courses they teach.<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n'",
+      "output": "[{\"name\": \"get_teacher_course_count_v1_cosql_course_teach_teacher_course_count_get\", \"arguments\": {}}]",
+      "gold_answer": [
+        [
+          "Anne Walker",
+          2
+        ],
+        [
+          "Gustaaf Deloor",
+          1
+        ],
+        [
+          "Kearsley Brown",
+          1
+        ],
+        [
+          "Lucy Wong",
+          1
+        ],
+        [
+          "Vicente Carretero",
+          1
+        ]
+      ],
+      "generated_text": "{\"name\": \"get_teacher_course_count_v1_cosql_course_teach_teacher_course_count_get\", \"arguments\": {}, \"label\": \"$var_1\"}'",
+      "llm_model_id": "meta-llama/Llama-3.1-8B-Instruct",
+      "source_file_path": "/u/jungkoo2654/api_integrated_llm_experiment/source/evaluation/router/cosql/rest/course_teach_nestful_format_cosql.json",
+      "dataset_name": "course_teach_nestful_format_cosql",
+      "temperature": 0.0,
+      "max_tokens": 1500,
+      "is_agent": false,
+      "predicted_function_calls": [],
+      "gold_function_calls": [],
+      "num_preciedtion_parsing_errors": null
+    },
+    {
+      "sample_id": 1,
+      "input": "<|begin_of_text|><|start_header_id|>system<|end_header_id|>\n\nYou are an expert in composing functions. You are given a question and a set of possible functions.\nBased on the question, you will need to make one function/tool call to achieve the purpose.\nIf none of the function can be used, point it out. If the given question lacks the parameters required by the function, also point it out. You should only return the function call in tools call sections.\n\nIf you decide to invoke any of the function, you MUST put it in the format of [{\"name\": \"func_name1\", \"arguments\": {\"argument1\": \"value1\", \"argument2\": \"value2\"}, \"label\": \"$var_1\"}]\n\nYou SHOULD NOT include any other text in the response.\n\nHere is a list of functions in JSON format that you can invoke.\n\n[{\"name\": \"get_teacher_course_count_v1_cosql_course_teach_teacher_course_count_get\", \"description\": \"Get teacher names and their course counts\", \"arguments\": {}}, {\"name\": \"get_teacher_count_v1_cosql_course_teach_teacher_count_get\", \"description\": \"Get the count of teachers\", \"arguments\": {}}, {\"name\": \"get_course_arrange_count_v1_cosql_course_teach_course_arrange_count_get\", \"description\": \"Get the count of course arrangements\", \"arguments\": {}}, {\"name\": \"get_teacher_course_count_filtered_v1_cosql_course_teach_teacher_course_count_filtered_get\", \"description\": \"Get teacher names and their course counts with a filter\", \"arguments\": {\"course_name\": {\"type\": \"string\", \"description\": \"Name of the course\", \"title\": \"Course Name\"}}}, {\"name\": \"get_teacher_names_ages_v1_cosql_course_teach_teacher_names_ages_get\", \"description\": \"Get teacher names and ages\", \"arguments\": {}}, {\"name\": \"get_course_starting_dates_v1_cosql_course_teach_course_starting_dates_get\", \"description\": \"Get course starting dates for a specific course\", \"arguments\": {\"course_name\": {\"type\": \"string\", \"description\": \"Name of the course\", \"title\": \"Course Name\"}}}, {\"name\": \"get_teacher_course_ids_v1_cosql_course_teach_teacher_course_ids_get\", \"description\": \"Get teacher names and course IDs\", \"arguments\": {}}, {\"name\": \"get_teacher_names_age_filter_v1_cosql_course_teach_teacher_names_age_filter_get\", \"description\": \"Get teacher names with age filter\", \"arguments\": {\"age\": {\"type\": \"integer\", \"description\": \"Age filter\", \"title\": \"Age\"}}}, {\"name\": \"get_teacher_courses_ordered_v1_cosql_course_teach_teacher_courses_ordered_get\", \"description\": \"Get teacher names and courses ordered by name\", \"arguments\": {}}, {\"name\": \"get_youngest_teacher_hometown_v1_cosql_course_teach_youngest_teacher_hometown_get\", \"description\": \"Get the hometown of the youngest teacher\", \"arguments\": {}}, {\"name\": \"get_youngest_teacher_name_v1_cosql_course_teach_youngest_teacher_name_get\", \"description\": \"Get the name of the youngest teacher\", \"arguments\": {}}, {\"name\": \"get_teacher_age_v1_cosql_course_teach_teacher_age_get\", \"description\": \"Get the age of a specific teacher\", \"arguments\": {\"teacher_name\": {\"type\": \"string\", \"description\": \"Name of the teacher\", \"title\": \"Teacher Name\"}}}, {\"name\": \"get_teacher_names_min_course_count_v1_cosql_course_teach_teacher_names_min_course_count_get\", \"description\": \"Get teacher names with a minimum course count\", \"arguments\": {\"min_count\": {\"type\": \"integer\", \"description\": \"Minimum course count\", \"title\": \"Min Count\"}}}, {\"name\": \"get_teacher_age_hometown_min_course_count_v1_cosql_course_teach_teacher_age_hometown_min_course_count_get\", \"description\": \"Get teacher age and hometown with a minimum course count\", \"arguments\": {\"min_count\": {\"type\": \"integer\", \"description\": \"Minimum course count\", \"title\": \"Min Count\"}}}, {\"name\": \"get_highest_teacher_grade_v1_cosql_course_teach_highest_teacher_grade_get\", \"description\": \"Get the highest grade of a teacher\", \"arguments\": {}}, {\"name\": \"get_course_count_v1_cosql_course_teach_course_count_get\", \"description\": \"Get the count of courses\", \"arguments\": {}}, {\"name\": \"get_course_names_v1_cosql_course_teach_course_names_get\", \"description\": \"Get all course names\", \"arguments\": {}}, {\"name\": \"get_teacher_id_count_v1_cosql_course_teach_teacher_id_count_get\", \"description\": \"Get the count of teachers\", \"arguments\": {}}, {\"name\": \"get_teacher_names_for_course_v1_cosql_course_teach_teacher_names_for_course_get\", \"description\": \"Get teacher names for a specific course\", \"arguments\": {\"course_name\": {\"type\": \"string\", \"description\": \"Name of the course\", \"title\": \"Course Name\"}}}]\n<|eot_id|><|start_header_id|>user<|end_header_id|>\n\nShow the name of the teacher for the math course.<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n'",
+      "output": "[{\"name\": \"get_teacher_course_count_filtered_v1_cosql_course_teach_teacher_course_count_filtered_get\", \"arguments\": {\"course_name\": \"Math\"}}]",
+      "gold_answer": [
+        [
+          "Kearsley Brown"
+        ],
+        [
+          "Vicente Carretero"
+        ]
+      ],
+      "generated_text": "{\"name\": \"get_teacher_names_for_course_v1_cosql_course_teach_teacher_names_for_course_get\", \"arguments\": {\"course_name\": \"math\"}, \"label\": \"$var_1\"}",
+      "llm_model_id": "meta-llama/Llama-3.1-8B-Instruct",
+      "source_file_path": "/u/jungkoo2654/api_integrated_llm_experiment/source/evaluation/router/cosql/rest/course_teach_nestful_format_cosql.json",
+      "dataset_name": "course_teach_nestful_format_cosql",
+      "temperature": 0.0,
+      "max_tokens": 1500,
+      "is_agent": false,
+      "predicted_function_calls": [],
+      "gold_function_calls": [],
+      "num_preciedtion_parsing_errors": null
+    },
+    {
+      "sample_id": 2,
+      "input": "<|begin_of_text|><|start_header_id|>system<|end_header_id|>\n\nYou are an expert in composing functions. You are given a question and a set of possible functions.\nBased on the question, you will need to make one function/tool call to achieve the purpose.\nIf none of the function can be used, point it out. If the given question lacks the parameters required by the function, also point it out. You should only return the function call in tools call sections.\n\nIf you decide to invoke any of the function, you MUST put it in the format of [{\"name\": \"func_name1\", \"arguments\": {\"argument1\": \"value1\", \"argument2\": \"value2\"}, \"label\": \"$var_1\"}]\n\nYou SHOULD NOT include any other text in the response.\n\nHere is a list of functions in JSON format that you can invoke.\n\n[{\"name\": \"get_teacher_course_count_v1_cosql_course_teach_teacher_course_count_get\", \"description\": \"Get teacher names and their course counts\", \"arguments\": {}}, {\"name\": \"get_teacher_count_v1_cosql_course_teach_teacher_count_get\", \"description\": \"Get the count of teachers\", \"arguments\": {}}, {\"name\": \"get_course_arrange_count_v1_cosql_course_teach_course_arrange_count_get\", \"description\": \"Get the count of course arrangements\", \"arguments\": {}}, {\"name\": \"get_teacher_course_count_filtered_v1_cosql_course_teach_teacher_course_count_filtered_get\", \"description\": \"Get teacher names and their course counts with a filter\", \"arguments\": {\"course_name\": {\"type\": \"string\", \"description\": \"Name of the course\", \"title\": \"Course Name\"}}}, {\"name\": \"get_teacher_names_ages_v1_cosql_course_teach_teacher_names_ages_get\", \"description\": \"Get teacher names and ages\", \"arguments\": {}}, {\"name\": \"get_course_starting_dates_v1_cosql_course_teach_course_starting_dates_get\", \"description\": \"Get course starting dates for a specific course\", \"arguments\": {\"course_name\": {\"type\": \"string\", \"description\": \"Name of the course\", \"title\": \"Course Name\"}}}, {\"name\": \"get_teacher_course_ids_v1_cosql_course_teach_teacher_course_ids_get\", \"description\": \"Get teacher names and course IDs\", \"arguments\": {}}, {\"name\": \"get_teacher_names_age_filter_v1_cosql_course_teach_teacher_names_age_filter_get\", \"description\": \"Get teacher names with age filter\", \"arguments\": {\"age\": {\"type\": \"integer\", \"description\": \"Age filter\", \"title\": \"Age\"}}}, {\"name\": \"get_teacher_courses_ordered_v1_cosql_course_teach_teacher_courses_ordered_get\", \"description\": \"Get teacher names and courses ordered by name\", \"arguments\": {}}, {\"name\": \"get_youngest_teacher_hometown_v1_cosql_course_teach_youngest_teacher_hometown_get\", \"description\": \"Get the hometown of the youngest teacher\", \"arguments\": {}}, {\"name\": \"get_youngest_teacher_name_v1_cosql_course_teach_youngest_teacher_name_get\", \"description\": \"Get the name of the youngest teacher\", \"arguments\": {}}, {\"name\": \"get_teacher_age_v1_cosql_course_teach_teacher_age_get\", \"description\": \"Get the age of a specific teacher\", \"arguments\": {\"teacher_name\": {\"type\": \"string\", \"description\": \"Name of the teacher\", \"title\": \"Teacher Name\"}}}, {\"name\": \"get_teacher_names_min_course_count_v1_cosql_course_teach_teacher_names_min_course_count_get\", \"description\": \"Get teacher names with a minimum course count\", \"arguments\": {\"min_count\": {\"type\": \"integer\", \"description\": \"Minimum course count\", \"title\": \"Min Count\"}}}, {\"name\": \"get_teacher_age_hometown_min_course_count_v1_cosql_course_teach_teacher_age_hometown_min_course_count_get\", \"description\": \"Get teacher age and hometown with a minimum course count\", \"arguments\": {\"min_count\": {\"type\": \"integer\", \"description\": \"Minimum course count\", \"title\": \"Min Count\"}}}, {\"name\": \"get_highest_teacher_grade_v1_cosql_course_teach_highest_teacher_grade_get\", \"description\": \"Get the highest grade of a teacher\", \"arguments\": {}}, {\"name\": \"get_course_count_v1_cosql_course_teach_course_count_get\", \"description\": \"Get the count of courses\", \"arguments\": {}}, {\"name\": \"get_course_names_v1_cosql_course_teach_course_names_get\", \"description\": \"Get all course names\", \"arguments\": {}}, {\"name\": \"get_teacher_id_count_v1_cosql_course_teach_teacher_id_count_get\", \"description\": \"Get the count of teachers\", \"arguments\": {}}, {\"name\": \"get_teacher_names_for_course_v1_cosql_course_teach_teacher_names_for_course_get\", \"description\": \"Get teacher names for a specific course\", \"arguments\": {\"course_name\": {\"type\": \"string\", \"description\": \"Name of the course\", \"title\": \"Course Name\"}}}]\n<|eot_id|><|start_header_id|>user<|end_header_id|>\n\nShow names of teachers and the number of courses they teach.<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n'",
+      "output": "[{\"name\": \"get_teacher_course_count_v1_cosql_course_teach_teacher_course_count_get\", \"arguments\": {}}]",
+      "gold_answer": [
+        [
+          "Anne Walker",
+          2
+        ],
+        [
+          "Gustaaf Deloor",
+          1
+        ],
+        [
+          "Kearsley Brown",
+          1
+        ],
+        [
+          "Lucy Wong",
+          1
+        ],
+        [
+          "Vicente Carretero",
+          1
+        ]
+      ],
+      "generated_text": "{\"name\": \"get_teacher_course_count_v1_cosql_course_teach_teacher_course_count_get\", \"arguments\": {}, \"label\": \"$var_1\"}'",
+      "llm_model_id": "meta-llama/Llama-3.1-8B-Instruct",
+      "source_file_path": "/u/jungkoo2654/api_integrated_llm_experiment/source/evaluation/router/cosql/rest/course_teach_nestful_format_cosql.json",
+      "dataset_name": "course_teach_nestful_format_cosql",
+      "temperature": 0.0,
+      "max_tokens": 1500,
+      "is_agent": false,
+      "predicted_function_calls": [],
+      "gold_function_calls": [],
+      "num_preciedtion_parsing_errors": null
+    },
+    {
+      "sample_id": 3,
+      "input": "<|begin_of_text|><|start_header_id|>system<|end_header_id|>\n\nYou are an expert in composing functions. You are given a question and a set of possible functions.\nBased on the question, you will need to make one function/tool call to achieve the purpose.\nIf none of the function can be used, point it out. If the given question lacks the parameters required by the function, also point it out. You should only return the function call in tools call sections.\n\nIf you decide to invoke any of the function, you MUST put it in the format of [{\"name\": \"func_name1\", \"arguments\": {\"argument1\": \"value1\", \"argument2\": \"value2\"}, \"label\": \"$var_1\"}]\n\nYou SHOULD NOT include any other text in the response.\n\nHere is a list of functions in JSON format that you can invoke.\n\n[{\"name\": \"get_teacher_course_count_v1_cosql_course_teach_teacher_course_count_get\", \"description\": \"Get teacher names and their course counts\", \"arguments\": {}}, {\"name\": \"get_teacher_count_v1_cosql_course_teach_teacher_count_get\", \"description\": \"Get the count of teachers\", \"arguments\": {}}, {\"name\": \"get_course_arrange_count_v1_cosql_course_teach_course_arrange_count_get\", \"description\": \"Get the count of course arrangements\", \"arguments\": {}}, {\"name\": \"get_teacher_course_count_filtered_v1_cosql_course_teach_teacher_course_count_filtered_get\", \"description\": \"Get teacher names and their course counts with a filter\", \"arguments\": {\"course_name\": {\"type\": \"string\", \"description\": \"Name of the course\", \"title\": \"Course Name\"}}}, {\"name\": \"get_teacher_names_ages_v1_cosql_course_teach_teacher_names_ages_get\", \"description\": \"Get teacher names and ages\", \"arguments\": {}}, {\"name\": \"get_course_starting_dates_v1_cosql_course_teach_course_starting_dates_get\", \"description\": \"Get course starting dates for a specific course\", \"arguments\": {\"course_name\": {\"type\": \"string\", \"description\": \"Name of the course\", \"title\": \"Course Name\"}}}, {\"name\": \"get_teacher_course_ids_v1_cosql_course_teach_teacher_course_ids_get\", \"description\": \"Get teacher names and course IDs\", \"arguments\": {}}, {\"name\": \"get_teacher_names_age_filter_v1_cosql_course_teach_teacher_names_age_filter_get\", \"description\": \"Get teacher names with age filter\", \"arguments\": {\"age\": {\"type\": \"integer\", \"description\": \"Age filter\", \"title\": \"Age\"}}}, {\"name\": \"get_teacher_courses_ordered_v1_cosql_course_teach_teacher_courses_ordered_get\", \"description\": \"Get teacher names and courses ordered by name\", \"arguments\": {}}, {\"name\": \"get_youngest_teacher_hometown_v1_cosql_course_teach_youngest_teacher_hometown_get\", \"description\": \"Get the hometown of the youngest teacher\", \"arguments\": {}}, {\"name\": \"get_youngest_teacher_name_v1_cosql_course_teach_youngest_teacher_name_get\", \"description\": \"Get the name of the youngest teacher\", \"arguments\": {}}, {\"name\": \"get_teacher_age_v1_cosql_course_teach_teacher_age_get\", \"description\": \"Get the age of a specific teacher\", \"arguments\": {\"teacher_name\": {\"type\": \"string\", \"description\": \"Name of the teacher\", \"title\": \"Teacher Name\"}}}, {\"name\": \"get_teacher_names_min_course_count_v1_cosql_course_teach_teacher_names_min_course_count_get\", \"description\": \"Get teacher names with a minimum course count\", \"arguments\": {\"min_count\": {\"type\": \"integer\", \"description\": \"Minimum course count\", \"title\": \"Min Count\"}}}, {\"name\": \"get_teacher_age_hometown_min_course_count_v1_cosql_course_teach_teacher_age_hometown_min_course_count_get\", \"description\": \"Get teacher age and hometown with a minimum course count\", \"arguments\": {\"min_count\": {\"type\": \"integer\", \"description\": \"Minimum course count\", \"title\": \"Min Count\"}}}, {\"name\": \"get_highest_teacher_grade_v1_cosql_course_teach_highest_teacher_grade_get\", \"description\": \"Get the highest grade of a teacher\", \"arguments\": {}}, {\"name\": \"get_course_count_v1_cosql_course_teach_course_count_get\", \"description\": \"Get the count of courses\", \"arguments\": {}}, {\"name\": \"get_course_names_v1_cosql_course_teach_course_names_get\", \"description\": \"Get all course names\", \"arguments\": {}}, {\"name\": \"get_teacher_id_count_v1_cosql_course_teach_teacher_id_count_get\", \"description\": \"Get the count of teachers\", \"arguments\": {}}, {\"name\": \"get_teacher_names_for_course_v1_cosql_course_teach_teacher_names_for_course_get\", \"description\": \"Get teacher names for a specific course\", \"arguments\": {\"course_name\": {\"type\": \"string\", \"description\": \"Name of the course\", \"title\": \"Course Name\"}}}]\n<|eot_id|><|start_header_id|>user<|end_header_id|>\n\nShow names of teachers and the courses they are arranged to teach in ascending alphabetical order of the teacher's name.<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n'",
+      "output": "[{\"name\": \"get_teacher_courses_ordered_v1_cosql_course_teach_teacher_courses_ordered_get\", \"arguments\": {}}]",
+      "gold_answer": [
+        [
+          "Anne Walker",
+          "History"
+        ],
+        [
+          "Anne Walker",
+          "Bible"
+        ],
+        [
+          "Gustaaf Deloor",
+          "Science"
+        ],
+        [
+          "Kearsley Brown",
+          "Math"
+        ],
+        [
+          "Lucy Wong",
+          "Music"
+        ],
+        [
+          "Vicente Carretero",
+          "Math"
+        ]
+      ],
+      "generated_text": "{\"name\": \"get_teacher_courses_ordered_v1_cosql_course_teach_teacher_courses_ordered_get\", \"arguments\": {}, \"label\": \"$var_1\"}'",
+      "llm_model_id": "meta-llama/Llama-3.1-8B-Instruct",
+      "source_file_path": "/u/jungkoo2654/api_integrated_llm_experiment/source/evaluation/router/cosql/rest/course_teach_nestful_format_cosql.json",
+      "dataset_name": "course_teach_nestful_format_cosql",
+      "temperature": 0.0,
+      "max_tokens": 1500,
+      "is_agent": false,
+      "predicted_function_calls": [],
+      "gold_function_calls": [],
+      "num_preciedtion_parsing_errors": null
+    },
+    {
+      "sample_id": 4,
+      "input": "<|begin_of_text|><|start_header_id|>system<|end_header_id|>\n\nYou are an expert in composing functions. You are given a question and a set of possible functions.\nBased on the question, you will need to make one function/tool call to achieve the purpose.\nIf none of the function can be used, point it out. If the given question lacks the parameters required by the function, also point it out. You should only return the function call in tools call sections.\n\nIf you decide to invoke any of the function, you MUST put it in the format of [{\"name\": \"func_name1\", \"arguments\": {\"argument1\": \"value1\", \"argument2\": \"value2\"}, \"label\": \"$var_1\"}]\n\nYou SHOULD NOT include any other text in the response.\n\nHere is a list of functions in JSON format that you can invoke.\n\n[{\"name\": \"get_teacher_course_count_v1_cosql_course_teach_teacher_course_count_get\", \"description\": \"Get teacher names and their course counts\", \"arguments\": {}}, {\"name\": \"get_teacher_count_v1_cosql_course_teach_teacher_count_get\", \"description\": \"Get the count of teachers\", \"arguments\": {}}, {\"name\": \"get_course_arrange_count_v1_cosql_course_teach_course_arrange_count_get\", \"description\": \"Get the count of course arrangements\", \"arguments\": {}}, {\"name\": \"get_teacher_course_count_filtered_v1_cosql_course_teach_teacher_course_count_filtered_get\", \"description\": \"Get teacher names and their course counts with a filter\", \"arguments\": {\"course_name\": {\"type\": \"string\", \"description\": \"Name of the course\", \"title\": \"Course Name\"}}}, {\"name\": \"get_teacher_names_ages_v1_cosql_course_teach_teacher_names_ages_get\", \"description\": \"Get teacher names and ages\", \"arguments\": {}}, {\"name\": \"get_course_starting_dates_v1_cosql_course_teach_course_starting_dates_get\", \"description\": \"Get course starting dates for a specific course\", \"arguments\": {\"course_name\": {\"type\": \"string\", \"description\": \"Name of the course\", \"title\": \"Course Name\"}}}, {\"name\": \"get_teacher_course_ids_v1_cosql_course_teach_teacher_course_ids_get\", \"description\": \"Get teacher names and course IDs\", \"arguments\": {}}, {\"name\": \"get_teacher_names_age_filter_v1_cosql_course_teach_teacher_names_age_filter_get\", \"description\": \"Get teacher names with age filter\", \"arguments\": {\"age\": {\"type\": \"integer\", \"description\": \"Age filter\", \"title\": \"Age\"}}}, {\"name\": \"get_teacher_courses_ordered_v1_cosql_course_teach_teacher_courses_ordered_get\", \"description\": \"Get teacher names and courses ordered by name\", \"arguments\": {}}, {\"name\": \"get_youngest_teacher_hometown_v1_cosql_course_teach_youngest_teacher_hometown_get\", \"description\": \"Get the hometown of the youngest teacher\", \"arguments\": {}}, {\"name\": \"get_youngest_teacher_name_v1_cosql_course_teach_youngest_teacher_name_get\", \"description\": \"Get the name of the youngest teacher\", \"arguments\": {}}, {\"name\": \"get_teacher_age_v1_cosql_course_teach_teacher_age_get\", \"description\": \"Get the age of a specific teacher\", \"arguments\": {\"teacher_name\": {\"type\": \"string\", \"description\": \"Name of the teacher\", \"title\": \"Teacher Name\"}}}, {\"name\": \"get_teacher_names_min_course_count_v1_cosql_course_teach_teacher_names_min_course_count_get\", \"description\": \"Get teacher names with a minimum course count\", \"arguments\": {\"min_count\": {\"type\": \"integer\", \"description\": \"Minimum course count\", \"title\": \"Min Count\"}}}, {\"name\": \"get_teacher_age_hometown_min_course_count_v1_cosql_course_teach_teacher_age_hometown_min_course_count_get\", \"description\": \"Get teacher age and hometown with a minimum course count\", \"arguments\": {\"min_count\": {\"type\": \"integer\", \"description\": \"Minimum course count\", \"title\": \"Min Count\"}}}, {\"name\": \"get_highest_teacher_grade_v1_cosql_course_teach_highest_teacher_grade_get\", \"description\": \"Get the highest grade of a teacher\", \"arguments\": {}}, {\"name\": \"get_course_count_v1_cosql_course_teach_course_count_get\", \"description\": \"Get the count of courses\", \"arguments\": {}}, {\"name\": \"get_course_names_v1_cosql_course_teach_course_names_get\", \"description\": \"Get all course names\", \"arguments\": {}}, {\"name\": \"get_teacher_id_count_v1_cosql_course_teach_teacher_id_count_get\", \"description\": \"Get the count of teachers\", \"arguments\": {}}, {\"name\": \"get_teacher_names_for_course_v1_cosql_course_teach_teacher_names_for_course_get\", \"description\": \"Get teacher names for a specific course\", \"arguments\": {\"course_name\": {\"type\": \"string\", \"description\": \"Name of the course\", \"title\": \"Course Name\"}}}]\n<|eot_id|><|start_header_id|>user<|end_header_id|>\n\nWhat is the hometown of the youngest teacher?<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n'",
+      "output": "[{\"name\": \"get_youngest_teacher_hometown_v1_cosql_course_teach_youngest_teacher_hometown_get\", \"arguments\": {}}]",
+      "gold_answer": [
+        [
+          "Farnworth Municipal Borough"
+        ]
+      ],
+      "generated_text": "{\"name\": \"get_youngest_teacher_hometown_v1_cosql_course_teach_youngest_teacher_hometown_get\", \"arguments\": {}, \"label\": \"$var_1\"}",
+      "llm_model_id": "meta-llama/Llama-3.1-8B-Instruct",
+      "source_file_path": "/u/jungkoo2654/api_integrated_llm_experiment/source/evaluation/router/cosql/rest/course_teach_nestful_format_cosql.json",
+      "dataset_name": "course_teach_nestful_format_cosql",
+      "temperature": 0.0,
+      "max_tokens": 1500,
+      "is_agent": false,
+      "predicted_function_calls": [],
+      "gold_function_calls": [],
+      "num_preciedtion_parsing_errors": null
+    },
+    {
+      "sample_id": 5,
+      "input": "<|begin_of_text|><|start_header_id|>system<|end_header_id|>\n\nYou are an expert in composing functions. You are given a question and a set of possible functions.\nBased on the question, you will need to make one function/tool call to achieve the purpose.\nIf none of the function can be used, point it out. If the given question lacks the parameters required by the function, also point it out. You should only return the function call in tools call sections.\n\nIf you decide to invoke any of the function, you MUST put it in the format of [{\"name\": \"func_name1\", \"arguments\": {\"argument1\": \"value1\", \"argument2\": \"value2\"}, \"label\": \"$var_1\"}]\n\nYou SHOULD NOT include any other text in the response.\n\nHere is a list of functions in JSON format that you can invoke.\n\n[{\"name\": \"get_teacher_course_count_v1_cosql_course_teach_teacher_course_count_get\", \"description\": \"Get teacher names and their course counts\", \"arguments\": {}}, {\"name\": \"get_teacher_count_v1_cosql_course_teach_teacher_count_get\", \"description\": \"Get the count of teachers\", \"arguments\": {}}, {\"name\": \"get_course_arrange_count_v1_cosql_course_teach_course_arrange_count_get\", \"description\": \"Get the count of course arrangements\", \"arguments\": {}}, {\"name\": \"get_teacher_course_count_filtered_v1_cosql_course_teach_teacher_course_count_filtered_get\", \"description\": \"Get teacher names and their course counts with a filter\", \"arguments\": {\"course_name\": {\"type\": \"string\", \"description\": \"Name of the course\", \"title\": \"Course Name\"}}}, {\"name\": \"get_teacher_names_ages_v1_cosql_course_teach_teacher_names_ages_get\", \"description\": \"Get teacher names and ages\", \"arguments\": {}}, {\"name\": \"get_course_starting_dates_v1_cosql_course_teach_course_starting_dates_get\", \"description\": \"Get course starting dates for a specific course\", \"arguments\": {\"course_name\": {\"type\": \"string\", \"description\": \"Name of the course\", \"title\": \"Course Name\"}}}, {\"name\": \"get_teacher_course_ids_v1_cosql_course_teach_teacher_course_ids_get\", \"description\": \"Get teacher names and course IDs\", \"arguments\": {}}, {\"name\": \"get_teacher_names_age_filter_v1_cosql_course_teach_teacher_names_age_filter_get\", \"description\": \"Get teacher names with age filter\", \"arguments\": {\"age\": {\"type\": \"integer\", \"description\": \"Age filter\", \"title\": \"Age\"}}}, {\"name\": \"get_teacher_courses_ordered_v1_cosql_course_teach_teacher_courses_ordered_get\", \"description\": \"Get teacher names and courses ordered by name\", \"arguments\": {}}, {\"name\": \"get_youngest_teacher_hometown_v1_cosql_course_teach_youngest_teacher_hometown_get\", \"description\": \"Get the hometown of the youngest teacher\", \"arguments\": {}}, {\"name\": \"get_youngest_teacher_name_v1_cosql_course_teach_youngest_teacher_name_get\", \"description\": \"Get the name of the youngest teacher\", \"arguments\": {}}, {\"name\": \"get_teacher_age_v1_cosql_course_teach_teacher_age_get\", \"description\": \"Get the age of a specific teacher\", \"arguments\": {\"teacher_name\": {\"type\": \"string\", \"description\": \"Name of the teacher\", \"title\": \"Teacher Name\"}}}, {\"name\": \"get_teacher_names_min_course_count_v1_cosql_course_teach_teacher_names_min_course_count_get\", \"description\": \"Get teacher names with a minimum course count\", \"arguments\": {\"min_count\": {\"type\": \"integer\", \"description\": \"Minimum course count\", \"title\": \"Min Count\"}}}, {\"name\": \"get_teacher_age_hometown_min_course_count_v1_cosql_course_teach_teacher_age_hometown_min_course_count_get\", \"description\": \"Get teacher age and hometown with a minimum course count\", \"arguments\": {\"min_count\": {\"type\": \"integer\", \"description\": \"Minimum course count\", \"title\": \"Min Count\"}}}, {\"name\": \"get_highest_teacher_grade_v1_cosql_course_teach_highest_teacher_grade_get\", \"description\": \"Get the highest grade of a teacher\", \"arguments\": {}}, {\"name\": \"get_course_count_v1_cosql_course_teach_course_count_get\", \"description\": \"Get the count of courses\", \"arguments\": {}}, {\"name\": \"get_course_names_v1_cosql_course_teach_course_names_get\", \"description\": \"Get all course names\", \"arguments\": {}}, {\"name\": \"get_teacher_id_count_v1_cosql_course_teach_teacher_id_count_get\", \"description\": \"Get the count of teachers\", \"arguments\": {}}, {\"name\": \"get_teacher_names_for_course_v1_cosql_course_teach_teacher_names_for_course_get\", \"description\": \"Get teacher names for a specific course\", \"arguments\": {\"course_name\": {\"type\": \"string\", \"description\": \"Name of the course\", \"title\": \"Course Name\"}}}]\n<|eot_id|><|start_header_id|>user<|end_header_id|>\n\nShow names of teachers that teach at least two courses.<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n'",
+      "output": "[{\"name\": \"get_teacher_names_min_course_count_v1_cosql_course_teach_teacher_names_min_course_count_get\", \"arguments\": {\"min_count\": \"2\"}}]",
+      "gold_answer": [
+        [
+          "Anne Walker"
+        ]
+      ],
+      "generated_text": "{\"name\": \"get_teacher_names_min_course_count_v1_cosql_course_teach_teacher_names_min_course_count_get\", \"arguments\": {\"min_count\": \"2\"}}'",
+      "llm_model_id": "meta-llama/Llama-3.1-8B-Instruct",
+      "source_file_path": "/u/jungkoo2654/api_integrated_llm_experiment/source/evaluation/router/cosql/rest/course_teach_nestful_format_cosql.json",
+      "dataset_name": "course_teach_nestful_format_cosql",
+      "temperature": 0.0,
+      "max_tokens": 1500,
+      "is_agent": false,
+      "predicted_function_calls": [],
+      "gold_function_calls": [],
+      "num_preciedtion_parsing_errors": null
+    },
+    {
+      "sample_id": 6,
+      "input": "<|begin_of_text|><|start_header_id|>system<|end_header_id|>\n\nYou are an expert in composing functions. You are given a question and a set of possible functions.\nBased on the question, you will need to make one function/tool call to achieve the purpose.\nIf none of the function can be used, point it out. If the given question lacks the parameters required by the function, also point it out. You should only return the function call in tools call sections.\n\nIf you decide to invoke any of the function, you MUST put it in the format of [{\"name\": \"func_name1\", \"arguments\": {\"argument1\": \"value1\", \"argument2\": \"value2\"}, \"label\": \"$var_1\"}]\n\nYou SHOULD NOT include any other text in the response.\n\nHere is a list of functions in JSON format that you can invoke.\n\n[{\"name\": \"get_teacher_course_count_v1_cosql_course_teach_teacher_course_count_get\", \"description\": \"Get teacher names and their course counts\", \"arguments\": {}}, {\"name\": \"get_teacher_count_v1_cosql_course_teach_teacher_count_get\", \"description\": \"Get the count of teachers\", \"arguments\": {}}, {\"name\": \"get_course_arrange_count_v1_cosql_course_teach_course_arrange_count_get\", \"description\": \"Get the count of course arrangements\", \"arguments\": {}}, {\"name\": \"get_teacher_course_count_filtered_v1_cosql_course_teach_teacher_course_count_filtered_get\", \"description\": \"Get teacher names and their course counts with a filter\", \"arguments\": {\"course_name\": {\"type\": \"string\", \"description\": \"Name of the course\", \"title\": \"Course Name\"}}}, {\"name\": \"get_teacher_names_ages_v1_cosql_course_teach_teacher_names_ages_get\", \"description\": \"Get teacher names and ages\", \"arguments\": {}}, {\"name\": \"get_course_starting_dates_v1_cosql_course_teach_course_starting_dates_get\", \"description\": \"Get course starting dates for a specific course\", \"arguments\": {\"course_name\": {\"type\": \"string\", \"description\": \"Name of the course\", \"title\": \"Course Name\"}}}, {\"name\": \"get_teacher_course_ids_v1_cosql_course_teach_teacher_course_ids_get\", \"description\": \"Get teacher names and course IDs\", \"arguments\": {}}, {\"name\": \"get_teacher_names_age_filter_v1_cosql_course_teach_teacher_names_age_filter_get\", \"description\": \"Get teacher names with age filter\", \"arguments\": {\"age\": {\"type\": \"integer\", \"description\": \"Age filter\", \"title\": \"Age\"}}}, {\"name\": \"get_teacher_courses_ordered_v1_cosql_course_teach_teacher_courses_ordered_get\", \"description\": \"Get teacher names and courses ordered by name\", \"arguments\": {}}, {\"name\": \"get_youngest_teacher_hometown_v1_cosql_course_teach_youngest_teacher_hometown_get\", \"description\": \"Get the hometown of the youngest teacher\", \"arguments\": {}}, {\"name\": \"get_youngest_teacher_name_v1_cosql_course_teach_youngest_teacher_name_get\", \"description\": \"Get the name of the youngest teacher\", \"arguments\": {}}, {\"name\": \"get_teacher_age_v1_cosql_course_teach_teacher_age_get\", \"description\": \"Get the age of a specific teacher\", \"arguments\": {\"teacher_name\": {\"type\": \"string\", \"description\": \"Name of the teacher\", \"title\": \"Teacher Name\"}}}, {\"name\": \"get_teacher_names_min_course_count_v1_cosql_course_teach_teacher_names_min_course_count_get\", \"description\": \"Get teacher names with a minimum course count\", \"arguments\": {\"min_count\": {\"type\": \"integer\", \"description\": \"Minimum course count\", \"title\": \"Min Count\"}}}, {\"name\": \"get_teacher_age_hometown_min_course_count_v1_cosql_course_teach_teacher_age_hometown_min_course_count_get\", \"description\": \"Get teacher age and hometown with a minimum course count\", \"arguments\": {\"min_count\": {\"type\": \"integer\", \"description\": \"Minimum course count\", \"title\": \"Min Count\"}}}, {\"name\": \"get_highest_teacher_grade_v1_cosql_course_teach_highest_teacher_grade_get\", \"description\": \"Get the highest grade of a teacher\", \"arguments\": {}}, {\"name\": \"get_course_count_v1_cosql_course_teach_course_count_get\", \"description\": \"Get the count of courses\", \"arguments\": {}}, {\"name\": \"get_course_names_v1_cosql_course_teach_course_names_get\", \"description\": \"Get all course names\", \"arguments\": {}}, {\"name\": \"get_teacher_id_count_v1_cosql_course_teach_teacher_id_count_get\", \"description\": \"Get the count of teachers\", \"arguments\": {}}, {\"name\": \"get_teacher_names_for_course_v1_cosql_course_teach_teacher_names_for_course_get\", \"description\": \"Get teacher names for a specific course\", \"arguments\": {\"course_name\": {\"type\": \"string\", \"description\": \"Name of the course\", \"title\": \"Course Name\"}}}]\n<|eot_id|><|start_header_id|>user<|end_header_id|>\n\nShow the name of the teacher for the math course.<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n'",
+      "output": "[{\"name\": \"get_teacher_course_count_filtered_v1_cosql_course_teach_teacher_course_count_filtered_get\", \"arguments\": {\"course_name\": \"Math\"}}]",
+      "gold_answer": [
+        [
+          "Kearsley Brown"
+        ],
+        [
+          "Vicente Carretero"
+        ]
+      ],
+      "generated_text": "{\"name\": \"get_teacher_names_for_course_v1_cosql_course_teach_teacher_names_for_course_get\", \"arguments\": {\"course_name\": \"math\"}, \"label\": \"$var_1\"}",
+      "llm_model_id": "meta-llama/Llama-3.1-8B-Instruct",
+      "source_file_path": "/u/jungkoo2654/api_integrated_llm_experiment/source/evaluation/router/cosql/rest/course_teach_nestful_format_cosql.json",
+      "dataset_name": "course_teach_nestful_format_cosql",
+      "temperature": 0.0,
+      "max_tokens": 1500,
+      "is_agent": false,
+      "predicted_function_calls": [],
+      "gold_function_calls": [],
+      "num_preciedtion_parsing_errors": null
+    }
+  ],
+  "gold_output_intent": [
+    [
+      "get_teacher_course_count_v1_cosql_course_teach_teacher_course_count_get"
+    ],
+    [
+      "get_teacher_course_count_filtered_v1_cosql_course_teach_teacher_course_count_filtered_get"
+    ],
+    [
+      "get_teacher_course_count_v1_cosql_course_teach_teacher_course_count_get"
+    ],
+    [
+      "get_teacher_courses_ordered_v1_cosql_course_teach_teacher_courses_ordered_get"
+    ],
+    [
+      "get_youngest_teacher_hometown_v1_cosql_course_teach_youngest_teacher_hometown_get"
+    ],
+    [
+      "get_teacher_names_min_course_count_v1_cosql_course_teach_teacher_names_min_course_count_get"
+    ],
+    [
+      "get_teacher_course_count_filtered_v1_cosql_course_teach_teacher_course_count_filtered_get"
+    ]
+  ],
+  "pred_output_intent": [
+    [
+      "get_teacher_course_count_v1_cosql_course_teach_teacher_course_count_get"
+    ],
+    [
+      "get_teacher_names_for_course_v1_cosql_course_teach_teacher_names_for_course_get"
+    ],
+    [
+      "get_teacher_course_count_v1_cosql_course_teach_teacher_course_count_get"
+    ],
+    [
+      "get_teacher_courses_ordered_v1_cosql_course_teach_teacher_courses_ordered_get"
+    ],
+    [
+      "get_youngest_teacher_hometown_v1_cosql_course_teach_youngest_teacher_hometown_get"
+    ],
+    [
+      "get_teacher_names_min_course_count_v1_cosql_course_teach_teacher_names_min_course_count_get"
+    ],
+    [
+      "get_teacher_names_for_course_v1_cosql_course_teach_teacher_names_for_course_get"
+    ]
+  ],
+  "gold_output_slot": [
+    [],
+    [],
+    [],
+    [],
+    [
+      "min_count = 2"
+    ]
+  ],
+  "pred_output_slot": [
+    [],
+    [],
+    [],
+    [],
+    [
+      "min_count = 2"
+    ]
+  ],
+  "win_rate": null,
+  "num_sequences_processed_win_rate": null,
+  "error_messages_win_rate": [],
+  "num_failed_function_execution_list": []
+}

@@ -11,7 +11,7 @@ project_root_path = Path(__file__).parent.parent.parent.resolve()
 
 
 def test_scorer_llm_evaluator_output() -> None:
-    scoring(
+    has_exception = scoring(
         evaluator_output_file_paths=get_files_in_folder(  # type: ignore
             folder_path=Path(
                 os.path.join(
@@ -28,9 +28,11 @@ def test_scorer_llm_evaluator_output() -> None:
         output_folder_path=Path(os.path.join(project_root_path, "output", "scoring")),  # type: ignore
     )
 
+    assert not has_exception
+
 
 def test_scorer_agent() -> None:
-    scoring(
+    has_exception = scoring(
         evaluator_output_file_paths=get_files_in_folder(  # type: ignore
             folder_path=Path(
                 os.path.join(
@@ -46,9 +48,11 @@ def test_scorer_agent() -> None:
         output_folder_path=Path(os.path.join(project_root_path, "output", "scoring_from_parsing")),  # type: ignore
     )
 
+    assert not has_exception
+
 
 def test_scorer_with_parser_output() -> None:
-    scoring(
+    has_exception = scoring(
         evaluator_output_file_paths=get_files_in_folder(  # type: ignore
             folder_path=Path(
                 os.path.join(
@@ -66,6 +70,8 @@ def test_scorer_with_parser_output() -> None:
         is_single_intent_detection=True,
     )
 
+    assert not has_exception
+
 
 @pytest.mark.skipif(
     not os.path.isdir(
@@ -80,7 +86,7 @@ def test_scorer_with_parser_output() -> None:
     reason="database directory is missing",
 )
 def test_scorer_with_win_rate() -> None:
-    scoring(
+    has_exception = scoring(
         evaluator_output_file_paths=get_files_in_folder(  # type: ignore
             folder_path=Path(
                 os.path.join(
@@ -115,9 +121,11 @@ def test_scorer_with_win_rate() -> None:
         is_single_intent_detection=False,
     )
 
+    assert not has_exception
+
 
 def test_parser_only() -> None:
-    parsing(
+    has_exception = parsing(
         evaluator_output_file_paths=get_files_in_folder(  # type: ignore
             folder_path=Path(
                 os.path.join(
@@ -134,3 +142,5 @@ def test_parser_only() -> None:
         output_folder_path=Path(os.path.join(project_root_path, "output", "parsing")),  # type: ignore
         is_single_intent_detection=True,
     )
+
+    assert not has_exception

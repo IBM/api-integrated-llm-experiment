@@ -1,5 +1,6 @@
 from __future__ import annotations
 from enum import Enum
+import statistics
 from typing import Any, Dict, List, Optional, Union
 from pydantic import BaseModel
 
@@ -34,6 +35,14 @@ class ConfusionMatrixModel(BaseModel):
             or self.false_positive > 0
         )
 
+    def add(self, confusion_matrix: ConfusionMatrixModel) -> None:
+        self.true_positive += confusion_matrix.true_positive
+        self.true_negative += confusion_matrix.true_negative
+        self.false_positive += confusion_matrix.false_positive
+        self.false_negative += confusion_matrix.false_negative
+        self.num_non_zero_gold += confusion_matrix.num_non_zero_gold
+        self.num_is_covered += confusion_matrix.num_is_covered
+
 
 class ConfusionMetrixMetricsModel(BaseModel):
     accuracy: Optional[float] = None
@@ -44,23 +53,35 @@ class ConfusionMetrixMetricsModel(BaseModel):
 
     @staticmethod
     def get_confusion_matrix_metrics_micro(
-        model: ConfusionMatrixModel,
+        confusion_matrix: ConfusionMatrixModel,
     ) -> ConfusionMetrixMetricsModel:
-        if model.is_valid_model():
-            accuracy = (model.true_positive + model.true_negative) / (
-                model.true_positive
-                + model.true_negative
-                + model.false_positive
-                + model.false_negative
+        if confusion_matrix.is_valid_model():
+            tot_num = (
+                confusion_matrix.true_positive
+                + confusion_matrix.true_negative
+                + confusion_matrix.false_positive
+                + confusion_matrix.false_negative
+            )
+            accuracy = (
+                (confusion_matrix.true_positive + confusion_matrix.true_negative)
+                / (tot_num)
+                if tot_num > 0
+                else None
             )
             precision = (
-                (model.true_positive / (model.true_positive + model.false_positive))
-                if model.true_positive + model.false_positive > 0
+                (
+                    confusion_matrix.true_positive
+                    / (confusion_matrix.true_positive + confusion_matrix.false_positive)
+                )
+                if confusion_matrix.true_positive + confusion_matrix.false_positive > 0
                 else None
             )
             recall = (
-                (model.true_positive / (model.true_positive + model.false_negative))
-                if model.true_positive + model.false_negative > 0
+                (
+                    confusion_matrix.true_positive
+                    / (confusion_matrix.true_positive + confusion_matrix.false_negative)
+                )
+                if confusion_matrix.true_positive + confusion_matrix.false_negative > 0
                 else None
             )
             f1: Optional[float] = None
@@ -76,9 +97,43 @@ class ConfusionMetrixMetricsModel(BaseModel):
                 precision=precision,
                 recall=recall,
                 f1=f1,
-                confusion_matrix=model.model_copy(deep=True),
+                confusion_matrix=confusion_matrix.model_copy(deep=True),
             )
         return ConfusionMetrixMetricsModel()
+
+    @staticmethod
+    def get_confusion_matrix_metrics_micro_by_output_length(
+        confusion_matrix_dict: Dict[int, ConfusionMatrixModel],
+    ) -> Dict[int, ConfusionMetrixMetricsModel]:
+        return {
+            frequency: ConfusionMetrixMetricsModel.get_confusion_matrix_metrics_micro(
+                confusion_matrix=metrics_model,
+            )
+            for frequency, metrics_model in confusion_matrix_dict.items()
+        }
+
+    def add(self, metrics_model: ConfusionMetrixMetricsModel, num_samples: int) -> None:
+        if num_samples > 0:
+            if self.accuracy is not None and metrics_model.accuracy is not None:
+                self.accuracy += metrics_model.accuracy / num_samples
+
+            if self.precision is not None and metrics_model.precision is not None:
+                self.precision += metrics_model.precision / num_samples
+
+            if self.recall is not None and metrics_model.recall is not None:
+                self.recall += metrics_model.recall / num_samples
+
+            if self.f1 is not None and metrics_model.f1 is not None:
+                self.f1 += metrics_model.f1 / num_samples
+
+    def set_f1(self) -> None:
+        if (
+            self.precision is not None
+            and self.precision >= 0.0
+            and self.recall is not None
+            and self.recall >= 0.0
+        ):
+            self.f1 = statistics.harmonic_mean([self.precision, self.recall])
 
 
 class MicroConfusionMetrixMetricsModel(BaseModel):
@@ -88,8 +143,79 @@ class MicroConfusionMetrixMetricsModel(BaseModel):
     slot_set_metrics: ConfusionMetrixMetricsModel = ConfusionMetrixMetricsModel()
 
 
+class MicroConfusionMetrixMetricsByOutputLengthModel(BaseModel):
+    intent_set_metrics: Dict[int, ConfusionMetrixMetricsModel] = dict()
+    intent_counter_metrics: Dict[int, ConfusionMetrixMetricsModel] = dict()
+    intent_list_metrics: Dict[int, ConfusionMetrixMetricsModel] = dict()
+    slot_set_metrics: Dict[int, ConfusionMetrixMetricsModel] = dict()
+
+    def add_metrics(
+        self, metrics_model: MicroConfusionMetrixMetricsByOutputLengthModel
+    ) -> None:
+        for frequency, micro_model in metrics_model.intent_set_metrics.items():
+            if frequency in self.intent_set_metrics:
+                if (
+                    self.intent_set_metrics[frequency].confusion_matrix is not None
+                    and micro_model.confusion_matrix is not None
+                ):
+                    self.intent_set_metrics[frequency].confusion_matrix.add(  # type: ignore
+                        confusion_matrix=micro_model.confusion_matrix
+                    )
+            else:
+                if micro_model.confusion_matrix is not None:
+                    self.intent_set_metrics[frequency] = micro_model.model_copy(
+                        deep=True
+                    )
+
+        for frequency, micro_model in metrics_model.intent_counter_metrics.items():
+            if frequency in self.intent_counter_metrics:
+                if (
+                    self.intent_counter_metrics[frequency].confusion_matrix is not None
+                    and micro_model.confusion_matrix is not None
+                ):
+                    self.intent_counter_metrics[frequency].confusion_matrix.add(  # type: ignore
+                        confusion_matrix=micro_model.confusion_matrix
+                    )
+            else:
+                if micro_model.confusion_matrix is not None:
+                    self.intent_counter_metrics[frequency] = micro_model.model_copy(
+                        deep=True
+                    )
+
+        for frequency, micro_model in metrics_model.intent_list_metrics.items():
+            if frequency in self.intent_list_metrics:
+                if (
+                    self.intent_list_metrics[frequency].confusion_matrix is not None
+                    and micro_model.confusion_matrix is not None
+                ):
+                    self.intent_list_metrics[frequency].confusion_matrix.add(  # type: ignore
+                        confusion_matrix=micro_model.confusion_matrix
+                    )
+            else:
+                if micro_model.confusion_matrix is not None:
+                    self.intent_list_metrics[frequency] = micro_model.model_copy(
+                        deep=True
+                    )
+
+        for frequency, micro_model in metrics_model.slot_set_metrics.items():
+            if frequency in self.slot_set_metrics:
+                if (
+                    self.slot_set_metrics[frequency].confusion_matrix is not None
+                    and micro_model.confusion_matrix is not None
+                ):
+                    self.slot_set_metrics[frequency].confusion_matrix.add(  # type: ignore
+                        confusion_matrix=micro_model.confusion_matrix
+                    )
+            else:
+                if micro_model.confusion_matrix is not None:
+                    self.slot_set_metrics[frequency] = micro_model.model_copy(deep=True)
+
+
 class ScorerOuputModel(BaseModel):
     confusion_metrix_matrics_micro: MicroConfusionMetrixMetricsModel
+    confusion_metrix_matrics_micro_model_by_output_length: Optional[
+        MicroConfusionMetrixMetricsByOutputLengthModel
+    ] = None
     num_examples: int
     percentage_times_full_score: float
     num_errors_parsing_pred_intent: int
@@ -111,3 +237,28 @@ class ScorerOuputModel(BaseModel):
     num_sequences_processed_win_rate: Optional[int] = None
     error_messages_win_rate: Optional[List[str]] = None
     num_failed_function_execution_list: Optional[List[int]] = None
+
+
+class MetricsAggregationModel(BaseModel):
+    micro: Dict[str, ConfusionMetrixMetricsModel] = dict()
+    macro: Dict[str, ConfusionMetrixMetricsModel] = dict()
+    categories: List[str] = []
+    raw_data: Dict[str, List[ConfusionMetrixMetricsModel]] = dict()
+
+
+class MicroConfusionMetrixMetricsByOutputLengthContainerModel(BaseModel):
+    intent_set_metrics: Dict[str, List[ConfusionMetrixMetricsModel]] = dict()
+    intent_counter_metrics: Dict[str, List[ConfusionMetrixMetricsModel]] = dict()
+    intent_list_metrics: Dict[str, List[ConfusionMetrixMetricsModel]] = dict()
+    slot_set_metrics: Dict[str, List[ConfusionMetrixMetricsModel]] = dict()
+
+
+class MetaMetricsAggregationModel(BaseModel):
+    intent_set_metrics: MetricsAggregationModel = MetricsAggregationModel()
+    intent_counter_metrics: MetricsAggregationModel = MetricsAggregationModel()
+    intent_list_metrics: MetricsAggregationModel = MetricsAggregationModel()
+    slot_set_metrics: MetricsAggregationModel = MetricsAggregationModel()
+
+
+class AggegatorOutputModel(BaseModel):
+    aggregated_metrics: Dict[str, MetaMetricsAggregationModel] = dict()
