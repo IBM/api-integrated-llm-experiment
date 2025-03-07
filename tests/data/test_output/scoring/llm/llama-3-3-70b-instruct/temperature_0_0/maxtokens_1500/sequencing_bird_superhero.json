@@ -5429,10 +5429,1430 @@
   "win_rate": 0.0,
   "num_sequences_processed_win_rate": 89,
   "error_messages_win_rate": [
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+    "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
     "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
     "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
   ],
   "num_failed_function_execution_list": [
-    1
-  ]
+    0
+  ],
+  "win_rate_result_model": {
+    "win_rate_result": [
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"get_superpower_ids\", \"parameters\": {}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"superhero_superhero_name\", \"value\": \"3-D Man\"}}",
+          "{\"name\": \"get_superpower_power_names\", \"arguments\": {\"data\": \"$FILTERED_DF$\"}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"select_data_equal_to\", \"parameters\": {\"key_name\": \"Super Strength\", \"value\": \"superpower_power_name\", \"data_source\": \"superhero\"}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"superpower_power_name\", \"value\": \"Super Strength\"}}",
+          "{\"name\": \"compute_data_count\", \"arguments\": {\"data\": \"$FILTERED_DF$\", \"key_name\": \"hero_power_hero_id\", \"distinct\": false}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"superpower_power_name\", \"value\": \"Super Strength\"}}",
+          "{\"name\": \"select_data_greater_than\", \"arguments\": {\"data\": \"$FILTERED_DF$\", \"key_name\": \"superhero_height_cm\", \"value\": 200}}",
+          "{\"name\": \"compute_data_count\", \"arguments\": {\"data\": \"$FILTERED_DF$\", \"key_name\": \"superhero_id\", \"distinct\": false}}"
+        ],
+        "num_failed_function_execution": 0,
+        "error_messages": []
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"select_data_equal_to\", \"parameters\": {\"key_name\": \"eye_colour\", \"value\": \"blue\", \"data_source\": \"superhero_data\"}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"colour_colour\", \"value\": \"Blue\"}}",
+          "{\"name\": \"compute_data_count\", \"arguments\": {\"data\": \"$FILTERED_DF$\", \"key_name\": \"superhero_id\", \"distinct\": false}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"get_colour_colours\", \"parameters\": {}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"superhero_superhero_name\", \"value\": \"Apocalypse\"}}",
+          "{\"name\": \"get_colour_colours\", \"arguments\": {\"data\": \"$FILTERED_DF$\"}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"select_data_equal_to\", \"parameters\": {\"key_name\": \"eye_colour_id\", \"value\": \"blue\", \"data_source\": \"superhero_data\"}}",
+          "{\"type\": \"function\", \"name\": \"select_data_equal_to\", \"parameters\": {\"key_name\": \"superpower_name\", \"value\": \"Agility\", \"data_source\": \"@select_data_equal_to_1\"}}",
+          "{\"type\": \"function\", \"name\": \"compute_data_count\", \"parameters\": {\"data_source\": \"@select_data_equal_to_2\"}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"superpower_power_name\", \"value\": \"Agility\"}}",
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$FILTERED_DF$\", \"key_name\": \"colour_colour\", \"value\": \"Blue\"}}",
+          "{\"name\": \"compute_data_count\", \"arguments\": {\"data\": \"$FILTERED_DF$\", \"key_name\": \"superhero_id\", \"distinct\": false}}"
+        ],
+        "num_failed_function_execution": 3,
+        "error_messages": [
+          "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+          "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+          "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"select_data_equal_to\", \"parameters\": {\"key_name\": \"eye_colour_id\", \"value\": \"blue\", \"data_source\": \"superhero_data\"}}",
+          "{\"type\": \"function\", \"name\": \"select_data_equal_to\", \"parameters\": {\"key_name\": \"hair_colour_id\", \"value\": \"blond\", \"data_source\": \"superhero_data\"}}",
+          "{\"type\": \"function\", \"name\": \"get_superhero_superhero_names\", \"parameters\": {}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"colour_colour\", \"value\": \"Blue\"}}",
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$FILTERED_DF$\", \"key_name\": \"colour_1_colour\", \"value\": \"Blond\"}}",
+          "{\"name\": \"get_superhero_superhero_names\", \"arguments\": {\"data\": \"$FILTERED_DF$\"}}"
+        ],
+        "num_failed_function_execution": 3,
+        "error_messages": [
+          "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+          "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+          "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"select_data_equal_to\", \"parameters\": {\"key_name\": \"publisher_name\", \"value\": \"Marvel Comics\", \"data_source\": \"superhero_data\"}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"publisher_publisher_name\", \"value\": \"Marvel Comics\"}}",
+          "{\"name\": \"compute_data_count\", \"arguments\": {\"data\": \"$FILTERED_DF$\", \"key_name\": \"superhero_id\", \"distinct\": false}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"get_publisher_ids\", \"parameters\": {}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"superhero_superhero_name\", \"value\": \"Sauron\"}}",
+          "{\"name\": \"get_publisher_publisher_names\", \"arguments\": {\"data\": \"$FILTERED_DF$\"}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"compute_data_mean\", \"parameters\": {\"data_source\": {\"type\": \"object\", \"value\": \"Marvel Comics\"}}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"publisher_publisher_name\", \"value\": \"Marvel Comics\"}}",
+          "{\"name\": \"compute_data_mean\", \"arguments\": {\"data\": \"$FILTERED_DF$\", \"key_name\": \"superhero_height_cm\", \"distinct\": false}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"compute_data_count\", \"parameters\": {\"data_source\": {\"type\": \"object\", \"value\": {\"function_name\": \"select_data_equal_to\", \"args\": [\"publisher_name\", \"DC Comics\", {\"function_name\": \"get_publisher_publisher_names\", \"args\": []}]}}}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"publisher_publisher_name\", \"value\": \"DC Comics\"}}",
+          "{\"name\": \"compute_data_count\", \"arguments\": {\"data\": \"$FILTERED_DF$\", \"key_name\": \"superhero_id\", \"distinct\": false}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"select_data_equal_to\", \"parameters\": {\"key_name\": \"speed\", \"value\": \"slowest\", \"data_source\": \"superhero_data\"}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"attribute_attribute_name\", \"value\": \"Speed\"}}",
+          "{\"name\": \"sort_data_ascending\", \"arguments\": {\"data\": \"$FILTERED_DF$\", \"key_name\": \"hero_attribute_attribute_value\"}}",
+          "{\"name\": \"get_publisher_publisher_names\", \"arguments\": {\"data\": \"$SORTED_DF$\"}}",
+          "{\"name\": \"truncate\", \"arguments\": {\"data\": \"$SELECT_COL_0$\", \"n\": 1}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"select_data_equal_to\", \"parameters\": {\"key_name\": \"publisher\", \"value\": \"Marvel Comics\", \"data_source\": {\"type\": \"function\", \"name\": \"select_data_equal_to\", \"parameters\": {\"key_name\": \"eye_colour\", \"value\": \"gold\", \"data_source\": {\"function_name\": \"get_superhero_publisher_ids\", \"args\": []}}}}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"publisher_publisher_name\", \"value\": \"Marvel Comics\"}}",
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$FILTERED_DF$\", \"key_name\": \"colour_colour\", \"value\": \"Gold\"}}",
+          "{\"name\": \"compute_data_count\", \"arguments\": {\"data\": \"$FILTERED_DF$\", \"key_name\": \"superhero_id\", \"distinct\": false}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"get_publisher_publisher_names\", \"parameters\": {}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"superhero_superhero_name\", \"value\": \"Blue Beetle II\"}}",
+          "{\"name\": \"get_publisher_publisher_names\", \"arguments\": {\"data\": \"$FILTERED_DF$\"}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"select_data_equal_to\", \"parameters\": {\"key_name\": \"hair_colour_id\", \"value\": \"blonde\", \"data_source\": \"superhero_data\"}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"colour_colour\", \"value\": \"Blond\"}}",
+          "{\"name\": \"compute_data_count\", \"arguments\": {\"data\": \"$FILTERED_DF$\", \"key_name\": \"superhero_id\", \"distinct\": false}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"attribute_attribute_name\", \"value\": \"Intelligence\"}}",
+          "{\"name\": \"sort_data_ascending\", \"arguments\": {\"data\": \"$FILTERED_DF$\", \"key_name\": \"hero_attribute_attribute_value\"}}",
+          "{\"name\": \"get_superhero_superhero_names\", \"arguments\": {\"data\": \"$SORTED_DF$\"}}",
+          "{\"name\": \"truncate\", \"arguments\": {\"data\": \"$SELECT_COL_0$\", \"n\": 1}}"
+        ],
+        "num_failed_function_execution": 0,
+        "error_messages": []
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"get_race_races\", \"parameters\": {}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"superhero_superhero_name\", \"value\": \"Copycat\"}}",
+          "{\"name\": \"get_race_races\", \"arguments\": {\"data\": \"$FILTERED_DF$\"}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"select_data_equal_to\", \"parameters\": {\"key_name\": \"power_name\", \"value\": \"Death Touch\", \"data_source\": \"superpowers\"}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"superpower_power_name\", \"value\": \"Death Touch\"}}",
+          "{\"name\": \"get_superhero_superhero_names\", \"arguments\": {\"data\": \"$FILTERED_DF$\"}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"select_data_equal_to\", \"parameters\": {\"key_name\": \"strength\", \"value\": \"100\", \"data_source\": {\"function_name\": \"select_data_equal_to\", \"args\": [\"gender\", \"female\", {\"function_name\": \"get_superhero_ids\", \"args\": []}]}}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"attribute_attribute_name\", \"value\": \"Strength\"}}",
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$FILTERED_DF$\", \"key_name\": \"hero_attribute_attribute_value\", \"value\": 100}}",
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$FILTERED_DF$\", \"key_name\": \"gender_gender\", \"value\": \"Female\"}}",
+          "{\"name\": \"compute_data_count\", \"arguments\": {\"data\": \"$FILTERED_DF$\", \"key_name\": \"superhero_id\", \"distinct\": false}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"select_data_equal_to\", \"parameters\": {\"key_name\": \"race\", \"value\": \"vampire\", \"data_source\": \"superhero_data\"}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"race_race\", \"value\": \"Vampire\"}}",
+          "{\"name\": \"compute_data_count\", \"arguments\": {\"data\": \"$FILTERED_DF$\", \"key_name\": \"superhero_superhero_name\", \"distinct\": false}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"get_ids\", \"parameters\": {}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"publisher_name\", \"value\": \"Star Trek\"}}",
+          "{\"name\": \"get_ids\", \"arguments\": {\"data\": \"$FILTERED_DF$\"}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"compute_data_mean\", \"parameters\": {\"data_source\": {\"type\": \"object\", \"value\": {\"function_name\": \"get_attribute_values\", \"args\": []}}}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"compute_data_mean\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"attribute_value\", \"distinct\": false}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"select_data_equal_to\", \"parameters\": {\"key_name\": \"superhero_id\", \"value\": \"75\", \"data_source\": \"superhero_eye_colour_id\"}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"superhero_id\", \"value\": 75}}",
+          "{\"name\": \"get_colour_colours\", \"arguments\": {\"data\": \"$FILTERED_DF$\"}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"superhero_superhero_name\", \"value\": \"Deathlok\"}}",
+          "{\"name\": \"get_superpower_power_names\", \"arguments\": {\"data\": \"$FILTERED_DF$\"}}"
+        ],
+        "num_failed_function_execution": 0,
+        "error_messages": []
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"compute_data_mean\", \"parameters\": {\"data_source\": {\"type\": \"object\", \"value\": {\"function_name\": \"select_data_equal_to\", \"args\": [{\"key_name\": \"gender\"}, {\"value\": \"female\"}, {\"data_source\": {\"function_name\": \"get_superhero_weight_kgs\", \"args\": []}}]}}}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"gender_gender\", \"value\": \"Female\"}}",
+          "{\"name\": \"compute_data_mean\", \"arguments\": {\"data\": \"$FILTERED_DF$\", \"key_name\": \"superhero_weight_kg\", \"distinct\": false}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"select_data_equal_to\", \"parameters\": {\"key_name\": \"superhero_race_id\", \"value\": \"alien\", \"data_source\": \"superhero_data\"}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"race_race\", \"value\": \"Alien\"}}",
+          "{\"name\": \"get_superhero_superhero_names\", \"arguments\": {\"data\": \"$FILTERED_DF$\"}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"hero_power_hero_id\", \"value\": 56}}",
+          "{\"name\": \"get_superpower_power_names\", \"arguments\": {\"data\": \"$FILTERED_DF$\"}}"
+        ],
+        "num_failed_function_execution": 0,
+        "error_messages": []
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"get_superhero_full_names\", \"parameters\": {}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"race_race\", \"value\": \"Demi-God\"}}",
+          "{\"name\": \"get_superhero_full_names\", \"arguments\": {\"data\": \"$FILTERED_DF$\"}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"select_data_equal_to\", \"parameters\": {\"key_name\": \"alignment\", \"value\": \"bad\", \"data_source\": \"superhero_data\"}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"alignment_alignment\", \"value\": \"Bad\"}}",
+          "{\"name\": \"compute_data_count\", \"arguments\": {\"data\": \"$FILTERED_DF$\", \"key_name\": \"superhero_id\", \"distinct\": false}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"select_data_equal_to\", \"parameters\": {\"key_name\": \"superhero_weight_kg\", \"value\": \"169\", \"data_source\": \"superhero_data\"}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"superhero_weight_kg\", \"value\": 169}}",
+          "{\"name\": \"get_race_races\", \"arguments\": {\"data\": \"$FILTERED_DF$\"}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"superhero_height_cm\", \"value\": 185}}",
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$FILTERED_DF$\", \"key_name\": \"race_race\", \"value\": \"Human\"}}",
+          "{\"name\": \"get_colour_colours\", \"arguments\": {\"data\": \"$FILTERED_DF$\"}}",
+          "{\"name\": \"select_unique_values\", \"arguments\": {\"data\": \"$SELECT_COL_0$\"}}"
+        ],
+        "num_failed_function_execution": 0,
+        "error_messages": []
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"select_data_equal_to\", \"parameters\": {\"key_name\": \"superhero_weight_kg\", \"value\": {\"function_name\": \"compute_data_max\", \"args\": [{\"function_name\": \"get_superhero_weight_kgs\", \"args\": []}]}, \"data_source\": {\"function_name\": \"get_superhero_eye_colour_ids\", \"args\": []}}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"sort_data_descending\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"superhero_weight_kg\"}}",
+          "{\"name\": \"get_colour_colours\", \"arguments\": {\"data\": \"$SORTED_DF$\"}}",
+          "{\"name\": \"truncate\", \"arguments\": {\"data\": \"$SELECT_COL_0$\", \"n\": 1}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"get_hero_attribute_attribute_values\", \"parameters\": {}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"superhero_superhero_name\", \"value\": \"Abomination\"}}",
+          "{\"name\": \"get_hero_attribute_attribute_values\", \"arguments\": {\"data\": \"$FILTERED_DF$\"}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"get_superpower_ids\", \"parameters\": {}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"hero_power_hero_id\", \"value\": 1}}",
+          "{\"name\": \"get_superpower_power_names\", \"arguments\": {\"data\": \"$FILTERED_DF$\"}}",
+          "{\"name\": \"select_unique_values\", \"arguments\": {\"data\": \"$SELECT_COL_0$\"}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"select_data_equal_to\", \"parameters\": {\"key_name\": \"power_name\", \"value\": \"stealth\", \"data_source\": \"hero_powers\"}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"superpower_power_name\", \"value\": \"Stealth\"}}",
+          "{\"name\": \"compute_data_count\", \"arguments\": {\"data\": \"$FILTERED_DF$\", \"key_name\": \"hero_power_hero_id\", \"distinct\": false}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"attribute_attribute_name\", \"value\": \"Strength\"}}",
+          "{\"name\": \"sort_data_descending\", \"arguments\": {\"data\": \"$FILTERED_DF$\", \"key_name\": \"hero_attribute_attribute_value\"}}",
+          "{\"name\": \"get_superhero_full_names\", \"arguments\": {\"data\": \"$SORTED_DF$\"}}",
+          "{\"name\": \"truncate\", \"arguments\": {\"data\": \"$SELECT_COL_0$\", \"n\": 1}}"
+        ],
+        "num_failed_function_execution": 0,
+        "error_messages": []
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"select_data_equal_to\", \"parameters\": {\"key_name\": \"publisher_name\", \"value\": \"Dark Horse Comics\", \"data_source\": \"superhero_data\"}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"publisher_publisher_name\", \"value\": \"Dark Horse Comics\"}}",
+          "{\"name\": \"compute_data_count\", \"arguments\": {\"data\": \"$FILTERED_DF$\", \"key_name\": \"superhero_id\", \"distinct\": false}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"select_data_equal_to\", \"parameters\": {\"key_name\": \"superhero_name\", \"value\": \"Abraham Sapien\", \"data_source\": \"superhero_data\"}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"superhero_full_name\", \"value\": \"Abraham Sapien\"}}",
+          "{\"name\": \"get_colour_colours\", \"arguments\": {\"data\": \"$FILTERED_DF$\"}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"select_data_equal_to\", \"parameters\": {\"key_name\": \"power\", \"value\": \"flight\", \"data_source\": \"superhero_data\"}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"superpower_power_name\", \"value\": \"Flight\"}}",
+          "{\"name\": \"get_superhero_superhero_names\", \"arguments\": {\"data\": \"$FILTERED_DF$\"}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"superhero_superhero_name\", \"value\": \"A-Bomb\"}}",
+          "{\"name\": \"get_race_races\", \"arguments\": {\"data\": \"$FILTERED_DF$\"}}"
+        ],
+        "num_failed_function_execution": 0,
+        "error_messages": []
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"select_data_equal_to\", \"parameters\": {\"key_name\": \"full_name\", \"value\": \"Charles Chandler\", \"data_source\": \"superhero_data\"}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"superhero_full_name\", \"value\": \"Charles Chandler\"}}",
+          "{\"name\": \"get_superhero_superhero_names\", \"arguments\": {\"data\": \"$FILTERED_DF$\"}}",
+          "{\"name\": \"get_race_races\", \"arguments\": {\"data\": \"$FILTERED_DF$\"}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"superhero_superhero_name\", \"value\": \"Agent 13\"}}",
+          "{\"name\": \"get_gender_genders\", \"arguments\": {\"data\": \"$FILTERED_DF$\"}}"
+        ],
+        "num_failed_function_execution": 0,
+        "error_messages": []
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"select_data_equal_to\", \"parameters\": {\"key_name\": \"superpower_name\", \"value\": \"adaptation\", \"data_source\": \"superpowers\"}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"superpower_power_name\", \"value\": \"Adaptation\"}}",
+          "{\"name\": \"get_superhero_superhero_names\", \"arguments\": {\"data\": \"$FILTERED_DF$\"}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"get_hero_power_power_ids\", \"parameters\": {}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"superhero_superhero_name\", \"value\": \"Amazo\"}}",
+          "{\"name\": \"compute_data_count\", \"arguments\": {\"data\": \"$FILTERED_DF$\", \"key_name\": \"hero_power_power_id\", \"distinct\": false}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"get_superpower_power_names\", \"parameters\": {}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"superhero_full_name\", \"value\": \"Hunter Zolomon\"}}",
+          "{\"name\": \"get_superpower_power_names\", \"arguments\": {\"data\": \"$FILTERED_DF$\"}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"select_data_equal_to\", \"parameters\": {\"key_name\": \"eye colour\", \"value\": \"amber\", \"data_source\": \"superhero data\"}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"colour_colour\", \"value\": \"Amber\"}}",
+          "{\"name\": \"get_superhero_height_cms\", \"arguments\": {\"data\": \"$FILTERED_DF$\"}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"select_data_equal_to\", \"parameters\": {\"key_name\": \"skin colour\", \"value\": \"gold\", \"data_source\": \"superhero data\"}}",
+          "{\"type\": \"function\", \"name\": \"get_superhero_eye_colour_ids\", \"parameters\": {}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"colour_1_colour\", \"value\": \"Gold\"}}",
+          "{\"name\": \"get_colour_colours\", \"arguments\": {\"data\": \"$FILTERED_DF$\"}}"
+        ],
+        "num_failed_function_execution": 2,
+        "error_messages": [
+          "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+          "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"get_superhero_full_names\", \"parameters\": {}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"race_race\", \"value\": \"Vampire\"}}",
+          "{\"name\": \"get_superhero_full_names\", \"arguments\": {\"data\": \"$FILTERED_DF$\"}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"get_alignment_alignments\", \"parameters\": {}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"alignment_alignment\", \"value\": \"Neutral\"}}",
+          "{\"name\": \"get_superhero_superhero_names\", \"arguments\": {\"data\": \"$FILTERED_DF$\"}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"get_race_races\", \"parameters\": {}}",
+          "{\"type\": \"function\", \"name\": \"get_alignment_alignments\", \"parameters\": {}}",
+          "{\"type\": \"function\", \"name\": \"select_data_equal_to\", \"parameters\": {\"key_name\": \"superhero_name\", \"value\": \"Cameron Hicks\", \"data_source\": \"superhero_data\"}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"superhero_superhero_name\", \"value\": \"Cameron Hicks\"}}",
+          "{\"name\": \"get_race_races\", \"arguments\": {\"data\": \"$FILTERED_DF$\"}}",
+          "{\"name\": \"get_alignment_alignments\", \"arguments\": {\"data\": \"$FILTERED_DF$\"}}"
+        ],
+        "num_failed_function_execution": 3,
+        "error_messages": [
+          "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+          "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+          "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"get_superpower_ids\", \"parameters\": {}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"superhero_superhero_name\", \"value\": \"Abomination\"}}",
+          "{\"name\": \"get_superpower_power_names\", \"arguments\": {\"data\": \"$FILTERED_DF$\"}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"attribute_attribute_name\", \"value\": \"Speed\"}}",
+          "{\"name\": \"sort_data_descending\", \"arguments\": {\"data\": \"$FILTERED_DF$\", \"key_name\": \"hero_attribute_attribute_value\"}}",
+          "{\"name\": \"get_superhero_superhero_names\", \"arguments\": {\"data\": \"$SORTED_DF$\"}}",
+          "{\"name\": \"truncate\", \"arguments\": {\"data\": \"$SELECT_COL_0$\", \"n\": 1}}"
+        ],
+        "num_failed_function_execution": 0,
+        "error_messages": []
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"select_data_equal_to\", \"parameters\": {\"key_name\": \"alignment\", \"value\": \"neutral\", \"data_source\": \"superhero_data\"}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"alignment_alignment\", \"value\": \"Neutral\"}}",
+          "{\"name\": \"compute_data_count\", \"arguments\": {\"data\": \"$FILTERED_DF$\", \"key_name\": \"superhero_id\", \"distinct\": false}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"get_hero_attribute_attribute_values\", \"parameters\": {}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"superhero_superhero_name\", \"value\": \"3-D Man\"}}",
+          "{\"name\": \"get_attribute_attribute_names\", \"arguments\": {\"data\": \"$FILTERED_DF$\"}}",
+          "{\"name\": \"get_hero_attribute_attribute_values\", \"arguments\": {\"data\": \"$FILTERED_DF$\"}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"colour_colour\", \"value\": \"Blue\"}}",
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$FILTERED_DF$\", \"key_name\": \"colour_1_colour\", \"value\": \"Brown\"}}",
+          "{\"name\": \"get_superhero_superhero_names\", \"arguments\": {\"data\": \"$FILTERED_DF$\"}}"
+        ],
+        "num_failed_function_execution": 0,
+        "error_messages": []
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"select_data_equal_to\", \"parameters\": {\"key_name\": \"publisher_id\", \"value\": \"null\", \"data_source\": \"superhero_data\"}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"publisher_id\", \"value\": 1}}",
+          "{\"name\": \"compute_data_count\", \"arguments\": {\"data\": \"$FILTERED_DF$\", \"key_name\": \"superhero_id\", \"distinct\": false}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"compute_data_argmax\", \"parameters\": {\"data_source\": {\"type\": \"object\", \"value\": {\"function_name\": \"get_height_cms\", \"args\": []}}}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"sort_data_descending\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"height_cm\"}}",
+          "{\"name\": \"get_superhero_names\", \"arguments\": {\"data\": \"$SORTED_DF$\"}}",
+          "{\"name\": \"truncate\", \"arguments\": {\"data\": \"$SELECT_COL_0$\", \"n\": 1}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"power_name\", \"value\": \"Cryokinesis\"}}",
+          "{\"name\": \"get_ids\", \"arguments\": {\"data\": \"$FILTERED_DF$\"}}"
+        ],
+        "num_failed_function_execution": 0,
+        "error_messages": []
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"select_data_equal_to\", \"parameters\": {\"key_name\": \"id\", \"value\": 294, \"data_source\": \"superhero_data\"}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"id\", \"value\": 294}}",
+          "{\"name\": \"get_superhero_names\", \"arguments\": {\"data\": \"$FILTERED_DF$\"}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"select_data_equal_to\", \"parameters\": {\"key_name\": \"superhero_full_name\", \"value\": \"Karen Beecher-Duncan\", \"data_source\": \"superhero_data\"}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"superhero_full_name\", \"value\": \"Karen Beecher-Duncan\"}}",
+          "{\"name\": \"get_colour_colours\", \"arguments\": {\"data\": \"$FILTERED_DF$\"}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"select_data_equal_to\", \"parameters\": {\"key_name\": \"superhero_full_name\", \"value\": \"Helen Parr\", \"data_source\": \"superhero_data\"}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"superhero_full_name\", \"value\": \"Helen Parr\"}}",
+          "{\"name\": \"get_superpower_power_names\", \"arguments\": {\"data\": \"$FILTERED_DF$\"}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"select_data_equal_to\", \"parameters\": {\"key_name\": \"superhero_weight_kg\", \"value\": \"108\", \"data_source\": \"superhero_data\"}}",
+          "{\"type\": \"function\", \"name\": \"select_data_equal_to\", \"parameters\": {\"key_name\": \"superhero_height_cm\", \"value\": \"188\", \"data_source\": \"superhero_data\"}}",
+          "{\"type\": \"function\", \"name\": \"get_race_races\", \"parameters\": {}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"superhero_weight_kg\", \"value\": 108}}",
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$FILTERED_DF$\", \"key_name\": \"superhero_height_cm\", \"value\": 188}}",
+          "{\"name\": \"get_race_races\", \"arguments\": {\"data\": \"$FILTERED_DF$\"}}",
+          "{\"name\": \"select_unique_values\", \"arguments\": {\"data\": \"$SELECT_COL_0$\"}}"
+        ],
+        "num_failed_function_execution": 3,
+        "error_messages": [
+          "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+          "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+          "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"get_publisher_ids\", \"parameters\": {}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"superhero_id\", \"value\": 38}}",
+          "{\"name\": \"get_publisher_publisher_names\", \"arguments\": {\"data\": \"$FILTERED_DF$\"}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"get_race_races\", \"parameters\": {}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"sort_data_descending\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"hero_attribute_attribute_value\"}}",
+          "{\"name\": \"get_race_races\", \"arguments\": {\"data\": \"$SORTED_DF$\"}}",
+          "{\"name\": \"truncate\", \"arguments\": {\"data\": \"$SELECT_COL_0$\", \"n\": 1}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"colour_colour\", \"value\": \"Blue\"}}",
+          "{\"name\": \"get_superhero_superhero_names\", \"arguments\": {\"data\": \"$FILTERED_DF$\"}}",
+          "{\"name\": \"truncate\", \"arguments\": {\"data\": \"$SELECT_COL_0$\", \"n\": 5}}"
+        ],
+        "num_failed_function_execution": 0,
+        "error_messages": []
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"compute_data_mean\", \"parameters\": {\"data_source\": {\"type\": \"object\", \"value\": {\"function_name\": \"select_data_equal_to\", \"args\": [{\"key_name\": \"alignment\"}, {\"value\": \"neutral\"}, {\"data_source\": {\"function_name\": \"get_hero_attribute_attribute_values\", \"args\": []}}]}}}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"alignment_alignment\", \"value\": \"Neutral\"}}",
+          "{\"name\": \"compute_data_mean\", \"arguments\": {\"data\": \"$FILTERED_DF$\", \"key_name\": \"hero_attribute_attribute_value\", \"distinct\": false}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"select_data_equal_to\", \"parameters\": {\"key_name\": \"attribute_value\", \"value\": \"100\", \"data_source\": \"skin_colour\"}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"hero_attribute_attribute_value\", \"value\": 100}}",
+          "{\"name\": \"get_colour_colours\", \"arguments\": {\"data\": \"$FILTERED_DF$\"}}",
+          "{\"name\": \"select_unique_values\", \"arguments\": {\"data\": \"$SELECT_COL_0$\"}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"compute_data_count\", \"parameters\": {\"data_source\": {\"type\": \"object\", \"value\": {\"function_name\": \"select_data_equal_to\", \"args\": [{\"key_name\": \"alignment\"}, {\"value\": \"good\"}, {\"data_source\": {\"function_name\": \"select_data_equal_to\", \"args\": [{\"key_name\": \"gender\"}, {\"value\": \"female\"}, {\"data_source\": {\"function_name\": \"get_superhero_ids\", \"args\": []}}]}}]}}}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"alignment_alignment\", \"value\": \"Good\"}}",
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$FILTERED_DF$\", \"key_name\": \"gender_gender\", \"value\": \"Female\"}}",
+          "{\"name\": \"compute_data_count\", \"arguments\": {\"data\": \"$FILTERED_DF$\", \"key_name\": \"superhero_id\", \"distinct\": false}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"select_data_equal_to\", \"parameters\": {\"key_name\": \"hair_colour_id\", \"value\": \"blue\", \"data_source\": \"superhero_data\"}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"colour_colour\", \"value\": \"Blue\"}}",
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$FILTERED_DF$\", \"key_name\": \"gender_gender\", \"value\": \"Male\"}}",
+          "{\"name\": \"get_race_races\", \"arguments\": {\"data\": \"$FILTERED_DF$\"}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"name\": \"get_attribute_attribute_names\", \"arguments\": {}}",
+          "{\"name\": \"get_superhero_ids\", \"arguments\": {}}",
+          "{\"name\": \"get_hero_attribute_attribute_ids\", \"arguments\": {}}",
+          "{\"name\": \"get_hero_attribute_hero_ids\", \"arguments\": {}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"superhero_superhero_name\", \"value\": \"Hulk\"}}",
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$FILTERED_DF$\", \"key_name\": \"attribute_attribute_name\", \"value\": \"Strength\"}}",
+          "{\"name\": \"get_hero_attribute_attribute_values\", \"arguments\": {\"data\": \"$FILTERED_DF$\"}}"
+        ],
+        "num_failed_function_execution": 4,
+        "error_messages": [
+          "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+          "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+          "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'",
+          "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"get_superpower_ids\", \"parameters\": {}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"superhero_superhero_name\", \"value\": \"Ajax\"}}",
+          "{\"name\": \"get_superpower_power_names\", \"arguments\": {\"data\": \"$FILTERED_DF$\"}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"select_data_equal_to\", \"parameters\": {\"key_name\": \"colour_colour\", \"value\": \"green\", \"data_source\": \"superhero_data\"}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"alignment_alignment\", \"value\": \"Bad\"}}",
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$FILTERED_DF$\", \"key_name\": \"colour_colour\", \"value\": \"Green\"}}",
+          "{\"name\": \"compute_data_count\", \"arguments\": {\"data\": \"$FILTERED_DF$\", \"key_name\": \"superhero_id\", \"distinct\": false}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"select_data_equal_to\", \"parameters\": {\"key_name\": \"gender\", \"value\": \"female\", \"data_source\": \"Marvel Comics\"}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"publisher_publisher_name\", \"value\": \"Marvel Comics\"}}",
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$FILTERED_DF$\", \"key_name\": \"gender_gender\", \"value\": \"Female\"}}",
+          "{\"name\": \"compute_data_count\", \"arguments\": {\"data\": \"$FILTERED_DF$\", \"key_name\": \"superhero_id\", \"distinct\": false}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"superpower_power_name\", \"value\": \"Wind Control\"}}",
+          "{\"name\": \"sort_data_ascending\", \"arguments\": {\"data\": \"$FILTERED_DF$\", \"key_name\": \"superhero_superhero_name\"}}",
+          "{\"name\": \"get_superhero_superhero_names\", \"arguments\": {\"data\": \"$SORTED_DF$\"}}"
+        ],
+        "num_failed_function_execution": 0,
+        "error_messages": []
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"select_data_equal_to\", \"parameters\": {\"key_name\": \"superpower_power_name\", \"value\": \"Phoenix Force\", \"data_source\": \"superhero_data\"}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"superpower_power_name\", \"value\": \"Phoenix Force\"}}",
+          "{\"name\": \"get_gender_genders\", \"arguments\": {\"data\": \"$FILTERED_DF$\"}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"publisher_publisher_name\", \"value\": \"DC Comics\"}}",
+          "{\"name\": \"sort_data_descending\", \"arguments\": {\"data\": \"$FILTERED_DF$\", \"key_name\": \"superhero_weight_kg\"}}",
+          "{\"name\": \"get_superhero_superhero_names\", \"arguments\": {\"data\": \"$SORTED_DF$\"}}",
+          "{\"name\": \"truncate\", \"arguments\": {\"data\": \"$SELECT_COL_0$\", \"n\": 1}}"
+        ],
+        "num_failed_function_execution": 0,
+        "error_messages": []
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"publisher_publisher_name\", \"value\": \"Dark Horse Comics\"}}",
+          "{\"name\": \"select_data_not_equal_to\", \"arguments\": {\"data\": \"$FILTERED_DF$\", \"key_name\": \"race_race\", \"value\": \"Human\"}}",
+          "{\"name\": \"compute_data_mean\", \"arguments\": {\"data\": \"$FILTERED_DF$\", \"key_name\": \"superhero_height_cm\", \"distinct\": false}}"
+        ],
+        "num_failed_function_execution": 0,
+        "error_messages": []
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"compute_data_count\", \"parameters\": {\"data_source\": {\"type\": \"object\", \"value\": \"superhero_speed\"}}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"attribute_attribute_name\", \"value\": \"Speed\"}}",
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$FILTERED_DF$\", \"key_name\": \"hero_attribute_attribute_value\", \"value\": 100}}",
+          "{\"name\": \"compute_data_count\", \"arguments\": {\"data\": \"$FILTERED_DF$\", \"key_name\": \"superhero_superhero_name\", \"distinct\": false}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"get_hero_attribute_attribute_values\", \"parameters\": {}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"superhero_superhero_name\", \"value\": \"Black Panther\"}}",
+          "{\"name\": \"sort_data_ascending\", \"arguments\": {\"data\": \"$FILTERED_DF$\", \"key_name\": \"hero_attribute_attribute_value\"}}",
+          "{\"name\": \"get_attribute_attribute_names\", \"arguments\": {\"data\": \"$SORTED_DF$\"}}",
+          "{\"name\": \"truncate\", \"arguments\": {\"data\": \"$SELECT_COL_0$\", \"n\": 1}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"get_superhero_eye_colour_ids\", \"parameters\": {}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"superhero_superhero_name\", \"value\": \"Abomination\"}}",
+          "{\"name\": \"get_colour_colours\", \"arguments\": {\"data\": \"$FILTERED_DF$\"}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"get_height_cms\", \"parameters\": {}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"sort_data_descending\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"height_cm\"}}",
+          "{\"name\": \"get_superhero_names\", \"arguments\": {\"data\": \"$SORTED_DF$\"}}",
+          "{\"name\": \"truncate\", \"arguments\": {\"data\": \"$SELECT_COL_0$\", \"n\": 1}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"get_full_names\", \"parameters\": {}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"full_name\", \"value\": \"Charles Chandler\"}}",
+          "{\"name\": \"get_superhero_names\", \"arguments\": {\"data\": \"$FILTERED_DF$\"}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"get_full_names\", \"parameters\": {}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"superhero_name\", \"value\": \"Alien\"}}",
+          "{\"name\": \"get_full_names\", \"arguments\": {\"data\": \"$FILTERED_DF$\"}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"select_data_equal_to\", \"parameters\": {\"key_name\": \"eye_colour_id\", \"value\": \"brown\", \"data_source\": {\"type\": \"function\", \"name\": \"select_data_less_than\", \"parameters\": {\"key_name\": \"weight_kg\", \"value\": 100, \"data_source\": {\"function_name\": \"get_superhero_full_names\", \"args\": []}}}}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_less_than\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"superhero_weight_kg\", \"value\": 100}}",
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$FILTERED_DF$\", \"key_name\": \"colour_colour\", \"value\": \"Brown\"}}",
+          "{\"name\": \"get_superhero_full_names\", \"arguments\": {\"data\": \"$FILTERED_DF$\"}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"get_hero_attribute_attribute_values\", \"parameters\": {}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"superhero_superhero_name\", \"value\": \"Aquababy\"}}",
+          "{\"name\": \"get_hero_attribute_attribute_values\", \"arguments\": {\"data\": \"$FILTERED_DF$\"}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_from_csv.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"select_data_equal_to\", \"parameters\": {\"key_name\": \"superhero_id\", \"value\": 40, \"data_source\": \"superhero_data\"}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"superhero_id\", \"value\": 40}}",
+          "{\"name\": \"get_superhero_weight_kgs\", \"arguments\": {\"data\": \"$FILTERED_DF$\"}}",
+          "{\"name\": \"get_race_races\", \"arguments\": {\"data\": \"$FILTERED_DF$\"}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"compute_data_mean\", \"parameters\": {\"data_source\": {\"type\": \"object\", \"value\": {\"function_name\": \"select_data_equal_to\", \"args\": [{\"key_name\": \"alignment\"}, {\"value\": \"neutral\"}, {\"data_source\": {\"function_name\": \"get_superhero_height_cms\", \"args\": []}}]}}}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"alignment_alignment\", \"value\": \"Neutral\"}}",
+          "{\"name\": \"compute_data_mean\", \"arguments\": {\"data\": \"$FILTERED_DF$\", \"key_name\": \"superhero_height_cm\", \"distinct\": false}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"superpower_power_name\", \"value\": \"Intelligence\"}}",
+          "{\"name\": \"get_hero_power_hero_ids\", \"arguments\": {\"data\": \"$FILTERED_DF$\"}}"
+        ],
+        "num_failed_function_execution": 0,
+        "error_messages": []
+      },
+      {
+        "valid": false,
+        "pred_function_calls": [
+          "{\"type\": \"function\", \"name\": \"select_data_equal_to\", \"parameters\": {\"key_name\": \"superhero_name\", \"value\": \"Blackwulf\", \"data_source\": \"superhero_eye_colour_id\"}}"
+        ],
+        "gold_function_calls": [
+          "{\"name\": \"select_data_equal_to\", \"arguments\": {\"data\": \"$starting_table_var$\", \"key_name\": \"superhero_superhero_name\", \"value\": \"Blackwulf\"}}",
+          "{\"name\": \"get_colour_colours\", \"arguments\": {\"data\": \"$FILTERED_DF$\"}}"
+        ],
+        "num_failed_function_execution": 1,
+        "error_messages": [
+          "single_function execution failed: load_csv_as_dataframe.<locals>.wrapper() missing 1 required positional argument: 'data_source'"
+        ]
+      }
+    ]
+  }
 }
