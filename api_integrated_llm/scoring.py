@@ -241,7 +241,6 @@ def get_slot_info(
 def get_item_metrics(
     predictions_input: List[EvaluationOutputResponseDataUnit],
     model_name: str,
-    dataset_name: str,
     is_single_intent_detection: bool,
     spec_path: Path,
 ) -> Tuple[
@@ -527,7 +526,6 @@ def calculate_scores(
     ) = get_item_metrics(
         predictions_input=predictions_input,
         model_name=model_name,
-        dataset_name=dataset_name,
         is_single_intent_detection=is_single_intent_detection,
         spec_path=spec_path,
     )
@@ -548,24 +546,24 @@ def calculate_scores(
         )
     )
 
-    num_samples = len(predictions_input)
-    error_messages_win_rate: List[str] = []
-    win_rate: Optional[float] = None
-    num_sequences_processed_win_rate: Optional[int] = None
-    num_failed_function_execution_list: List[int] = []
-    if db_path is not None and source_file_search_path is not None:
-        (
-            win_rate,
-            num_sequences_processed_win_rate,
-            error_messages_win_rate,
-            num_failed_function_execution_list,
-        ) = get_win_rate(
+    (
+        win_rate,
+        num_sequences_processed_win_rate,
+        error_messages_win_rate,
+        num_failed_function_execution_list,
+    ) = (
+        get_win_rate(
             predictions_input=predictions_input,
             predicted_function_calls=predicted_function_calls,
             sample_ids=sample_ids,
             db_path=db_path,  # database path
             source_file_search_path=source_file_search_path,
         )
+        if ((db_path is not None) and (source_file_search_path is not None))
+        else (None, None, [], [])
+    )
+
+    num_samples = len(predictions_input)
 
     return ScorerOuputModel(
         confusion_metrix_matrics_micro=confusion_metrix_matrics_micro_model,
@@ -706,7 +704,7 @@ def scoring(
                     f"No evaluation data found at {evaluator_output_file_path}"
                 )
 
-            temperature_str, max_tokens_str, dataset_name, model_name, agent_str = data[
+            temperature_str, max_tokens_str, _, model_name, agent_str = data[
                 0
             ].get_basic_strs()
 
