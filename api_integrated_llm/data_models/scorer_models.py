@@ -321,6 +321,11 @@ class MicroConfusionMetrixMetricsByOutputLengthModel(BaseModel):
                     self.slot_set_metrics[frequency] = micro_model.model_copy(deep=True)
 
 
+class ContentPairModel(BaseModel):
+    gold: List[str] = []
+    predicted: List[str] = []
+
+
 class ScorerOuputModel(BaseModel):
     confusion_metrix_matrics_micro: MicroConfusionMetrixMetricsModel
     confusion_metrix_matrics_micro_model_by_output_length: Optional[
@@ -343,6 +348,8 @@ class ScorerOuputModel(BaseModel):
     pred_output_intent: List[List[Union[str, Dict[str, Any]]]]
     gold_output_slot: List[List[Union[str, Dict[str, Any]]]]
     pred_output_slot: List[List[Union[str, Dict[str, Any]]]]
+    intent_pair_models: Optional[List[ContentPairModel]] = None
+    slot_pair_models: Optional[List[ContentPairModel]] = None
     win_rate: Optional[float] = None
     num_sequences_processed_win_rate: Optional[int] = None
     error_messages_win_rate: Optional[List[str]] = None

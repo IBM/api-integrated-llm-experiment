@@ -9,6 +9,7 @@ from api_integrated_llm.data_models.common_models import CommonErrorModel
 from api_integrated_llm.data_models.scorer_models import (
     ConfusionMatrixMode,
     ConfusionMetrixMetricsModel,
+    ContentPairModel,
     MicroConfusionMetrixMetricsByOutputLengthModel,
     MicroConfusionMetrixMetricsModel,
     ScorerOuputModel,
@@ -591,6 +592,22 @@ def calculate_scores(
         pred_output_intent=pred_output_intent,
         gold_output_slot=gold_output_slot,
         pred_output_slot=pred_output_slot,
+        intent_pair_models=list(
+            map(
+                lambda content_pair: ContentPairModel(
+                    gold=content_pair[0], predicted=content_pair[1]
+                ),
+                zip(gold_output_intent, pred_output_intent),
+            )
+        ),
+        slot_pair_models=list(
+            map(
+                lambda content_pair: ContentPairModel(
+                    gold=content_pair[0], predicted=content_pair[1]
+                ),
+                zip(gold_output_slot, pred_output_slot),
+            )
+        ),
         win_rate=win_rate,
         num_sequences_processed_win_rate=num_sequences_processed_win_rate,
         error_messages_win_rate=error_messages_win_rate,

@@ -425,8 +425,95 @@
       "min_count = 2"
     ]
   ],
+  "intent_pair_models": [
+    {
+      "gold": [
+        "get_teacher_course_count_v1_cosql_course_teach_teacher_course_count_get"
+      ],
+      "predicted": [
+        "get_teacher_course_count_v1_cosql_course_teach_teacher_course_count_get"
+      ]
+    },
+    {
+      "gold": [
+        "get_teacher_course_count_filtered_v1_cosql_course_teach_teacher_course_count_filtered_get"
+      ],
+      "predicted": [
+        "get_teacher_names_for_course_v1_cosql_course_teach_teacher_names_for_course_get"
+      ]
+    },
+    {
+      "gold": [
+        "get_teacher_course_count_v1_cosql_course_teach_teacher_course_count_get"
+      ],
+      "predicted": [
+        "get_teacher_course_count_v1_cosql_course_teach_teacher_course_count_get"
+      ]
+    },
+    {
+      "gold": [
+        "get_teacher_courses_ordered_v1_cosql_course_teach_teacher_courses_ordered_get"
+      ],
+      "predicted": [
+        "get_teacher_courses_ordered_v1_cosql_course_teach_teacher_courses_ordered_get"
+      ]
+    },
+    {
+      "gold": [
+        "get_youngest_teacher_hometown_v1_cosql_course_teach_youngest_teacher_hometown_get"
+      ],
+      "predicted": [
+        "get_youngest_teacher_hometown_v1_cosql_course_teach_youngest_teacher_hometown_get"
+      ]
+    },
+    {
+      "gold": [
+        "get_teacher_names_min_course_count_v1_cosql_course_teach_teacher_names_min_course_count_get"
+      ],
+      "predicted": [
+        "get_teacher_names_min_course_count_v1_cosql_course_teach_teacher_names_min_course_count_get"
+      ]
+    },
+    {
+      "gold": [
+        "get_teacher_course_count_filtered_v1_cosql_course_teach_teacher_course_count_filtered_get"
+      ],
+      "predicted": [
+        "get_teacher_names_for_course_v1_cosql_course_teach_teacher_names_for_course_get"
+      ]
+    }
+  ],
+  "slot_pair_models": [
+    {
+      "gold": [],
+      "predicted": []
+    },
+    {
+      "gold": [],
+      "predicted": []
+    },
+    {
+      "gold": [],
+      "predicted": []
+    },
+    {
+      "gold": [],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "min_count = 2"
+      ],
+      "predicted": [
+        "min_count = 2"
+      ]
+    }
+  ],
   "win_rate": null,
   "num_sequences_processed_win_rate": null,
   "error_messages_win_rate": [],
-  "num_failed_function_execution_list": []
+  "num_failed_function_execution_list": [],
+  "win_rate_result_model": {
+    "win_rate_result": []
+  }
 }
