@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 from typing import Any, List, Optional, Tuple, cast
 
+from api_integrated_llm.data_models.scorer_models import WinRateResultModel
 from api_integrated_llm.data_models.source_models import (
     EvaluationOutputResponseDataUnit,
     QuerySourceModel,
@@ -56,10 +57,11 @@ def get_dataset_name(source_file_path: str) -> str:
 def get_win_rate(
     predictions_input: List[EvaluationOutputResponseDataUnit],
     predicted_function_calls: List[List[Any]],
+    gold_function_calls: List[List[Any]],
     sample_ids: List[Any],
     db_path: Path,  # database path
     source_file_search_path: Path,
-) -> Tuple[Optional[float], int, List[str], List[int]]:
+) -> Tuple[Optional[float], int, List[str], List[int], WinRateResultModel]:
     """
     returns winrate, the number of sequences evaluated, and error messages
     """
@@ -67,6 +69,7 @@ def get_win_rate(
     win_rate: Optional[float] = None
     error_messages: List[str] = []
     num_failed_function_execution_list: List[int] = []
+    win_rate_result_model = WinRateResultModel()
 
     if len(predicted_function_calls) != len(sample_ids):
         error_messages.append(
@@ -99,12 +102,26 @@ def get_win_rate(
         error_messages.extend(error_messages_instance)
 
         if len(payloads) > 0:
-            win_rate, error_messages, num_failed_function_execution = evaluate_win_rate(
-                payloads, builder
+            (
+                win_rate,
+                error_messages,
+                num_failed_function_execution,
+                win_rate_result_model,
+            ) = evaluate_win_rate(
+                payloads,
+                builder,
+                pred_function_calls_list=predicted_function_calls,
+                gold_function_calls_list=gold_function_calls,
             )
             error_messages.extend(error_messages)
             num_failed_function_execution_list.append(num_failed_function_execution)
     except Exception as e:
         error_messages.append(str(e))
 
-    return win_rate, len(payloads), error_messages, num_failed_function_execution_list
+    return (
+        win_rate,
+        len(payloads),
+        error_messages,
+        num_failed_function_execution_list,
+        win_rate_result_model,
+    )

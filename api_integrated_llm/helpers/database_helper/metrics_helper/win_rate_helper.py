@@ -4,6 +4,10 @@ import os
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Union
 
+from api_integrated_llm.data_models.scorer_models import (
+    WinRateResultModel,
+    WinRateResultUnitModel,
+)
 from api_integrated_llm.data_models.source_models import (
     QuerySourceModel,
 )
@@ -127,7 +131,7 @@ def inference_call(
 
 
 def get_repaired_function_calls(
-    required_api_calls: List[Dict[str, Any]]
+    required_api_calls: List[Dict[str, Any]],
 ) -> List[Dict[str, Any]]:
     repaired_function_calls = []
     for function_call in required_api_calls:
@@ -141,10 +145,16 @@ def get_repaired_function_calls(
 
 
 def evaluate_win_rate(
-    payloads: list[dict], builder: SqlDatasetBuilder
-) -> Tuple[float, List[str], int]:
+    payloads: List[Dict[str, Any]],
+    builder: SqlDatasetBuilder,
+    pred_function_calls_list: List[List[Any]],
+    gold_function_calls_list: List[List[Any]],
+) -> Tuple[float, List[str], int, WinRateResultModel]:
     valid = []
-    for p in payloads:
+    win_rate_result_model: WinRateResultModel = WinRateResultModel()
+    num_failed_function_execution_tot = 0
+    error_messages_tot: List[str] = []
+    for i, p in enumerate(payloads):
         # Set the database path to the cache file of the initialized builder.
         # Otherwise it will point to the cache location from the data generation run.
         p["initialization_step"]["arguments"][
@@ -169,10 +179,26 @@ def evaluate_win_rate(
         api_result, error_messages, num_failed_function_execution = validate_api_output(
             required_api_calls, api_pool
         )
+        error_messages_tot.extend(error_messages)
+        num_failed_function_execution_tot + num_failed_function_execution
         validated = check_equality_without_order(api_result, p["gold_answer"])
         valid.append(validated)
+        win_rate_result_model.win_rate_result.append(
+            WinRateResultUnitModel(
+                valid=validated,
+                pred_function_calls=deepcopy(pred_function_calls_list[i]),
+                gold_function_calls=deepcopy(gold_function_calls_list[i]),
+                num_failed_function_execution=num_failed_function_execution,
+                error_messages=deepcopy(error_messages),
+            )
+        )
 
-    return (sum(valid) / len(valid)), error_messages, num_failed_function_execution
+    return (
+        (sum(valid) / len(valid)),
+        error_messages_tot,
+        num_failed_function_execution_tot,
+        win_rate_result_model,
+    )
 
 
 def parse_sequence(function_list: List[Any]) -> Tuple[List[Dict[str, Any]], List[str]]:
