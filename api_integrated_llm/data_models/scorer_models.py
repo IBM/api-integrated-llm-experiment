@@ -44,6 +44,86 @@ class ConfusionMatrixModel(BaseModel):
         self.num_is_covered += confusion_matrix.num_is_covered
 
 
+class BasicRateUnitModel(BaseModel):
+    success: int = 0
+    fail: int = 0
+
+    def is_valid(self) -> bool:
+        return (self.success + self.fail) > 0
+
+    def add(self, unit_model: BasicRateUnitModel) -> None:
+        self.success += unit_model.success
+        self.fail += unit_model.fail
+
+    def get_rate(self) -> Optional[float]:
+        return (self.success) / (self.success + self.fail) if self.is_valid() else None
+
+    def get_num_samples(self) -> int:
+        return self.success + self.fail
+
+
+class BasicRateModel(BaseModel):
+    rate: Optional[float] = None
+    unit_model: Optional[BasicRateUnitModel] = None
+
+    @staticmethod
+    def get_basic_rate_model(unit_model: BasicRateUnitModel) -> BasicRateModel:
+        if unit_model.is_valid():
+            rate_model = BasicRateModel()
+            rate_model.rate = unit_model.get_rate()
+            rate_model.unit_model = unit_model.model_copy(deep=True)
+            return rate_model
+        return BasicRateModel()
+
+    def add_micro(self, rate_model: BasicRateModel) -> None:
+        if (
+            self.unit_model is not None
+            and rate_model.unit_model is not None
+            and rate_model.unit_model.is_valid()
+        ):
+            self.unit_model.add(unit_model=rate_model.unit_model)
+            self.rate = self.unit_model.get_rate()
+
+    def add_macro(self, rate_model: BasicRateModel) -> None:
+        if (
+            rate_model.unit_model is None
+            or rate_model.unit_model.get_num_samples() == 0
+        ):
+            return
+
+        num_samples = rate_model.unit_model.get_num_samples()
+        if rate_model.rate is not None and self.rate is not None and num_samples > 0:
+            self.rate += rate_model.rate / num_samples
+
+    def get_num_samples(self) -> Optional[int]:
+        if self.unit_model is not None:
+            return self.unit_model.get_num_samples()
+        return None
+
+
+class BasicRateDictModel(BaseModel):
+    rate_dictionary: Dict[str, BasicRateModel] = dict()
+
+    def add_micro(self, rate_dict_model: BasicRateDictModel) -> None:
+        for key, rate_model in rate_dict_model.rate_dictionary.items():
+            if rate_model.unit_model is not None:
+                if key in self.rate_dictionary:
+                    self.rate_dictionary[key].add_micro(rate_model=rate_model)
+                else:
+                    self.rate_dictionary[key] = rate_model.model_copy(deep=True)
+
+    def add_macro(self, rate_dict_model: BasicRateDictModel) -> None:
+        for key, rate_model in rate_dict_model.rate_dictionary.items():
+            if rate_model.rate is not None:
+                if key in self.rate_dictionary:
+                    self.rate_dictionary[key].add_macro(rate_model=rate_model)
+                else:
+                    self.rate_dictionary[key] = BasicRateModel(
+                        rate=0.0, unit_model=None
+                    )
+                    self.rate_dictionary[key].add_macro(rate_model=rate_model)
+
+
 class ConfusionMetrixMetricsModel(BaseModel):
     accuracy: Optional[float] = None
     precision: Optional[float] = None
