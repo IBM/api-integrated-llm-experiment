@@ -12,6 +12,7 @@ from api_integrated_llm.data_models.scorer_models import (
     MicroConfusionMetrixMetricsByOutputLengthModel,
     MicroConfusionMetrixMetricsModel,
     ScorerOuputModel,
+    WinRateResultModel,
 )
 from api_integrated_llm.data_models.source_models import (
     EvaluationOutputResponseDataUnit,
@@ -259,6 +260,7 @@ def get_item_metrics(
     List[str],
     List[Any],
     List[List[Any]],
+    List[List[Any]],
 ]:
     gold_output_intent: List[List[str]] = []
     pred_output_intent: List[List[str]] = []
@@ -275,6 +277,7 @@ def get_item_metrics(
     parsing_error_messages: List[str] = []
     sample_ids: List[Any] = []
     predicted_function_calls: List[List[Any]] = []
+    gold_function_calls: List[List[Any]] = []
 
     for prediction, prediction_model in list(
         map(
@@ -302,6 +305,7 @@ def get_item_metrics(
             num_errors_parsing_pred_intent += model_num_errors_parsing_pred_intent
             parsing_error_messages.extend(instance_parsing_error_messages)
             predicted_function_calls.append(pred_func_calls)
+            gold_function_calls.append(gold_func_calls)
             sample_ids.append(prediction_model.sample_id)
         except Exception as e:
             print(e)
@@ -382,6 +386,7 @@ def get_item_metrics(
         parsing_error_messages,
         sample_ids,
         predicted_function_calls,
+        gold_function_calls,
     )
 
 
@@ -500,7 +505,7 @@ def calculate_scores(
 ) -> ScorerOuputModel:
     (
         model_name,
-        dataset_name,
+        _,
         spec_path,
         model_temperature,
         model_max_tokens,
@@ -523,6 +528,7 @@ def calculate_scores(
         parsing_error_messages,
         sample_ids,
         predicted_function_calls,
+        gold_function_calls,
     ) = get_item_metrics(
         predictions_input=predictions_input,
         model_name=model_name,
@@ -551,16 +557,18 @@ def calculate_scores(
         num_sequences_processed_win_rate,
         error_messages_win_rate,
         num_failed_function_execution_list,
+        win_rate_result_model,
     ) = (
         get_win_rate(
             predictions_input=predictions_input,
             predicted_function_calls=predicted_function_calls,
+            gold_function_calls=gold_function_calls,
             sample_ids=sample_ids,
             db_path=db_path,  # database path
             source_file_search_path=source_file_search_path,
         )
         if ((db_path is not None) and (source_file_search_path is not None))
-        else (None, None, [], [])
+        else (None, None, [], [], WinRateResultModel())
     )
 
     num_samples = len(predictions_input)
@@ -591,6 +599,7 @@ def calculate_scores(
         num_sequences_processed_win_rate=num_sequences_processed_win_rate,
         error_messages_win_rate=error_messages_win_rate,
         num_failed_function_execution_list=num_failed_function_execution_list,
+        win_rate_result_model=win_rate_result_model,
     )
 
 

@@ -124,6 +124,29 @@ class BasicRateDictModel(BaseModel):
                     self.rate_dictionary[key].add_macro(rate_model=rate_model)
 
 
+class WinRateResultUnitModel(BaseModel):
+    valid: bool
+    payload: Dict[str, Any]
+    gold_function_calls: List[Any]
+    num_failed_function_execution: int
+    error_messages: List[str]
+
+    def get_length_gold_function_calls(self) -> int:
+        return len(self.gold_function_calls)
+
+
+class WinRateResultModel(BaseModel):
+    win_rate_result: List[WinRateResultUnitModel] = []
+
+    def get_rate(self) -> Optional[float]:
+        if len(self.win_rate_result) == 0:
+            return None
+
+        return (
+            len(list(filter(lambda result: result.valid, self.win_rate_result)))
+        ) / len(self.win_rate_result)
+
+
 class ConfusionMetrixMetricsModel(BaseModel):
     accuracy: Optional[float] = None
     precision: Optional[float] = None
@@ -317,6 +340,7 @@ class ScorerOuputModel(BaseModel):
     num_sequences_processed_win_rate: Optional[int] = None
     error_messages_win_rate: Optional[List[str]] = None
     num_failed_function_execution_list: Optional[List[int]] = None
+    win_rate_result_model: Optional[WinRateResultModel] = None
 
 
 class MetricsAggregationModel(BaseModel):
