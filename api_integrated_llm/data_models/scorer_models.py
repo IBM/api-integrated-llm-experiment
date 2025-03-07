@@ -81,18 +81,18 @@ class BasicRateModel(BaseModel):
             and rate_model.unit_model is not None
             and rate_model.unit_model.is_valid()
         ):
+            if self.unit_model is None:
+                self.unit_model = BasicRateUnitModel()
             self.unit_model.add(unit_model=rate_model.unit_model)
             self.rate = self.unit_model.get_rate()
 
-    def add_macro(self, rate_model: BasicRateModel) -> None:
-        if (
-            rate_model.unit_model is None
-            or rate_model.unit_model.get_num_samples() == 0
-        ):
+    def add_macro(self, rate_model: BasicRateModel, num_samples: int) -> None:
+        if num_samples <= 0:
             return
 
-        num_samples = rate_model.unit_model.get_num_samples()
-        if rate_model.rate is not None and self.rate is not None and num_samples > 0:
+        if rate_model.rate is not None:
+            if self.rate is None:
+                self.rate = 0.0
             self.rate += rate_model.rate / num_samples
 
     def get_num_samples(self) -> Optional[int]:
@@ -112,16 +112,23 @@ class BasicRateDictModel(BaseModel):
                 else:
                     self.rate_dictionary[key] = rate_model.model_copy(deep=True)
 
-    def add_macro(self, rate_dict_model: BasicRateDictModel) -> None:
+    def add_macro(self, rate_dict_model: BasicRateDictModel, num_samples: int) -> None:
+        if num_samples <= 0:
+            return
+
         for key, rate_model in rate_dict_model.rate_dictionary.items():
             if rate_model.rate is not None:
                 if key in self.rate_dictionary:
-                    self.rate_dictionary[key].add_macro(rate_model=rate_model)
+                    self.rate_dictionary[key].add_macro(
+                        rate_model=rate_model, num_samples=num_samples
+                    )
                 else:
                     self.rate_dictionary[key] = BasicRateModel(
                         rate=0.0, unit_model=None
                     )
-                    self.rate_dictionary[key].add_macro(rate_model=rate_model)
+                    self.rate_dictionary[key].add_macro(
+                        rate_model=rate_model, num_samples=num_samples
+                    )
 
 
 class WinRateResultUnitModel(BaseModel):
