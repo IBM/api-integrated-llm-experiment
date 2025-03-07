@@ -255,8 +255,49 @@
       "feature_name = AirCon"
     ]
   ],
+  "intent_pair_models": [
+    {
+      "gold": [
+        "get_property_names_v1_cosql_real_estate_properties_properties_get"
+      ],
+      "predicted": [
+        "get_property_names_v1_cosql_real_estate_properties_properties_get"
+      ]
+    },
+    {
+      "gold": [
+        "get_feature_type_name_v1_cosql_real_estate_properties_feature_type_name_get"
+      ],
+      "predicted": [
+        "get_feature_type_name_v1_cosql_real_estate_properties_feature_type_name_get"
+      ]
+    }
+  ],
+  "slot_pair_models": [
+    {
+      "gold": [
+        "property_type_code = House",
+        "room_count = 1"
+      ],
+      "predicted": [
+        "property_type_code = house",
+        "room_count = 1"
+      ]
+    },
+    {
+      "gold": [
+        "feature_name = AirCon"
+      ],
+      "predicted": [
+        "feature_name = AirCon"
+      ]
+    }
+  ],
   "win_rate": null,
   "num_sequences_processed_win_rate": null,
   "error_messages_win_rate": [],
-  "num_failed_function_execution_list": []
+  "num_failed_function_execution_list": [],
+  "win_rate_result_model": {
+    "win_rate_result": []
+  }
 }

@@ -5426,6 +5426,1329 @@
     [],
     []
   ],
+  "intent_pair_models": [
+    {
+      "gold": [
+        "select_data_equal_to",
+        "get_superpower_power_names"
+      ],
+      "predicted": [
+        "get_superpower_ids"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "compute_data_count"
+      ],
+      "predicted": [
+        "select_data_equal_to"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "select_data_greater_than",
+        "compute_data_count"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "compute_data_count"
+      ],
+      "predicted": [
+        "select_data_equal_to"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "get_colour_colours"
+      ],
+      "predicted": [
+        "get_colour_colours"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "select_data_equal_to",
+        "compute_data_count"
+      ],
+      "predicted": [
+        "select_data_equal_to",
+        "select_data_equal_to",
+        "compute_data_count"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "select_data_equal_to",
+        "get_superhero_superhero_names"
+      ],
+      "predicted": [
+        "select_data_equal_to",
+        "select_data_equal_to",
+        "get_superhero_superhero_names"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "compute_data_count"
+      ],
+      "predicted": [
+        "select_data_equal_to"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "get_publisher_publisher_names"
+      ],
+      "predicted": [
+        "get_publisher_ids"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "compute_data_mean"
+      ],
+      "predicted": [
+        "compute_data_mean"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "compute_data_count"
+      ],
+      "predicted": [
+        "compute_data_count"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "sort_data_ascending",
+        "get_publisher_publisher_names",
+        "truncate"
+      ],
+      "predicted": [
+        "select_data_equal_to"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "select_data_equal_to",
+        "compute_data_count"
+      ],
+      "predicted": [
+        "select_data_equal_to"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "get_publisher_publisher_names"
+      ],
+      "predicted": [
+        "get_publisher_publisher_names"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "compute_data_count"
+      ],
+      "predicted": [
+        "select_data_equal_to"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "sort_data_ascending",
+        "get_superhero_superhero_names",
+        "truncate"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "get_race_races"
+      ],
+      "predicted": [
+        "get_race_races"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "get_superhero_superhero_names"
+      ],
+      "predicted": [
+        "select_data_equal_to"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "select_data_equal_to",
+        "select_data_equal_to",
+        "compute_data_count"
+      ],
+      "predicted": [
+        "select_data_equal_to"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "compute_data_count"
+      ],
+      "predicted": [
+        "select_data_equal_to"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "get_ids"
+      ],
+      "predicted": [
+        "get_ids"
+      ]
+    },
+    {
+      "gold": [
+        "compute_data_mean"
+      ],
+      "predicted": [
+        "compute_data_mean"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "get_colour_colours"
+      ],
+      "predicted": [
+        "select_data_equal_to"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "get_superpower_power_names"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "compute_data_mean"
+      ],
+      "predicted": [
+        "compute_data_mean"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "get_superhero_superhero_names"
+      ],
+      "predicted": [
+        "select_data_equal_to"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "get_superpower_power_names"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "get_superhero_full_names"
+      ],
+      "predicted": [
+        "get_superhero_full_names"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "compute_data_count"
+      ],
+      "predicted": [
+        "select_data_equal_to"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "get_race_races"
+      ],
+      "predicted": [
+        "select_data_equal_to"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "select_data_equal_to",
+        "get_colour_colours",
+        "select_unique_values"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "sort_data_descending",
+        "get_colour_colours",
+        "truncate"
+      ],
+      "predicted": [
+        "select_data_equal_to"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "get_hero_attribute_attribute_values"
+      ],
+      "predicted": [
+        "get_hero_attribute_attribute_values"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "get_superpower_power_names",
+        "select_unique_values"
+      ],
+      "predicted": [
+        "get_superpower_ids"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "compute_data_count"
+      ],
+      "predicted": [
+        "select_data_equal_to"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "sort_data_descending",
+        "get_superhero_full_names",
+        "truncate"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "compute_data_count"
+      ],
+      "predicted": [
+        "select_data_equal_to"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "get_colour_colours"
+      ],
+      "predicted": [
+        "select_data_equal_to"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "get_superhero_superhero_names"
+      ],
+      "predicted": [
+        "select_data_equal_to"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "get_race_races"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "get_superhero_superhero_names",
+        "get_race_races"
+      ],
+      "predicted": [
+        "select_data_equal_to"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "get_gender_genders"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "get_superhero_superhero_names"
+      ],
+      "predicted": [
+        "select_data_equal_to"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "compute_data_count"
+      ],
+      "predicted": [
+        "get_hero_power_power_ids"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "get_superpower_power_names"
+      ],
+      "predicted": [
+        "get_superpower_power_names"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "get_superhero_height_cms"
+      ],
+      "predicted": [
+        "select_data_equal_to"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "get_colour_colours"
+      ],
+      "predicted": [
+        "select_data_equal_to",
+        "get_superhero_eye_colour_ids"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "get_superhero_full_names"
+      ],
+      "predicted": [
+        "get_superhero_full_names"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "get_superhero_superhero_names"
+      ],
+      "predicted": [
+        "get_alignment_alignments"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "get_race_races",
+        "get_alignment_alignments"
+      ],
+      "predicted": [
+        "get_race_races",
+        "get_alignment_alignments",
+        "select_data_equal_to"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "get_superpower_power_names"
+      ],
+      "predicted": [
+        "get_superpower_ids"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "sort_data_descending",
+        "get_superhero_superhero_names",
+        "truncate"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "compute_data_count"
+      ],
+      "predicted": [
+        "select_data_equal_to"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "get_attribute_attribute_names",
+        "get_hero_attribute_attribute_values"
+      ],
+      "predicted": [
+        "get_hero_attribute_attribute_values"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "select_data_equal_to",
+        "get_superhero_superhero_names"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "compute_data_count"
+      ],
+      "predicted": [
+        "select_data_equal_to"
+      ]
+    },
+    {
+      "gold": [
+        "sort_data_descending",
+        "get_superhero_names",
+        "truncate"
+      ],
+      "predicted": [
+        "compute_data_argmax"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "get_ids"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "get_superhero_names"
+      ],
+      "predicted": [
+        "select_data_equal_to"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "get_colour_colours"
+      ],
+      "predicted": [
+        "select_data_equal_to"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "get_superpower_power_names"
+      ],
+      "predicted": [
+        "select_data_equal_to"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "select_data_equal_to",
+        "get_race_races",
+        "select_unique_values"
+      ],
+      "predicted": [
+        "select_data_equal_to",
+        "select_data_equal_to",
+        "get_race_races"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "get_publisher_publisher_names"
+      ],
+      "predicted": [
+        "get_publisher_ids"
+      ]
+    },
+    {
+      "gold": [
+        "sort_data_descending",
+        "get_race_races",
+        "truncate"
+      ],
+      "predicted": [
+        "get_race_races"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "get_superhero_superhero_names",
+        "truncate"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "compute_data_mean"
+      ],
+      "predicted": [
+        "compute_data_mean"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "get_colour_colours",
+        "select_unique_values"
+      ],
+      "predicted": [
+        "select_data_equal_to"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "select_data_equal_to",
+        "compute_data_count"
+      ],
+      "predicted": [
+        "compute_data_count"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "select_data_equal_to",
+        "get_race_races"
+      ],
+      "predicted": [
+        "select_data_equal_to"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "select_data_equal_to",
+        "get_hero_attribute_attribute_values"
+      ],
+      "predicted": [
+        "get_attribute_attribute_names",
+        "get_superhero_ids",
+        "get_hero_attribute_attribute_ids",
+        "get_hero_attribute_hero_ids"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "get_superpower_power_names"
+      ],
+      "predicted": [
+        "get_superpower_ids"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "select_data_equal_to",
+        "compute_data_count"
+      ],
+      "predicted": [
+        "select_data_equal_to"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "select_data_equal_to",
+        "compute_data_count"
+      ],
+      "predicted": [
+        "select_data_equal_to"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "sort_data_ascending",
+        "get_superhero_superhero_names"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "get_gender_genders"
+      ],
+      "predicted": [
+        "select_data_equal_to"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "sort_data_descending",
+        "get_superhero_superhero_names",
+        "truncate"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "select_data_not_equal_to",
+        "compute_data_mean"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "select_data_equal_to",
+        "compute_data_count"
+      ],
+      "predicted": [
+        "compute_data_count"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "sort_data_ascending",
+        "get_attribute_attribute_names",
+        "truncate"
+      ],
+      "predicted": [
+        "get_hero_attribute_attribute_values"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "get_colour_colours"
+      ],
+      "predicted": [
+        "get_superhero_eye_colour_ids"
+      ]
+    },
+    {
+      "gold": [
+        "sort_data_descending",
+        "get_superhero_names",
+        "truncate"
+      ],
+      "predicted": [
+        "get_height_cms"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "get_superhero_names"
+      ],
+      "predicted": [
+        "get_full_names"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "get_full_names"
+      ],
+      "predicted": [
+        "get_full_names"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_less_than",
+        "select_data_equal_to",
+        "get_superhero_full_names"
+      ],
+      "predicted": [
+        "select_data_equal_to"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "get_hero_attribute_attribute_values"
+      ],
+      "predicted": [
+        "get_hero_attribute_attribute_values"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "get_superhero_weight_kgs",
+        "get_race_races"
+      ],
+      "predicted": [
+        "select_data_equal_to"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "compute_data_mean"
+      ],
+      "predicted": [
+        "compute_data_mean"
+      ]
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "get_hero_power_hero_ids"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "select_data_equal_to",
+        "get_colour_colours"
+      ],
+      "predicted": [
+        "select_data_equal_to"
+      ]
+    }
+  ],
+  "slot_pair_models": [
+    {
+      "gold": [
+        "data = $starting_table_var$",
+        "key_name = superpower_power_name",
+        "value = Super Strength"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $starting_table_var$",
+        "key_name = colour_colour",
+        "value = Blue"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $FILTERED_DF$"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $starting_table_var$",
+        "key_name = superpower_power_name",
+        "value = Agility"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $FILTERED_DF$",
+        "key_name = colour_colour",
+        "value = Blue"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $FILTERED_DF$",
+        "key_name = superhero_id",
+        "distinct = False"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $starting_table_var$",
+        "key_name = colour_colour",
+        "value = Blue"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $FILTERED_DF$",
+        "key_name = colour_1_colour",
+        "value = Blond"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $FILTERED_DF$"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $starting_table_var$",
+        "key_name = publisher_publisher_name",
+        "value = Marvel Comics"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $FILTERED_DF$",
+        "key_name = superhero_height_cm",
+        "distinct = False"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $FILTERED_DF$",
+        "key_name = superhero_id",
+        "distinct = False"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $starting_table_var$",
+        "key_name = attribute_attribute_name",
+        "value = Speed"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $starting_table_var$",
+        "key_name = publisher_publisher_name",
+        "value = Marvel Comics"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $FILTERED_DF$"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $starting_table_var$",
+        "key_name = colour_colour",
+        "value = Blond"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $FILTERED_DF$"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $starting_table_var$",
+        "key_name = superpower_power_name",
+        "value = Death Touch"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $starting_table_var$",
+        "key_name = attribute_attribute_name",
+        "value = Strength"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $starting_table_var$",
+        "key_name = race_race",
+        "value = Vampire"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $FILTERED_DF$"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $starting_table_var$",
+        "key_name = attribute_value",
+        "distinct = False"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $starting_table_var$",
+        "key_name = superhero_id",
+        "value = 75"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $FILTERED_DF$",
+        "key_name = superhero_weight_kg",
+        "distinct = False"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $starting_table_var$",
+        "key_name = race_race",
+        "value = Alien"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $FILTERED_DF$"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $starting_table_var$",
+        "key_name = alignment_alignment",
+        "value = Bad"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $starting_table_var$",
+        "key_name = superhero_weight_kg",
+        "value = 169"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $FILTERED_DF$"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $starting_table_var$",
+        "key_name = superpower_power_name",
+        "value = Stealth"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $starting_table_var$",
+        "key_name = publisher_publisher_name",
+        "value = Dark Horse Comics"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $starting_table_var$",
+        "key_name = superhero_full_name",
+        "value = Abraham Sapien"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $starting_table_var$",
+        "key_name = superpower_power_name",
+        "value = Flight"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $starting_table_var$",
+        "key_name = superhero_full_name",
+        "value = Charles Chandler"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $starting_table_var$",
+        "key_name = superpower_power_name",
+        "value = Adaptation"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $FILTERED_DF$"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $starting_table_var$",
+        "key_name = colour_colour",
+        "value = Amber"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $starting_table_var$",
+        "key_name = colour_1_colour",
+        "value = Gold"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $FILTERED_DF$"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $starting_table_var$",
+        "key_name = superhero_superhero_name",
+        "value = Cameron Hicks"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $FILTERED_DF$"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $FILTERED_DF$"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $starting_table_var$",
+        "key_name = alignment_alignment",
+        "value = Neutral"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $FILTERED_DF$"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $starting_table_var$",
+        "key_name = publisher_id",
+        "value = 1"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $starting_table_var$",
+        "key_name = id",
+        "value = 294"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $starting_table_var$",
+        "key_name = superhero_full_name",
+        "value = Karen Beecher-Duncan"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $starting_table_var$",
+        "key_name = superhero_full_name",
+        "value = Helen Parr"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $starting_table_var$",
+        "key_name = superhero_weight_kg",
+        "value = 108"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $FILTERED_DF$",
+        "key_name = superhero_height_cm",
+        "value = 188"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $FILTERED_DF$"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $SORTED_DF$"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $FILTERED_DF$",
+        "key_name = hero_attribute_attribute_value",
+        "distinct = False"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $starting_table_var$",
+        "key_name = hero_attribute_attribute_value",
+        "value = 100"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $FILTERED_DF$",
+        "key_name = superhero_id",
+        "distinct = False"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $starting_table_var$",
+        "key_name = colour_colour",
+        "value = Blue"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $starting_table_var$",
+        "key_name = alignment_alignment",
+        "value = Bad"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $starting_table_var$",
+        "key_name = publisher_publisher_name",
+        "value = Marvel Comics"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $starting_table_var$",
+        "key_name = superpower_power_name",
+        "value = Phoenix Force"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $FILTERED_DF$",
+        "key_name = superhero_superhero_name",
+        "distinct = False"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $FILTERED_DF$"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $FILTERED_DF$",
+        "key_name = colour_colour",
+        "value = Brown"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $FILTERED_DF$"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $starting_table_var$",
+        "key_name = superhero_id",
+        "value = 40"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $FILTERED_DF$",
+        "key_name = superhero_height_cm",
+        "distinct = False"
+      ],
+      "predicted": []
+    },
+    {
+      "gold": [
+        "data = $starting_table_var$",
+        "key_name = superhero_superhero_name",
+        "value = Blackwulf"
+      ],
+      "predicted": []
+    }
+  ],
   "win_rate": 0.0,
   "num_sequences_processed_win_rate": 89,
   "error_messages_win_rate": [
