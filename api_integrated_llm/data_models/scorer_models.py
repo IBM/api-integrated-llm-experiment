@@ -127,6 +127,7 @@ class BasicRateDictModel(BaseModel):
 class WinRateResultUnitModel(BaseModel):
     valid: bool
     payload: Dict[str, Any]
+    pred_function_calls: List[Any]
     gold_function_calls: List[Any]
     num_failed_function_execution: int
     error_messages: List[str]

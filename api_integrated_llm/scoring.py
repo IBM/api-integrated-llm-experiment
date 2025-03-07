@@ -17,8 +17,6 @@ from api_integrated_llm.data_models.scorer_models import (
 from api_integrated_llm.data_models.source_models import (
     EvaluationOutputResponseDataUnit,
 )
-
-# from api_integrated_llm.helpers.database_helper.win_rate_calculator import get_win_rate
 from api_integrated_llm.helpers.database_helper.win_rate_calculator import get_win_rate
 from api_integrated_llm.helpers.output_parsers import (
     parse_output_from_language_models,
@@ -44,9 +42,7 @@ project_root_path = Path(__file__).parent.resolve()
 def get_function_dict(content: Any) -> Optional[Dict[str, Any]]:
     if content is None or not isinstance(content, str):
         return None
-    # legacy: only for pred
-    # if f.strip() == '{"name": "dummy", "arguments": {}}':
-    #     continue
+
     return json.loads(
         content.replace("<|endoftext|>", "").replace("null", "{}").strip()
     )

@@ -147,6 +147,7 @@ def get_repaired_function_calls(
 def evaluate_win_rate(
     payloads: List[Dict[str, Any]],
     builder: SqlDatasetBuilder,
+    pred_function_calls_list: List[List[Any]],
     gold_function_calls_list: List[List[Any]],
 ) -> Tuple[float, List[str], int, WinRateResultModel]:
     valid = []
@@ -185,7 +186,7 @@ def evaluate_win_rate(
         win_rate_result_model.win_rate_result.append(
             WinRateResultUnitModel(
                 valid=validated,
-                payload=deepcopy(p),
+                pred_function_calls=deepcopy(pred_function_calls_list[i]),
                 gold_function_calls=deepcopy(gold_function_calls_list[i]),
                 num_failed_function_execution=num_failed_function_execution,
                 error_messages=deepcopy(error_messages),

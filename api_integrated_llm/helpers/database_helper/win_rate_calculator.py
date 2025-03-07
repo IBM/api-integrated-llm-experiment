@@ -108,7 +108,10 @@ def get_win_rate(
                 num_failed_function_execution,
                 win_rate_result_model,
             ) = evaluate_win_rate(
-                payloads, builder, gold_function_calls_list=gold_function_calls
+                payloads,
+                builder,
+                pred_function_calls_list=predicted_function_calls,
+                gold_function_calls_list=gold_function_calls,
             )
             error_messages.extend(error_messages)
             num_failed_function_execution_list.append(num_failed_function_execution)
