@@ -106,11 +106,7 @@ class BasicRateModel(BaseModel):
         return BasicRateModel()
 
     def add_micro(self, rate_model: BasicRateModel) -> None:
-        if (
-            self.unit_model is not None
-            and rate_model.unit_model is not None
-            and rate_model.unit_model.is_valid()
-        ):
+        if rate_model.unit_model is not None and rate_model.unit_model.is_valid():
             if self.unit_model is None:
                 self.unit_model = BasicRateUnitModel()
             self.unit_model.add(unit_model=rate_model.unit_model)
