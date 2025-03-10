@@ -9,6 +9,36 @@ from api_integrated_llm.data_models.source_models import (
 )
 
 
+class WinRateResultUnitModel(BaseModel):
+    valid: bool = False
+    pred_function_calls: List[Union[str, Dict[str, Union[str, int, float]]]] = []
+    gold_function_calls: List[Union[str, Dict[str, Union[str, int, float]]]] = []
+    num_failed_function_execution: int = 0
+    error_messages: List[str] = []
+
+    def get_length_gold_function_calls(self) -> int:
+        return len(self.gold_function_calls)
+
+    def get_basic_rate_unit_model(self) -> BasicRateUnitModel:
+        return (
+            BasicRateUnitModel(success=1, fail=0)
+            if self.valid
+            else BasicRateUnitModel(success=0, fail=1)
+        )
+
+
+class WinRateResultModel(BaseModel):
+    win_rate_result: List[WinRateResultUnitModel] = []
+
+    def get_rate(self) -> Optional[float]:
+        if len(self.win_rate_result) == 0:
+            return None
+
+        return (
+            len(list(filter(lambda result: result.valid, self.win_rate_result)))
+        ) / len(self.win_rate_result)
+
+
 class ConfusionMatrixMode(str, Enum):
     SET = "set"
     COUNTER = "counter"
@@ -103,6 +133,7 @@ class BasicRateModel(BaseModel):
 
 class BasicRateDictModel(BaseModel):
     rate_dictionary: Dict[str, BasicRateModel] = dict()
+    raw_data: Dict[str, List[WinRateResultUnitModel]] = dict()
 
     def add_micro(self, rate_dict_model: BasicRateDictModel) -> None:
         for key, rate_model in rate_dict_model.rate_dictionary.items():
@@ -131,27 +162,9 @@ class BasicRateDictModel(BaseModel):
                     )
 
 
-class WinRateResultUnitModel(BaseModel):
-    valid: bool
-    pred_function_calls: List[Any]
-    gold_function_calls: List[Any]
-    num_failed_function_execution: int
-    error_messages: List[str]
-
-    def get_length_gold_function_calls(self) -> int:
-        return len(self.gold_function_calls)
-
-
-class WinRateResultModel(BaseModel):
-    win_rate_result: List[WinRateResultUnitModel] = []
-
-    def get_rate(self) -> Optional[float]:
-        if len(self.win_rate_result) == 0:
-            return None
-
-        return (
-            len(list(filter(lambda result: result.valid, self.win_rate_result)))
-        ) / len(self.win_rate_result)
+class BasicRateDictMetaModel(BaseModel):
+    micro_rate: BasicRateDictModel = BasicRateDictModel()
+    macro_rate: BasicRateDictModel = BasicRateDictModel()
 
 
 class ConfusionMetrixMetricsModel(BaseModel):
@@ -376,6 +389,7 @@ class MetaMetricsAggregationModel(BaseModel):
     intent_counter_metrics: MetricsAggregationModel = MetricsAggregationModel()
     intent_list_metrics: MetricsAggregationModel = MetricsAggregationModel()
     slot_set_metrics: MetricsAggregationModel = MetricsAggregationModel()
+    win_rate_metrics: BasicRateDictMetaModel = BasicRateDictMetaModel()
 
 
 class AggegatorOutputModel(BaseModel):
