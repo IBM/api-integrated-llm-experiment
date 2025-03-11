@@ -416,6 +416,47 @@ def parse_mistral_7b_instruct_v0_3(
     )
 
 
+def parse_Hammer2_0_7b(
+    prediction: Dict[str, Any],
+    num_errors_parsing_pred_intent: int,
+    skip_grounding: bool = False,
+):
+    pred_has_parsing_errors = False
+    pred_func_calls, gold_func_calls = [], []
+    pred_dict_list, gold_dict_list = [], []
+
+    gold_dict_list = json.loads(prediction["output"])
+    if skip_grounding:
+        gold_func_calls = [json.dumps(func) for func in gold_dict_list]
+    else:
+        gold_func_calls = ground_seq_nested_repsonse(gold_dict_list)
+        gold_func_calls = [json.dumps(func) for func in gold_func_calls]
+
+    try:
+        pred = prediction["generated_text"].replace("```", "").strip()
+        pred_dict_list = json.loads(pred)
+        assert len(pred_dict_list) > 0, "parsing issue"
+
+        if skip_grounding:
+            pred_func_calls = [json.dumps(func) for func in pred_dict_list]
+        else:
+            pred_func_calls = ground_seq_nested_repsonse(pred_dict_list)
+            pred_func_calls = [json.dumps(func) for func in pred_func_calls]
+
+    except:
+        num_errors_parsing_pred_intent += 1
+        pred_has_parsing_errors = True
+
+    return (
+        pred_func_calls,
+        gold_func_calls,
+        pred_dict_list,
+        gold_dict_list,
+        num_errors_parsing_pred_intent,
+        pred_has_parsing_errors,
+    )
+
+
 def parse_output_from_language_models(
     prediction: Dict[str, Any],
     model_name: str,
@@ -536,6 +577,20 @@ def parse_output_from_language_models(
             pred_has_parsing_errors,
             parsing_error_messages,
         ) = parse_mistral_7b_instruct_v0_3(
+            prediction=prediction,
+            num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
+            skip_grounding=is_single_intent_detection,
+        )
+    elif "hammer" in model_name_lower_cased:
+        (
+            pred_func_calls,
+            gold_func_calls,
+            pred_dict_list,
+            gold_dict_list,
+            num_errors_parsing_pred_intent_res,
+            pred_has_parsing_errors,
+            parsing_error_messages,
+        ) = parse_Hammer2_0_7b(
             prediction=prediction,
             num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
             skip_grounding=is_single_intent_detection,
