@@ -102,6 +102,13 @@ def get_arguments() -> argparse.Namespace:
     )
 
     parser.add_argument(
+        "-asy",
+        "--use_async",
+        action=argparse.BooleanOptionalAction,
+        help="Use asynchronous operations",
+    )
+
+    parser.add_argument(
         "-si",
         "--single_intent",
         action=argparse.BooleanOptionalAction,
@@ -308,6 +315,7 @@ def cli() -> None:
             should_generate_random_example=args.random_example,
             num_examples=args.number_random_example,
             should_ignore=args.ignore,
+            should_async=args.use_async,
         )
 
     if args.mode == CliModeModel.PARSER:

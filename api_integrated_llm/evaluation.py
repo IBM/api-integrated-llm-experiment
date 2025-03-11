@@ -152,6 +152,7 @@ def evaluate(
     should_generate_random_example: bool = False,
     num_examples: int = 1,
     should_ignore: bool = True,
+    should_async: bool = True,
 ):
     loop = asyncio.get_event_loop()
 
@@ -162,8 +163,10 @@ def evaluate(
             print(f"Max tokens: {max_tokens}")
 
             for evaluation_input_file_path in evaluation_input_file_paths:
-                tasks = []
+                tasks = []  # type: ignore
                 for model_name, model_obj in model_id_info_dict.items():
+                    if not should_async:
+                        tasks = []
                     tasks.append(
                         get_output_list(
                             prompt_file_path=deepcopy(prompt_file_path),
@@ -185,5 +188,8 @@ def evaluate(
                             max_tokens=max_tokens,
                         )
                     )
+                    if not should_async:
+                        loop.run_until_complete(asyncio.gather(*tasks))
 
-                loop.run_until_complete(asyncio.gather(*tasks))
+                if should_async:
+                    loop.run_until_complete(asyncio.gather(*tasks))
