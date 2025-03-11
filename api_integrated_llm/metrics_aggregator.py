@@ -28,20 +28,23 @@ def aggregate_metrics(
 
     try:
         output_model = AggegatorOutputModel()
-        output_model.aggregated_metrics[
-            "compute_mode_meta_metrics"
-        ] = get_agent_meta_metrics_aggregation_model(
+        (
+            output_model.aggregated_metrics["compute_mode_meta_metrics"],
+            output_model.aggregated_metrics_problem_level["compute_mode_meta_metrics"],
+        ) = get_agent_meta_metrics_aggregation_model(
             path_model_list=metrics_objs,
         )
-        output_model.aggregated_metrics[
-            "gold_output_length"
-        ] = get_output_length_meta_metrics_aggregation_model(
+        (
+            output_model.aggregated_metrics["gold_output_length"],
+            output_model.aggregated_metrics_problem_level["gold_output_length"],
+        ) = get_output_length_meta_metrics_aggregation_model(
             path_model_list=metrics_objs,
         )
         for category_mode, categoris in metrics_configuration_obj.items():
-            output_model.aggregated_metrics[
-                category_mode
-            ] = get_category_meta_metrics_aggregation_model(
+            (
+                output_model.aggregated_metrics[category_mode],
+                output_model.aggregated_metrics_problem_level[category_mode],
+            ) = get_category_meta_metrics_aggregation_model(
                 path_model_list=metrics_objs, categories=categoris
             )
         write_json(

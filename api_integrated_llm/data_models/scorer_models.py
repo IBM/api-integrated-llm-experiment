@@ -328,6 +328,7 @@ class ScorerOuputModel(BaseModel):
 class MetricsAggregationModel(BaseModel):
     micro: Dict[str, ConfusionMetrixMetricsModel] = dict()
     macro: Dict[str, ConfusionMetrixMetricsModel] = dict()
+    macro_problem_level: Dict[str, ConfusionMetrixMetricsModel] = dict()
     categories: List[str] = []
     raw_data: Dict[str, List[ConfusionMetrixMetricsModel]] = dict()
 
@@ -344,8 +345,9 @@ class MetaMetricsAggregationModel(BaseModel):
     intent_counter_metrics: MetricsAggregationModel = MetricsAggregationModel()
     intent_list_metrics: MetricsAggregationModel = MetricsAggregationModel()
     slot_set_metrics: MetricsAggregationModel = MetricsAggregationModel()
-    win_rate_metrics: BasicRateDictMetaModel = BasicRateDictMetaModel()
+    win_rate_metrics: Optional[BasicRateDictMetaModel] = BasicRateDictMetaModel()
 
 
 class AggegatorOutputModel(BaseModel):
     aggregated_metrics: Dict[str, MetaMetricsAggregationModel] = dict()
+    aggregated_metrics_problem_level: Dict[str, MetaMetricsAggregationModel] = dict()
