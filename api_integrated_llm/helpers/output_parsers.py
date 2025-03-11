@@ -387,8 +387,9 @@ def parse_mistral_7b_instruct_v0_3(
         print(e)
         try:
             pred = prediction["generated_text"].strip()
-            pred_dict_list = json.loads(
-                pred.replace("\n", "").replace("\_", "_"),  # noqa: W605,
+            pred_dict_list = get_json_data_with_two_step_parsing(
+                txt=pred.replace("\n", "").replace("\_", "_"),  # noqa: W605,
+                should_return_list=True,
             )  # noqa: W605
             if skip_grounding:
                 pred_func_calls = [json.dumps(func) for func in pred_dict_list]
@@ -434,7 +435,9 @@ def parse_Hammer2_0_7b(
 
     try:
         pred = prediction["generated_text"].replace("```", "").strip()
-        pred_dict_list = json.loads(pred)
+        pred_dict_list = get_json_data_with_two_step_parsing(
+            txt=pred, should_return_list=True
+        )
         assert len(pred_dict_list) > 0, "parsing issue"
 
         if skip_grounding:
