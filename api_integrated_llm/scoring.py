@@ -8,10 +8,13 @@ from typing import Any, Deque, Dict, List, Optional, Tuple, Union, cast
 from api_integrated_llm.data_models.common_models import CommonErrorModel
 from api_integrated_llm.data_models.scorer_models import (
     ConfusionMatrixMode,
+    ConfusionMatrixModel,
     ConfusionMetrixMetricsModel,
     ContentPairModel,
     MicroConfusionMetrixMetricsByOutputLengthModel,
+    MicroConfusionMetrixMetricsByOutputLengthProblemLevelModel,
     MicroConfusionMetrixMetricsModel,
+    MicroConfusionMetrixMetricsProblemLevelModel,
     ScorerOuputModel,
     WinRateResultModel,
 )
@@ -392,37 +395,97 @@ def get_micro_confusion_matrix_metrics(
     pred_output_intent: List[List[str]],
     gold_output_slot: List[List[str]],
     pred_output_slot: List[List[str]],
-) -> MicroConfusionMetrixMetricsModel:
-    return MicroConfusionMetrixMetricsModel(
-        intent_set_metrics=ConfusionMetrixMetricsModel.get_confusion_matrix_metrics_micro(
-            get_confision_matrix_from_answers(
-                gold_answers=gold_output_intent,
-                predicted_answers=pred_output_intent,
-                mode=ConfusionMatrixMode.SET,
-            )
+) -> Tuple[
+    MicroConfusionMetrixMetricsModel, MicroConfusionMetrixMetricsProblemLevelModel
+]:
+    (
+        confusion_matrix_intent_set,
+        confusion_matrix_intent_set_list,
+    ) = get_confision_matrix_from_answers(
+        gold_answers=gold_output_intent,
+        predicted_answers=pred_output_intent,
+        mode=ConfusionMatrixMode.SET,
+    )
+    (
+        confusion_matrix_intent_counter,
+        confusion_matrix_intent_counter_list,
+    ) = get_confision_matrix_from_answers(
+        gold_answers=gold_output_intent,
+        predicted_answers=pred_output_intent,
+        mode=ConfusionMatrixMode.COUNTER,
+    )
+    (
+        confusion_matrix_intent_list,
+        confusion_matrix_intent_list_list,
+    ) = get_confision_matrix_from_answers(
+        gold_answers=gold_output_intent,
+        predicted_answers=pred_output_intent,
+        mode=ConfusionMatrixMode.LIST,
+    )
+    (
+        confusion_matrix_slot_set,
+        confusion_matrix_slot_set_list,
+    ) = get_confision_matrix_from_answers(
+        gold_answers=gold_output_slot,
+        predicted_answers=pred_output_slot,
+        mode=ConfusionMatrixMode.SET,
+    )
+    return (
+        MicroConfusionMetrixMetricsModel(
+            intent_set_metrics=ConfusionMetrixMetricsModel.get_confusion_matrix_metrics_micro(
+                confusion_matrix_intent_set
+            ),
+            intent_counter_metrics=ConfusionMetrixMetricsModel.get_confusion_matrix_metrics_micro(
+                confusion_matrix_intent_counter
+            ),
+            intent_list_metrics=ConfusionMetrixMetricsModel.get_confusion_matrix_metrics_micro(
+                confusion_matrix_intent_list
+            ),
+            slot_set_metrics=ConfusionMetrixMetricsModel.get_confusion_matrix_metrics_micro(
+                confusion_matrix_slot_set
+            ),
         ),
-        intent_counter_metrics=ConfusionMetrixMetricsModel.get_confusion_matrix_metrics_micro(
-            get_confision_matrix_from_answers(
-                gold_answers=gold_output_intent,
-                predicted_answers=pred_output_intent,
-                mode=ConfusionMatrixMode.COUNTER,
-            )
-        ),
-        intent_list_metrics=ConfusionMetrixMetricsModel.get_confusion_matrix_metrics_micro(
-            get_confision_matrix_from_answers(
-                gold_answers=gold_output_intent,
-                predicted_answers=pred_output_intent,
-                mode=ConfusionMatrixMode.LIST,
-            )
-        ),
-        slot_set_metrics=ConfusionMetrixMetricsModel.get_confusion_matrix_metrics_micro(
-            get_confision_matrix_from_answers(
-                gold_answers=gold_output_slot,
-                predicted_answers=pred_output_slot,
-                mode=ConfusionMatrixMode.SET,
-            )
+        MicroConfusionMetrixMetricsProblemLevelModel(
+            intent_set_metrics_list=[
+                ConfusionMetrixMetricsModel.get_confusion_matrix_metrics_micro(
+                    confusion_matrix_instance
+                )
+                for confusion_matrix_instance in confusion_matrix_intent_set_list
+            ],
+            intent_counter_metrics_list=[
+                ConfusionMetrixMetricsModel.get_confusion_matrix_metrics_micro(
+                    confusion_matrix_instance
+                )
+                for confusion_matrix_instance in confusion_matrix_intent_counter_list
+            ],
+            intent_list_metrics_list=[
+                ConfusionMetrixMetricsModel.get_confusion_matrix_metrics_micro(
+                    confusion_matrix_instance
+                )
+                for confusion_matrix_instance in confusion_matrix_intent_list_list
+            ],
+            slot_set_metrics_list=[
+                ConfusionMetrixMetricsModel.get_confusion_matrix_metrics_micro(
+                    confusion_matrix_instance
+                )
+                for confusion_matrix_instance in confusion_matrix_slot_set_list
+            ],
         ),
     )
+
+
+def get_confusion_matrix_metrics_dict_by_output_length_from_dict(
+    confusion_matrix_by_output_length_list_dict: Dict[int, List[ConfusionMatrixModel]],
+) -> Dict[int, List[ConfusionMetrixMetricsModel]]:
+    return {
+        length: [
+            ConfusionMetrixMetricsModel.get_confusion_matrix_metrics_micro(
+                confusion_matrix=matrix
+            )
+            for matrix in matrices
+        ]
+        for length, matrices in confusion_matrix_by_output_length_list_dict.items()
+    }
 
 
 def get_micro_confusion_matrix_metrics_by_output_length(
@@ -430,35 +493,71 @@ def get_micro_confusion_matrix_metrics_by_output_length(
     pred_output_intent: List[List[str]],
     gold_output_slot: List[List[str]],
     pred_output_slot: List[List[str]],
-) -> MicroConfusionMetrixMetricsByOutputLengthModel:
-    return MicroConfusionMetrixMetricsByOutputLengthModel(
-        intent_set_metrics=ConfusionMetrixMetricsModel.get_confusion_matrix_metrics_micro_by_output_length(
-            get_confision_matrix_from_answers_by_output_length(
-                gold_answers=gold_output_intent,
-                predicted_answers=pred_output_intent,
-                mode=ConfusionMatrixMode.SET,
-            )
+) -> Tuple[
+    MicroConfusionMetrixMetricsByOutputLengthModel,
+    MicroConfusionMetrixMetricsByOutputLengthProblemLevelModel,
+]:
+    (
+        confusion_matrix_intent_set_by_output_length_dict,
+        confusion_matrix_intent_set_by_output_length_list_dict,
+    ) = get_confision_matrix_from_answers_by_output_length(
+        gold_answers=gold_output_intent,
+        predicted_answers=pred_output_intent,
+        mode=ConfusionMatrixMode.SET,
+    )
+    (
+        confusion_matrix_intent_counter_by_output_length_dict,
+        confusion_matrix_intent_counter_by_output_length_list_dict,
+    ) = get_confision_matrix_from_answers_by_output_length(
+        gold_answers=gold_output_intent,
+        predicted_answers=pred_output_intent,
+        mode=ConfusionMatrixMode.COUNTER,
+    )
+    (
+        confusion_matrix_intent_list_by_output_length_dict,
+        confusion_matrix_intent_list_by_output_length_list_dict,
+    ) = get_confision_matrix_from_answers_by_output_length(
+        gold_answers=gold_output_intent,
+        predicted_answers=pred_output_intent,
+        mode=ConfusionMatrixMode.LIST,
+    )
+    (
+        confusion_matrix_slot_set_by_output_length_dict,
+        confusion_matrix_slot_set_by_output_length_list_dict,
+    ) = get_confision_matrix_from_answers_by_output_length(
+        gold_answers=gold_output_slot,
+        predicted_answers=pred_output_slot,
+        mode=ConfusionMatrixMode.SET,
+    )
+
+    return (
+        MicroConfusionMetrixMetricsByOutputLengthModel(
+            intent_set_metrics=ConfusionMetrixMetricsModel.get_confusion_matrix_metrics_micro_by_output_length(
+                confusion_matrix_intent_set_by_output_length_dict
+            ),
+            intent_counter_metrics=ConfusionMetrixMetricsModel.get_confusion_matrix_metrics_micro_by_output_length(
+                confusion_matrix_intent_counter_by_output_length_dict
+            ),
+            intent_list_metrics=ConfusionMetrixMetricsModel.get_confusion_matrix_metrics_micro_by_output_length(
+                confusion_matrix_intent_list_by_output_length_dict
+            ),
+            slot_set_metrics=ConfusionMetrixMetricsModel.get_confusion_matrix_metrics_micro_by_output_length(
+                confusion_matrix_slot_set_by_output_length_dict
+            ),
         ),
-        intent_counter_metrics=ConfusionMetrixMetricsModel.get_confusion_matrix_metrics_micro_by_output_length(
-            get_confision_matrix_from_answers_by_output_length(
-                gold_answers=gold_output_intent,
-                predicted_answers=pred_output_intent,
-                mode=ConfusionMatrixMode.COUNTER,
-            )
-        ),
-        intent_list_metrics=ConfusionMetrixMetricsModel.get_confusion_matrix_metrics_micro_by_output_length(
-            get_confision_matrix_from_answers_by_output_length(
-                gold_answers=gold_output_intent,
-                predicted_answers=pred_output_intent,
-                mode=ConfusionMatrixMode.LIST,
-            )
-        ),
-        slot_set_metrics=ConfusionMetrixMetricsModel.get_confusion_matrix_metrics_micro_by_output_length(
-            get_confision_matrix_from_answers_by_output_length(
-                gold_answers=gold_output_slot,
-                predicted_answers=pred_output_slot,
-                mode=ConfusionMatrixMode.SET,
-            )
+        MicroConfusionMetrixMetricsByOutputLengthProblemLevelModel(
+            intent_set_metrics_list=get_confusion_matrix_metrics_dict_by_output_length_from_dict(
+                confusion_matrix_by_output_length_list_dict=confusion_matrix_intent_set_by_output_length_list_dict
+            ),
+            intent_counter_metrics_list=get_confusion_matrix_metrics_dict_by_output_length_from_dict(
+                confusion_matrix_by_output_length_list_dict=confusion_matrix_intent_counter_by_output_length_list_dict
+            ),
+            intent_list_metrics_list=get_confusion_matrix_metrics_dict_by_output_length_from_dict(
+                confusion_matrix_by_output_length_list_dict=confusion_matrix_intent_list_by_output_length_list_dict
+            ),
+            slot_set_metrics_list=get_confusion_matrix_metrics_dict_by_output_length_from_dict(
+                confusion_matrix_by_output_length_list_dict=confusion_matrix_slot_set_by_output_length_list_dict
+            ),
         ),
     )
 
@@ -533,20 +632,24 @@ def calculate_scores(
         spec_path=spec_path,
     )
 
-    confusion_metrix_matrics_micro_model = get_micro_confusion_matrix_metrics(
+    (
+        confusion_metrix_matrics_micro_model,
+        confusion_metrix_matrics_micro_problem_level_model,
+    ) = get_micro_confusion_matrix_metrics(
         gold_output_intent=gold_output_intent,
         pred_output_intent=pred_output_intent,
         gold_output_slot=gold_output_slot,
         pred_output_slot=pred_output_slot,
     )
 
-    confusion_metrix_matrics_micro_model_by_output_length = (
-        get_micro_confusion_matrix_metrics_by_output_length(
-            gold_output_intent=gold_output_intent,
-            pred_output_intent=pred_output_intent,
-            gold_output_slot=gold_output_slot,
-            pred_output_slot=pred_output_slot,
-        )
+    (
+        confusion_metrix_matrics_micro_model_by_output_length,
+        confusion_metrix_matrics_micro_model_by_output_length_list,
+    ) = get_micro_confusion_matrix_metrics_by_output_length(
+        gold_output_intent=gold_output_intent,
+        pred_output_intent=pred_output_intent,
+        gold_output_slot=gold_output_slot,
+        pred_output_slot=pred_output_slot,
     )
 
     (
@@ -571,6 +674,8 @@ def calculate_scores(
     num_samples = len(predictions_input)
 
     return ScorerOuputModel(
+        confusion_metrix_matrics_micro_problem_level=confusion_metrix_matrics_micro_problem_level_model,
+        confusion_metrix_matrics_micro_model_by_output_length_problem_level=confusion_metrix_matrics_micro_model_by_output_length_list,
         confusion_metrix_matrics_micro=confusion_metrix_matrics_micro_model,
         confusion_metrix_matrics_micro_model_by_output_length=confusion_metrix_matrics_micro_model_by_output_length,
         num_examples=num_samples,

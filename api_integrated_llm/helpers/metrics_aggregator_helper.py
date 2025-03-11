@@ -16,6 +16,7 @@ from api_integrated_llm.data_models.scorer_models import (
     MetricsAggregationModel,
     MicroConfusionMetrixMetricsByOutputLengthContainerModel,
     MicroConfusionMetrixMetricsModel,
+    MicroConfusionMetrixMetricsProblemLevelModel,
     ScorerOuputModel,
     WinRateResultModel,
     WinRateResultUnitModel,
@@ -85,13 +86,29 @@ def get_output_length_metrics_categories_dict(
     path_model_list: List[Tuple[Path, ScorerOuputModel]],
 ) -> Tuple[
     MicroConfusionMetrixMetricsByOutputLengthContainerModel,
+    MicroConfusionMetrixMetricsByOutputLengthContainerModel,
     Dict[str, List[WinRateResultModel]],
 ]:
+    return (
+        get_output_length_metrics_categories_dict_micro_metrics(
+            path_model_list=path_model_list,
+        ),
+        get_output_length_metrics_categories_dict_problem_level(
+            path_model_list=path_model_list,
+        ),
+        get_output_length_metrics_categories_dict_win_rate(
+            path_model_list=path_model_list,
+        ),
+    )
+
+
+def get_output_length_metrics_categories_dict_micro_metrics(
+    path_model_list: List[Tuple[Path, ScorerOuputModel]],
+) -> MicroConfusionMetrixMetricsByOutputLengthContainerModel:
     intent_set_metrics: Dict[str, List[ConfusionMetrixMetricsModel]] = {}
     intent_counter_metrics: Dict[str, List[ConfusionMetrixMetricsModel]] = {}
     intent_list_metrics: Dict[str, List[ConfusionMetrixMetricsModel]] = {}
     slot_set_metrics: Dict[str, List[ConfusionMetrixMetricsModel]] = {}
-    win_rate_result_dict: Dict[str, List[WinRateResultModel]] = dict()
 
     for _, score_output_model in path_model_list:
         # confusion matrix
@@ -128,6 +145,20 @@ def get_output_length_metrics_categories_dict(
                 else:
                     slot_set_metrics[frequency_str].append(metrics_model)
 
+    return MicroConfusionMetrixMetricsByOutputLengthContainerModel(
+        intent_set_metrics=intent_set_metrics,
+        intent_counter_metrics=intent_counter_metrics,
+        intent_list_metrics=intent_list_metrics,
+        slot_set_metrics=slot_set_metrics,
+    )
+
+
+def get_output_length_metrics_categories_dict_win_rate(
+    path_model_list: List[Tuple[Path, ScorerOuputModel]],
+) -> Dict[str, List[WinRateResultModel]]:
+    win_rate_result_dict: Dict[str, List[WinRateResultModel]] = dict()
+
+    for _, score_output_model in path_model_list:
         # win rate
         if (
             score_output_model.win_rate_result_model is not None
@@ -158,14 +189,72 @@ def get_output_length_metrics_categories_dict(
                     WinRateResultModel(win_rate_result=win_rate_result_unit_model_list)
                 )
 
-    return (
-        MicroConfusionMetrixMetricsByOutputLengthContainerModel(
-            intent_set_metrics=intent_set_metrics,
-            intent_counter_metrics=intent_counter_metrics,
-            intent_list_metrics=intent_list_metrics,
-            slot_set_metrics=slot_set_metrics,
-        ),
-        win_rate_result_dict,
+    return win_rate_result_dict
+
+
+def get_output_length_metrics_categories_dict_problem_level(
+    path_model_list: List[Tuple[Path, ScorerOuputModel]],
+) -> MicroConfusionMetrixMetricsByOutputLengthContainerModel:
+    intent_set_metrics: Dict[str, List[ConfusionMetrixMetricsModel]] = {}
+    intent_counter_metrics: Dict[str, List[ConfusionMetrixMetricsModel]] = {}
+    intent_list_metrics: Dict[str, List[ConfusionMetrixMetricsModel]] = {}
+    slot_set_metrics: Dict[str, List[ConfusionMetrixMetricsModel]] = {}
+
+    for _, score_output_model in path_model_list:
+        # confusion matrix
+        meta_model = (
+            score_output_model.confusion_metrix_matrics_micro_model_by_output_length_problem_level
+        )
+
+        if meta_model is not None:
+            for frequency, metrics_models in meta_model.intent_set_metrics_list.items():
+                frequency_str = str(frequency)
+                if frequency_str not in intent_set_metrics:
+                    intent_set_metrics[frequency_str] = [
+                        metrics_model.model_copy(deep=True)
+                        for metrics_model in metrics_models
+                    ]
+                else:
+                    intent_set_metrics[frequency_str].extend(metrics_models)
+
+            for (
+                frequency,
+                metrics_model,
+            ) in meta_model.intent_counter_metrics_list.items():
+                frequency_str = str(frequency)
+                if frequency_str not in intent_counter_metrics:
+                    intent_counter_metrics[frequency_str] = [
+                        metrics_model.model_copy(deep=True)
+                        for metrics_model in metrics_models
+                    ]
+                else:
+                    intent_counter_metrics[frequency_str].extend(metrics_model)
+
+            for frequency, metrics_model in meta_model.intent_list_metrics_list.items():
+                frequency_str = str(frequency)
+                if frequency_str not in intent_list_metrics:
+                    intent_list_metrics[frequency_str] = [
+                        metrics_model.model_copy(deep=True)
+                        for metrics_model in metrics_models
+                    ]
+                else:
+                    intent_list_metrics[frequency_str].extend(metrics_model)
+
+            for frequency, metrics_model in meta_model.slot_set_metrics_list.items():
+                frequency_str = str(frequency)
+                if frequency_str not in slot_set_metrics:
+                    slot_set_metrics[frequency_str] = [
+                        metrics_model.model_copy(deep=True)
+                        for metrics_model in metrics_models
+                    ]
+                else:
+                    slot_set_metrics[frequency_str].extend(metrics_model)
+
+    return MicroConfusionMetrixMetricsByOutputLengthContainerModel(
+        intent_set_metrics=intent_set_metrics,
+        intent_counter_metrics=intent_counter_metrics,
+        intent_list_metrics=intent_list_metrics,
+        slot_set_metrics=slot_set_metrics,
     )
 
 
@@ -173,53 +262,130 @@ def get_agent_metrics_categories_dict(
     path_model_list: List[Tuple[Path, ScorerOuputModel]],
 ) -> Tuple[
     Dict[str, List[MicroConfusionMetrixMetricsModel]],
+    Dict[str, MicroConfusionMetrixMetricsProblemLevelModel],
     Dict[str, List[WinRateResultModel]],
 ]:
+    return (
+        get_agent_metrics_categories_dict_general(
+            path_model_list=path_model_list,
+        ),
+        get_agent_metrics_categories_dict_problem_level(
+            path_model_list=path_model_list,
+        ),
+        get_agent_metrics_categories_dict_win_rate(
+            path_model_list=path_model_list,
+        ),
+    )
+
+
+def get_agent_metrics_categories_dict_general(
+    path_model_list: List[Tuple[Path, ScorerOuputModel]],
+) -> Dict[str, List[MicroConfusionMetrixMetricsModel]]:
     agent = "agent"
     llm = "llm"
     metrics_categories_dict: Dict[str, List[MicroConfusionMetrixMetricsModel]] = {
         agent: [],
         llm: [],
     }
+
+    for _, score_output_model in path_model_list:
+        category = (
+            agent
+            if (
+                len(score_output_model.evaluation_source) > 0
+                and score_output_model.evaluation_source[0].is_agent
+            )
+            else llm
+        )
+
+        metrics_categories_dict[category].append(
+            score_output_model.confusion_metrix_matrics_micro.model_copy(deep=True)
+        )
+
+    return metrics_categories_dict
+
+
+def get_agent_metrics_categories_dict_problem_level(
+    path_model_list: List[Tuple[Path, ScorerOuputModel]],
+) -> Dict[str, MicroConfusionMetrixMetricsProblemLevelModel]:
+    agent = "agent"
+    llm = "llm"
+    metrics_categories_dict: Dict[str, MicroConfusionMetrixMetricsProblemLevelModel] = {
+        agent: MicroConfusionMetrixMetricsProblemLevelModel(),
+        llm: MicroConfusionMetrixMetricsProblemLevelModel(),
+    }
+
+    for _, score_output_model in path_model_list:
+        if score_output_model.confusion_metrix_matrics_micro_problem_level is not None:
+            category = (
+                agent
+                if (
+                    len(score_output_model.evaluation_source) > 0
+                    and score_output_model.evaluation_source[0].is_agent
+                )
+                else llm
+            )
+
+            meta_model = score_output_model.confusion_metrix_matrics_micro_problem_level
+            meta_model.intent_set_metrics_list
+            metrics_categories_dict[category].intent_set_metrics_list.extend(
+                meta_model.intent_set_metrics_list
+            )
+            metrics_categories_dict[category].intent_counter_metrics_list.extend(
+                meta_model.intent_counter_metrics_list
+            )
+            metrics_categories_dict[category].intent_list_metrics_list.extend(
+                meta_model.intent_list_metrics_list
+            )
+            metrics_categories_dict[category].slot_set_metrics_list.extend(
+                meta_model.slot_set_metrics_list
+            )
+
+    return metrics_categories_dict
+
+
+def get_agent_metrics_categories_dict_win_rate(
+    path_model_list: List[Tuple[Path, ScorerOuputModel]],
+) -> Dict[str, List[WinRateResultModel]]:
+    agent = "agent"
+    llm = "llm"
     win_rate_categories_dict: Dict[str, List[WinRateResultModel]] = {
         agent: [],
         llm: [],
     }
 
     for _, score_output_model in path_model_list:
-        if (
-            len(score_output_model.evaluation_source) > 0
-            and score_output_model.evaluation_source[0].is_agent
-        ):
-            metrics_categories_dict[agent].append(
-                score_output_model.confusion_metrix_matrics_micro.model_copy(deep=True)
+        category = (
+            agent
+            if (
+                len(score_output_model.evaluation_source) > 0
+                and score_output_model.evaluation_source[0].is_agent
             )
-            if score_output_model.win_rate_result_model is not None:
-                win_rate_categories_dict[agent].append(
-                    score_output_model.win_rate_result_model.model_copy(deep=True)
-                )
-        else:
-            metrics_categories_dict[llm].append(
-                score_output_model.confusion_metrix_matrics_micro.model_copy(deep=True)
-            )
-            if score_output_model.win_rate_result_model is not None:
-                win_rate_categories_dict[llm].append(
-                    score_output_model.win_rate_result_model.model_copy(deep=True)
-                )
+            else llm
+        )
 
-    return metrics_categories_dict, win_rate_categories_dict
+        if score_output_model.win_rate_result_model is not None:
+            win_rate_categories_dict[category].append(
+                score_output_model.win_rate_result_model.model_copy(deep=True)
+            )
+
+    return win_rate_categories_dict
 
 
 def get_category_metrics_categories_dict(
     path_model_list: List[Tuple[Path, ScorerOuputModel]], categories: List[str]
 ) -> Tuple[
     Dict[str, List[MicroConfusionMetrixMetricsModel]],
+    Dict[str, List[MicroConfusionMetrixMetricsProblemLevelModel]],
     Dict[str, List[WinRateResultModel]],
 ]:
     lowered_categories = [category.lower() for category in categories]
     metrics_categories_dict: Dict[str, List[MicroConfusionMetrixMetricsModel]] = {
         category: [] for category in lowered_categories
     }
+    metrics_categories_dict_problem_level: Dict[
+        str, List[MicroConfusionMetrixMetricsProblemLevelModel]
+    ] = {category: [] for category in lowered_categories}
     win_rate_categories_dict: Dict[str, List[WinRateResultModel]] = {
         category: [] for category in lowered_categories
     }
@@ -234,6 +400,13 @@ def get_category_metrics_categories_dict(
                     )
                 )
                 if (
+                    score_output_model.confusion_metrix_matrics_micro_problem_level
+                    is not None
+                ):
+                    metrics_categories_dict_problem_level[category].append(
+                        score_output_model.confusion_metrix_matrics_micro_problem_level
+                    )
+                if (
                     score_output_model.win_rate_result_model is not None
                     and len(score_output_model.win_rate_result_model.win_rate_result)
                     > 0
@@ -246,7 +419,11 @@ def get_category_metrics_categories_dict(
                         )
                     )
 
-    return metrics_categories_dict, win_rate_categories_dict
+    return (
+        metrics_categories_dict,
+        metrics_categories_dict_problem_level,
+        win_rate_categories_dict,
+    )
 
 
 def get_meta_metrics_dict(
@@ -340,7 +517,7 @@ def get_meta_metrics(
     intent_counter_dict: Dict[str, List[ConfusionMetrixMetricsModel]],
     intent_list_dict: Dict[str, List[ConfusionMetrixMetricsModel]],
     slot_set_dict: Dict[str, List[ConfusionMetrixMetricsModel]],
-    win_rate_categories_dict: Dict[str, List[WinRateResultModel]],
+    win_rate_categories_dict: Optional[Dict[str, List[WinRateResultModel]]] = None,
     categories: Optional[List[str]] = None,
 ) -> MetaMetricsAggregationModel:
     output_categories = deepcopy(categories) if categories is not None else []
@@ -385,8 +562,10 @@ def get_meta_metrics(
             categories=output_categories,
             raw_data=slot_set_dict,
         ),
-        win_rate_metrics=get_win_rate_aggregation_dict(
-            categories_dict=win_rate_categories_dict
+        win_rate_metrics=(
+            get_win_rate_aggregation_dict(categories_dict=win_rate_categories_dict)
+            if win_rate_categories_dict is not None
+            else None
         ),
     )
 
@@ -498,25 +677,38 @@ def get_aggregated_metrics(
 
 def get_output_length_meta_metrics_aggregation_model(
     path_model_list: List[Tuple[Path, ScorerOuputModel]],
-) -> MetaMetricsAggregationModel:
-    container_model, win_rate_result_dict = get_output_length_metrics_categories_dict(
+) -> Tuple[MetaMetricsAggregationModel, MetaMetricsAggregationModel]:
+    (
+        container_model,
+        container_model_problem_level,
+        win_rate_result_dict,
+    ) = get_output_length_metrics_categories_dict(
         path_model_list=path_model_list,
     )
 
-    return get_meta_metrics(
-        intent_set_dict=container_model.intent_set_metrics,
-        intent_counter_dict=container_model.intent_counter_metrics,
-        intent_list_dict=container_model.intent_list_metrics,
-        slot_set_dict=container_model.slot_set_metrics,
-        win_rate_categories_dict=win_rate_result_dict,
+    return (
+        get_meta_metrics(
+            intent_set_dict=container_model.intent_set_metrics,
+            intent_counter_dict=container_model.intent_counter_metrics,
+            intent_list_dict=container_model.intent_list_metrics,
+            slot_set_dict=container_model.slot_set_metrics,
+            win_rate_categories_dict=win_rate_result_dict,
+        ),
+        get_meta_metrics(
+            intent_set_dict=container_model_problem_level.intent_set_metrics,
+            intent_counter_dict=container_model_problem_level.intent_counter_metrics,
+            intent_list_dict=container_model_problem_level.intent_list_metrics,
+            slot_set_dict=container_model_problem_level.slot_set_metrics,
+        ),
     )
 
 
 def get_agent_meta_metrics_aggregation_model(
     path_model_list: List[Tuple[Path, ScorerOuputModel]],
-) -> MetaMetricsAggregationModel:
+) -> Tuple[MetaMetricsAggregationModel, MetaMetricsAggregationModel]:
     (
         metrics_categories_dict,
+        metrics_categories_dict_problem_level,
         win_rate_categories_dict,
     ) = get_agent_metrics_categories_dict(path_model_list=path_model_list)
     categories = list(metrics_categories_dict.keys())
@@ -527,21 +719,80 @@ def get_agent_meta_metrics_aggregation_model(
         slot_set_dict,
     ) = get_meta_metrics_dict(metrics_categories_dict=metrics_categories_dict)
 
-    return get_meta_metrics(
-        intent_set_dict=intent_set_dict,
-        intent_counter_dict=intent_counter_dict,
-        intent_list_dict=intent_list_dict,
-        slot_set_dict=slot_set_dict,
-        win_rate_categories_dict=win_rate_categories_dict,
-        categories=categories,
+    return (
+        get_meta_metrics(
+            intent_set_dict=intent_set_dict,
+            intent_counter_dict=intent_counter_dict,
+            intent_list_dict=intent_list_dict,
+            slot_set_dict=slot_set_dict,
+            win_rate_categories_dict=win_rate_categories_dict,
+            categories=categories,
+        ),
+        get_meta_metrics(
+            intent_set_dict={
+                category: content.intent_set_metrics_list
+                for category, content in metrics_categories_dict_problem_level.items()
+            },
+            intent_counter_dict={
+                category: content.intent_counter_metrics_list
+                for category, content in metrics_categories_dict_problem_level.items()
+            },
+            intent_list_dict={
+                category: content.intent_list_metrics_list
+                for category, content in metrics_categories_dict_problem_level.items()
+            },
+            slot_set_dict={
+                category: content.slot_set_metrics_list
+                for category, content in metrics_categories_dict_problem_level.items()
+            },
+        ),
+    )
+
+
+def get_category_dict_list_from_problem_level_metrics(
+    metrics_categories_dict_problem_level: Dict[
+        str, List[MicroConfusionMetrixMetricsProblemLevelModel]
+    ],
+) -> Tuple[
+    Dict[str, List[ConfusionMetrixMetricsModel]],
+    Dict[str, List[ConfusionMetrixMetricsModel]],
+    Dict[str, List[ConfusionMetrixMetricsModel]],
+    Dict[str, List[ConfusionMetrixMetricsModel]],
+]:
+    intent_set_dict_list: Dict[str, List[ConfusionMetrixMetricsModel]] = dict()
+    intent_counter_dict_list: Dict[str, List[ConfusionMetrixMetricsModel]] = dict()
+    intent_list_dict_list: Dict[str, List[ConfusionMetrixMetricsModel]] = dict()
+    slot_set_dict_list: Dict[str, List[ConfusionMetrixMetricsModel]] = dict()
+    for category, metrics_models in metrics_categories_dict_problem_level.items():
+        if category not in intent_set_dict_list:
+            intent_set_dict_list[category] = []
+            intent_counter_dict_list[category] = []
+            intent_list_dict_list[category] = []
+            slot_set_dict_list[category] = []
+        for metrics_model in metrics_models:
+            intent_set_dict_list[category].extend(metrics_model.intent_set_metrics_list)
+            intent_counter_dict_list[category].extend(
+                metrics_model.intent_set_metrics_list
+            )
+            intent_list_dict_list[category].extend(
+                metrics_model.intent_set_metrics_list
+            )
+            slot_set_dict_list[category].extend(metrics_model.intent_set_metrics_list)
+
+    return (
+        intent_set_dict_list,
+        intent_counter_dict_list,
+        intent_list_dict_list,
+        slot_set_dict_list,
     )
 
 
 def get_category_meta_metrics_aggregation_model(
     path_model_list: List[Tuple[Path, ScorerOuputModel]], categories: List[str]
-) -> MetaMetricsAggregationModel:
+) -> Tuple[MetaMetricsAggregationModel, MetaMetricsAggregationModel]:
     (
         metrics_categories_dict,
+        metrics_categories_dict_problem_level,
         win_rate_categories_dict,
     ) = get_category_metrics_categories_dict(
         path_model_list=path_model_list, categories=categories
@@ -552,12 +803,28 @@ def get_category_meta_metrics_aggregation_model(
         intent_list_dict,
         slot_set_dict,
     ) = get_meta_metrics_dict(metrics_categories_dict=metrics_categories_dict)
+    (
+        intent_set_dict_list,
+        intent_counter_dict_list,
+        intent_list_dict_list,
+        slot_set_dict_list,
+    ) = get_category_dict_list_from_problem_level_metrics(
+        metrics_categories_dict_problem_level=metrics_categories_dict_problem_level
+    )
 
-    return get_meta_metrics(
-        intent_set_dict=intent_set_dict,
-        intent_counter_dict=intent_counter_dict,
-        intent_list_dict=intent_list_dict,
-        slot_set_dict=slot_set_dict,
-        win_rate_categories_dict=win_rate_categories_dict,
-        categories=categories,
+    return (
+        get_meta_metrics(
+            intent_set_dict=intent_set_dict,
+            intent_counter_dict=intent_counter_dict,
+            intent_list_dict=intent_list_dict,
+            slot_set_dict=slot_set_dict,
+            win_rate_categories_dict=win_rate_categories_dict,
+            categories=categories,
+        ),
+        get_meta_metrics(
+            intent_set_dict=intent_set_dict_list,
+            intent_counter_dict=intent_counter_dict_list,
+            intent_list_dict=intent_list_dict_list,
+            slot_set_dict=slot_set_dict_list,
+        ),
     )

@@ -172,7 +172,7 @@ def test_get_confusion_matrix_cells_list_no_perfect_match_false_positive() -> No
 
 
 def test_get_confision_matrix_from_answers() -> None:
-    confusion_matrix_model = get_confision_matrix_from_answers(
+    confusion_matrix_model, _ = get_confision_matrix_from_answers(
         gold_answers=[["a", "b", "a", "c", "d"]],
         predicted_answers=[["a", "c", "d", "k"]],
         mode=ConfusionMatrixMode.LIST,
