@@ -88,13 +88,15 @@ def get_confision_matrix_from_answers(
     gold_answers: List[List[str]],
     predicted_answers: List[List[str]],
     mode: ConfusionMatrixMode = ConfusionMatrixMode.SET,
-) -> ConfusionMatrixModel:
+) -> Tuple[ConfusionMatrixModel, List[ConfusionMatrixModel]]:
     matrix = ConfusionMatrixModel(mode=mode)
+    problem_level_matrices: List[ConfusionMatrixModel] = []
 
     for gold, pred in zip(gold_answers, predicted_answers):
+        matrix_problem_level = ConfusionMatrixModel(mode=mode)
         is_non_zero_gold, is_covered = check_coverage(gold=gold, pred=pred)
-        matrix.num_non_zero_gold += 1 if is_non_zero_gold else 0
-        matrix.num_is_covered += 1 if is_covered else 0
+        matrix_problem_level.num_non_zero_gold += 1 if is_non_zero_gold else 0
+        matrix_problem_level.num_is_covered += 1 if is_covered else 0
         (
             true_positive,
             false_positive,
@@ -106,28 +108,34 @@ def get_confision_matrix_from_answers(
             mode=mode,
         )
 
-        matrix.true_positive += true_positive
-        matrix.true_negative += true_negative
-        matrix.false_positive += false_positive
-        matrix.false_negative += false_negative
+        matrix_problem_level.true_positive += true_positive
+        matrix_problem_level.true_negative += true_negative
+        matrix_problem_level.false_positive += false_positive
+        matrix_problem_level.false_negative += false_negative
 
-    return matrix
+        matrix.add(confusion_matrix=matrix_problem_level)
+        problem_level_matrices.append(matrix_problem_level)
+
+    return matrix, problem_level_matrices
 
 
 def get_confision_matrix_from_answers_by_output_length(
     gold_answers: List[List[str]],
     predicted_answers: List[List[str]],
     mode: ConfusionMatrixMode = ConfusionMatrixMode.SET,
-) -> Dict[int, ConfusionMatrixModel]:
+) -> Tuple[Dict[int, ConfusionMatrixModel], Dict[int, List[ConfusionMatrixModel]]]:
     output: Dict[int, ConfusionMatrixModel] = dict()
+    output_problem_level: Dict[int, List[ConfusionMatrixModel]] = dict()
 
     for gold, pred in zip(gold_answers, predicted_answers):
+        confusion_matrix_problem_level = ConfusionMatrixModel(mode=mode)
         gold_length = len(gold)
         if gold_length not in output:
             output[gold_length] = ConfusionMatrixModel(mode=mode)
+            output_problem_level[gold_length] = []
         is_non_zero_gold, is_covered = check_coverage(gold=gold, pred=pred)
-        output[gold_length].num_non_zero_gold += 1 if is_non_zero_gold else 0
-        output[gold_length].num_is_covered += 1 if is_covered else 0
+        confusion_matrix_problem_level.num_non_zero_gold += 1 if is_non_zero_gold else 0
+        confusion_matrix_problem_level.num_is_covered += 1 if is_covered else 0
         (
             true_positive,
             false_positive,
@@ -139,12 +147,15 @@ def get_confision_matrix_from_answers_by_output_length(
             mode=mode,
         )
 
-        output[gold_length].true_positive += true_positive
-        output[gold_length].true_negative += true_negative
-        output[gold_length].false_positive += false_positive
-        output[gold_length].false_negative += false_negative
+        confusion_matrix_problem_level.true_positive += true_positive
+        confusion_matrix_problem_level.true_negative += true_negative
+        confusion_matrix_problem_level.false_positive += false_positive
+        confusion_matrix_problem_level.false_negative += false_negative
 
-    return output
+        output[gold_length].add(confusion_matrix=confusion_matrix_problem_level)
+        output_problem_level[gold_length].append(confusion_matrix_problem_level)
+
+    return output, output_problem_level
 
 
 # def _compute_confusion_mat(gold_answers: list, predicted_answers: list):
