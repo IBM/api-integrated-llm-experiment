@@ -15,6 +15,7 @@ from api_integrated_llm.helpers.file_helper import (
 )
 from api_integrated_llm.helpers.service_helper import (
     get_responses_from_async,
+    get_responses_from_sync,
 )
 from api_integrated_llm.helpers.instruct_data_prep import instruct_data
 
@@ -58,6 +59,7 @@ async def get_output_list(
     model_obj,
     temperature: float,
     max_tokens: int,
+    should_async: bool = True,
 ) -> None:
     temperature_str = f"temperature_{temperature}"
     max_tokens_str = f"maxtoken_{max_tokens}"
@@ -79,11 +81,20 @@ async def get_output_list(
         )
 
         if model_obj["inference_type"] == "RITS" and len(test_data) > 0:
-            responses = await get_responses_from_async(
-                test_data=test_data,
-                model_obj=model_obj,
-                temperature=temperature,
-                max_tokens=max_tokens,
+            responses = (
+                await get_responses_from_async(
+                    test_data=test_data,
+                    model_obj=model_obj,
+                    temperature=temperature,
+                    max_tokens=max_tokens,
+                )
+                if should_async
+                else get_responses_from_sync(
+                    test_data=test_data,
+                    model_obj=model_obj,
+                    temperature=temperature,
+                    max_tokens=max_tokens,
+                )
             )
 
             output_list.extend(
@@ -186,6 +197,7 @@ def evaluate(
                             model_obj=deepcopy(model_obj),
                             temperature=temperature,
                             max_tokens=max_tokens,
+                            should_async=should_async,
                         )
                     )
                     if not should_async:

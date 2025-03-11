@@ -245,3 +245,25 @@ async def get_responses_from_async(
     ]
 
     return await asyncio.gather(*tasks)
+
+
+def get_responses_from_sync(
+    test_data: List[EvaluationOutputDataUnit],
+    model_obj: Dict[str, str],
+    temperature: float,
+    max_tokens: int,
+) -> List[str]:
+    responses: List[str] = []
+    for sample in test_data:
+        response = asyncio.run(
+            generate_rits_response_async(
+                prompt=sample.input[:],
+                temperature=temperature,
+                max_tokens=max_tokens,
+                model_name=model_obj["model"][:],
+                model_resource=model_obj["endpoint"].split("/")[-2][:],
+            )
+        )
+        responses.append(response)
+
+    return responses
