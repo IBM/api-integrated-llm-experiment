@@ -1,0 +1,16 @@
+{
+    "Hammer2.1-7b": {
+        "inference_type": "LOCAL",
+        "model": "MadeAgents/Hammer2.1-7b",
+        "endpoint": "MadeAgents/Hammer2.1-7b",
+        "tokenizer": "MadeAgents/Hammer2.1-7b",
+        "should_use_autoprocessor": false
+    },
+    "Phi-4-multimodal-instruct": {
+        "inference_type": "LOCAL",
+        "model": "microsoft/Phi-4-multimodal-instruct",
+        "endpoint": "microsoft/Phi-4-multimodal-instruct",
+        "tokenizer": "microsoft/Phi-4-multimodal-instruct",
+        "should_use_autoprocessor": true
+    }
+}
