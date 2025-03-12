@@ -252,8 +252,8 @@ def get_responses_from_sync(
     model_obj: Dict[str, str],
     temperature: float,
     max_tokens: int,
-) -> List[str]:
-    responses: List[str] = []
+) -> List[List[str]]:
+    responses: List[List[str]] = []
     for sample in test_data:
         response = asyncio.run(
             generate_rits_response_async(
