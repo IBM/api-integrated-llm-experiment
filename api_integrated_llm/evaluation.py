@@ -8,6 +8,9 @@ from api_integrated_llm.data_models.source_models import (
     EvaluationOutputDataUnit,
     EvaluationOutputResponseDataUnit,
 )
+from api_integrated_llm.helpers.database_helper.local_llm_helper import (
+    get_responses_from_local_llm,
+)
 from api_integrated_llm.helpers.file_helper import (
     get_uuid4_str,
     write_json_from_dict,
@@ -79,23 +82,46 @@ async def get_output_list(
             num_examples=num_examples,
             should_ignore=should_ignore,
         )
+        if len(test_data) > 0:
+            responses: List[str] = []
+            if model_obj["endpoint"].startswith("http"):
+                responses = (
+                    await get_responses_from_async(
+                        test_data=test_data,
+                        model_obj=model_obj,
+                        temperature=temperature,
+                        max_tokens=max_tokens,
+                    )
+                    if should_async
+                    else get_responses_from_sync(
+                        test_data=test_data,
+                        model_obj=model_obj,
+                        temperature=temperature,
+                        max_tokens=max_tokens,
+                    )
+                )
 
-        if model_obj["inference_type"] == "RITS" and len(test_data) > 0:
-            responses = (
-                await get_responses_from_async(
+            else:
+                responses, error_messages = get_responses_from_local_llm(
                     test_data=test_data,
                     model_obj=model_obj,
                     temperature=temperature,
                     max_tokens=max_tokens,
                 )
-                if should_async
-                else get_responses_from_sync(
-                    test_data=test_data,
-                    model_obj=model_obj,
-                    temperature=temperature,
-                    max_tokens=max_tokens,
-                )
-            )
+
+                if len(error_messages) > 0:
+                    write_json_from_dict(
+                        file_path=Path(
+                            os.path.join(
+                                error_folder_path,
+                                model_name,
+                                temperature_str,
+                                max_tokens_str,
+                                output_file_name + "_" + hash_str + ".json",
+                            )
+                        ),
+                        dic={"error": error_messages},
+                    )
 
             output_list.extend(
                 get_evaluation_output_units_from_responses(

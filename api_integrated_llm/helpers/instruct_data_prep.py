@@ -60,7 +60,7 @@ def get_prompt_dict(
     if "rest" in path_str:
         return prompt_dict_all["icl"]
     if "sequencing" in path_str or "slot_filling" in path_str:
-        return prompt_dict_all["sequencing"]
+        return prompt_dict_all["icl"]
     return prompt_dict_all["icl"]
 
 
@@ -73,7 +73,8 @@ def get_input_query(
     function_str: str,
     key_value_description_str: str,
 ) -> str:
-    if "granite" in model_name.lower():
+    model_name_lower = model_name.lower()
+    if "granite" in model_name_lower:
         return granite_prompt_input(
             sample_input,
             (sample.tools if sample.tools is not None else []),
@@ -81,8 +82,43 @@ def get_input_query(
             prompt_dict["granite"],
             key_value_description_str,
         )
-    elif "llama" in model_name.lower():
+    elif "llama" in model_name_lower:
         return prompt_dict["LLaMa-3.1"].format(
+            FUNCTION_STR=function_str,
+            ICL_EXAMPLES=example_str,
+            QUERY=sample_input,
+            KEY_VALUES_AND_DESCRIPTIONS=key_value_description_str,
+        )
+    elif "hammer" in model_name_lower:
+        return prompt_dict["Hammer2.0-7b"].format(
+            FUNCTION_STR=function_str,
+            ICL_EXAMPLES=example_str,
+            QUERY=sample_input,
+            KEY_VALUES_AND_DESCRIPTIONS=key_value_description_str,
+        )
+    elif "phi" in model_name_lower:
+        return prompt_dict["LLaMa-3.1"].format(
+            FUNCTION_STR=function_str,
+            ICL_EXAMPLES=example_str,
+            QUERY=sample_input,
+            KEY_VALUES_AND_DESCRIPTIONS=key_value_description_str,
+        )
+    elif "mixtral_8x7b" in model_name_lower:
+        return prompt_dict["mixtral_8x7b_instruct_v01"].format(
+            FUNCTION_STR=function_str,
+            ICL_EXAMPLES=example_str,
+            QUERY=sample_input,
+            KEY_VALUES_AND_DESCRIPTIONS=key_value_description_str,
+        )
+    elif "mixtral-8x22B" in model_name_lower:
+        return prompt_dict["Mixtral-8x22B-Instruct-v0.1"].format(
+            FUNCTION_STR=function_str,
+            ICL_EXAMPLES=example_str,
+            QUERY=sample_input,
+            KEY_VALUES_AND_DESCRIPTIONS=key_value_description_str,
+        )
+    elif "deepseek" in model_name_lower:
+        return prompt_dict["DeepSeek-V3"].format(
             FUNCTION_STR=function_str,
             ICL_EXAMPLES=example_str,
             QUERY=sample_input,
