@@ -23,17 +23,27 @@ def get_response_from_llm_with_tokenizer(
 
     if model_obj["tokenizer"] not in tokenizers_dict:
         tokenizers_dict[model_obj["tokenizer"]] = AutoTokenizer.from_pretrained(
-            model_obj["tokenizer"]
+            model_obj["tokenizer_url"]
+            if "tokenizer_url" in model_obj
+            else model_obj["tokenizer"]
         )
 
     if model_obj["model"] not in models_dict:
         models_dict[model_obj["model"]] = AutoModelForCausalLM.from_pretrained(
-            model_obj["model"],
+            (
+                model_obj["model_url"]
+                if "model_url" in model_obj
+                else model_obj["model"]
+            ),
             torch_dtype=torch.bfloat16 if "cuda" in LLM_DEVICE else torch.float16,
             device_map="auto",
         )
 
     tokenizer = tokenizers_dict[model_obj["tokenizer"]]
+
+    if max_tokens > tokenizer.model_max_length:
+        max_tokens = tokenizer.model_max_length - 1
+
     model = models_dict[model_obj["model"]]
 
     input_tokens_dict = tokenizer(input, return_tensors="pt")
@@ -97,7 +107,7 @@ def get_responses_from_local_llm(
     model_obj: Dict[str, str],
     temperature: float,
     max_tokens: int,
-) -> Tuple[List[str], List[str]]:
+) -> Tuple[List[List[str]], List[str]]:
     error_messages: List[str] = []
     responses: List[str] = []
     for sample in test_data:
@@ -109,8 +119,10 @@ def get_responses_from_local_llm(
                     temperature=temperature,
                     max_tokens=max_tokens,
                 )
-                if "should_use_autoprocessor" in model_obj
-                and model_obj["should_use_autoprocessor"]
+                if (
+                    "should_use_autoprocessor" in model_obj
+                    and model_obj["should_use_autoprocessor"]
+                )
                 else get_response_from_llm_with_tokenizer(
                     input=sample.input,
                     model_obj=model_obj,
@@ -118,7 +130,7 @@ def get_responses_from_local_llm(
                     max_tokens=max_tokens,
                 )
             )
-            responses.append(response if response is not None else "")
+            responses.append([response] if response is not None else [])
         except Exception as e:
             print(e)
             model_name = model_obj["model"] if "model" in model_obj else "default_model"

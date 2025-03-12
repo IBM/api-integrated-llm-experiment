@@ -1,0 +1,385 @@
+{
+    "global_api_pool": {
+        "get_latest_conductor_v1_cosql_orchestra_latest_conductor_get": {
+            "name": "get_latest_conductor_v1_cosql_orchestra_latest_conductor_get",
+            "description": "Get the latest conductor by year of work",
+            "parameters": {
+                "limit": {
+                    "type": "integer",
+                    "description": "Limit the number of results",
+                    "default": 1,
+                    "title": "Limit"
+                }
+            }
+        },
+        "get_conductor_year_of_work_v1_cosql_orchestra_conductor_year_of_work_get": {
+            "name": "get_conductor_year_of_work_v1_cosql_orchestra_conductor_year_of_work_get",
+            "description": "Get year of work for a specific conductor",
+            "parameters": {
+                "name": {
+                    "type": "string",
+                    "description": "Name of the conductor",
+                    "title": "Name"
+                }
+            }
+        },
+        "get_earliest_conductor_v1_cosql_orchestra_earliest_conductor_get": {
+            "name": "get_earliest_conductor_v1_cosql_orchestra_earliest_conductor_get",
+            "description": "Get the earliest conductor by year of work",
+            "parameters": {
+                "limit": {
+                    "type": "integer",
+                    "description": "Limit the number of results",
+                    "default": 1,
+                    "title": "Limit"
+                }
+            }
+        },
+        "get_performance_share_range_v1_cosql_orchestra_performance_share_range_get": {
+            "name": "get_performance_share_range_v1_cosql_orchestra_performance_share_range_get",
+            "description": "Get max and min share from performance excluding live final",
+            "parameters": {
+                "type_exclude": {
+                    "type": "string",
+                    "description": "Type to exclude",
+                    "title": "Type Exclude"
+                }
+            }
+        },
+        "get_performance_dates_v1_cosql_orchestra_performance_dates_get": {
+            "name": "get_performance_dates_v1_cosql_orchestra_performance_dates_get",
+            "description": "Get dates from performance where type contains a specific string",
+            "parameters": {
+                "type_like": {
+                    "type": "string",
+                    "description": "Type to search for",
+                    "title": "Type Like"
+                }
+            }
+        },
+        "get_orchestras_not_in_performance_v1_cosql_orchestra_orchestras_not_in_performance_get": {
+            "name": "get_orchestras_not_in_performance_v1_cosql_orchestra_orchestras_not_in_performance_get",
+            "description": "Get orchestras not in performance",
+            "parameters": ""
+        },
+        "get_distinct_orchestras_count_v1_cosql_orchestra_distinct_orchestras_count_get": {
+            "name": "get_distinct_orchestras_count_v1_cosql_orchestra_distinct_orchestras_count_get",
+            "description": "Get count of distinct orchestras",
+            "parameters": ""
+        },
+        "get_orchestras_not_in_performance_count_v1_cosql_orchestra_orchestras_not_in_performance_count_get": {
+            "name": "get_orchestras_not_in_performance_count_v1_cosql_orchestra_orchestras_not_in_performance_count_get",
+            "description": "Get count of orchestras not in performance",
+            "parameters": ""
+        },
+        "get_orchestras_not_in_performance_details_v1_cosql_orchestra_orchestras_not_in_performance_details_get": {
+            "name": "get_orchestras_not_in_performance_details_v1_cosql_orchestra_orchestras_not_in_performance_details_get",
+            "description": "Get orchestra IDs and names not in performance",
+            "parameters": ""
+        },
+        "get_most_common_record_company_v1_cosql_orchestra_most_common_record_company_get": {
+            "name": "get_most_common_record_company_v1_cosql_orchestra_most_common_record_company_get",
+            "description": "Get the most common record company",
+            "parameters": {
+                "limit": {
+                    "type": "integer",
+                    "description": "Limit the number of results",
+                    "default": 1,
+                    "title": "Limit"
+                }
+            }
+        },
+        "get_record_companies_count_v1_cosql_orchestra_record_companies_count_get": {
+            "name": "get_record_companies_count_v1_cosql_orchestra_record_companies_count_get",
+            "description": "Get count of record companies",
+            "parameters": ""
+        },
+        "get_orchestra_ids_count_v1_cosql_orchestra_orchestra_ids_count_get": {
+            "name": "get_orchestra_ids_count_v1_cosql_orchestra_orchestra_ids_count_get",
+            "description": "Get count of orchestra IDs",
+            "parameters": ""
+        },
+        "get_orchestras_by_year_founded_v1_cosql_orchestra_orchestras_by_year_founded_get": {
+            "name": "get_orchestras_by_year_founded_v1_cosql_orchestra_orchestras_by_year_founded_get",
+            "description": "Get orchestras ordered by year of founding",
+            "parameters": ""
+        },
+        "get_orchestra_year_founded_v1_cosql_orchestra_orchestra_year_founded_get": {
+            "name": "get_orchestra_year_founded_v1_cosql_orchestra_orchestra_year_founded_get",
+            "description": "Get year of founding for a specific orchestra",
+            "parameters": {
+                "orchestra": {
+                    "type": "string",
+                    "description": "Name of the orchestra",
+                    "title": "Orchestra"
+                }
+            }
+        },
+        "get_most_common_record_company_v2_v1_cosql_orchestra_most_common_record_company_v2_get": {
+            "name": "get_most_common_record_company_v2_v1_cosql_orchestra_most_common_record_company_v2_get",
+            "description": "Get the most common record company",
+            "parameters": {
+                "limit": {
+                    "type": "integer",
+                    "description": "Limit the number of results",
+                    "default": 1,
+                    "title": "Limit"
+                }
+            }
+        },
+        "get_conductors_multiple_orchestras_v1_cosql_orchestra_conductors_multiple_orchestras_get": {
+            "name": "get_conductors_multiple_orchestras_v1_cosql_orchestra_conductors_multiple_orchestras_get",
+            "description": "Get conductors who have conducted more than one orchestra",
+            "parameters": ""
+        },
+        "get_orchestras_by_conductor_v1_cosql_orchestra_orchestras_by_conductor_get": {
+            "name": "get_orchestras_by_conductor_v1_cosql_orchestra_orchestras_by_conductor_get",
+            "description": "Get orchestras conducted by a specific conductor",
+            "parameters": {
+                "conductor_id": {
+                    "type": "integer",
+                    "description": "ID of the conductor",
+                    "title": "Conductor Id"
+                }
+            }
+        },
+        "get_all_conductors_v1_cosql_orchestra_all_conductors_get": {
+            "name": "get_all_conductors_v1_cosql_orchestra_all_conductors_get",
+            "description": "Get all conductors",
+            "parameters": ""
+        },
+        "get_conductor_age_v1_cosql_orchestra_conductor_age_get": {
+            "name": "get_conductor_age_v1_cosql_orchestra_conductor_age_get",
+            "description": "Get age of a specific conductor",
+            "parameters": {
+                "name": {
+                    "type": "string",
+                    "description": "Name of the conductor",
+                    "title": "Name"
+                }
+            }
+        },
+        "get_major_record_formats_ordered_v1_cosql_orchestra_major_record_formats_ordered_get": {
+            "name": "get_major_record_formats_ordered_v1_cosql_orchestra_major_record_formats_ordered_get",
+            "description": "Get major record formats ordered by count",
+            "parameters": ""
+        },
+        "get_orchestras_and_record_formats_v1_cosql_orchestra_orchestras_and_record_formats_get": {
+            "name": "get_orchestras_and_record_formats_v1_cosql_orchestra_orchestras_and_record_formats_get",
+            "description": "Get orchestras and their major record formats",
+            "parameters": ""
+        },
+        "get_orchestras_ordered_v1_cosql_orchestra_orchestras_ordered_get": {
+            "name": "get_orchestras_ordered_v1_cosql_orchestra_orchestras_ordered_get",
+            "description": "Get orchestras ordered by name",
+            "parameters": ""
+        },
+        "get_major_record_formats_ordered_v2_v1_cosql_orchestra_major_record_formats_ordered_v2_get": {
+            "name": "get_major_record_formats_ordered_v2_v1_cosql_orchestra_major_record_formats_ordered_v2_get",
+            "description": "Get major record formats ordered by count",
+            "parameters": ""
+        }
+    },
+    "data": [
+        {
+            "query": "SELECT Name FROM conductor ORDER BY Year_of_Work DESC LIMIT 1",
+            "API": "http://127.0.0.1:5001/v1/cosql/orchestra/latest_conductor",
+            "gold_answer": [
+                [
+                    "Robert Craft"
+                ]
+            ],
+            "OUTPUT_AFTER_EXECUTING_API": "[[\"Robert Craft\"]]",
+            "input": "List the name of the conductor with the most years of work.",
+            "dataset_name": "orchestra",
+            "sample_id": 0,
+            "tools": [
+                {
+                    "name": "get_latest_conductor_v1_cosql_orchestra_latest_conductor_get",
+                    "description": "Get the latest conductor by year of work",
+                    "arguments": {
+                        "limit": {
+                            "type": "integer",
+                            "description": "Limit the number of results",
+                            "default": 1,
+                            "title": "Limit"
+                        }
+                    }
+                },
+                {
+                    "name": "get_conductor_year_of_work_v1_cosql_orchestra_conductor_year_of_work_get",
+                    "description": "Get year of work for a specific conductor",
+                    "arguments": {
+                        "name": {
+                            "type": "string",
+                            "description": "Name of the conductor",
+                            "title": "Name"
+                        }
+                    }
+                },
+                {
+                    "name": "get_earliest_conductor_v1_cosql_orchestra_earliest_conductor_get",
+                    "description": "Get the earliest conductor by year of work",
+                    "arguments": {
+                        "limit": {
+                            "type": "integer",
+                            "description": "Limit the number of results",
+                            "default": 1,
+                            "title": "Limit"
+                        }
+                    }
+                },
+                {
+                    "name": "get_performance_share_range_v1_cosql_orchestra_performance_share_range_get",
+                    "description": "Get max and min share from performance excluding live final",
+                    "arguments": {
+                        "type_exclude": {
+                            "type": "string",
+                            "description": "Type to exclude",
+                            "title": "Type Exclude"
+                        }
+                    }
+                },
+                {
+                    "name": "get_performance_dates_v1_cosql_orchestra_performance_dates_get",
+                    "description": "Get dates from performance where type contains a specific string",
+                    "arguments": {
+                        "type_like": {
+                            "type": "string",
+                            "description": "Type to search for",
+                            "title": "Type Like"
+                        }
+                    }
+                },
+                {
+                    "name": "get_orchestras_not_in_performance_v1_cosql_orchestra_orchestras_not_in_performance_get",
+                    "description": "Get orchestras not in performance",
+                    "arguments": {}
+                },
+                {
+                    "name": "get_distinct_orchestras_count_v1_cosql_orchestra_distinct_orchestras_count_get",
+                    "description": "Get count of distinct orchestras",
+                    "arguments": {}
+                },
+                {
+                    "name": "get_orchestras_not_in_performance_count_v1_cosql_orchestra_orchestras_not_in_performance_count_get",
+                    "description": "Get count of orchestras not in performance",
+                    "arguments": {}
+                },
+                {
+                    "name": "get_orchestras_not_in_performance_details_v1_cosql_orchestra_orchestras_not_in_performance_details_get",
+                    "description": "Get orchestra IDs and names not in performance",
+                    "arguments": {}
+                },
+                {
+                    "name": "get_most_common_record_company_v1_cosql_orchestra_most_common_record_company_get",
+                    "description": "Get the most common record company",
+                    "arguments": {
+                        "limit": {
+                            "type": "integer",
+                            "description": "Limit the number of results",
+                            "default": 1,
+                            "title": "Limit"
+                        }
+                    }
+                },
+                {
+                    "name": "get_record_companies_count_v1_cosql_orchestra_record_companies_count_get",
+                    "description": "Get count of record companies",
+                    "arguments": {}
+                },
+                {
+                    "name": "get_orchestra_ids_count_v1_cosql_orchestra_orchestra_ids_count_get",
+                    "description": "Get count of orchestra IDs",
+                    "arguments": {}
+                },
+                {
+                    "name": "get_orchestras_by_year_founded_v1_cosql_orchestra_orchestras_by_year_founded_get",
+                    "description": "Get orchestras ordered by year of founding",
+                    "arguments": {}
+                },
+                {
+                    "name": "get_orchestra_year_founded_v1_cosql_orchestra_orchestra_year_founded_get",
+                    "description": "Get year of founding for a specific orchestra",
+                    "arguments": {
+                        "orchestra": {
+                            "type": "string",
+                            "description": "Name of the orchestra",
+                            "title": "Orchestra"
+                        }
+                    }
+                },
+                {
+                    "name": "get_most_common_record_company_v2_v1_cosql_orchestra_most_common_record_company_v2_get",
+                    "description": "Get the most common record company",
+                    "arguments": {
+                        "limit": {
+                            "type": "integer",
+                            "description": "Limit the number of results",
+                            "default": 1,
+                            "title": "Limit"
+                        }
+                    }
+                },
+                {
+                    "name": "get_conductors_multiple_orchestras_v1_cosql_orchestra_conductors_multiple_orchestras_get",
+                    "description": "Get conductors who have conducted more than one orchestra",
+                    "arguments": {}
+                },
+                {
+                    "name": "get_orchestras_by_conductor_v1_cosql_orchestra_orchestras_by_conductor_get",
+                    "description": "Get orchestras conducted by a specific conductor",
+                    "arguments": {
+                        "conductor_id": {
+                            "type": "integer",
+                            "description": "ID of the conductor",
+                            "title": "Conductor Id"
+                        }
+                    }
+                },
+                {
+                    "name": "get_all_conductors_v1_cosql_orchestra_all_conductors_get",
+                    "description": "Get all conductors",
+                    "arguments": {}
+                },
+                {
+                    "name": "get_conductor_age_v1_cosql_orchestra_conductor_age_get",
+                    "description": "Get age of a specific conductor",
+                    "arguments": {
+                        "name": {
+                            "type": "string",
+                            "description": "Name of the conductor",
+                            "title": "Name"
+                        }
+                    }
+                },
+                {
+                    "name": "get_major_record_formats_ordered_v1_cosql_orchestra_major_record_formats_ordered_get",
+                    "description": "Get major record formats ordered by count",
+                    "arguments": {}
+                },
+                {
+                    "name": "get_orchestras_and_record_formats_v1_cosql_orchestra_orchestras_and_record_formats_get",
+                    "description": "Get orchestras and their major record formats",
+                    "arguments": {}
+                },
+                {
+                    "name": "get_orchestras_ordered_v1_cosql_orchestra_orchestras_ordered_get",
+                    "description": "Get orchestras ordered by name",
+                    "arguments": {}
+                },
+                {
+                    "name": "get_major_record_formats_ordered_v2_v1_cosql_orchestra_major_record_formats_ordered_v2_get",
+                    "description": "Get major record formats ordered by count",
+                    "arguments": {}
+                }
+            ],
+            "output": [
+                {
+                    "name": "get_latest_conductor_v1_cosql_orchestra_latest_conductor_get",
+                    "arguments": {}
+                }
+            ]
+        }
+    ]
+}

@@ -1,3 +1,7 @@
+# llms
+llm_saves/
+tokenizer_saves/
+
 # Package Versioning
 __version__.py
 
