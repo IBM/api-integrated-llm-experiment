@@ -47,8 +47,8 @@ api-integrated-llm -h
 usage: api-integrated-llm [-h] [-m {default,evaluator,scorer,parser,metrics_aggregator}] [-rt ROOT] [-eof EVALUATOR_OUTPUT_FOLDER]
                           [-pif PARSER_INPUT_FOLDER] [-of OUTPUT_FOLDER] [-sif SCORER_INPUT_FOLDER] [-dsf DATABASES_FOLDER]
                           [-maif METRICS_AGGREGATOR_INPUT_FOLDER] [-sf SOURCE_FOLDER] [-ig | --ignore | --no-ignore]
-                          [-si | --single_intent | --no-single_intent] [-er | --random_example | --no-random_example] [-nr NUMBER_RANDOM_EXAMPLE]
-                          [-ep EXAMPLE_FILE_PATH]
+                          [-asy | --use_async | --no-use_async] [-si | --single_intent | --no-single_intent]
+                          [-er | --random_example | --no-random_example] [-nr NUMBER_RANDOM_EXAMPLE] [-ep EXAMPLE_FILE_PATH]
 
 API Integrated LLM CLI
 
@@ -74,6 +74,8 @@ options:
                         Source folder path
   -ig, --ignore, --no-ignore
                         Ignore data points marked as "ignore"
+  -asy, --use_async, --no-use_async
+                        Use asynchronous operations
   -si, --single_intent, --no-single_intent
                         Single intent dataset
   -er, --random_example, --no-random_example
