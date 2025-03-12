@@ -2,7 +2,7 @@ import asyncio
 from copy import deepcopy
 from pathlib import Path
 import os
-from typing import Dict, List
+from typing import Any, Dict, List
 
 from api_integrated_llm.data_models.source_models import (
     EvaluationOutputDataUnit,
@@ -178,7 +178,7 @@ async def get_output_list(
 
 
 def evaluate(
-    model_id_info_dict: Dict[str, Dict[str, str]],
+    model_id_info_dict: Dict[str, Dict[str, Any]],
     evaluation_input_file_paths: List[Path],
     example_file_path: Path,
     output_folder_path: Path,
@@ -190,7 +190,7 @@ def evaluate(
     num_examples: int = 1,
     should_ignore: bool = True,
     should_async: bool = True,
-):
+) -> None:
     loop = asyncio.get_event_loop()
 
     for temperature in temperatures:
