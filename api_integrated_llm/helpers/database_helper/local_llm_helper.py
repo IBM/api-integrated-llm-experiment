@@ -12,6 +12,7 @@ from api_integrated_llm.data_models.source_models import EvaluationOutputDataUni
 LLM_DEVICE = "cuda:0" if torch.cuda.is_available() else "cpu"
 tokenizers_dict = {}
 models_dict = {}
+processors_dict = {}
 
 
 def get_response_from_llm_with_tokenizer(
@@ -54,19 +55,25 @@ def get_response_from_llm_with_autoprocessor(
     """
     This function supports only cuda
     """
-    if "tokenizer" not in model_obj or "model" not in model_obj:
+    if "model" not in model_obj:
         return None
-    processor = AutoProcessor.from_pretrained(
-        model_obj["model"], trust_remote_code=True
-    )
 
-    model = AutoModelForCausalLM.from_pretrained(
-        model_obj["model"],
-        device_map="cuda",
-        torch_dtype="auto",
-        trust_remote_code=True,
-        _attn_implementation="flash_attention_2",
-    ).cuda()
+    if model_obj["model"] not in processors_dict:
+        processors_dict[model_obj["model"]] = AutoProcessor.from_pretrained(
+            model_obj["model"], trust_remote_code=True
+        )
+
+    if model_obj["model"] not in models_dict:
+        models_dict[model_obj["model"]] = AutoModelForCausalLM.from_pretrained(
+            model_obj["model"],
+            device_map="cuda",
+            torch_dtype="auto",
+            trust_remote_code=True,
+            _attn_implementation="flash_attention_2",
+        ).cuda()
+
+    processor = processors_dict[model_obj["model"]]
+    model = models_dict[model_obj["model"]]
 
     # Load generation config
     generation_config = GenerationConfig.from_pretrained(model_obj["model"])
