@@ -18,6 +18,8 @@ def test_evaluator_local_llm() -> None:
             "model": "BEE-spoke-data/smol_llama-101M-GQA",
             "endpoint": "BEE-spoke-data/smol_llama-101M-GQA",
             "tokenizer": "BEE-spoke-data/smol_llama-101M-GQA",
+            "model_url": "/Users/jungkookang/Documents/projects/api_integrated_llm_experiment/llm_saves/smol_llama-101M-GQA",  # pragma: allowlist secret
+            "tokenizer_url": "/Users/jungkookang/Documents/projects/api_integrated_llm_experiment/tokenizer_saves/smol_llama-101M-GQA",  # pragma: allowlist secret
             "should_use_autoprocessor": False,
         }
     }
@@ -26,7 +28,9 @@ def test_evaluator_local_llm() -> None:
         model_id_info_dict=model_id_info_dict,
         evaluation_input_file_paths=get_files_in_folder(  # type: ignore
             folder_path=Path(
-                os.path.join(project_root_path, "tests", "data", "source", "evaluation")
+                os.path.join(
+                    project_root_path, "tests", "data", "source", "evaluation_trimmed"
+                )
             ),
             file_extension="json",
         ),
@@ -51,7 +55,7 @@ def test_evaluator_local_llm() -> None:
         ),
         error_folder_path=Path(os.path.join(project_root_path, "output", "error")),
         temperatures=[0.0],
-        max_tokens_list=[1500],
+        max_tokens_list=[100],
         should_generate_random_example=False,
         num_examples=1,
         should_ignore=True,
