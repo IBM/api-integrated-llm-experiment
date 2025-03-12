@@ -28,5 +28,10 @@
         "inference_type": "RITS",
         "model": "meta-llama/llama-3-3-70b-instruct",
         "endpoint": "https://inference-3scale-apicast-production.apps.rits.fmaas.res.ibm.com/llama-3-3-70b-instruct/v1"
+    },
+    "microsoft/phi-4": {
+        "inference_type": "RITS",
+        "model": "microsoft/phi-4",
+        "endpoint": "https://inference-3scale-apicast-production.apps.rits.fmaas.res.ibm.com/microsoft-phi-4/v1"
     }
 }

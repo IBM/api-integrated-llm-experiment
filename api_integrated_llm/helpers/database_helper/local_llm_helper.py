@@ -29,7 +29,7 @@ def get_response_from_llm_with_tokenizer(
     if model_obj["model"] not in models_dict:
         models_dict[model_obj["model"]] = AutoModelForCausalLM.from_pretrained(
             model_obj["model"],
-            torch_dtype=torch.bfloat16 if LLM_DEVICE == "cuda:0" else torch.float16,
+            torch_dtype="auto",
             device_map="auto",
         )
 

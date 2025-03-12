@@ -6,11 +6,18 @@
         "tokenizer": "MadeAgents/Hammer2.1-7b",
         "should_use_autoprocessor": false
     },
-    "Phi-4-multimodal-instruct": {
+    "Qwen2.5-7B-Instruct": {
         "inference_type": "LOCAL",
-        "model": "microsoft/Phi-4-multimodal-instruct",
-        "endpoint": "microsoft/Phi-4-multimodal-instruct",
-        "tokenizer": "microsoft/Phi-4-multimodal-instruct",
-        "should_use_autoprocessor": true
+        "model": "Qwen/Qwen2.5-7B-Instruct",
+        "endpoint": "Qwen/Qwen2.5-7B-Instruct",
+        "tokenizer": "Qwen/Qwen2.5-7B-Instruct",
+        "should_use_autoprocessor": false
+    },
+    "watt-tool-8B": {
+        "inference_type": "LOCAL",
+        "model": "watt-ai/watt-tool-8B",
+        "endpoint": "watt-ai/watt-tool-8B",
+        "tokenizer": "watt-ai/watt-tool-8B",
+        "should_use_autoprocessor": false
     }
 }
