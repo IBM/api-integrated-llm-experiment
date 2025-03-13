@@ -46,9 +46,9 @@ api-integrated-llm -h
 ```
 usage: api-integrated-llm [-h] [-m {default,evaluator,scorer,parser,metrics_aggregator}] [-rt ROOT] [-eof EVALUATOR_OUTPUT_FOLDER]
                           [-pif PARSER_INPUT_FOLDER] [-of OUTPUT_FOLDER] [-sif SCORER_INPUT_FOLDER] [-dsf DATABASES_FOLDER]
-                          [-maif METRICS_AGGREGATOR_INPUT_FOLDER] [-sf SOURCE_FOLDER] [-ig | --ignore | --no-ignore]
-                          [-asy | --use_async | --no-use_async] [-si | --single_intent | --no-single_intent]
-                          [-er | --random_example | --no-random_example] [-nr NUMBER_RANDOM_EXAMPLE] [-ep EXAMPLE_FILE_PATH]
+                          [-maif METRICS_AGGREGATOR_INPUT_FOLDER] [-sf SOURCE_FOLDER] [-ig | --ignore | --no-ignore] [-asy | --use_async | --no-use_async]
+                          [-si | --single_intent | --no-single_intent] [-er | --random_example | --no-random_example] [-nr NUMBER_RANDOM_EXAMPLE]
+                          [-ep EXAMPLE_FILE_PATH] [-mcp LANGUAGE_MODEL_CONFIGURATION_FILE_PATH]
 
 API Integrated LLM CLI
 
@@ -84,6 +84,8 @@ options:
                         The number of examples sampled from source data randomly
   -ep EXAMPLE_FILE_PATH, --example_file_path EXAMPLE_FILE_PATH
                         The absolute path for an example file for a prompt
+  -mcp LANGUAGE_MODEL_CONFIGURATION_FILE_PATH, --language_model_configuration_file_path LANGUAGE_MODEL_CONFIGURATION_FILE_PATH
+                        The absolute path for a language model configuration
 ```
 
 The source folder should have the following structure:
