@@ -203,13 +203,28 @@ async def get_response_from_RITS_async(
     )
 
 
+def handle_ritz_txt(
+    txt: Tuple[Optional[Union[str, List[str]]], str, float],
+) -> Optional[str]:
+    if not isinstance(txt, tuple):
+        return None
+    content = txt[0]
+    if content is None:
+        return None
+    if isinstance(content, str):
+        return content
+    if isinstance(content, list) and len(content) > 0:
+        return content[0]
+    return None
+
+
 async def generate_rits_response_async(
     prompt: str,
     temperature: float,
     max_tokens: int,
     model_name: str,
     model_resource: str,
-):
+) -> Optional[Union[List[str], str]]:
     try:
         resp = await get_response_from_RITS_async(
             id_model=model_name[:],
@@ -222,9 +237,10 @@ async def generate_rits_response_async(
             timeout=1500,
         )
 
-        return resp[0]
-    except Exception as exception:
-        return dict(error=exception)
+        return handle_ritz_txt(txt=resp)
+    except Exception as e:
+        print(e)
+    return None
 
 
 async def get_responses_from_async(
@@ -232,7 +248,7 @@ async def get_responses_from_async(
     model_obj: Dict[str, str],
     temperature: float,
     max_tokens: int,
-) -> List[str]:
+) -> List[Optional[Union[List[str], str]]]:
     tasks = [
         generate_rits_response_async(
             prompt=sample.input[:],
@@ -252,8 +268,8 @@ def get_responses_from_sync(
     model_obj: Dict[str, str],
     temperature: float,
     max_tokens: int,
-) -> List[List[str]]:
-    responses: List[List[str]] = []
+) -> List[str]:
+    responses: List[str] = []
     for sample in test_data:
         response = asyncio.run(
             generate_rits_response_async(
@@ -264,6 +280,9 @@ def get_responses_from_sync(
                 model_resource=model_obj["endpoint"].split("/")[-2][:],
             )
         )
-        responses.append(response)
+        if isinstance(response, str):
+            responses.append(response)
+        if isinstance(response, list):
+            responses.extend(response)
 
     return responses

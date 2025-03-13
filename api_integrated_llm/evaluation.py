@@ -2,7 +2,7 @@ import asyncio
 from copy import deepcopy
 from pathlib import Path
 import os
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional, Union
 
 from api_integrated_llm.data_models.source_models import (
     EvaluationOutputDataUnit,
@@ -26,7 +26,7 @@ from api_integrated_llm.helpers.instruct_data_prep import instruct_data
 def get_evaluation_output_units_from_responses(
     model_name: str,
     test_data: List[EvaluationOutputDataUnit],
-    responses: List[str],
+    responses: List[Union[List[str], str, None]],
     evaluation_input_file_path: Path,
     dataset_name: str,
     temperature: float,
@@ -34,11 +34,20 @@ def get_evaluation_output_units_from_responses(
 ) -> List[EvaluationOutputResponseDataUnit]:
     output_list: List[EvaluationOutputResponseDataUnit] = []
     for sample, resp in zip(test_data, responses):
-        if resp is not None and isinstance(resp, list) and len(resp) > 0:
+        if resp is not None:
+            response = ""
+            if isinstance(resp, list) and len(resp) > 0:
+                try:
+                    response = resp[0].strip()
+                except Exception as e:
+                    print(e)
+            if isinstance(response, str):
+                response = resp.strip()  # type: ignore
+
             output_unit = EvaluationOutputResponseDataUnit.get_model_from_output_unit(
                 data_model=sample
             )
-            output_unit.generated_text = resp[0].strip()
+            output_unit.generated_text = response
             output_unit.llm_model_id = model_name[:]
             output_unit.source_file_path = str(evaluation_input_file_path)
             output_unit.dataset_name = dataset_name
@@ -82,7 +91,7 @@ async def get_output_list_async(
             should_ignore=should_ignore,
         )
         if len(test_data) > 0:
-            responses: List[str] = []
+            responses: List[Optional[Union[List[str], str]]] = []
             if model_obj["endpoint"].startswith("http"):
                 responses = await get_responses_from_async(
                     test_data=test_data,
@@ -217,7 +226,7 @@ def get_output_list(
                 get_evaluation_output_units_from_responses(
                     model_name=model_name.split("/")[-1],
                     test_data=test_data,
-                    responses=responses,
+                    responses=responses,  # type: ignore
                     evaluation_input_file_path=evaluation_input_file_path,
                     dataset_name=(
                         dataset

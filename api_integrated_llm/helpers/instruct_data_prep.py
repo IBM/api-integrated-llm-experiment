@@ -96,13 +96,6 @@ def get_input_query(
             QUERY=sample_input,
             KEY_VALUES_AND_DESCRIPTIONS=key_value_description_str,
         )
-    elif "phi" in model_name_lower:
-        return prompt_dict["LLaMa-3.1"].format(
-            FUNCTION_STR=function_str,
-            ICL_EXAMPLES=example_str,
-            QUERY=sample_input,
-            KEY_VALUES_AND_DESCRIPTIONS=key_value_description_str,
-        )
     elif "mixtral_8x7b" in model_name_lower:
         return prompt_dict["mixtral_8x7b_instruct_v01"].format(
             FUNCTION_STR=function_str,

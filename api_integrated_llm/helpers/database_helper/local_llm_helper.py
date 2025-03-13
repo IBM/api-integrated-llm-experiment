@@ -130,7 +130,7 @@ def get_responses_from_local_llm(
                     max_tokens=max_tokens,
                 )
             )
-            responses.append([response] if response is not None else [""])
+            responses.append(response if response is not None else "")
         except Exception as e:
             print(e)
             model_name = model_obj["model"] if "model" in model_obj else "default_model"
