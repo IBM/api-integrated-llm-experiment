@@ -138,6 +138,14 @@ def get_arguments() -> argparse.Namespace:
         default=project_root_path,
     )
 
+    parser.add_argument(
+        "-mcp",
+        "--language_model_configuration_file_path",
+        type=Path,
+        help="The absolute path for a language model configuration",
+        default=project_root_path,
+    )
+
     return parser.parse_args()
 
 
@@ -284,6 +292,11 @@ def cli() -> None:
                             "configurations",
                             "llm_configurations.json",
                         )
+                        if (
+                            args.language_model_configuration_file_path
+                            == project_root_path
+                        )
+                        else args.language_model_configuration_file_path
                     )
                 )
             ),
