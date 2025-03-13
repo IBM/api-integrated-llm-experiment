@@ -60,7 +60,7 @@ def get_prompt_dict(
     if "rest" in path_str:
         return prompt_dict_all["icl"]
     if "sequencing" in path_str or "slot_filling" in path_str:
-        return prompt_dict_all["icl"]
+        return prompt_dict_all["sequencing"]
     return prompt_dict_all["icl"]
 
 

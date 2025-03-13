@@ -230,7 +230,7 @@ def get_paths(
         Path(
             os.path.join(
                 output_folder_path,
-                "evaluation",
+                "scoring",
             )
         )
         if args.metrics_aggregator_input_folder == project_root_path
