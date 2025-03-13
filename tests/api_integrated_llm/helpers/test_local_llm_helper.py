@@ -37,18 +37,15 @@ def test_local_llm() -> None:
 def test_save_models() -> None:
     model_name = "BEE-spoke-data/smol_llama-101M-GQA"
 
+    model_name_short = model_name.split("/")[-1]
     tokenizer = AutoTokenizer.from_pretrained(model_name)
-    model = AutoModelForCausalLM.from_pretrained(
-        model_name,
-        torch_dtype=torch.bfloat16 if "cuda" in LLM_DEVICE else torch.float16,
-        device_map="auto",
-    )
+    model = AutoModelForCausalLM.from_pretrained(model_name, device_map="cpu")
 
     tokenizer.save_pretrained(
-        os.path.join(project_root_path, "tokenizer_saves", "smol_llama-101M-GQA")
+        os.path.join(project_root_path, "tokenizer_saves", model_name_short)
     )
     model.save_pretrained(
-        os.path.join(project_root_path, "llm_saves", "smol_llama-101M-GQA")
+        os.path.join(project_root_path, "llm_saves", model_name_short)
     )
 
 
@@ -61,7 +58,7 @@ def test_load_models() -> None:
     )
 
     model = AutoModelForCausalLM.from_pretrained(
-        os.path.join(project_root_path, "llm_saves", model_name)
+        os.path.join(project_root_path, "llm_saves", model_name), device_map="cpu"
     )
 
     assert tokenizer is not None
