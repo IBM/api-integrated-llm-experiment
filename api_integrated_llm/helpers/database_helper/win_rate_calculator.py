@@ -33,7 +33,7 @@ def get_source_file_path(
         file_path_str = str(candidate_source_file_path)
         if source_file_name in file_path_str:
             source_file_path = file_path_str
-        break
+            break
     return source_file_path
 
 

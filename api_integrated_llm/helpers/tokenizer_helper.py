@@ -21,7 +21,6 @@ def granite_prompt_input(
     function: List[ToolItemModel],
     example_str: str,
     base_prompt: str,
-    key_value_description_str: str,
 ) -> str:
     prompts_initial = {"role": "user", "content": input}
     extra_turn = {
@@ -41,10 +40,6 @@ def granite_prompt_input(
         add_generation_prompt=True,
     )
 
-    new_prompt = base_prompt.format(
-        KEY_VALUES_AND_DESCRIPTIONS=key_value_description_str,
-    )
-
-    formatted_prompt = new_prompt + formatted_prompt
+    formatted_prompt = base_prompt + formatted_prompt
 
     return formatted_prompt
