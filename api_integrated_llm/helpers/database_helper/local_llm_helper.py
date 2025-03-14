@@ -49,7 +49,7 @@ def get_response_from_llm_with_tokenizer(
     input_tokens_dict = tokenizer(input, return_tensors="pt")
     input_tokens_dict = {k: v.to(model.device) for k, v in input_tokens_dict.items()}
     output = model.generate(
-        **input_tokens_dict, temperature=temperature, max_new_tokens=max_tokens
+        **input_tokens_dict, do_sample=False, max_new_tokens=max_tokens
     )
     response = tokenizer.decode(
         output[0][len(input_tokens_dict["input_ids"][0]) :],  # noqa: E203
