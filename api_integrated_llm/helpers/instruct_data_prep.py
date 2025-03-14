@@ -57,8 +57,8 @@ def get_prompt_dict(
 ) -> Dict[str, str]:
     prompt_dict_all = get_dict_from_json(file_path=prompt_file_path)  # type: ignore
     path_str = str(evaluation_input_file_path)
-    # if "rest" in path_str:
-    #     return prompt_dict_all["icl"]
+    if "rest" in path_str:
+        return prompt_dict_all["router"]
     if "sequencing" in path_str or "slot_filling" in path_str:
         return prompt_dict_all["sequencing"]
     return prompt_dict_all["sequencing"]
@@ -117,6 +117,29 @@ def get_input_query(
             QUERY=sample_input,
             KEY_VALUES_AND_DESCRIPTIONS=key_value_description_str,
         )
+    elif "watt" in model_name_lower and "watt-tool-8B" in prompt_dict:
+        return prompt_dict["watt-tool-8B"].format(
+            FUNCTION_STR=function_str,
+            ICL_EXAMPLES=example_str,
+            QUERY=sample_input,
+            KEY_VALUES_AND_DESCRIPTIONS=key_value_description_str,
+        )
+    elif "qwen" in model_name_lower and "Qwen2.5-7B-Instruct" in prompt_dict:
+        return prompt_dict["Qwen2.5-7B-Instruct"].format(
+            FUNCTION_STR=function_str,
+            ICL_EXAMPLES=example_str,
+            QUERY=sample_input,
+            KEY_VALUES_AND_DESCRIPTIONS=key_value_description_str,
+        )
+    elif "gpt" in model_name_lower:
+        return granite_prompt_input(
+            sample_input,
+            (sample.tools if sample.tools is not None else []),
+            example_str,
+            prompt_dict["granite"],
+            key_value_description_str,
+        )
+
     input_prompt = ""
     try:
         tmp_key = model_name[:]
