@@ -1,3 +1,4 @@
+from copy import deepcopy
 import json
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
@@ -64,6 +65,21 @@ def get_prompt_dict(
     return prompt_dict_all["sequencing"]
 
 
+def replace_sub_str(
+    base_str: str, function_str: str, example_str: str, sample_input: str
+) -> str:
+    pairs = {
+        "{FUNCTION_STR}": function_str,
+        "{ICL_EXAMPLES}": example_str,
+        "{QUERY}": sample_input,
+    }
+    new_str = deepcopy(base_str)
+    for key, val in pairs.items():
+        new_str = new_str.replace(key, val)
+
+    return new_str
+
+
 def get_input_query(
     sample_input: str,
     model_name: str,
@@ -71,7 +87,6 @@ def get_input_query(
     example_str: str,
     prompt_dict: Dict[str, str],
     function_str: str,
-    key_value_description_str: str,
 ) -> str:
     model_name_lower = model_name.lower()
     if "granite" in model_name_lower:
@@ -80,88 +95,39 @@ def get_input_query(
             (sample.tools if sample.tools is not None else []),
             example_str,
             prompt_dict["granite"],
-            key_value_description_str,
         )
-    elif "llama" in model_name_lower:
-        return prompt_dict["LLaMa-3.1"].format(
-            FUNCTION_STR=function_str,
-            ICL_EXAMPLES=example_str,
-            QUERY=sample_input,
-            KEY_VALUES_AND_DESCRIPTIONS=key_value_description_str,
-        )
-    elif "hammer" in model_name_lower:
-        return prompt_dict["Hammer2.0-7b"].format(
-            FUNCTION_STR=function_str,
-            ICL_EXAMPLES=example_str,
-            QUERY=sample_input,
-            KEY_VALUES_AND_DESCRIPTIONS=key_value_description_str,
-        )
-    elif "mixtral_8x7b" in model_name_lower:
-        return prompt_dict["mixtral_8x7b_instruct_v01"].format(
-            FUNCTION_STR=function_str,
-            ICL_EXAMPLES=example_str,
-            QUERY=sample_input,
-            KEY_VALUES_AND_DESCRIPTIONS=key_value_description_str,
-        )
-    elif "mixtral-8x22B" in model_name_lower:
-        return prompt_dict["Mixtral-8x22B-Instruct-v0.1"].format(
-            FUNCTION_STR=function_str,
-            ICL_EXAMPLES=example_str,
-            QUERY=sample_input,
-            KEY_VALUES_AND_DESCRIPTIONS=key_value_description_str,
-        )
-    elif "deepseek" in model_name_lower:
-        return prompt_dict["DeepSeek-V3"].format(
-            FUNCTION_STR=function_str,
-            ICL_EXAMPLES=example_str,
-            QUERY=sample_input,
-            KEY_VALUES_AND_DESCRIPTIONS=key_value_description_str,
-        )
+
+    template_str = ""
+
+    if "hammer" in model_name_lower and "Hammer2.0-7b" in prompt_dict:
+        template_str = prompt_dict["Hammer2.0-7b"]
+    elif (
+        "mixtral_8x7b" in model_name_lower
+        and "mixtral_8x7b_instruct_v01" in prompt_dict
+    ):
+        template_str = prompt_dict["mixtral_8x7b_instruct_v01"]
+    elif (
+        "mixtral-8x22B" in model_name_lower
+        and "Mixtral-8x22B-Instruct-v0.1" in prompt_dict
+    ):
+        template_str = prompt_dict["Mixtral-8x22B-Instruct-v0.1"]
+    elif "deepseek" in model_name_lower and "DeepSeek-V3" in prompt_dict:
+        template_str = prompt_dict["DeepSeek-V3"]
     elif "watt" in model_name_lower and "watt-tool-8B" in prompt_dict:
-        return prompt_dict["watt-tool-8B"].format(
-            FUNCTION_STR=function_str,
-            ICL_EXAMPLES=example_str,
-            QUERY=sample_input,
-            KEY_VALUES_AND_DESCRIPTIONS=key_value_description_str,
-        )
+        template_str = prompt_dict["watt-tool-8B"]
     elif "qwen" in model_name_lower and "Qwen2.5-7B-Instruct" in prompt_dict:
-        return prompt_dict["Qwen2.5-7B-Instruct"].format(
-            FUNCTION_STR=function_str,
-            ICL_EXAMPLES=example_str,
-            QUERY=sample_input,
-            KEY_VALUES_AND_DESCRIPTIONS=key_value_description_str,
-        )
-    elif "gpt" in model_name_lower:
-        return granite_prompt_input(
-            sample_input,
-            (sample.tools if sample.tools is not None else []),
-            example_str,
-            prompt_dict["granite"],
-            key_value_description_str,
-        )
+        template_str = prompt_dict["Qwen2.5-7B-Instruct"]
+    elif "llama" in model_name_lower:
+        template_str = prompt_dict["LLaMa-3.1"]
+    else:
+        template_str = prompt_dict["LLaMa-3.1"]
 
-    input_prompt = ""
-    try:
-        tmp_key = model_name[:]
-        if tmp_key not in prompt_dict:  # handle exceptions
-            tmp_key = "llama-3-1-405b-instruct"
-
-        input_prompt = prompt_dict[tmp_key].format(
-            FUNCTION_STR=function_str,
-            ICL_EXAMPLES=example_str,
-            QUERY=sample_input,
-            KEY_VALUES_AND_DESCRIPTIONS=key_value_description_str,
-        )
-    except:
-        input_prompt = (
-            prompt_dict[model_name]
-            .replace("{FUNCTION_STR}", function_str)
-            .replace("{ICL_EXAMPLES}", example_str)
-            .replace("{QUERY}", sample_input)
-            .replace("{KEY_VALUES_AND_DESCRIPTIONS}", key_value_description_str)
-        )
-
-    return input_prompt
+    return replace_sub_str(
+        base_str=template_str,
+        function_str=function_str,
+        example_str=example_str,
+        sample_input=sample_input,
+    )
 
 
 def instruct_data(
@@ -210,20 +176,6 @@ def instruct_data(
             if sample.tools is not None
             else ""
         )
-        key_value_description_str = (
-            json.dumps(
-                list(
-                    (
-                        map(
-                            lambda item: item.model_dump(),
-                            sample.key_values_and_descriptions,
-                        )
-                    )
-                )
-            )
-            if sample.key_values_and_descriptions is not None
-            else ""
-        )
         sample_input = sample.input if sample.input is not None else ""
         test_data.append(
             EvaluationOutputDataUnit(
@@ -235,7 +187,6 @@ def instruct_data(
                     example_str=example_str,
                     prompt_dict=prompt_dict,
                     function_str=function_str,
-                    key_value_description_str=key_value_description_str,
                 ),
                 output=sample.output,
                 gold_answer=sample.gold_answer,
