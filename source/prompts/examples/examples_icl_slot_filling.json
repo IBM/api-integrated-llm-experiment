@@ -1,1 +1,564 @@
-{"data": [{"sample_id": 10, "dataset_name": "disney", "input": "Among the movies directed by Wolfgang Reitherman, which one of them was the most popular?", "output": [{"name": "filter_data", "arguments": {"data_source": "$starting_table_var$", "key_name": "director_director", "value": "Wolfgang Reitherman", "condition": "equal_to"}, "label": "FILTERED_DF_0"}, {"name": "sort_data", "arguments": {"data_source": "$FILTERED_DF_0$", "key_name": "movies_total_gross_total_gross", "ascending": false}, "label": "SORTED_DF"}, {"name": "retrieve_data", "arguments": {"data_source": "$SORTED_DF$", "key_name": "movies_total_gross_movie_title", "distinct": false, "limit": 1}, "label": "SELECT_COL_0"}], "tools": [{"description": "Sort data by the values associated with the chosen key='key_name' If the input data is list-like, returns the sorted list. If the input data is tabular, returns the table with rows sorted by the values in column 'key_name'. If the data is grouped tables, then sort the groups by the value in 'key_name'", "name": "sort_data", "arguments": {"data_source": {"description": "The location of the data file in csv format.", "type": "string"}, "key_name": {"description": "name of key to sort by", "type": "string", "enum": ["ALLOWED_VALUES_FOR_KEY_NAME"]}, "ascending": {"description": "whether to sort by ascending order", "type": "boolean"}}}, {"description": "Transform the data assigned to a key in the input table (dict) using the specified operation and operation_args", "name": "transform_data", "arguments": {"data_source": {"description": "The location of the data file in csv format.", "type": "string"}, "key_name": {"description": "name of key to transform", "type": "string", "enum": ["ALLOWED_VALUES_FOR_KEY_NAME"]}, "operation_type": {"description": "the type of operation to perform, must be one of ['substring', 'strfrtime']", "type": "string", "enum": ["substring", "strfrtime"]}, "operation_args": {"description": "any arguments required by the operation_type", "type": "object"}}}, {"description": "This function applies a filter on the given key of the input data based on the provided condition and value. It returns a new table (dict) with the rows that meet the condition.", "name": "filter_data", "arguments": {"data_source": {"description": "The location of the data file in csv format.", "type": "string"}, "key_name": {"description": "The key on which the filter will be applied.", "type": "string", "enum": ["ALLOWED_VALUES_FOR_KEY_NAME"]}, "value": {"description": "The value to compare against in the filtering operation.", "type": "object"}, "condition": {"description": "The condition to apply for filtering. It must be one of the following:- 'equal_to': Filters rows where the column's value is equal to the given value.- 'not_equal_to': Filters rows where the column's value is not equal to the given value.- 'greater_than': Filters rows where the column's value is greater than the given value.- 'less_than': Filters rows where the column's value is less than the given value.- 'greater_than_equal_to': Filters rows where the column's value is greater than or equal to the given value.- 'less_than_equal_to': Filters rows where the column's value is less than or equal to the given value.- 'contains': Filters rows where the column's value contains the given value (applies to strings).- 'like': Filters rows where the column's value matches a regex pattern (applies to strings).", "type": "string", "enum": ["equal_to", "not_equal_to", "greater_than", "less_than", "greater_than_equal_to", "less_than_equal_to", "contains", "like"]}}}, {"description": "Returns contents of a data column", "name": "retrieve_data", "arguments": {"data_source": {"description": "The location of the data file in csv format.", "type": "string"}, "key_name": {"description": "key name or list of key names to select", "type": "string", "enum": ["ALLOWED_VALUES_FOR_KEY_NAME"]}, "distinct": {"description": "whether to return only distinct values", "type": "boolean"}, "limit": {"description": "only return the first 'limit' elements", "type": "integer"}}}], "key_values_and_descriptions": [{"key_name": "director_name", "description": "unique movie name", "dtype": "string"}, {"key_name": "director_director", "description": "the name of the director", "dtype": "string"}, {"key_name": "movies_total_gross_movie_title", "description": "movie title", "dtype": "string"}, {"key_name": "movies_total_gross_release_date", "description": "release date", "dtype": "string"}, {"key_name": "movies_total_gross_genre", "description": "genre of the movie", "dtype": "string"}, {"key_name": "movies_total_gross_MPAA_rating", "description": "Motion Picture Association of America of the disney movie", "dtype": "string"}, {"key_name": "movies_total_gross_total_gross", "description": "The total gross of the movie.", "dtype": "string"}, {"key_name": "movies_total_gross_inflation_adjusted_gross", "description": "The inflation-adjusted gross of the movie.", "dtype": "string"}], "gold_answer": "The Aristocats"}, {"sample_id": 39, "dataset_name": "disney", "input": "How many PG adventure movies did Ron Clements direct?", "output": [{"name": "filter_data", "arguments": {"data_source": "$starting_table_var$", "key_name": "director_director", "value": "Ron Clements", "condition": "equal_to"}, "label": "FILTERED_DF_0"}, {"name": "filter_data", "arguments": {"data_source": "$FILTERED_DF_0$", "key_name": "movies_total_gross_MPAA_rating", "value": "PG", "condition": "equal_to"}, "label": "FILTERED_DF_1"}, {"name": "filter_data", "arguments": {"data_source": "$FILTERED_DF_1$", "key_name": "movies_total_gross_genre", "value": "Adventure", "condition": "equal_to"}, "label": "FILTERED_DF_2"}, {"name": "aggregate_data", "arguments": {"data_source": "$FILTERED_DF_2$", "key_name": "", "distinct": false, "limit": -1, "aggregation_type": "count"}, "label": "COUNT"}], "tools": [{"description": "Sort data by the values associated with the chosen key='key_name' If the input data is list-like, returns the sorted list. If the input data is tabular, returns the table with rows sorted by the values in column 'key_name'. If the data is grouped tables, then sort the groups by the value in 'key_name'", "name": "sort_data", "arguments": {"data_source": {"description": "The location of the data file in csv format.", "type": "string"}, "key_name": {"description": "name of key to sort by", "type": "string", "enum": ["ALLOWED_VALUES_FOR_KEY_NAME"]}, "ascending": {"description": "whether to sort by ascending order", "type": "boolean"}}}, {"description": "This function applies a filter on the given key of the input data based on the provided condition and value. It returns a new table (dict) with the rows that meet the condition.", "name": "filter_data", "arguments": {"data_source": {"description": "The location of the data file in csv format.", "type": "string"}, "key_name": {"description": "The key on which the filter will be applied.", "type": "string", "enum": ["ALLOWED_VALUES_FOR_KEY_NAME"]}, "value": {"description": "The value to compare against in the filtering operation.", "type": "object"}, "condition": {"description": "The condition to apply for filtering. It must be one of the following:- 'equal_to': Filters rows where the column's value is equal to the given value.- 'not_equal_to': Filters rows where the column's value is not equal to the given value.- 'greater_than': Filters rows where the column's value is greater than the given value.- 'less_than': Filters rows where the column's value is less than the given value.- 'greater_than_equal_to': Filters rows where the column's value is greater than or equal to the given value.- 'less_than_equal_to': Filters rows where the column's value is less than or equal to the given value.- 'contains': Filters rows where the column's value contains the given value (applies to strings).- 'like': Filters rows where the column's value matches a regex pattern (applies to strings).", "type": "string", "enum": ["equal_to", "not_equal_to", "greater_than", "less_than", "greater_than_equal_to", "less_than_equal_to", "contains", "like"]}}}, {"description": "Returns contents of a data column", "name": "retrieve_data", "arguments": {"data_source": {"description": "The location of the data file in csv format.", "type": "string"}, "key_name": {"description": "key name or list of key names to select", "type": "string", "enum": ["ALLOWED_VALUES_FOR_KEY_NAME"]}, "distinct": {"description": "whether to return only distinct values", "type": "boolean"}, "limit": {"description": "only return the first 'limit' elements", "type": "integer"}}}, {"description": "Perform an aggregation on input data. If the input data is list-like, returns the value of the aggregation over the list index. If the input data is tabular, returns a numerical value for the aggregation over a column. If the data is grouped tables, then replace the values in the specified key with their aggregation result", "name": "aggregate_data", "arguments": {"data_source": {"description": "The location of the data file in csv format.", "type": "string"}, "key_name": {"description": "name of key to aggregate", "type": "string", "enum": ["ALLOWED_VALUES_FOR_KEY_NAME"]}, "aggregation_type": {"description": "the type of aggregation to perform, must be one of ['min', 'max', 'sum', 'mean', 'count', 'std', 'argmin', 'argmax']", "type": "string", "enum": ["min", "max", "sum", "mean", "count", "std", "argmin", "argmax"]}, "distinct": {"description": "whether to aggregate only distinct values", "type": "boolean"}, "limit": {"description": "limit the aggregation to the first 'limit' elements", "type": "integer"}}}], "key_values_and_descriptions": [{"key_name": "director_name", "description": "unique movie name", "dtype": "string"}, {"key_name": "director_director", "description": "the name of the director", "dtype": "string"}, {"key_name": "movies_total_gross_movie_title", "description": "movie title", "dtype": "string"}, {"key_name": "movies_total_gross_release_date", "description": "release date", "dtype": "string"}, {"key_name": "movies_total_gross_genre", "description": "genre of the movie", "dtype": "string"}, {"key_name": "movies_total_gross_MPAA_rating", "description": "Motion Picture Association of America of the disney movie", "dtype": "string"}, {"key_name": "movies_total_gross_total_gross", "description": "The total gross of the movie.", "dtype": "string"}, {"key_name": "movies_total_gross_inflation_adjusted_gross", "description": "The inflation-adjusted gross of the movie.", "dtype": "string"}], "gold_answer": 2}, {"sample_id": 61, "dataset_name": "disney", "input": "List the movie titles directed by Jack Kinney.", "output": [{"name": "filter_data", "arguments": {"data_source": "$starting_table_var$", "key_name": "director", "value": "Jack Kinney", "condition": "equal_to"}, "label": "FILTERED_DF_0"}, {"name": "retrieve_data", "arguments": {"data_source": "$FILTERED_DF_0$", "key_name": "name", "distinct": false, "limit": -1}, "label": "SELECT_COL_0"}], "tools": [{"description": "Return only the distinct elements from the input list.", "name": "select_unique_values", "arguments": {"unique_array": {"description": "A list of input data", "type": "array"}}}, {"description": "This function applies a filter on the given key of the input data based on the provided condition and value. It returns a new table (dict) with the rows that meet the condition.", "name": "filter_data", "arguments": {"data_source": {"description": "The location of the data file in csv format.", "type": "string"}, "key_name": {"description": "The key on which the filter will be applied.", "type": "string", "enum": ["ALLOWED_VALUES_FOR_KEY_NAME"]}, "value": {"description": "The value to compare against in the filtering operation.", "type": "object"}, "condition": {"description": "The condition to apply for filtering. It must be one of the following:- 'equal_to': Filters rows where the column's value is equal to the given value.- 'not_equal_to': Filters rows where the column's value is not equal to the given value.- 'greater_than': Filters rows where the column's value is greater than the given value.- 'less_than': Filters rows where the column's value is less than the given value.- 'greater_than_equal_to': Filters rows where the column's value is greater than or equal to the given value.- 'less_than_equal_to': Filters rows where the column's value is less than or equal to the given value.- 'contains': Filters rows where the column's value contains the given value (applies to strings).- 'like': Filters rows where the column's value matches a regex pattern (applies to strings).", "type": "string", "enum": ["equal_to", "not_equal_to", "greater_than", "less_than", "greater_than_equal_to", "less_than_equal_to", "contains", "like"]}}}, {"description": "Returns contents of a data column", "name": "retrieve_data", "arguments": {"data_source": {"description": "The location of the data file in csv format.", "type": "string"}, "key_name": {"description": "key name or list of key names to select", "type": "string", "enum": ["ALLOWED_VALUES_FOR_KEY_NAME"]}, "distinct": {"description": "whether to return only distinct values", "type": "boolean"}, "limit": {"description": "only return the first 'limit' elements", "type": "integer"}}}, {"description": "Perform an aggregation on input data. If the input data is list-like, returns the value of the aggregation over the list index. If the input data is tabular, returns a numerical value for the aggregation over a column. If the data is grouped tables, then replace the values in the specified key with their aggregation result", "name": "aggregate_data", "arguments": {"data_source": {"description": "The location of the data file in csv format.", "type": "string"}, "key_name": {"description": "name of key to aggregate", "type": "string", "enum": ["ALLOWED_VALUES_FOR_KEY_NAME"]}, "aggregation_type": {"description": "the type of aggregation to perform, must be one of ['min', 'max', 'sum', 'mean', 'count', 'std', 'argmin', 'argmax']", "type": "string", "enum": ["min", "max", "sum", "mean", "count", "std", "argmin", "argmax"]}, "distinct": {"description": "whether to aggregate only distinct values", "type": "boolean"}, "limit": {"description": "limit the aggregation to the first 'limit' elements", "type": "integer"}}}], "key_values_and_descriptions": [{"key_name": "name", "description": "unique movie name", "dtype": "string"}, {"key_name": "director", "description": "the name of the director", "dtype": "string"}], "gold_answer": ["Saludos Amigos", "Make Mine Music", "Fun and Fancy Free", "The Adventures of Ichabod and Mr. Toad"]}]}
+{
+    "data": [
+        {
+            "sample_id": 10,
+            "dataset_name": "disney",
+            "input": "Among the movies directed by Wolfgang Reitherman, which one of them was the most popular?",
+            "output": [
+                {
+                    "name": "filter_data",
+                    "arguments": {
+                        "data_source": "$starting_table_var$",
+                        "key_name": "director_director",
+                        "value": "Wolfgang Reitherman",
+                        "condition": "equal_to"
+                    },
+                    "label": "FILTERED_DF_0"
+                },
+                {
+                    "name": "sort_data",
+                    "arguments": {
+                        "data_source": "$FILTERED_DF_0$",
+                        "key_name": "movies_total_gross_total_gross",
+                        "ascending": false
+                    },
+                    "label": "SORTED_DF"
+                },
+                {
+                    "name": "retrieve_data",
+                    "arguments": {
+                        "data_source": "$SORTED_DF$",
+                        "key_name": "movies_total_gross_movie_title",
+                        "distinct": false,
+                        "limit": 1
+                    },
+                    "label": "SELECT_COL_0"
+                }
+            ],
+            "tools": [
+                {
+                    "description": "Sort data by the values associated with the chosen key='key_name' If the input data is list-like, returns the sorted list. If the input data is tabular, returns the table with rows sorted by the values in column 'key_name'. If the data is grouped tables, then sort the groups by the value in 'key_name'",
+                    "name": "sort_data",
+                    "arguments": {
+                        "data_source": {
+                            "description": "The location of the data file in csv format.",
+                            "type": "string"
+                        },
+                        "key_name": {
+                            "description": "name of key to sort by",
+                            "type": "string",
+                            "enum": [
+                                "ALLOWED_VALUES_FOR_KEY_NAME"
+                            ]
+                        },
+                        "ascending": {
+                            "description": "whether to sort by ascending order",
+                            "type": "boolean"
+                        }
+                    }
+                },
+                {
+                    "description": "Transform the data assigned to a key in the input table (dict) using the specified operation and operation_args",
+                    "name": "transform_data",
+                    "arguments": {
+                        "data_source": {
+                            "description": "The location of the data file in csv format.",
+                            "type": "string"
+                        },
+                        "key_name": {
+                            "description": "name of key to transform",
+                            "type": "string",
+                            "enum": [
+                                "ALLOWED_VALUES_FOR_KEY_NAME"
+                            ]
+                        },
+                        "operation_type": {
+                            "description": "the type of operation to perform, must be one of ['substring', 'strfrtime']",
+                            "type": "string",
+                            "enum": [
+                                "substring",
+                                "strfrtime"
+                            ]
+                        },
+                        "operation_args": {
+                            "description": "any arguments required by the operation_type",
+                            "type": "object"
+                        }
+                    }
+                },
+                {
+                    "description": "This function applies a filter on the given key of the input data based on the provided condition and value. It returns a new table (dict) with the rows that meet the condition.",
+                    "name": "filter_data",
+                    "arguments": {
+                        "data_source": {
+                            "description": "The location of the data file in csv format.",
+                            "type": "string"
+                        },
+                        "key_name": {
+                            "description": "The key on which the filter will be applied.",
+                            "type": "string",
+                            "enum": [
+                                "ALLOWED_VALUES_FOR_KEY_NAME"
+                            ]
+                        },
+                        "value": {
+                            "description": "The value to compare against in the filtering operation.",
+                            "type": "object"
+                        },
+                        "condition": {
+                            "description": "The condition to apply for filtering. It must be one of the following:- 'equal_to': Filters rows where the column's value is equal to the given value.- 'not_equal_to': Filters rows where the column's value is not equal to the given value.- 'greater_than': Filters rows where the column's value is greater than the given value.- 'less_than': Filters rows where the column's value is less than the given value.- 'greater_than_equal_to': Filters rows where the column's value is greater than or equal to the given value.- 'less_than_equal_to': Filters rows where the column's value is less than or equal to the given value.- 'contains': Filters rows where the column's value contains the given value (applies to strings).- 'like': Filters rows where the column's value matches a regex pattern (applies to strings).",
+                            "type": "string",
+                            "enum": [
+                                "equal_to",
+                                "not_equal_to",
+                                "greater_than",
+                                "less_than",
+                                "greater_than_equal_to",
+                                "less_than_equal_to",
+                                "contains",
+                                "like"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "description": "Returns contents of a data column",
+                    "name": "retrieve_data",
+                    "arguments": {
+                        "data_source": {
+                            "description": "The location of the data file in csv format.",
+                            "type": "string"
+                        },
+                        "key_name": {
+                            "description": "key name or list of key names to select",
+                            "type": "string",
+                            "enum": [
+                                "ALLOWED_VALUES_FOR_KEY_NAME"
+                            ]
+                        },
+                        "distinct": {
+                            "description": "whether to return only distinct values",
+                            "type": "boolean"
+                        },
+                        "limit": {
+                            "description": "only return the first 'limit' elements",
+                            "type": "integer"
+                        }
+                    }
+                }
+            ],
+            "key_values_and_descriptions": [
+                {
+                    "key_name": "director_name",
+                    "description": "unique movie name",
+                    "dtype": "string"
+                },
+                {
+                    "key_name": "director_director",
+                    "description": "the name of the director",
+                    "dtype": "string"
+                },
+                {
+                    "key_name": "movies_total_gross_movie_title",
+                    "description": "movie title",
+                    "dtype": "string"
+                },
+                {
+                    "key_name": "movies_total_gross_release_date",
+                    "description": "release date",
+                    "dtype": "string"
+                },
+                {
+                    "key_name": "movies_total_gross_genre",
+                    "description": "genre of the movie",
+                    "dtype": "string"
+                },
+                {
+                    "key_name": "movies_total_gross_MPAA_rating",
+                    "description": "Motion Picture Association of America of the disney movie",
+                    "dtype": "string"
+                },
+                {
+                    "key_name": "movies_total_gross_total_gross",
+                    "description": "The total gross of the movie.",
+                    "dtype": "string"
+                },
+                {
+                    "key_name": "movies_total_gross_inflation_adjusted_gross",
+                    "description": "The inflation-adjusted gross of the movie.",
+                    "dtype": "string"
+                }
+            ],
+            "gold_answer": "The Aristocats"
+        },
+        {
+            "sample_id": 39,
+            "dataset_name": "disney",
+            "input": "How many PG adventure movies did Ron Clements direct?",
+            "output": [
+                {
+                    "name": "filter_data",
+                    "arguments": {
+                        "data_source": "$starting_table_var$",
+                        "key_name": "director_director",
+                        "value": "Ron Clements",
+                        "condition": "equal_to"
+                    },
+                    "label": "FILTERED_DF_0"
+                },
+                {
+                    "name": "filter_data",
+                    "arguments": {
+                        "data_source": "$FILTERED_DF_0$",
+                        "key_name": "movies_total_gross_MPAA_rating",
+                        "value": "PG",
+                        "condition": "equal_to"
+                    },
+                    "label": "FILTERED_DF_1"
+                },
+                {
+                    "name": "filter_data",
+                    "arguments": {
+                        "data_source": "$FILTERED_DF_1$",
+                        "key_name": "movies_total_gross_genre",
+                        "value": "Adventure",
+                        "condition": "equal_to"
+                    },
+                    "label": "FILTERED_DF_2"
+                },
+                {
+                    "name": "aggregate_data",
+                    "arguments": {
+                        "data_source": "$FILTERED_DF_2$",
+                        "key_name": "",
+                        "distinct": false,
+                        "limit": -1,
+                        "aggregation_type": "count"
+                    },
+                    "label": "COUNT"
+                }
+            ],
+            "tools": [
+                {
+                    "description": "Sort data by the values associated with the chosen key='key_name' If the input data is list-like, returns the sorted list. If the input data is tabular, returns the table with rows sorted by the values in column 'key_name'. If the data is grouped tables, then sort the groups by the value in 'key_name'",
+                    "name": "sort_data",
+                    "arguments": {
+                        "data_source": {
+                            "description": "The location of the data file in csv format.",
+                            "type": "string"
+                        },
+                        "key_name": {
+                            "description": "name of key to sort by",
+                            "type": "string",
+                            "enum": [
+                                "ALLOWED_VALUES_FOR_KEY_NAME"
+                            ]
+                        },
+                        "ascending": {
+                            "description": "whether to sort by ascending order",
+                            "type": "boolean"
+                        }
+                    }
+                },
+                {
+                    "description": "This function applies a filter on the given key of the input data based on the provided condition and value. It returns a new table (dict) with the rows that meet the condition.",
+                    "name": "filter_data",
+                    "arguments": {
+                        "data_source": {
+                            "description": "The location of the data file in csv format.",
+                            "type": "string"
+                        },
+                        "key_name": {
+                            "description": "The key on which the filter will be applied.",
+                            "type": "string",
+                            "enum": [
+                                "ALLOWED_VALUES_FOR_KEY_NAME"
+                            ]
+                        },
+                        "value": {
+                            "description": "The value to compare against in the filtering operation.",
+                            "type": "object"
+                        },
+                        "condition": {
+                            "description": "The condition to apply for filtering. It must be one of the following:- 'equal_to': Filters rows where the column's value is equal to the given value.- 'not_equal_to': Filters rows where the column's value is not equal to the given value.- 'greater_than': Filters rows where the column's value is greater than the given value.- 'less_than': Filters rows where the column's value is less than the given value.- 'greater_than_equal_to': Filters rows where the column's value is greater than or equal to the given value.- 'less_than_equal_to': Filters rows where the column's value is less than or equal to the given value.- 'contains': Filters rows where the column's value contains the given value (applies to strings).- 'like': Filters rows where the column's value matches a regex pattern (applies to strings).",
+                            "type": "string",
+                            "enum": [
+                                "equal_to",
+                                "not_equal_to",
+                                "greater_than",
+                                "less_than",
+                                "greater_than_equal_to",
+                                "less_than_equal_to",
+                                "contains",
+                                "like"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "description": "Returns contents of a data column",
+                    "name": "retrieve_data",
+                    "arguments": {
+                        "data_source": {
+                            "description": "The location of the data file in csv format.",
+                            "type": "string"
+                        },
+                        "key_name": {
+                            "description": "key name or list of key names to select",
+                            "type": "string",
+                            "enum": [
+                                "ALLOWED_VALUES_FOR_KEY_NAME"
+                            ]
+                        },
+                        "distinct": {
+                            "description": "whether to return only distinct values",
+                            "type": "boolean"
+                        },
+                        "limit": {
+                            "description": "only return the first 'limit' elements",
+                            "type": "integer"
+                        }
+                    }
+                },
+                {
+                    "description": "Perform an aggregation on input data. If the input data is list-like, returns the value of the aggregation over the list index. If the input data is tabular, returns a numerical value for the aggregation over a column. If the data is grouped tables, then replace the values in the specified key with their aggregation result",
+                    "name": "aggregate_data",
+                    "arguments": {
+                        "data_source": {
+                            "description": "The location of the data file in csv format.",
+                            "type": "string"
+                        },
+                        "key_name": {
+                            "description": "name of key to aggregate",
+                            "type": "string",
+                            "enum": [
+                                "ALLOWED_VALUES_FOR_KEY_NAME"
+                            ]
+                        },
+                        "aggregation_type": {
+                            "description": "the type of aggregation to perform, must be one of ['min', 'max', 'sum', 'mean', 'count', 'std', 'argmin', 'argmax']",
+                            "type": "string",
+                            "enum": [
+                                "min",
+                                "max",
+                                "sum",
+                                "mean",
+                                "count",
+                                "std",
+                                "argmin",
+                                "argmax"
+                            ]
+                        },
+                        "distinct": {
+                            "description": "whether to aggregate only distinct values",
+                            "type": "boolean"
+                        },
+                        "limit": {
+                            "description": "limit the aggregation to the first 'limit' elements",
+                            "type": "integer"
+                        }
+                    }
+                }
+            ],
+            "key_values_and_descriptions": [
+                {
+                    "key_name": "director_name",
+                    "description": "unique movie name",
+                    "dtype": "string"
+                },
+                {
+                    "key_name": "director_director",
+                    "description": "the name of the director",
+                    "dtype": "string"
+                },
+                {
+                    "key_name": "movies_total_gross_movie_title",
+                    "description": "movie title",
+                    "dtype": "string"
+                },
+                {
+                    "key_name": "movies_total_gross_release_date",
+                    "description": "release date",
+                    "dtype": "string"
+                },
+                {
+                    "key_name": "movies_total_gross_genre",
+                    "description": "genre of the movie",
+                    "dtype": "string"
+                },
+                {
+                    "key_name": "movies_total_gross_MPAA_rating",
+                    "description": "Motion Picture Association of America of the disney movie",
+                    "dtype": "string"
+                },
+                {
+                    "key_name": "movies_total_gross_total_gross",
+                    "description": "The total gross of the movie.",
+                    "dtype": "string"
+                },
+                {
+                    "key_name": "movies_total_gross_inflation_adjusted_gross",
+                    "description": "The inflation-adjusted gross of the movie.",
+                    "dtype": "string"
+                }
+            ],
+            "gold_answer": 2
+        },
+        {
+            "sample_id": 61,
+            "dataset_name": "disney",
+            "input": "List the movie titles directed by Jack Kinney.",
+            "output": [
+                {
+                    "name": "filter_data",
+                    "arguments": {
+                        "data_source": "$starting_table_var$",
+                        "key_name": "director",
+                        "value": "Jack Kinney",
+                        "condition": "equal_to"
+                    },
+                    "label": "FILTERED_DF_0"
+                },
+                {
+                    "name": "retrieve_data",
+                    "arguments": {
+                        "data_source": "$FILTERED_DF_0$",
+                        "key_name": "name",
+                        "distinct": false,
+                        "limit": -1
+                    },
+                    "label": "SELECT_COL_0"
+                }
+            ],
+            "tools": [
+                {
+                    "description": "Return only the distinct elements from the input list.",
+                    "name": "select_unique_values",
+                    "arguments": {
+                        "unique_array": {
+                            "description": "A list of input data",
+                            "type": "array"
+                        }
+                    }
+                },
+                {
+                    "description": "This function applies a filter on the given key of the input data based on the provided condition and value. It returns a new table (dict) with the rows that meet the condition.",
+                    "name": "filter_data",
+                    "arguments": {
+                        "data_source": {
+                            "description": "The location of the data file in csv format.",
+                            "type": "string"
+                        },
+                        "key_name": {
+                            "description": "The key on which the filter will be applied.",
+                            "type": "string",
+                            "enum": [
+                                "ALLOWED_VALUES_FOR_KEY_NAME"
+                            ]
+                        },
+                        "value": {
+                            "description": "The value to compare against in the filtering operation.",
+                            "type": "object"
+                        },
+                        "condition": {
+                            "description": "The condition to apply for filtering. It must be one of the following:- 'equal_to': Filters rows where the column's value is equal to the given value.- 'not_equal_to': Filters rows where the column's value is not equal to the given value.- 'greater_than': Filters rows where the column's value is greater than the given value.- 'less_than': Filters rows where the column's value is less than the given value.- 'greater_than_equal_to': Filters rows where the column's value is greater than or equal to the given value.- 'less_than_equal_to': Filters rows where the column's value is less than or equal to the given value.- 'contains': Filters rows where the column's value contains the given value (applies to strings).- 'like': Filters rows where the column's value matches a regex pattern (applies to strings).",
+                            "type": "string",
+                            "enum": [
+                                "equal_to",
+                                "not_equal_to",
+                                "greater_than",
+                                "less_than",
+                                "greater_than_equal_to",
+                                "less_than_equal_to",
+                                "contains",
+                                "like"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "description": "Returns contents of a data column",
+                    "name": "retrieve_data",
+                    "arguments": {
+                        "data_source": {
+                            "description": "The location of the data file in csv format.",
+                            "type": "string"
+                        },
+                        "key_name": {
+                            "description": "key name or list of key names to select",
+                            "type": "string",
+                            "enum": [
+                                "ALLOWED_VALUES_FOR_KEY_NAME"
+                            ]
+                        },
+                        "distinct": {
+                            "description": "whether to return only distinct values",
+                            "type": "boolean"
+                        },
+                        "limit": {
+                            "description": "only return the first 'limit' elements",
+                            "type": "integer"
+                        }
+                    }
+                },
+                {
+                    "description": "Perform an aggregation on input data. If the input data is list-like, returns the value of the aggregation over the list index. If the input data is tabular, returns a numerical value for the aggregation over a column. If the data is grouped tables, then replace the values in the specified key with their aggregation result",
+                    "name": "aggregate_data",
+                    "arguments": {
+                        "data_source": {
+                            "description": "The location of the data file in csv format.",
+                            "type": "string"
+                        },
+                        "key_name": {
+                            "description": "name of key to aggregate",
+                            "type": "string",
+                            "enum": [
+                                "ALLOWED_VALUES_FOR_KEY_NAME"
+                            ]
+                        },
+                        "aggregation_type": {
+                            "description": "the type of aggregation to perform, must be one of ['min', 'max', 'sum', 'mean', 'count', 'std', 'argmin', 'argmax']",
+                            "type": "string",
+                            "enum": [
+                                "min",
+                                "max",
+                                "sum",
+                                "mean",
+                                "count",
+                                "std",
+                                "argmin",
+                                "argmax"
+                            ]
+                        },
+                        "distinct": {
+                            "description": "whether to aggregate only distinct values",
+                            "type": "boolean"
+                        },
+                        "limit": {
+                            "description": "limit the aggregation to the first 'limit' elements",
+                            "type": "integer"
+                        }
+                    }
+                }
+            ],
+            "key_values_and_descriptions": [
+                {
+                    "key_name": "name",
+                    "description": "unique movie name",
+                    "dtype": "string"
+                },
+                {
+                    "key_name": "director",
+                    "description": "the name of the director",
+                    "dtype": "string"
+                }
+            ],
+            "gold_answer": [
+                "Saludos Amigos",
+                "Make Mine Music",
+                "Fun and Fancy Free",
+                "The Adventures of Ichabod and Mr. Toad"
+            ]
+        }
+    ]
+}

@@ -1,581 +1,574 @@
 {
     "data": [
         {
-            "sample_id": "ca3a8419-23fb-4e71-a0ba-cc799ad73dc2",
-            "dataset_name": "mathqa",
-            "input": "In objective test a correct ans score 4 marks and on a wrong ans 2 marks are ---. a student score 480 marks from 150 question. how many ans were correct?",
+            "sample_id": 10,
+            "dataset_name": "disney",
+            "input": "Among the movies directed by Wolfgang Reitherman, which one of them was the most popular?",
             "output": [
                 {
-                    "name": "multiply",
-                    "label": "$var_1",
+                    "name": "select_data_equal_to",
                     "arguments": {
-                        "arg_0": 150,
-                        "arg_1": 2
-                    }
+                        "data_source": "$starting_table_var$",
+                        "key_name": "director_director",
+                        "value": "Wolfgang Reitherman"
+                    },
+                    "label": "FILTERED_DF"
                 },
                 {
-                    "name": "add",
-                    "label": "$var_2",
+                    "name": "sort_data_descending",
                     "arguments": {
-                        "arg_0": 480,
-                        "arg_1": "$var_1.result$"
-                    }
+                        "data_source": "$FILTERED_DF$",
+                        "key_name": "movies_total_gross_total_gross"
+                    },
+                    "label": "SORTED_DF"
                 },
                 {
-                    "name": "add",
-                    "label": "$var_3",
+                    "name": "get_movies_total_gross_movie_titles",
                     "arguments": {
-                        "arg_0": 4,
-                        "arg_1": 2
-                    }
+                        "data_source": "$SORTED_DF$"
+                    },
+                    "label": "SELECT_COL_0"
                 },
                 {
-                    "name": "divide",
-                    "label": "$var_4",
+                    "name": "truncate",
                     "arguments": {
-                        "arg_0": "$var_2.result$",
-                        "arg_1": "$var_3.result$"
-                    }
+                        "truncate_array": "$SELECT_COL_0$",
+                        "n": 1
+                    },
+                    "label": "LIMIT"
                 }
             ],
             "tools": [
                 {
-                    "name": "min_number",
-                    "description": "Find the minimum value among the given numbers",
-                    "parameters": {
-                        "arg_0": {
-                            "description": "A list of numbers",
-                            "type": "list of float"
-                        }
-                    },
-                    "output_parameter": {
-                        "result": {
-                            "description": "Minimum value",
-                            "type": "float"
+                    "description": "Filters rows where the column's value is not equal to the given value.",
+                    "name": "select_data_not_equal_to",
+                    "arguments": {
+                        "data_source": {
+                            "description": "The location of the data file in csv format.",
+                            "type": "string"
+                        },
+                        "key_name": {
+                            "description": "The key on which the filter will be applied.",
+                            "type": "string",
+                            "enum": [
+                                "ALLOWED_VALUES_FOR_KEY_NAME"
+                            ]
+                        },
+                        "value": {
+                            "description": "The value to compare against in the filtering operation.",
+                            "type": "object"
                         }
                     }
                 },
                 {
-                    "name": "speed",
-                    "description": "Calculate speed given distance and time.",
-                    "parameters": {
-                        "arg_0": {
-                            "description": "distance",
-                            "type": "int or float"
+                    "description": "Sort data by the values associated with the chosen key='key_name' If the input data is list-like, returns the sorted list. If the input data is tabular, returns the table with rows sorted by the values in column 'key_name'. If the data is grouped tables, then sort the groups by the value in 'key_name'",
+                    "name": "sort_data_ascending",
+                    "arguments": {
+                        "data_source": {
+                            "description": "The location of the data file in csv format.",
+                            "type": "string"
                         },
-                        "arg_1": {
-                            "description": "time",
-                            "type": "int or float"
-                        }
-                    },
-                    "output_parameter": {
-                        "result": {
-                            "description": "the speed",
-                            "type": "int or float"
+                        "key_name": {
+                            "description": "name of key to sort by",
+                            "type": "string",
+                            "enum": [
+                                "ALLOWED_VALUES_FOR_KEY_NAME"
+                            ]
+                        },
+                        "ascending": {
+                            "description": "whether to sort by ascending order",
+                            "type": "boolean"
                         }
                     }
                 },
                 {
-                    "name": "add",
-                    "description": "adds two numbers",
-                    "parameters": {
-                        "arg_0": {
-                            "description": "The first number",
-                            "type": "int or float"
+                    "description": "Lookup data movies_total_gross_release_date: release date",
+                    "name": "get_movies_total_gross_release_dates",
+                    "arguments": {}
+                },
+                {
+                    "description": "Return the first `n` elements of a list-like object.",
+                    "name": "truncate",
+                    "arguments": {
+                        "truncate_array": {
+                            "description": "A list-like object.",
+                            "type": "object"
                         },
-                        "arg_1": {
-                            "description": "The second number",
-                            "type": "int or float"
-                        }
-                    },
-                    "output_parameter": {
-                        "result": {
-                            "description": "The addition result",
-                            "type": "int or float"
+                        "n": {
+                            "description": "The number of rows/elements to return.",
+                            "type": "integer"
                         }
                     }
                 },
                 {
-                    "name": "multiply",
-                    "description": "Multiplies two numbers",
-                    "parameters": {
-                        "arg_0": {
-                            "description": "The first number",
-                            "type": "int or float"
+                    "description": "Filters rows where the column's value is equal to the given value.",
+                    "name": "select_data_equal_to",
+                    "arguments": {
+                        "data_source": {
+                            "description": "The location of the data file in csv format.",
+                            "type": "string"
                         },
-                        "arg_1": {
-                            "description": "The second number",
-                            "type": "int or float"
-                        }
-                    },
-                    "output_parameter": {
-                        "result": {
-                            "description": "The multiplication result",
-                            "type": "int or float"
+                        "key_name": {
+                            "description": "The key on which the filter will be applied.",
+                            "type": "string",
+                            "enum": [
+                                "ALLOWED_VALUES_FOR_KEY_NAME"
+                            ]
+                        },
+                        "value": {
+                            "description": "The value to compare against in the filtering operation.",
+                            "type": "object"
                         }
                     }
                 },
                 {
-                    "name": "remainder",
-                    "description": "Calculate the remainder of a divided by b",
-                    "parameters": {
-                        "arg_0": {
-                            "description": "first number",
-                            "type": "int or float"
+                    "description": "Filters rows where the column's value contains the given value (applies to strings).",
+                    "name": "select_data_contains",
+                    "arguments": {
+                        "data_source": {
+                            "description": "The location of the data file in csv format.",
+                            "type": "string"
                         },
-                        "arg_1": {
-                            "description": "second number",
-                            "type": "int or float"
-                        }
-                    },
-                    "output_parameter": {
-                        "result": {
-                            "description": "the remainder",
-                            "type": "int or float"
+                        "key_name": {
+                            "description": "The key on which the filter will be applied.",
+                            "type": "string",
+                            "enum": [
+                                "ALLOWED_VALUES_FOR_KEY_NAME"
+                            ]
+                        },
+                        "value": {
+                            "description": "The value to compare against in the filtering operation.",
+                            "type": "object"
                         }
                     }
                 },
                 {
-                    "name": "lcm",
-                    "description": "Calculate the least common multiple of two numbers",
-                    "parameters": {
-                        "arg_0": {
-                            "description": "first number",
-                            "type": "int or float"
-                        },
-                        "arg_1": {
-                            "description": "second number",
-                            "type": "int or float"
-                        }
-                    },
-                    "output_parameter": {
-                        "result": {
-                            "description": "the least common multiple",
-                            "type": "int or float"
-                        }
-                    }
+                    "description": "Lookup data movies_total_gross_movie_title: movie title",
+                    "name": "get_movies_total_gross_movie_titles",
+                    "arguments": {}
                 },
                 {
-                    "name": "volume_cylinder",
-                    "description": "Calculate the volume of a cylinder",
-                    "parameters": {
-                        "arg_0": {
-                            "description": "Radius of the base of the cylinder",
-                            "type": "float"
+                    "description": "Sort data by the values associated with the chosen key='key_name' If the input data is list-like, returns the sorted list. If the input data is tabular, returns the table with rows sorted by the values in column 'key_name'. If the data is grouped tables, then sort the groups by the value in 'key_name'",
+                    "name": "sort_data_descending",
+                    "arguments": {
+                        "data_source": {
+                            "description": "The location of the data file in csv format.",
+                            "type": "string"
                         },
-                        "arg_1": {
-                            "description": "Height of the cylinder",
-                            "type": "float"
-                        }
-                    },
-                    "output_parameter": {
-                        "result": {
-                            "description": "Volume of the cylinder",
-                            "type": "float"
-                        }
-                    }
-                },
-                {
-                    "name": "divide",
-                    "description": "divides two numbers",
-                    "parameters": {
-                        "arg_0": {
-                            "description": "The first number",
-                            "type": "int or float"
+                        "key_name": {
+                            "description": "name of key to sort by",
+                            "type": "string",
+                            "enum": [
+                                "ALLOWED_VALUES_FOR_KEY_NAME"
+                            ]
                         },
-                        "arg_1": {
-                            "description": "The second number",
-                            "type": "int or float"
-                        }
-                    },
-                    "output_parameter": {
-                        "result": {
-                            "description": "The division result",
-                            "type": "int or float"
+                        "ascending": {
+                            "description": "whether to sort by ascending order",
+                            "type": "boolean"
                         }
                     }
                 }
             ],
-            "gold_answer": 130.0
+            "key_values_and_descriptions": [
+                {
+                    "key_name": "director_name",
+                    "description": "unique movie name",
+                    "dtype": "string"
+                },
+                {
+                    "key_name": "director_director",
+                    "description": "the name of the director",
+                    "dtype": "string"
+                },
+                {
+                    "key_name": "movies_total_gross_movie_title",
+                    "description": "movie title",
+                    "dtype": "string"
+                },
+                {
+                    "key_name": "movies_total_gross_release_date",
+                    "description": "release date",
+                    "dtype": "string"
+                },
+                {
+                    "key_name": "movies_total_gross_genre",
+                    "description": "genre of the movie",
+                    "dtype": "string"
+                },
+                {
+                    "key_name": "movies_total_gross_MPAA_rating",
+                    "description": "Motion Picture Association of America of the disney movie",
+                    "dtype": "string"
+                },
+                {
+                    "key_name": "movies_total_gross_total_gross",
+                    "description": "The total gross of the movie.",
+                    "dtype": "string"
+                },
+                {
+                    "key_name": "movies_total_gross_inflation_adjusted_gross",
+                    "description": "The inflation-adjusted gross of the movie.",
+                    "dtype": "string"
+                }
+            ],
+            "gold_answer": "The Aristocats"
         },
         {
-            "sample_id": "08f01cce-bbc3-49c0-9e2a-b437de5444aa",
-            "dataset_name": "mathqa",
-            "input": "A student traveled 10 percent of the distance of the trip alone, continued another 30 miles with a friend, and then finished the last half of the trip alone. How many miles long was the trip?",
+            "sample_id": 39,
+            "dataset_name": "disney",
+            "input": "How many PG adventure movies did Ron Clements direct?",
             "output": [
                 {
-                    "name": "inverse",
-                    "label": "$var_1",
+                    "name": "select_data_equal_to",
                     "arguments": {
-                        "arg_0": 10
-                    }
+                        "data_source": "$starting_table_var$",
+                        "key_name": "director_director",
+                        "value": "Ron Clements"
+                    },
+                    "label": "FILTERED_DF"
                 },
                 {
-                    "name": "subtract",
-                    "label": "$var_2",
+                    "name": "select_data_equal_to",
                     "arguments": {
-                        "arg_0": 1,
-                        "arg_1": "$var_1.result$"
-                    }
+                        "data_source": "$FILTERED_DF$",
+                        "key_name": "movies_total_gross_MPAA_rating",
+                        "value": "PG"
+                    },
+                    "label": "FILTERED_DF"
                 },
                 {
-                    "name": "divide",
-                    "label": "$var_3",
+                    "name": "select_data_equal_to",
                     "arguments": {
-                        "arg_0": 1,
-                        "arg_1": 2
-                    }
+                        "data_source": "$FILTERED_DF$",
+                        "key_name": "movies_total_gross_genre",
+                        "value": "Adventure"
+                    },
+                    "label": "FILTERED_DF"
                 },
                 {
-                    "name": "subtract",
-                    "label": "$var_4",
+                    "name": "compute_data_count",
                     "arguments": {
-                        "arg_0": "$var_2.result$",
-                        "arg_1": "$var_3.result$"
-                    }
-                },
-                {
-                    "name": "divide",
-                    "label": "$var_5",
-                    "arguments": {
-                        "arg_0": 30,
-                        "arg_1": "$var_4.result$"
-                    }
+                        "data_source": "$FILTERED_DF$",
+                        "key_name": "",
+                        "distinct": false
+                    },
+                    "label": "COUNT"
                 }
             ],
             "tools": [
                 {
-                    "name": "inverse",
-                    "description": "Return the inverse (reciprocal) of a number",
-                    "parameters": {
-                        "arg_0": {
-                            "description": "The number to inverse",
-                            "type": "int or float"
-                        }
-                    },
-                    "output_parameter": {
-                        "result": {
-                            "description": "The inverse result",
-                            "type": "int or float"
-                        }
-                    }
-                },
-                {
-                    "name": "multiply",
-                    "description": "Multiplies two numbers",
-                    "parameters": {
-                        "arg_0": {
-                            "description": "The first number",
-                            "type": "int or float"
+                    "description": "Filters rows where the column's value is not equal to the given value.",
+                    "name": "select_data_not_equal_to",
+                    "arguments": {
+                        "data_source": {
+                            "description": "The location of the data file in csv format.",
+                            "type": "string"
                         },
-                        "arg_1": {
-                            "description": "The second number",
-                            "type": "int or float"
-                        }
-                    },
-                    "output_parameter": {
-                        "result": {
-                            "description": "The multiplication result",
-                            "type": "int or float"
-                        }
-                    }
-                },
-                {
-                    "name": "surface_sphere",
-                    "description": "Calculate the surface area of a sphere",
-                    "parameters": {
-                        "arg_0": {
-                            "description": "Radius of the sphere",
-                            "type": "float"
-                        }
-                    },
-                    "output_parameter": {
-                        "result": {
-                            "description": "Surface area of the sphere",
-                            "type": "float"
-                        }
-                    }
-                },
-                {
-                    "name": "square_edge_by_perimeter",
-                    "description": "Calculate the edge length of a square given its perimeter",
-                    "parameters": {
-                        "arg_0": {
-                            "description": "Perimeter of the square",
-                            "type": "float"
-                        }
-                    },
-                    "output_parameter": {
-                        "result": {
-                            "description": "Edge length of the square",
-                            "type": "float"
-                        }
-                    }
-                },
-                {
-                    "name": "divide",
-                    "description": "divides two numbers",
-                    "parameters": {
-                        "arg_0": {
-                            "description": "The first number",
-                            "type": "int or float"
+                        "key_name": {
+                            "description": "The key on which the filter will be applied.",
+                            "type": "string",
+                            "enum": [
+                                "ALLOWED_VALUES_FOR_KEY_NAME"
+                            ]
                         },
-                        "arg_1": {
-                            "description": "The second number",
-                            "type": "int or float"
-                        }
-                    },
-                    "output_parameter": {
-                        "result": {
-                            "description": "The division result",
-                            "type": "int or float"
+                        "value": {
+                            "description": "The value to compare against in the filtering operation.",
+                            "type": "object"
                         }
                     }
                 },
                 {
-                    "name": "speed",
-                    "description": "Calculate speed given distance and time.",
-                    "parameters": {
-                        "arg_0": {
-                            "description": "distance",
-                            "type": "int or float"
+                    "description": "Lookup data director_name: unique movie name",
+                    "name": "get_director_names",
+                    "arguments": {}
+                },
+                {
+                    "description": "Filters rows where the column's value is equal to the given value.",
+                    "name": "select_data_equal_to",
+                    "arguments": {
+                        "data_source": {
+                            "description": "The location of the data file in csv format.",
+                            "type": "string"
                         },
-                        "arg_1": {
-                            "description": "time",
-                            "type": "int or float"
-                        }
-                    },
-                    "output_parameter": {
-                        "result": {
-                            "description": "the speed",
-                            "type": "int or float"
-                        }
-                    }
-                },
-                {
-                    "name": "subtract",
-                    "description": "subtract two numbers",
-                    "parameters": {
-                        "arg_0": {
-                            "description": "The first number",
-                            "type": "int or float"
+                        "key_name": {
+                            "description": "The key on which the filter will be applied.",
+                            "type": "string",
+                            "enum": [
+                                "ALLOWED_VALUES_FOR_KEY_NAME"
+                            ]
                         },
-                        "arg_1": {
-                            "description": "The second number",
-                            "type": "int or float"
-                        }
-                    },
-                    "output_parameter": {
-                        "result": {
-                            "description": "The subtraction result",
-                            "type": "int or float"
+                        "value": {
+                            "description": "The value to compare against in the filtering operation.",
+                            "type": "object"
                         }
                     }
                 },
                 {
-                    "name": "square_edge_by_area",
-                    "description": "Calculate the edge length of a square given its area",
-                    "parameters": {
-                        "arg_0": {
-                            "description": "Area of the square",
-                            "type": "float"
+                    "description": "Transform list of string values by taking substrings",
+                    "name": "transform_data_to_substring",
+                    "arguments": {
+                        "data_source": {
+                            "description": "The location of the data file in csv format.",
+                            "type": "string"
+                        },
+                        "key_name": {
+                            "description": "name of string valued key to transform",
+                            "type": "string",
+                            "enum": [
+                                "ALLOWED_VALUES_FOR_KEY_NAME"
+                            ]
+                        },
+                        "start_index": {
+                            "description": "start of substring",
+                            "type": "integer"
+                        },
+                        "end_index": {
+                            "description": "end of substring, must be >= start_index",
+                            "type": "integer"
                         }
-                    },
-                    "output_parameter": {
-                        "result": {
-                            "description": "Edge length of the square",
-                            "type": "float"
+                    }
+                },
+                {
+                    "description": "Return the mean of values in a list.",
+                    "name": "compute_data_mean",
+                    "arguments": {
+                        "data_source": {
+                            "description": "The location of the data file in csv format.",
+                            "type": "string"
+                        }
+                    }
+                },
+                {
+                    "description": "Filters rows where the column's value is greater than the given value.",
+                    "name": "select_data_greater_than",
+                    "arguments": {
+                        "data_source": {
+                            "description": "The location of the data file in csv format.",
+                            "type": "string"
+                        },
+                        "key_name": {
+                            "description": "The key on which the filter will be applied.",
+                            "type": "string",
+                            "enum": [
+                                "ALLOWED_VALUES_FOR_KEY_NAME"
+                            ]
+                        },
+                        "value": {
+                            "description": "The value to compare against in the filtering operation.",
+                            "type": "object"
+                        }
+                    }
+                },
+                {
+                    "description": "Return the sum of values in a list.",
+                    "name": "compute_data_sum",
+                    "arguments": {
+                        "data_source": {
+                            "description": "The location of the data file in csv format.",
+                            "type": "string"
+                        }
+                    }
+                },
+                {
+                    "description": "Return the number of elements in a list.",
+                    "name": "compute_data_count",
+                    "arguments": {
+                        "data_source": {
+                            "description": "The location of the data file in csv format.",
+                            "type": "string"
                         }
                     }
                 }
             ],
-            "gold_answer": 75.0
+            "key_values_and_descriptions": [
+                {
+                    "key_name": "director_name",
+                    "description": "unique movie name",
+                    "dtype": "string"
+                },
+                {
+                    "key_name": "director_director",
+                    "description": "the name of the director",
+                    "dtype": "string"
+                },
+                {
+                    "key_name": "movies_total_gross_movie_title",
+                    "description": "movie title",
+                    "dtype": "string"
+                },
+                {
+                    "key_name": "movies_total_gross_release_date",
+                    "description": "release date",
+                    "dtype": "string"
+                },
+                {
+                    "key_name": "movies_total_gross_genre",
+                    "description": "genre of the movie",
+                    "dtype": "string"
+                },
+                {
+                    "key_name": "movies_total_gross_MPAA_rating",
+                    "description": "Motion Picture Association of America of the disney movie",
+                    "dtype": "string"
+                },
+                {
+                    "key_name": "movies_total_gross_total_gross",
+                    "description": "The total gross of the movie.",
+                    "dtype": "string"
+                },
+                {
+                    "key_name": "movies_total_gross_inflation_adjusted_gross",
+                    "description": "The inflation-adjusted gross of the movie.",
+                    "dtype": "string"
+                }
+            ],
+            "gold_answer": 2
         },
         {
-            "sample_id": "a40775f2-4e57-4fc9-9ba0-07590d880471",
-            "dataset_name": "mathqa",
-            "input": "Of the diplomats attending a summit conference, 30 speak French, 32 do not speak Russian, and 20% of the diplomats speak neither French nor Russian. If 10% of the diplomats speak both languages, then how many diplomats attended the conference?",
+            "sample_id": 61,
+            "dataset_name": "disney",
+            "input": "List the movie titles directed by Jack Kinney.",
             "output": [
                 {
-                    "name": "subtract",
-                    "label": "$var_1",
+                    "name": "select_data_equal_to",
                     "arguments": {
-                        "arg_0": 32,
-                        "arg_1": 30
-                    }
+                        "data_source": "$starting_table_var$",
+                        "key_name": "director",
+                        "value": "Jack Kinney"
+                    },
+                    "label": "FILTERED_DF"
                 },
                 {
-                    "name": "divide",
-                    "label": "$var_2",
+                    "name": "get_names",
                     "arguments": {
-                        "arg_0": 20,
-                        "arg_1": 100
-                    }
-                },
-                {
-                    "name": "divide",
-                    "label": "$var_3",
-                    "arguments": {
-                        "arg_0": 10,
-                        "arg_1": 100
-                    }
-                },
-                {
-                    "name": "subtract",
-                    "label": "$var_4",
-                    "arguments": {
-                        "arg_0": "$var_2.result$",
-                        "arg_1": "$var_3.result$"
-                    }
-                },
-                {
-                    "name": "divide",
-                    "label": "$var_5",
-                    "arguments": {
-                        "arg_0": "$var_1.result$",
-                        "arg_1": "$var_4.result$"
-                    }
+                        "data_source": "$FILTERED_DF$"
+                    },
+                    "label": "SELECT_COL_0"
                 }
             ],
             "tools": [
                 {
-                    "name": "subtract",
-                    "description": "subtract two numbers",
-                    "parameters": {
-                        "arg_0": {
-                            "description": "The first number",
-                            "type": "int or float"
+                    "description": "Filters rows where the column's value is not equal to the given value.",
+                    "name": "select_data_not_equal_to",
+                    "arguments": {
+                        "data_source": {
+                            "description": "The location of the data file in csv format.",
+                            "type": "string"
                         },
-                        "arg_1": {
-                            "description": "The second number",
-                            "type": "int or float"
-                        }
-                    },
-                    "output_parameter": {
-                        "result": {
-                            "description": "The subtraction result",
-                            "type": "int or float"
+                        "key_name": {
+                            "description": "The key on which the filter will be applied.",
+                            "type": "string",
+                            "enum": [
+                                "ALLOWED_VALUES_FOR_KEY_NAME"
+                            ]
+                        },
+                        "value": {
+                            "description": "The value to compare against in the filtering operation.",
+                            "type": "object"
                         }
                     }
                 },
                 {
-                    "name": "lcm",
-                    "description": "Calculate the least common multiple of two numbers",
-                    "parameters": {
-                        "arg_0": {
-                            "description": "first number",
-                            "type": "int or float"
-                        },
-                        "arg_1": {
-                            "description": "second number",
-                            "type": "int or float"
-                        }
-                    },
-                    "output_parameter": {
-                        "result": {
-                            "description": "the least common multiple",
-                            "type": "int or float"
+                    "description": "Return only the distinct elements from the input list.",
+                    "name": "select_unique_values",
+                    "arguments": {
+                        "unique_array": {
+                            "description": "A list of input data",
+                            "type": "array"
                         }
                     }
                 },
                 {
-                    "name": "power",
-                    "description": "Raise a number to a power",
-                    "parameters": {
-                        "arg_0": {
-                            "description": "The base number",
-                            "type": "int or float"
+                    "description": "Filters rows where the column's value is equal to the given value.",
+                    "name": "select_data_equal_to",
+                    "arguments": {
+                        "data_source": {
+                            "description": "The location of the data file in csv format.",
+                            "type": "string"
                         },
-                        "arg_1": {
-                            "description": "The exponent number",
-                            "type": "int or float"
-                        }
-                    },
-                    "output_parameter": {
-                        "result": {
-                            "description": "the power result",
-                            "type": "int or float"
+                        "key_name": {
+                            "description": "The key on which the filter will be applied.",
+                            "type": "string",
+                            "enum": [
+                                "ALLOWED_VALUES_FOR_KEY_NAME"
+                            ]
+                        },
+                        "value": {
+                            "description": "The value to compare against in the filtering operation.",
+                            "type": "object"
                         }
                     }
                 },
                 {
-                    "name": "diagonal",
-                    "description": "Calculate the length of the diagonal of a rectangle",
-                    "parameters": {
-                        "arg_0": {
-                            "description": "Length of the rectangle",
-                            "type": "float"
-                        },
-                        "arg_1": {
-                            "description": "Width of the rectangle",
-                            "type": "float"
-                        }
-                    },
-                    "output_parameter": {
-                        "result": {
-                            "description": "Length of the diagonal",
-                            "type": "float"
+                    "description": "Lookup data director: the name of the director",
+                    "name": "get_directors",
+                    "arguments": {}
+                },
+                {
+                    "description": "Lookup data name: unique movie name",
+                    "name": "get_names",
+                    "arguments": {}
+                },
+                {
+                    "description": "Return the sum of values in a list.",
+                    "name": "compute_data_sum",
+                    "arguments": {
+                        "data_source": {
+                            "description": "The location of the data file in csv format.",
+                            "type": "string"
                         }
                     }
                 },
                 {
-                    "name": "remainder",
-                    "description": "Calculate the remainder of a divided by b",
-                    "parameters": {
-                        "arg_0": {
-                            "description": "first number",
-                            "type": "int or float"
-                        },
-                        "arg_1": {
-                            "description": "second number",
-                            "type": "int or float"
-                        }
-                    },
-                    "output_parameter": {
-                        "result": {
-                            "description": "the remainder",
-                            "type": "int or float"
+                    "description": "Return the number of elements in a list.",
+                    "name": "compute_data_count",
+                    "arguments": {
+                        "data_source": {
+                            "description": "The location of the data file in csv format.",
+                            "type": "string"
                         }
                     }
                 },
                 {
-                    "name": "sqrt",
-                    "description": "Calculate the square root of a non-negative number.",
-                    "parameters": {
-                        "arg_0": {
-                            "description": "The input number",
-                            "type": "int"
-                        }
-                    },
-                    "output_parameter": {
-                        "result": {
-                            "description": "the square root of the provided number",
-                            "type": "int"
-                        }
-                    }
-                },
-                {
-                    "name": "divide",
-                    "description": "divides two numbers",
-                    "parameters": {
-                        "arg_0": {
-                            "description": "The first number",
-                            "type": "int or float"
+                    "description": "Filters rows where the column's value matches a regex pattern (applies to strings).",
+                    "name": "select_data_like",
+                    "arguments": {
+                        "data_source": {
+                            "description": "The location of the data file in csv format.",
+                            "type": "string"
                         },
-                        "arg_1": {
-                            "description": "The second number",
-                            "type": "int or float"
-                        }
-                    },
-                    "output_parameter": {
-                        "result": {
-                            "description": "The division result",
-                            "type": "int or float"
+                        "key_name": {
+                            "description": "The key on which the filter will be applied.",
+                            "type": "string",
+                            "enum": [
+                                "ALLOWED_VALUES_FOR_KEY_NAME"
+                            ]
+                        },
+                        "value": {
+                            "description": "The value to compare against in the filtering operation.",
+                            "type": "object"
                         }
                     }
                 }
             ],
-            "gold_answer": 20.0
+            "key_values_and_descriptions": [
+                {
+                    "key_name": "name",
+                    "description": "unique movie name",
+                    "dtype": "string"
+                },
+                {
+                    "key_name": "director",
+                    "description": "the name of the director",
+                    "dtype": "string"
+                }
+            ],
+            "gold_answer": [
+                "Saludos Amigos",
+                "Make Mine Music",
+                "Fun and Fancy Free",
+                "The Adventures of Ichabod and Mr. Toad"
+            ]
         }
     ]
 }

@@ -60,3 +60,15 @@ def test_parse_sources_add_sample_id() -> None:
     )
 
     assert True
+
+
+def test_parse_prompt_templates_examples() -> None:
+    for file_path in get_files_in_folder(
+        folder_path=Path(os.path.join(project_root_path, "source", "prompts")),
+        file_extension="json",
+    ):
+        _ = get_base_model_from_json(
+            file_path=file_path,
+            base_model=QuerySourceModel,
+        )
+    assert True
