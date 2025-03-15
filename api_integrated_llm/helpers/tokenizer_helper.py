@@ -26,7 +26,7 @@ def granite_prompt_input(
     extra_turn = {
         "role": "system",
         "content": (
-            'DO NOT try to answer the user question, just invoke the tools needed to respond to the user, if any. The output MUST strictly adhere to the following JSON format: [{"name": "func_name1", "arguments": {"argument1": "value1", "argument2": "value2"}, "label": "$var_1"}, ... (more tool calls as required)]. Please make sure the parameter type is correct and follow the documentation for parameter format. If no function call is needed, please directly output an empty list.\nHere are some examples:\n'
+            'DO NOT try to answer the user question, just invoke the tools needed to respond to the user, if any. The output MUST strictly adhere to the following JSON format: [{"name": "func_name1", "arguments": {"argument1": "value1", "argument2": "value2"}, "label": "$var_1"}, ... (more tool calls as required)]. Please make sure the parameter type is correct and follow the documentation for parameter format. If no function call is needed, please directly output an empty list.\n\n Relevant data is available in the file starting_table_var. \nHere are some examples:\n'
             + example_str
             + "\n"
         ),

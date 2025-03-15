@@ -155,31 +155,40 @@ def evaluate_win_rate(
     num_failed_function_execution_tot = 0
     error_messages_tot: List[str] = []
     for i, p in enumerate(payloads):
-        # Set the database path to the cache file of the initialized builder.
-        # Otherwise it will point to the cache location from the data generation run.
-        p["initialization_step"]["arguments"][
-            "database_path"
-        ] = builder.loader.cache_file
+        try:
+            # Set the database path to the cache file of the initialized builder.
+            # Otherwise it will point to the cache location from the data generation run.
+            p["initialization_step"]["arguments"][
+                "database_path"
+            ] = builder.loader.cache_file
 
-        if "arguments" not in p:
-            p["arguments"] = {}  # handle alternative payload
+            if "arguments" not in p:
+                p["arguments"] = {}  # handle alternative payload
 
-        # If we used the original output sequence here, instead of the model output, it would just check the correctness of the data point
-        required_api_calls = [p["initialization_step"]]
-        required_api_calls.extend(
-            p["output"]
-        )  # ie. change 'model_output' to just 'output', and the win_rate should be 1.0
-        required_api_calls = get_repaired_function_calls(
-            required_api_calls=required_api_calls
-        )
-        # This dictionary has [key, value] == [tool_name, tool (executable python function)]
-        # It is needed for evaluating the win rate, it is NOT consumed by the tool calling model
-        api_pool, _ = builder.set_query_specific_api_pool([p["initialization_step"]])
+            # If we used the original output sequence here, instead of the model output, it would just check the correctness of the data point
+            required_api_calls = [p["initialization_step"]]
+            required_api_calls.extend(
+                p["output"]
+            )  # ie. change 'model_output' to just 'output', and the win_rate should be 1.0
+            required_api_calls = get_repaired_function_calls(
+                required_api_calls=required_api_calls
+            )
+            # This dictionary has [key, value] == [tool_name, tool (executable python function)]
+            # It is needed for evaluating the win rate, it is NOT consumed by the tool calling model
+            api_pool, _ = builder.set_query_specific_api_pool(
+                [p["initialization_step"]]
+            )
 
-        api_result, error_messages, num_failed_function_execution = validate_api_output(
-            required_api_calls, api_pool
-        )
-        error_messages_tot.extend(error_messages)
+            (
+                api_result,
+                error_messages,
+                num_failed_function_execution,
+            ) = validate_api_output(required_api_calls, api_pool)
+            error_messages_tot.extend(error_messages)
+        except:
+            num_failed_function_execution = len(p["output"])
+            api_result = None
+
         num_failed_function_execution_tot + num_failed_function_execution
         validated = check_equality_without_order(api_result, p["gold_answer"])
         valid.append(validated)
