@@ -4,20 +4,23 @@
         "model": "MadeAgents/Hammer2.1-7b",
         "endpoint": "MadeAgents/Hammer2.1-7b",
         "tokenizer": "MadeAgents/Hammer2.1-7b",
-        "should_use_autoprocessor": false
+        "model_url": "/dccstor/jungkoo12/model_cache/llm_saves/Hammer2.1-7b",
+        "tokenizer_url": "/dccstor/jungkoo12/model_cache/tokenizer_saves/Hammer2.1-7b"
     },
     "Qwen2.5-7B-Instruct": {
         "inference_type": "LOCAL",
         "model": "Qwen/Qwen2.5-7B-Instruct",
         "endpoint": "Qwen/Qwen2.5-7B-Instruct",
         "tokenizer": "Qwen/Qwen2.5-7B-Instruct",
-        "should_use_autoprocessor": false
+        "model_url": "/dccstor/jungkoo12/model_cache/llm_saves/Qwen2.5-7B-Instruct",
+        "tokenizer_url": "/dccstor/jungkoo12/model_cache/tokenizer_saves/Qwen2.5-7B-Instruct"
     },
     "watt-tool-8B": {
         "inference_type": "LOCAL",
         "model": "watt-ai/watt-tool-8B",
         "endpoint": "watt-ai/watt-tool-8B",
         "tokenizer": "watt-ai/watt-tool-8B",
-        "should_use_autoprocessor": false
+        "model_url": "/dccstor/jungkoo12/model_cache/llm_saves/watt-tool-8B",
+        "tokenizer_url": "/dccstor/jungkoo12/model_cache/tokenizer_saves/watt-tool-8B"
     }
 }
