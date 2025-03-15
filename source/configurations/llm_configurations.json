@@ -33,5 +33,10 @@
         "inference_type": "RITS",
         "model": "microsoft/phi-4",
         "endpoint": "https://inference-3scale-apicast-production.apps.rits.fmaas.res.ibm.com/microsoft-phi-4/v1"
+    },
+    "Qwen2.5-72B-Instruct": {
+        "inference_type": "RITS",
+        "model": "Qwen/Qwen2.5-72B-Instruct",
+        "endpoint": "https://inference-3scale-apicast-production.apps.rits.fmaas.res.ibm.com/qwen2-5-72b-instruct/v1"
     }
 }
