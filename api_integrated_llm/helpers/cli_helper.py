@@ -4,7 +4,6 @@ import os
 from typing import Any, Dict, Optional, Tuple, cast
 from api_integrated_llm.data_models.cli_models import CliModeModel
 from api_integrated_llm.evaluation import evaluate
-from api_integrated_llm.helpers.benchmark_helper import get_model_id_obj_dict
 from api_integrated_llm.helpers.file_helper import (
     get_date_time_str,
     get_dict_from_json,
@@ -153,7 +152,7 @@ def get_llm_configuration(llm_configuration_file_path: Path) -> Dict[str, Any]:
     return (
         get_dict_from_json(file_path=llm_configuration_file_path)  # type: ignore
         if os.path.isfile((llm_configuration_file_path))
-        else get_model_id_obj_dict()
+        else {}
     )
 
 
