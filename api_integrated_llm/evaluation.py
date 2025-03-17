@@ -68,7 +68,7 @@ async def get_output_list_async(
     should_generate_random_example: bool,
     num_examples: int,
     should_ignore: bool,
-    model_obj,
+    model_obj: Dict[str, Any],
     temperature: float,
     max_tokens: int,
 ) -> None:
@@ -83,6 +83,7 @@ async def get_output_list_async(
         test_data, dataset = instruct_data(
             prompt_file_path=prompt_file_path,
             model_name=model_name,
+            model_obj=model_obj,
             evaluation_input_file_path=evaluation_input_file_path,  # type: ignore
             evaluation_input_file_paths=evaluation_input_file_paths,
             example_file_path=example_file_path,
@@ -169,7 +170,7 @@ def get_output_list(
     should_generate_random_example: bool,
     num_examples: int,
     should_ignore: bool,
-    model_obj,
+    model_obj: Dict[str, Any],
     temperature: float,
     max_tokens: int,
 ) -> None:
@@ -184,6 +185,7 @@ def get_output_list(
         test_data, dataset = instruct_data(
             prompt_file_path=prompt_file_path,
             model_name=model_name,
+            model_obj=model_obj,
             evaluation_input_file_path=evaluation_input_file_path,  # type: ignore
             evaluation_input_file_paths=evaluation_input_file_paths,
             example_file_path=example_file_path,
@@ -193,7 +195,9 @@ def get_output_list(
         )
         if len(test_data) > 0:
             responses: List[str] = []
-            if model_obj["endpoint"].startswith("http"):
+            if ("inference_type" in model_obj) and (
+                model_obj["inference_type"] != "LOCAL"
+            ):
                 responses = get_responses_from_sync(
                     test_data=test_data,
                     model_obj=model_obj,

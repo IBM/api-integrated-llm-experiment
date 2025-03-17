@@ -1,0 +1,9 @@
+{
+    "gpt-4o": {
+        "inference_type": "OPENAI",
+        "model": "gpt-4o",
+        "model-id": "gpt-4o-2024-08-06",
+        "endpoint": "https://eteopenai.azure-api.net/openai/deployments/{MODEL_ID}/chat/completions",
+        "api-version": "2024-08-01-preview",
+    }
+}

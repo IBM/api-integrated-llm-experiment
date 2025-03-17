@@ -1,4 +1,6 @@
 from __future__ import annotations
+from enum import Enum
+import json
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Union
 from pydantic import BaseModel
@@ -73,6 +75,16 @@ class QuerySourceDataModel(BaseModel):
     def get_hash(self) -> str:
         return get_hash(self.model_dump_json())
 
+    def get_tools_raw(self) -> List[Dict[str, Any]]:
+        if self.tools is None:
+            return []
+
+        return [
+            # {"type": "function", "function": tool.model_dump()} for tool in self.tools
+            tool.model_dump()
+            for tool in self.tools
+        ]
+
 
 class QuerySourceModel(BaseModel):
     data: Optional[List[QuerySourceDataModel]] = None
@@ -85,11 +97,36 @@ class ExampleDataModel(BaseModel):
     data: List[DataUnit] = list()
 
 
+class ConversationRoleModel(str, Enum):
+    SYSTEM = "system"
+    USER = "user"
+
+    def __str__(self):
+        return str(self.value)
+
+
+class ConversationUnit(BaseModel):
+    role: ConversationRoleModel = ConversationRoleModel.USER
+    content: str = ""
+
+
 class EvaluationOutputDataUnit(BaseModel):
     sample_id: Union[str, int]
     input: str
     output: Optional[Union[List[QueryItemDataModel], str]] = None
     gold_answer: Optional[Union[List[Any], str, int, float]] = None
+    messages: Optional[List[ConversationUnit]] = None
+    tools: Optional[List[Dict[str, Any]]] = None
+
+    def get_message_raw(self) -> List[Dict[str, Any]]:
+        if self.messages is None:
+            return []
+        return [obj.model_dump() for obj in self.messages]
+
+    def get_tools_str(self) -> str:
+        if self.tools is None:
+            return ""
+        return json.dumps(self.tools)
 
 
 class EvaluationOutputResponseDataUnit(EvaluationOutputDataUnit):

@@ -103,6 +103,13 @@ The source folder should have the following structure:
         └── prompts.json
 ```
 
+Make sure to set environmental variables with api keys.
+
+```bash
+export RITS_API_KEY="<API_KEY>" # pragma: allowlist secret
+export AZURE_OPENAI_API_KEY="<API_KEY>" # pragma: allowlist secret
+```
+
 To evaluate and score data, use the following command:
 
 ```bash

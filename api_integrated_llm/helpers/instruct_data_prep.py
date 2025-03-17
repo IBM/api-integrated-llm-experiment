@@ -1,10 +1,12 @@
 from copy import deepcopy
 import json
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 
 from api_integrated_llm.data_models.source_models import (
+    ConversationRoleModel,
+    ConversationUnit,
     DataUnit,
     EvaluationOutputDataUnit,
     ExampleDataModel,
@@ -119,6 +121,8 @@ def get_input_query(
         template_str = prompt_dict["Qwen2.5-7B-Instruct"]
     elif "llama" in model_name_lower:
         template_str = prompt_dict["LLaMa-3.1"]
+    elif "gpt" in model_name_lower:
+        template_str = prompt_dict["gpt4o"]
     else:
         template_str = prompt_dict["LLaMa-3.1"]
 
@@ -130,9 +134,26 @@ def get_input_query(
     )
 
 
+def get_OPENAI_messages(
+    system_prompt: str, sample_input: str, tools: Optional[List[Dict[str, Any]]]
+) -> List[ConversationUnit]:
+    tool_str = (
+        ("\n\nAvailable Tools:\n" + json.dumps(tools)) if tools is not None else ""
+    )
+    system_utterance = ConversationUnit(
+        role=ConversationRoleModel.SYSTEM,
+        content=(system_prompt + tool_str if len(tool_str) > 0 else system_prompt),
+    )
+    user_utterance = ConversationUnit(
+        role=ConversationRoleModel.USER, content=sample_input
+    )
+    return [system_utterance, user_utterance]
+
+
 def instruct_data(
     prompt_file_path: Path,
     model_name: str,
+    model_obj: Dict[str, Any],
     evaluation_input_file_path: Path,
     evaluation_input_file_paths: List[Path],
     example_file_path: Optional[Path] = None,
@@ -177,19 +198,31 @@ def instruct_data(
             else ""
         )
         sample_input = sample.input if sample.input is not None else ""
+        input_query = get_input_query(
+            sample_input=sample_input,
+            model_name=model_name,
+            sample=sample,
+            example_str=example_str,
+            prompt_dict=prompt_dict,
+            function_str=function_str,
+        )
+        tools = sample.get_tools_raw()
         test_data.append(
             EvaluationOutputDataUnit(
                 sample_id=sample.sample_id,
-                input=get_input_query(
-                    sample_input=sample_input,
-                    model_name=model_name,
-                    sample=sample,
-                    example_str=example_str,
-                    prompt_dict=prompt_dict,
-                    function_str=function_str,
-                ),
+                input=input_query,
                 output=sample.output,
                 gold_answer=sample.gold_answer,
+                messages=(
+                    get_OPENAI_messages(
+                        system_prompt=input_query,
+                        sample_input=sample_input,
+                        tools=tools,
+                    )
+                    if model_obj.get("inference_type", "") == "OPENAI"
+                    else None
+                ),
+                tools=tools,
             )
         )
 

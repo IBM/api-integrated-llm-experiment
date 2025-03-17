@@ -18,12 +18,17 @@ async def fetch_data_post(
     obj: Dict[str, Any],
     headers: Optional[Dict[str, Any]] = None,
     timeout: int = 240,
+    params: Optional[Dict[str, Any]] = None,
 ) -> HttpResponseModel:
     async with aiohttp.ClientSession() as session:
         start_time = time.monotonic()
         if headers is not None:
             async with session.post(
-                url, json=obj, headers=headers, timeout=timeout
+                url,
+                json=obj,
+                headers=headers,
+                timeout=timeout,
+                params=(params if params is not None else {}),
             ) as response:
                 return HttpResponseModel(
                     elapsed=timedelta(time.monotonic() - start_time),
@@ -44,27 +49,44 @@ async def get_response_from_post_request_async(
     url: str,
     headers: Optional[Dict[str, Any]] = None,
     timeout: int = 600,
+    params: Optional[Dict[str, Any]] = None,
 ) -> Tuple[Optional[Union[str, List[str]]], str, float]:
     text_response: Optional[Union[str, List[str]]] = None
     error_message: str = ""
     lag: Optional[timedelta] = None
     try:
         response_model = await fetch_data_post(
-            url=url,
-            obj=obj,
-            headers=headers,
-            timeout=timeout,
+            url=url, obj=obj, headers=headers, timeout=timeout, params=params
         )
         lag = response_model.elapsed
         payload = json.loads(response_model.response_txt)
-
-        if "response" in payload:  # single response from ollama
+        if "error" in payload:
+            error_message = json.dumps(payload)
+            text_response = [error_message]
+            error_message = json.dumps(payload)
+        elif "response" in payload:  # single response from ollama
             text_response = payload["response"]
         elif "choices" in payload:  # multiple responses from RITS
             text_response = []
             for choice in payload["choices"]:
-                if "text" in choice:
+                if "message" in choice:
+                    if (
+                        "tool_calls" in choice["message"]
+                        and choice["message"]["tool_calls"] is not None
+                    ):
+                        try:
+                            json_str = json.dumps(choice["message"]["tool_calls"])
+                            text_response.append(json_str)
+                        except Exception as e:
+                            text_response.append("Parcing Tool calls failed")
+                            print(str(e))
+                    elif "content" in choice["message"]:
+                        text_response.append(choice["message"]["content"])
+
+                elif "text" in choice:
                     text_response.append(choice["text"])
+                else:
+                    text_response.append("")
     except Exception as e:
         error_message = str(e)
         print(error_message)
@@ -112,7 +134,29 @@ def get_response_from_post_request(
     )
 
 
-def get_openai_payload(
+def get_openai_url(url: str, llm_model_id: str) -> str:
+    new_url = deepcopy(url)
+    new_url = new_url.replace("{MODEL_ID}", llm_model_id)
+    return new_url
+
+
+def get_OPENAI_payload(
+    sample: EvaluationOutputDataUnit,
+    model_obj: Dict[str, str],
+    temperature: float = 0.0,
+    max_tokens: int = 3000,
+) -> Dict[str, Any]:
+    return {
+        "model": model_obj.get("model", ""),
+        "messages": sample.get_message_raw(),
+        "temperature": temperature,
+        "max_tokens": max_tokens,
+        # "tools": sample.tools,
+        # "tool_choice": "auto",
+    }
+
+
+def get_RITZ_payload(
     prompts: List[str],
     id_model: str,
     temperature: float = 0.0,
@@ -165,10 +209,18 @@ RITS_BASE_URL = (
 RITS_COMPLETION_RESOURCE = "v1/completions"
 
 
-def get_openai_api_headers(api_key: str) -> Dict[str, Any]:
+def get_RITZ_api_headers(api_key: str) -> Dict[str, Any]:
     return {
         "accept": "application/json",
         "RITS_API_KEY": api_key,
+        "Content-Type": "application/json",
+    }
+
+
+def get_OPENAI_api_headers(api_key: str) -> Dict[str, Any]:
+    return {
+        "accept": "application/json",
+        "api-key": api_key,
         "Content-Type": "application/json",
     }
 
@@ -189,7 +241,7 @@ async def get_response_from_RITS_async(
     timeout: int = 240,
 ) -> Tuple[Optional[Union[str, List[str]]], str, float]:
     return await get_response_from_post_request_async(
-        obj=get_openai_payload(
+        obj=get_RITZ_payload(
             prompts=deepcopy(contents),
             id_model=id_model[:],
             temperature=temperature,
@@ -198,12 +250,42 @@ async def get_response_from_RITS_async(
             seed=123456,
         ),
         url=get_RITS_model_url(model_resource=model_resource[:]),
-        headers=get_openai_api_headers(api_key=api_key[:]),
+        headers=get_RITZ_api_headers(api_key=api_key[:]),
         timeout=timeout,
     )
 
 
-def handle_ritz_txt(
+def get_OPENAI_query_parameters(model_obj: Dict[str, str]) -> Dict[str, Any]:
+    return {"api-version": model_obj.get("api-version", "")}
+
+
+async def get_response_from_OPENAI_async(
+    sample: EvaluationOutputDataUnit,
+    model_obj: Dict[str, str],
+    max_tokens: int,
+    temperature: float = 0.0,
+    timeout: int = 240,
+) -> Tuple[Optional[Union[str, List[str]]], str, float]:
+    return await get_response_from_post_request_async(
+        obj=get_OPENAI_payload(
+            sample=sample,
+            model_obj=model_obj,
+            temperature=temperature,
+            max_tokens=max_tokens,
+        ),
+        url=get_openai_url(
+            url=model_obj.get("endpoint", ""),
+            llm_model_id=model_obj.get("model-id", ""),
+        ),
+        headers=get_OPENAI_api_headers(
+            api_key=os.environ.get("AZURE_OPENAI_API_KEY", "")
+        ),
+        timeout=timeout,
+        params=get_OPENAI_query_parameters(model_obj=model_obj),
+    )
+
+
+def handle_txt_from_llm_service(
     txt: Tuple[Optional[Union[str, List[str]]], str, float],
 ) -> Optional[str]:
     if not isinstance(txt, tuple):
@@ -218,26 +300,42 @@ def handle_ritz_txt(
     return None
 
 
-async def generate_rits_response_async(
-    prompt: str,
+async def generate_llm_response_from_service_async(
+    sample: EvaluationOutputDataUnit,
     temperature: float,
     max_tokens: int,
-    model_name: str,
-    model_resource: str,
+    model_obj: Dict[str, str],
 ) -> Optional[Union[List[str], str]]:
+    prompt = sample.input[:]
+    model_name = model_obj["model"][:]
+    model_resource = model_obj["endpoint"].split("/")[-2][:]
+
     try:
-        resp = await get_response_from_RITS_async(
-            id_model=model_name[:],
-            model_resource=model_resource[:],
-            api_key=os.environ["RITS_API_KEY"],
-            contents=[prompt],
-            max_tokens=max_tokens,
-            temperature=temperature,
-            n=1,
-            timeout=1500,
+        resp = (
+            await get_response_from_OPENAI_async(
+                sample=sample,
+                model_obj=deepcopy(model_obj),
+                max_tokens=max_tokens,
+                temperature=temperature,
+                timeout=1500,
+            )
+            if (
+                ("inference_type" in model_obj)
+                and (model_obj["inference_type"] == "OPENAI")
+            )
+            else await get_response_from_RITS_async(
+                id_model=model_name[:],
+                model_resource=model_resource[:],
+                api_key=os.environ.get("RITS_API_KEY", ""),
+                contents=[prompt],
+                max_tokens=max_tokens,
+                temperature=temperature,
+                n=1,
+                timeout=1500,
+            )
         )
 
-        return handle_ritz_txt(txt=resp)
+        return handle_txt_from_llm_service(txt=resp)
     except Exception as e:
         print(e)
     return None
@@ -250,12 +348,11 @@ async def get_responses_from_async(
     max_tokens: int,
 ) -> List[Optional[Union[List[str], str]]]:
     tasks = [
-        generate_rits_response_async(
-            prompt=sample.input[:],
+        generate_llm_response_from_service_async(
+            sample=sample,
             temperature=temperature,
             max_tokens=max_tokens,
-            model_name=model_obj["model"][:],
-            model_resource=model_obj["endpoint"].split("/")[-2][:],
+            model_obj=deepcopy(model_obj),
         )
         for sample in test_data
     ]
@@ -272,12 +369,11 @@ def get_responses_from_sync(
     responses: List[str] = []
     for sample in test_data:
         response = asyncio.run(
-            generate_rits_response_async(
-                prompt=sample.input[:],
+            generate_llm_response_from_service_async(
+                sample=sample,
                 temperature=temperature,
                 max_tokens=max_tokens,
-                model_name=model_obj["model"][:],
-                model_resource=model_obj["endpoint"].split("/")[-2][:],
+                model_obj=deepcopy(model_obj),
             )
         )
         if isinstance(response, str):

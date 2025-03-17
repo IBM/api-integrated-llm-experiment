@@ -1,0 +1,37 @@
+{
+    "DeepSeek-V3": {
+        "inference_type": "RITS",
+        "model": "deepseek-ai/DeepSeek-V3",
+        "endpoint": "https://inference-3scale-apicast-production.apps.rits.fmaas.res.ibm.com/deepseek-v3/v1"
+    },
+    "Mixtral-8x22B-Instruct-v0.1": {
+        "inference_type": "RITS",
+        "model": "mistralai/mixtral-8x22B-instruct-v0.1",
+        "endpoint": "https://inference-3scale-apicast-production.apps.rits.fmaas.res.ibm.com/mixtral-8x22b-instruct-v01/v1"
+    },
+    "mixtral_8x7b_instruct_v01": {
+        "inference_type": "RITS",
+        "model": "mistralai/mixtral-8x7B-instruct-v0.1",
+        "endpoint": "https://inference-3scale-apicast-production.apps.rits.fmaas.res.ibm.com/mixtral-8x7b-instruct-v01/v1"
+    },
+    "granite-3.1-8b-instruct": {
+        "inference_type": "RITS",
+        "model": "ibm-granite/granite-3.1-8b-instruct",
+        "endpoint": "https://inference-3scale-apicast-production.apps.rits.fmaas.res.ibm.com/granite-3-1-8b-instruct/v1"
+    },
+    "Llama-3.1-8B-Instruct": {
+        "inference_type": "RITS",
+        "model": "meta-llama/Llama-3.1-8B-Instruct",
+        "endpoint": "https://inference-3scale-apicast-production.apps.rits.fmaas.res.ibm.com/llama-3-1-8b-instruct/v1"
+    },
+    "llama-3-3-70b-instruct": {
+        "inference_type": "RITS",
+        "model": "meta-llama/llama-3-3-70b-instruct",
+        "endpoint": "https://inference-3scale-apicast-production.apps.rits.fmaas.res.ibm.com/llama-3-3-70b-instruct/v1"
+    },
+    "Qwen2.5-72B-Instruct": {
+        "inference_type": "RITS",
+        "model": "Qwen/Qwen2.5-72B-Instruct",
+        "endpoint": "https://inference-3scale-apicast-production.apps.rits.fmaas.res.ibm.com/qwen2-5-72b-instruct/v1"
+    }
+}
