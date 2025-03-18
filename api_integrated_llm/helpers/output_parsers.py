@@ -278,7 +278,7 @@ def parse_llama_3_70b_instruct(
 ):
     pred_has_parsing_errors = False
     pred_func_calls, gold_func_calls = [], []
-    pred_dict_list, gold_dict_list = [], []  # type: ignore
+    pred_dict_list = []  # type: ignore
     gold_dict_list = get_output_list(prediction=prediction)
     parsing_error_messages: List[str] = []
 
@@ -423,9 +423,8 @@ def parse_Hammer2_0_7b(
 ):
     pred_has_parsing_errors = False
     pred_func_calls, gold_func_calls = [], []
-    pred_dict_list, gold_dict_list = [], []
-
-    gold_dict_list = json.loads(prediction["output"])
+    pred_dict_list = []
+    gold_dict_list = get_output_list(prediction=prediction)
     if skip_grounding:
         gold_func_calls = [json.dumps(func) for func in gold_dict_list]
     else:
