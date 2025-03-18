@@ -133,7 +133,7 @@ pre-commit install
 Run the parser with the following command:
 
 ```bash
-api-integrated-llm -m parser -pif <INPUT_FOLDER_PATH> -of <OUTPUT_FOLDER_PATH> -si
+api-integrated-llm -m parser -pif <INPUT_FOLDER_PATH> -of <OUTPUT_FOLDER_PATH>
 ```
 
 ### Flags: 
@@ -151,7 +151,7 @@ api-integrated-llm -m parser -pif <INPUT_FOLDER_PATH> -of <OUTPUT_FOLDER_PATH> -
 ### Example Usage:
 
 ```bash
-api-integrated-llm -m parser -pif /Users/jungkookang/Documents/projects/api_integrated_llm_experiment/tests/data/test_output/evaluation/llm -of /Users/jungkookang/Documents/projects/api_integrated_llm_experiment/output/parsing -si
+api-integrated-llm -m parser -pif /Users/jungkookang/Documents/projects/api_integrated_llm_experiment/tests/data/test_output/evaluation/llm -of /Users/jungkookang/Documents/projects/api_integrated_llm_experiment/output/parsing
 ```
 
 ### Example Input/Output Files:
@@ -167,7 +167,7 @@ api-integrated-llm -m parser -pif /Users/jungkookang/Documents/projects/api_inte
 Run the scorer with the following command:
 
 ```bash
-api-integrated-llm -m scorer -sif <INPUT_FOLDER_PATH> -of <OUTPUT_FOLDER_PATH> -si
+api-integrated-llm -m scorer -sif <INPUT_FOLDER_PATH> -of <OUTPUT_FOLDER_PATH>
 ```
 
 ### Flags: 
@@ -216,7 +216,7 @@ The win rate calculation algorithm uses `sample_id` to locate necessary data in 
 To use the win rate calculator, run the following command:
 
 ```bash
-api-integrated-llm -m scorer -sif <INPUT_FOLDER_PATH> -of <OUTPUT_FOLDER_PATH> -dsf <DATABASES_FOLDER_PATH> -sf <EVALUATION_SOURCE_FOLDER_PATH> --si
+api-integrated-llm -m scorer -sif <INPUT_FOLDER_PATH> -of <OUTPUT_FOLDER_PATH> -dsf <DATABASES_FOLDER_PATH> -sf <EVALUATION_SOURCE_FOLDER_PATH>
 ```
 
 ### Input/Output:
@@ -251,7 +251,7 @@ DATABASES_FOLDER
 ### Example Usage:
 
 ```bash
-api-integrated-llm -m scorer -sif /Users/jungkookang/Documents/projects/api_integrated_llm_experiment/output/parsing -of /Users/jungkookang/Documents/projects/api_integrated_llm_experiment/output/scoring -dsf /Users/jungkookang/Documents/projects/api_integrated_llm_experiment/tests/data/source/databases -sf /Users/jungkookang/Documents/projects/api_integrated_llm_experiment/tests/data/source/evaluation_win_rate -si
+api-integrated-llm -m scorer -sif /Users/jungkookang/Documents/projects/api_integrated_llm_experiment/output/parsing -of /Users/jungkookang/Documents/projects/api_integrated_llm_experiment/output/scoring -dsf /Users/jungkookang/Documents/projects/api_integrated_llm_experiment/tests/data/source/databases -sf /Users/jungkookang/Documents/projects/api_integrated_llm_experiment/tests/data/source/evaluation_win_rate
 ```
 
 ## Metrics Aggregator
