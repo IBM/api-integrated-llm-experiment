@@ -147,7 +147,13 @@ class EvaluationOutputResponseDataUnit(EvaluationOutputDataUnit):
     ) -> EvaluationOutputResponseDataUnit:
         return EvaluationOutputResponseDataUnit(
             sample_id=data_model.sample_id,
-            input=data_model.input,
+            input=(
+                data_model.input
+                if (data_model.messages is None or len(data_model.messages) == 0)
+                else json.dumps(
+                    [message.model_dump() for message in data_model.messages]
+                )
+            ),
             output=data_model.output,
             gold_answer=data_model.gold_answer,
         )
