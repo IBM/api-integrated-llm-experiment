@@ -364,10 +364,10 @@ def get_json_dict_from_txt(txt: str) -> Union[Dict[str, Any], List[Dict[str, Any
     if should_parse_object:
         try:
             # json string in object form
-            start_idx = txt.index("{")
+            start_idx = txt.find("{")
             end_idx = txt.rfind("}")
 
-            if start_idx >= end_idx:
+            if start_idx == -1 or start_idx >= end_idx:
                 raise Exception("text does not contain json string")
 
             json_dict = json.loads(
@@ -379,10 +379,10 @@ def get_json_dict_from_txt(txt: str) -> Union[Dict[str, Any], List[Dict[str, Any
     else:
         # json string in list of objects form
         try:
-            start_idx = txt.index("[")
+            start_idx = txt.find("[")
             end_idx = txt.rfind("]")
 
-            if start_idx < end_idx:
+            if start_idx != -1 and start_idx < end_idx:
                 json_dict = json.loads(
                     txt[start_idx : (end_idx + 1)],  # noqa: E203
                 )
@@ -397,8 +397,21 @@ def get_jsonl_list_from_string(
     txt: str,
 ) -> List[Union[List[Dict[str, Any]], Dict[str, Any]]]:
     jsonl_list: List[Union[List[Dict[str, Any]], Dict[str, Any]]] = []
-    for line in txt.split("\n"):
-        jsonl_list.append(get_json_dict_from_txt(txt=line))
+    splitters = ["\n", "''", "' '"]
+    for splitter in splitters:
+        try:
+            for line in txt.split(splitter):
+                jsonl_list.append(get_json_dict_from_txt(txt=line))
+            break
+        except Exception as e:
+            error_message = str(e)
+            print(f"JSONL parsing error: {error_message}")
+            jsonl_list = []
+            continue
+
+    if len(jsonl_list) == 0:
+        raise Exception("JSONL parcing failed")
+
     return jsonl_list
 
 

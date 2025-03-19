@@ -2,7 +2,10 @@ import os
 from pathlib import Path
 
 from api_integrated_llm.helpers.file_helper import get_list_dict_from_jsonl
-from api_integrated_llm.helpers.output_parsers import parse_llama_3_output
+from api_integrated_llm.helpers.output_parsers import (
+    parse_llama_3_output,
+    parse_multi_step,
+)
 
 
 test_root_path = Path(__file__).parent.parent.parent.resolve()
@@ -70,3 +73,11 @@ def test_parse_llama_3_output_multi_intent() -> None:
     )
 
     assert not pred_has_parsing_errors
+
+
+def test_parse_multi_step() -> None:
+    txt = '[select_data_less_than_equal_to(data_source="$starting_table_var$", key_name="edhrecRank", value=100)]'
+    res = parse_multi_step(txt=txt)
+
+    assert isinstance(res, list)
+    assert len(res) == 1

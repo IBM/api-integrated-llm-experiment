@@ -1,6 +1,7 @@
+from copy import deepcopy
 import json
-from typing import Any, Dict, List, Tuple
-
+from typing import Any, Dict, List, Optional, Tuple
+import ast
 from api_integrated_llm.data_models.common_models import CommonErrorModel
 from api_integrated_llm.helpers.file_helper import (
     get_json_data_with_two_step_parsing,
@@ -112,6 +113,143 @@ def ground_seq_nested_repsonse(api_list):
 
 def get_output_list(prediction: Dict[str, Any]) -> List[Dict[str, Any]]:
     return get_json_dict_from_txt(txt=prediction["output"]) if isinstance(prediction["output"], str) else prediction["output"]  # type: ignore
+
+
+def resolve_ast_by_type(value):
+    if isinstance(value, ast.Constant):
+        if value.value is Ellipsis:
+            output = "..."
+        else:
+            output = value.value
+    elif isinstance(value, ast.UnaryOp):
+        output = -value.operand.value
+    elif isinstance(value, ast.List):
+        output = [resolve_ast_by_type(v) for v in value.elts]
+    elif isinstance(value, ast.Dict):
+        output = {
+            resolve_ast_by_type(k): resolve_ast_by_type(v)
+            for k, v in zip(value.keys, value.values)
+        }
+    elif isinstance(
+        value, ast.NameConstant
+    ):  # Added this condition to handle boolean values
+        output = value.value
+    elif isinstance(
+        value, ast.BinOp
+    ):  # Added this condition to handle function calls as arguments
+        output = eval(ast.unparse(value))
+    elif isinstance(value, ast.Name):
+        output = value.id
+    elif isinstance(value, ast.Call):
+        if len(value.keywords) == 0:
+            output = ast.unparse(value)
+        else:
+            output = resolve_ast_call(value)
+    elif isinstance(value, ast.Tuple):
+        output = tuple(resolve_ast_by_type(v) for v in value.elts)
+    elif isinstance(value, ast.Lambda):
+        output = eval(ast.unparse(value.body[0].value))
+    elif isinstance(value, ast.Ellipsis):
+        output = "..."
+    elif isinstance(value, ast.Subscript):
+        try:
+            output = ast.unparse(value.body[0].value)
+        except:
+            output = ast.unparse(value.value) + "[" + ast.unparse(value.slice) + "]"
+    else:
+        raise Exception(f"Unsupported AST type: {type(value)}")
+    return output
+
+
+def resolve_ast_call(elem):
+    # Handle nested attributes for deeply nested module paths
+    func_parts = []
+    func_part = elem.func
+    while isinstance(func_part, ast.Attribute):
+        func_parts.append(func_part.attr)
+        func_part = func_part.value
+    if isinstance(func_part, ast.Name):
+        func_parts.append(func_part.id)
+    func_name = ".".join(reversed(func_parts))
+    args_dict = {}
+    for arg in elem.keywords:
+        output = resolve_ast_by_type(arg.value)
+        args_dict[arg.arg] = output
+    return {"name": func_name, "arguments": args_dict}
+
+
+def ast_parse(txt: str) -> List[Dict[str, Any]]:
+    new_text = txt.strip("[]'")
+    start_idx_list = new_text.find("[")
+    end_idx_list = new_text.rfind("]")
+
+    if (
+        (len(new_text) > 0)
+        and (start_idx_list != -1)
+        and (end_idx_list != -1)
+        and (end_idx_list > start_idx_list)
+    ):
+        new_text = new_text[start_idx_list : (end_idx_list + 1)]  # noqa: E203
+        parsed = ast.parse(new_text, mode="eval")
+        extracted = []
+        if isinstance(parsed.body, ast.Call):
+            extracted.append(resolve_ast_call(parsed.body))
+        else:
+            for elem in parsed.body.elts:
+                assert isinstance(elem, ast.Call)
+                extracted.append(resolve_ast_call(elem))
+        return extracted
+    raise Exception("No valid function calls for AST parser")
+
+
+def manual_ast_parsing(txt: str) -> List[Dict[str, Any]]:
+    if txt.startswith("[") and txt.endswith("]"):
+        pred = txt[1:-1]
+        pred_list = pred.split("),")
+        new_pred_list = []
+        for p in pred_list:
+            if p.strip().endswith(")"):
+                new_pred_list.append(p)
+            else:
+                new_pred_list.append(p + ")")
+        pred_func_calls = []
+        for p in new_pred_list:
+            intent = p.split("(", 1)[0]
+            slot_str = p.split("(", 1)[1][:-1]
+            slots = get_deli_sep_str_list(slot_str)
+            arg_dict = {}
+
+            for s in slots:
+                s_n, s_v = s.split("=")[0].strip(), s.split("=")[1].strip()
+                arg_dict[s_n] = process_slot_value(s_v)
+
+            pred_func_calls.append({"name": intent, "arguments": arg_dict})
+        return pred_func_calls
+    raise Exception("Maual AST parsing failed")
+
+
+def parse_multi_step(txt: str) -> List[Dict[str, Any]]:
+    txt = txt.replace("\n", "").replace("\_", "_").strip()  # noqa: W605
+    pred_dict_list: Optional[List] = None
+    try:
+        pred_dict_list = get_json_data_with_two_step_parsing(  # type: ignore
+            txt=txt, should_return_list=True
+        )
+    except Exception as e:
+        error_message_json = str(e)
+        print(f"JSON parsing failed: {error_message_json}")
+
+    if pred_dict_list is None:  # json parsing failed
+        try:
+            pred_dict_list = ast_parse(txt=txt)
+        except Exception as e:
+            error_message_ast = str(e)
+            print(f"AST parsing failed: {error_message_ast}")
+
+    if pred_dict_list is None:
+        pred_dict_list = manual_ast_parsing(txt=txt)
+
+    return pred_dict_list
 
 
 def parse_granite_20b_function_calling_output(
@@ -226,7 +364,7 @@ def parse_llama_3_output(
 ):
     pred_has_parsing_errors = False
     pred_func_calls, gold_func_calls = [], []
-    pred_dict_list, gold_dict_list = [], []  # type: ignore
+    pred_dict_list: Optional[List] = None  # type: ignore
     gold_dict_list = get_output_list(prediction=prediction)
     parsing_error_messages: List[str] = []
 
@@ -236,10 +374,9 @@ def parse_llama_3_output(
         gold_func_calls = ground_seq_nested_repsonse(gold_dict_list)
         gold_func_calls = [json.dumps(func) for func in gold_func_calls]
 
+    generated_txt = prediction["generated_text"]
     try:
-        pred_dict_list = get_json_data_with_two_step_parsing(  # type: ignore
-            txt=prediction["generated_text"].strip(), should_return_list=True
-        )
+        pred_dict_list = parse_multi_step(txt=deepcopy(generated_txt))
 
         if skip_grounding:
             pred_func_calls = [json.dumps(func) for func in pred_dict_list]
@@ -263,152 +400,7 @@ def parse_llama_3_output(
     return (
         pred_func_calls,
         gold_func_calls,
-        pred_dict_list,
-        gold_dict_list,
-        num_errors_parsing_pred_intent,
-        pred_has_parsing_errors,
-        parsing_error_messages,
-    )
-
-
-def parse_llama_3_70b_instruct(
-    prediction: Dict[str, Any],
-    num_errors_parsing_pred_intent: int,
-    skip_grounding: bool = False,
-):
-    pred_has_parsing_errors = False
-    pred_func_calls, gold_func_calls = [], []
-    pred_dict_list = []  # type: ignore
-    gold_dict_list = get_output_list(prediction=prediction)
-    parsing_error_messages: List[str] = []
-
-    if skip_grounding:
-        gold_func_calls = [json.dumps(func) for func in gold_dict_list]
-    else:
-        gold_func_calls = ground_seq_nested_repsonse(gold_dict_list)
-        gold_func_calls = [json.dumps(func) for func in gold_func_calls]
-
-    pred = prediction["generated_text"].strip()
-    try:
-        pred_dict_list = get_json_data_with_two_step_parsing(  # type: ignore
-            txt=prediction["generated_text"].strip(), should_return_list=True
-        )
-
-        pred_dict_list = [p for p in pred_dict_list if not p["name"] == "var_result"]
-
-        if skip_grounding:
-            pred_func_calls = [json.dumps(func) for func in pred_dict_list]
-        else:
-            pred_func_calls = (
-                ground_seq_nested_repsonse(pred_dict_list)
-                if "label" in pred
-                else pred_dict_list
-            )
-            pred_func_calls = [json.dumps(func) for func in pred_func_calls]
-    except Exception as e:
-        print(e)
-        try:
-            if pred.startswith("[") and pred.endswith("]"):
-                pred = pred[1:-1]
-                pred_list = pred.split("),")
-                new_pred_list = []
-                for p in pred_list:
-                    if p.strip().endswith(")"):
-                        new_pred_list.append(p)
-                    else:
-                        new_pred_list.append(p + ")")
-                pred_func_calls = []
-                for p in new_pred_list:
-                    intent = p.split("(", 1)[0]
-                    slot_str = p.split("(", 1)[1][:-1]
-                    slots = get_deli_sep_str_list(slot_str)
-                    arg_dict = {}
-
-                    for s in slots:
-                        s_n, s_v = s.split("=")[0].strip(), s.split("=")[1].strip()
-                        arg_dict[s_n] = process_slot_value(s_v)
-
-                    pred_func_calls.append(
-                        json.dumps({"name": intent, "arguments": arg_dict})
-                    )
-            else:
-                num_errors_parsing_pred_intent += 1
-                pred_has_parsing_errors = True
-        except Exception as e1:
-            print(e1)
-            parsing_error_messages.append(
-                CommonErrorModel(
-                    error=str(e1), payload=prediction["generated_text"]
-                ).model_dump_json()
-            )
-            num_errors_parsing_pred_intent += 1
-            pred_has_parsing_errors = True
-
-    return (
-        pred_func_calls,
-        gold_func_calls,
-        pred_dict_list,
-        gold_dict_list,
-        num_errors_parsing_pred_intent,
-        pred_has_parsing_errors,
-        parsing_error_messages,
-    )
-
-
-def parse_mistral_7b_instruct_v0_3(
-    prediction: Dict[str, Any],
-    num_errors_parsing_pred_intent: int,
-    skip_grounding: bool = False,
-):
-    pred_has_parsing_errors = False
-    pred_func_calls, gold_func_calls = [], []
-    pred_dict_list, gold_dict_list = [], []  # type: ignore
-    gold_dict_list = get_output_list(prediction=prediction)
-    parsing_error_messages: List[str] = []
-
-    if skip_grounding:
-        gold_func_calls = [json.dumps(func) for func in gold_dict_list]
-    else:
-        gold_func_calls = ground_seq_nested_repsonse(gold_dict_list)
-        gold_func_calls = [json.dumps(func) for func in gold_func_calls]
-
-    try:
-        pred = prediction["generated_text"].strip()
-        pred_dict_list = get_json_data_with_two_step_parsing(  # type: ignore
-            txt=prediction["generated_text"].strip(), should_return_list=True
-        )
-
-        if skip_grounding:
-            pred_func_calls = [json.dumps(func) for func in pred_dict_list]
-        else:
-            pred_func_calls = ground_seq_nested_repsonse(pred_dict_list)
-            pred_func_calls = [json.dumps(func) for func in pred_func_calls]
-    except Exception as e:
-        print(e)
-        try:
-            pred = prediction["generated_text"].strip()
-            pred_dict_list = json.loads(
-                pred.replace("\n", "").replace("\_", "_"),  # noqa: W605,
-            )  # noqa: W605
-            if skip_grounding:
-                pred_func_calls = [json.dumps(func) for func in pred_dict_list]
-            else:
-                pred_func_calls = ground_seq_nested_repsonse(pred_dict_list)
-                pred_func_calls = [json.dumps(func) for func in pred_func_calls]
-        except Exception as e1:
-            print(e1)
-            parsing_error_messages.append(
-                CommonErrorModel(
-                    error=str(e1), payload=prediction["generated_text"]
-                ).model_dump_json()
-            )
-            num_errors_parsing_pred_intent += 1
-            pred_has_parsing_errors = True
-
-    return (
-        pred_func_calls,
-        gold_func_calls,
-        pred_dict_list,
+        (pred_dict_list if pred_dict_list is not None else []),
         gold_dict_list,
         num_errors_parsing_pred_intent,
         pred_has_parsing_errors,
@@ -454,7 +446,14 @@ def parse_output_from_language_models(
             else 0
         )
         pred_has_parsing_errors = num_errors_parsing_pred_intent_res > 0
-    elif is_agent:
+    elif (
+        is_agent
+        or ("llama" in model_name_lower_cased)
+        or ("mistral" in model_name_lower_cased)
+        or ("mixtral" in model_name_lower_cased)
+        or ("hammer" in model_name_lower_cased)
+        or ("deepseek" in model_name_lower_cased)
+    ):
         (
             pred_func_calls,
             gold_func_calls,
@@ -497,77 +496,6 @@ def parse_output_from_language_models(
                 num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
                 skip_grounding=is_single_intent_detection,
             )
-    elif "llama" in model_name_lower_cased:
-        if "llama-3-70b" in model_name_lower_cased:
-            (
-                pred_func_calls,
-                gold_func_calls,
-                pred_dict_list,
-                gold_dict_list,
-                num_errors_parsing_pred_intent_res,
-                pred_has_parsing_errors,
-                parsing_error_messages,
-            ) = parse_llama_3_70b_instruct(
-                prediction=prediction,
-                num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
-                skip_grounding=is_single_intent_detection,
-            )
-        else:
-            (
-                pred_func_calls,
-                gold_func_calls,
-                pred_dict_list,
-                gold_dict_list,
-                num_errors_parsing_pred_intent_res,
-                pred_has_parsing_errors,
-                parsing_error_messages,
-            ) = parse_llama_3_output(
-                prediction=prediction,
-                num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
-                skip_grounding=is_single_intent_detection,
-            )
-    elif "mistral" in model_name_lower_cased or "mixtral" in model_name_lower_cased:
-        (
-            pred_func_calls,
-            gold_func_calls,
-            pred_dict_list,
-            gold_dict_list,
-            num_errors_parsing_pred_intent_res,
-            pred_has_parsing_errors,
-            parsing_error_messages,
-        ) = parse_mistral_7b_instruct_v0_3(
-            prediction=prediction,
-            num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
-            skip_grounding=is_single_intent_detection,
-        )
-    elif "hammer" in model_name_lower_cased:
-        (
-            pred_func_calls,
-            gold_func_calls,
-            pred_dict_list,
-            gold_dict_list,
-            num_errors_parsing_pred_intent_res,
-            pred_has_parsing_errors,
-            parsing_error_messages,
-        ) = parse_llama_3_output(
-            prediction=prediction,
-            num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
-            skip_grounding=is_single_intent_detection,
-        )
-    elif "deepseek" in model_name_lower_cased:
-        (
-            pred_func_calls,
-            gold_func_calls,
-            pred_dict_list,
-            gold_dict_list,
-            num_errors_parsing_pred_intent_res,
-            pred_has_parsing_errors,
-            parsing_error_messages,
-        ) = parse_llama_3_output(
-            prediction=prediction,
-            num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
-            skip_grounding=is_single_intent_detection,
-        )
     else:
         (
             pred_func_calls,
