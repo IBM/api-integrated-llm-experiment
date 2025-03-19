@@ -289,10 +289,10 @@ def get_item_metrics(
         pred_has_parsing_errors = False
         try:
             (
+                _,
+                _,
                 pred_func_calls,
                 gold_func_calls,
-                _,
-                _,
                 model_num_errors_parsing_pred_intent,
                 pred_has_parsing_errors,
                 instance_parsing_error_messages,
@@ -718,6 +718,8 @@ def calculate_scores(
         error_messages_win_rate=error_messages_win_rate,
         num_failed_function_execution_list=num_failed_function_execution_list,
         win_rate_result_model=win_rate_result_model,
+        parsed_predictions=predicted_function_calls,
+        parsed_gold_answer=gold_function_calls,
     )
 
 
@@ -835,24 +837,23 @@ def scoring(
                 0
             ].get_basic_strs()
 
-            write_json(
-                file_path=Path(
-                    os.path.join(
-                        output_folder_path,
-                        agent_str,
-                        model_name.split("/")[-1],
-                        temperature_str,
-                        max_tokens_str,
-                        (output_file_name + ".json"),
-                    )
-                ),
-                base_model=calculate_scores(
-                    data,
-                    db_path=db_path,
-                    source_file_search_path=source_file_search_path,
-                    is_single_intent_detection=is_single_intent_detection,
-                ),
+            base_model = calculate_scores(
+                data,
+                db_path=db_path,
+                source_file_search_path=source_file_search_path,
+                is_single_intent_detection=is_single_intent_detection,
             )
+            outfile = Path(
+                os.path.join(
+                    output_folder_path,
+                    agent_str,
+                    model_name.split("/")[-1],
+                    temperature_str,
+                    max_tokens_str,
+                    (output_file_name + ".json"),
+                )
+            )
+            write_json(file_path=outfile, base_model=base_model)
         except Exception as e:
             has_exception = True
             handle_scoring_process_exception(
