@@ -142,7 +142,11 @@ def get_OPENAI_messages(
     )
     system_utterance = ConversationUnit(
         role=ConversationRoleModel.SYSTEM,
-        content=(system_prompt + tool_str if len(tool_str) > 0 else system_prompt),
+        content=(
+            system_prompt
+            if "Available Tools:" in system_prompt
+            else (system_prompt + tool_str)
+        ),
     )
     user_utterance = ConversationUnit(
         role=ConversationRoleModel.USER, content=sample_input
