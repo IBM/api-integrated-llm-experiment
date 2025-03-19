@@ -772,10 +772,10 @@ def get_category_dict_list_from_problem_level_metrics(
         for metrics_model in metrics_models:
             intent_set_dict_list[category].extend(metrics_model.intent_set_metrics_list)
             intent_counter_dict_list[category].extend(
-                metrics_model.intent_set_metrics_list
+                metrics_model.intent_counter_metrics_list
             )
             intent_list_dict_list[category].extend(
-                metrics_model.intent_set_metrics_list
+                metrics_model.intent_list_metrics_list
             )
             slot_set_dict_list[category].extend(metrics_model.intent_set_metrics_list)
 
