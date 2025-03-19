@@ -261,6 +261,8 @@ def get_item_metrics(
     List[Any],
     List[List[Any]],
     List[List[Any]],
+    List[List[Any]],
+    List[List[Any]],
 ]:
     gold_output_intent: List[List[str]] = []
     pred_output_intent: List[List[str]] = []
@@ -278,6 +280,8 @@ def get_item_metrics(
     sample_ids: List[Any] = []
     predicted_function_calls: List[List[Any]] = []
     gold_function_calls: List[List[Any]] = []
+    pred_dict_list: List[List[Any]] = []
+    gold_dict_list: List[List[Any]] = []
 
     for prediction, prediction_model in list(
         map(
@@ -291,8 +295,8 @@ def get_item_metrics(
             (
                 pred_func_calls,
                 gold_func_calls,
-                _,
-                _,
+                pred_dict_list_instance,
+                gold_dict_list_instance,
                 model_num_errors_parsing_pred_intent,
                 pred_has_parsing_errors,
                 instance_parsing_error_messages,
@@ -306,6 +310,8 @@ def get_item_metrics(
             parsing_error_messages.extend(instance_parsing_error_messages)
             predicted_function_calls.append(pred_func_calls)
             gold_function_calls.append(gold_func_calls)
+            pred_dict_list.append(pred_dict_list_instance)
+            gold_dict_list.append(gold_dict_list_instance)
             sample_ids.append(prediction_model.sample_id)
         except Exception as e:
             print(e)
@@ -387,6 +393,8 @@ def get_item_metrics(
         sample_ids,
         predicted_function_calls,
         gold_function_calls,
+        pred_dict_list,
+        gold_dict_list,
     )
 
 
@@ -625,6 +633,8 @@ def calculate_scores(
         sample_ids,
         predicted_function_calls,
         gold_function_calls,
+        pred_dict_list,
+        gold_dict_list,
     ) = get_item_metrics(
         predictions_input=predictions_input,
         model_name=model_name,
@@ -718,8 +728,8 @@ def calculate_scores(
         error_messages_win_rate=error_messages_win_rate,
         num_failed_function_execution_list=num_failed_function_execution_list,
         win_rate_result_model=win_rate_result_model,
-        parsed_predictions=predicted_function_calls,
-        parsed_gold_answer=gold_function_calls,
+        parsed_predictions=pred_dict_list,
+        parsed_gold_answer=gold_dict_list,
     )
 
 
