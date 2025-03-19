@@ -397,17 +397,21 @@ def get_jsonl_list_from_string(
     txt: str,
 ) -> List[Union[List[Dict[str, Any]], Dict[str, Any]]]:
     jsonl_list: List[Union[List[Dict[str, Any]], Dict[str, Any]]] = []
-    splitters = ["\n", "''", "' '"]
-    for splitter in splitters:
-        try:
-            for line in txt.split(splitter):
-                jsonl_list.append(get_json_dict_from_txt(txt=line))
-            break
-        except Exception as e:
-            error_message = str(e)
-            print(f"JSONL parsing error: {error_message}")
-            jsonl_list = []
-            continue
+    start_idx_obj = txt.find("{")
+    end_idx_obj = txt.rfind("}")
+    if (start_idx_obj != -1) and (start_idx_obj < end_idx_obj):
+        txt_new = txt[start_idx_obj : (end_idx_obj + 1)]  # noqa: E203
+        splitters = ["\n", "''", "' '"]
+        for splitter in splitters:
+            try:
+                for line in txt_new.split(splitter):
+                    jsonl_list.append(get_json_dict_from_txt(txt=line))
+                break
+            except Exception as e:
+                error_message = str(e)
+                print(f"JSONL parsing error: {error_message}")
+                jsonl_list = []
+                continue
 
     if len(jsonl_list) == 0:
         raise Exception("JSONL parcing failed")
