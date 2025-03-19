@@ -289,10 +289,10 @@ def get_item_metrics(
         pred_has_parsing_errors = False
         try:
             (
-                _,
-                _,
                 pred_func_calls,
                 gold_func_calls,
+                _,
+                _,
                 model_num_errors_parsing_pred_intent,
                 pred_has_parsing_errors,
                 instance_parsing_error_messages,
