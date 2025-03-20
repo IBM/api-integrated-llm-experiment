@@ -115,7 +115,7 @@ def test_evaluator_RITZ() -> None:
     assert True
 
 
-@pytest.mark.skip(reason="sanity check for OPENAI")
+# @pytest.mark.skip(reason="sanity check for OPENAI")
 def test_evaluator_openai() -> None:
     model_id_info_dict = {
         "gpt-4o": {
@@ -132,7 +132,11 @@ def test_evaluator_openai() -> None:
         evaluation_input_file_paths=get_files_in_folder(  # type: ignore
             folder_path=Path(
                 os.path.join(
-                    project_root_path, "tests", "data", "source", "evaluation_trimmed"
+                    project_root_path,
+                    "tests",
+                    "data",
+                    "source",
+                    "evaluation_test",
                 )
             ),
             file_extension="json",
@@ -160,7 +164,7 @@ def test_evaluator_openai() -> None:
         should_generate_random_example=False,
         num_examples=1,
         should_ignore=True,
-        should_async=True,
+        should_async=False,
     )
 
     assert True

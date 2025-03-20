@@ -393,8 +393,8 @@ def get_responses_from_sync(
     model_obj: Dict[str, str],
     temperature: float,
     max_tokens: int,
-) -> List[Tuple[List[str], List[Optional[List[Dict[str, Any]]]]]]:
-    responses: List[Tuple[List[str], List[Optional[List[Dict[str, Any]]]]]] = []
+) -> List[Tuple[Optional[str], Optional[List[Dict[str, Any]]]]]:
+    responses: List[Tuple[Optional[str], Optional[List[Dict[str, Any]]]]] = []
     for sample in test_data:
         response = asyncio.run(
             generate_llm_response_from_service_async(
@@ -404,9 +404,6 @@ def get_responses_from_sync(
                 model_obj=deepcopy(model_obj),
             )
         )
-        if isinstance(response, str):
-            responses.append(response)
-        if isinstance(response, list):
-            responses.extend(response)
+        responses.append(response)
 
     return responses
