@@ -31,7 +31,8 @@ def get_llm_model_names(metrics_objs: List[Tuple[Path, ScorerOuputModel]]) -> Li
     llm_model_names: Set[str] = set()
     for _, obj in metrics_objs:
         if len(obj.evaluation_source) > 0:
-            llm_model_names.add(obj.evaluation_source[0].llm_model_id.lower())
+            name = obj.evaluation_source[0].llm_model_id.split("/")[-1].lower()
+            llm_model_names.add(name)
 
     return list(llm_model_names)
 
