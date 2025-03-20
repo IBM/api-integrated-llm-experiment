@@ -357,16 +357,94 @@ def parse_granite_3_output(
     )
 
 
+def get_dict_list_from_tool_calls(
+    tool_calls: List[Dict[str, Any]],
+) -> Tuple[List[Dict[str, Any]], bool]:
+    has_parsing_error = False
+    dict_list: List[Dict[str, Any]] = []
+
+    try:
+        for tool_call in tool_calls:
+            if "function" in tool_call:
+                func_obj = tool_call["function"]
+                name = deepcopy(func_obj["name"]) if "name" in func_obj else ""
+                arguments = (
+                    deepcopy(func_obj["arguments"]) if "arguments" in func_obj else {}
+                )
+                if isinstance(arguments, str):
+                    arguments = get_json_data_with_two_step_parsing(  # type: ignore
+                        txt=arguments, should_return_list=False
+                    )
+                    obj = {"name": name, "arguments": arguments}
+                    if "label" in func_obj and func_obj["label"] is not None:
+                        obj["label"] = deepcopy(func_obj["label"])
+                    elif "label" in tool_call and tool_call["label"] is not None:
+                        obj["label"] = deepcopy(tool_call["label"])
+                    # elif "id" in tool_call and tool_call["id"] is not None:
+                    #     obj["label"] = deepcopy(tool_call["id"])
+                dict_list.append({"name": name, "arguments": arguments})
+    except Exception as e:
+        print(e)
+        has_parsing_error = True
+
+    return dict_list, has_parsing_error
+
+
+def parse_generated_text(
+    prediction: Dict[str, Any], skip_grounding: bool
+) -> Tuple[List[Dict[str, Any]], List[str], int, bool, List[str]]:
+    generated_txt = prediction["generated_text"]
+    pred_dict_list: List[Dict[str, Any]] = []
+    parsing_error_messages: List[str] = []
+    pred_func_calls = []
+    pred_has_parsing_errors = False
+    num_errors_parsing_pred_intent = 0
+    try:
+        if ("tool_calls" in prediction) and (prediction["tool_calls"] is not None):
+            pred_dict_list, has_parsing_error_instance = get_dict_list_from_tool_calls(
+                tool_calls=prediction["tool_calls"]
+            )
+            if has_parsing_error_instance:
+                raise Exception("tool call parsing error")
+        else:
+            pred_dict_list = parse_multi_step(txt=deepcopy(generated_txt))
+
+        if skip_grounding:
+            pred_func_calls = [json.dumps(func) for func in pred_dict_list]
+        else:
+            pred_func_calls = (
+                ground_seq_nested_repsonse(pred_dict_list)
+                if "label" in generated_txt
+                else pred_dict_list
+            )
+            pred_func_calls = [json.dumps(func) for func in pred_func_calls]
+    except Exception as e:
+        print(e)
+        parsing_error_messages.append(
+            CommonErrorModel(error=str(e), payload=generated_txt).model_dump_json()
+        )
+        num_errors_parsing_pred_intent += 1
+        pred_has_parsing_errors = True
+
+    return (
+        pred_dict_list,
+        pred_func_calls,
+        num_errors_parsing_pred_intent,
+        pred_has_parsing_errors,
+        parsing_error_messages,
+    )
+
+
 def parse_llama_3_output(
     prediction: Dict[str, Any],
     num_errors_parsing_pred_intent: int,
     skip_grounding: bool = False,
 ):
     pred_has_parsing_errors = False
-    pred_func_calls, gold_func_calls = [], []
+    pred_func_calls, gold_func_calls = [], []  # type: ignore
     pred_dict_list: Optional[List] = None  # type: ignore
-    gold_dict_list = get_output_list(prediction=prediction)
     parsing_error_messages: List[str] = []
+    gold_dict_list = get_output_list(prediction=prediction)
 
     if skip_grounding:
         gold_func_calls = [json.dumps(func) for func in gold_dict_list]
@@ -374,28 +452,18 @@ def parse_llama_3_output(
         gold_func_calls = ground_seq_nested_repsonse(gold_dict_list)
         gold_func_calls = [json.dumps(func) for func in gold_func_calls]
 
-    generated_txt = prediction["generated_text"]
-    try:
-        pred_dict_list = parse_multi_step(txt=deepcopy(generated_txt))
-
-        if skip_grounding:
-            pred_func_calls = [json.dumps(func) for func in pred_dict_list]
-        else:
-            pred_func_calls = (
-                ground_seq_nested_repsonse(pred_dict_list)
-                if "label" in prediction["generated_text"]
-                else pred_dict_list
-            )
-            pred_func_calls = [json.dumps(func) for func in pred_func_calls]
-    except Exception as e:
-        print(e)
-        parsing_error_messages.append(
-            CommonErrorModel(
-                error=str(e), payload=prediction["generated_text"]
-            ).model_dump_json()
-        )
-        num_errors_parsing_pred_intent += 1
-        pred_has_parsing_errors = True
+    (
+        pred_dict_list,
+        pred_func_calls,
+        num_errors_parsing_pred_intent_instance,
+        pred_has_parsing_errors_instance,
+        parsing_error_messages_instance,
+    ) = parse_generated_text(prediction=prediction, skip_grounding=skip_grounding)
+    parsing_error_messages.extend(parsing_error_messages_instance)
+    pred_has_parsing_errors = (
+        pred_has_parsing_errors or pred_has_parsing_errors_instance
+    )
+    num_errors_parsing_pred_intent += num_errors_parsing_pred_intent_instance
 
     return (
         pred_func_calls,
@@ -448,6 +516,7 @@ def parse_output_from_language_models(
         pred_has_parsing_errors = num_errors_parsing_pred_intent_res > 0
     elif (
         is_agent
+        or ("gpt" in model_name_lower_cased)
         or ("llama" in model_name_lower_cased)
         or ("mistral" in model_name_lower_cased)
         or ("mixtral" in model_name_lower_cased)

@@ -80,9 +80,7 @@ class QuerySourceDataModel(BaseModel):
             return []
 
         return [
-            # {"type": "function", "function": tool.model_dump()} for tool in self.tools
-            tool.model_dump()
-            for tool in self.tools
+            {"type": "function", "function": tool.model_dump()} for tool in self.tools
         ]
 
 
@@ -131,6 +129,7 @@ class EvaluationOutputDataUnit(BaseModel):
 
 class EvaluationOutputResponseDataUnit(EvaluationOutputDataUnit):
     generated_text: str = ""
+    tool_calls: Optional[List[Dict[str, Any]]] = None
     llm_model_id: str = ""
     source_file_path: str = str(Path(__file__))
     dataset_name: str = ""

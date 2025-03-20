@@ -1,0 +1,2675 @@
+{
+    "global_api_pool": {
+        "get_shop_ids": {
+            "description": "Lookup data shop_id: Unique identifier for each shop.",
+            "name": "get_shop_ids",
+            "parameters": {
+                "properties": {},
+                "required": [],
+                "type": "object"
+            },
+            "output_parameters": {
+                "properties": {
+                    "output_0": {
+                        "description": "",
+                        "type": "object"
+                    }
+                }
+            }
+        },
+        "get_names": {
+            "description": "Lookup data name: Name of the shop or the football club associated with the shop.",
+            "name": "get_names",
+            "parameters": {
+                "properties": {},
+                "required": [],
+                "type": "object"
+            },
+            "output_parameters": {
+                "properties": {
+                    "output_0": {
+                        "description": "",
+                        "type": "object"
+                    }
+                }
+            }
+        },
+        "get_locations": {
+            "description": "Lookup data location: City where the shop is located.",
+            "name": "get_locations",
+            "parameters": {
+                "properties": {},
+                "required": [],
+                "type": "object"
+            },
+            "output_parameters": {
+                "properties": {
+                    "output_0": {
+                        "description": "",
+                        "type": "object"
+                    }
+                }
+            }
+        },
+        "get_districts": {
+            "description": "Lookup data district: Specific area or stadium within the city where the shop is located.",
+            "name": "get_districts",
+            "parameters": {
+                "properties": {},
+                "required": [],
+                "type": "object"
+            },
+            "output_parameters": {
+                "properties": {
+                    "output_0": {
+                        "description": "",
+                        "type": "object"
+                    }
+                }
+            }
+        },
+        "get_number_productss": {
+            "description": "Lookup data number_products: Number of products available in the shop.",
+            "name": "get_number_productss",
+            "parameters": {
+                "properties": {},
+                "required": [],
+                "type": "object"
+            },
+            "output_parameters": {
+                "properties": {
+                    "output_0": {
+                        "description": "",
+                        "type": "object"
+                    }
+                }
+            }
+        },
+        "get_manager_names": {
+            "description": "Lookup data manager_name: Name of the manager responsible for the shop.",
+            "name": "get_manager_names",
+            "parameters": {
+                "properties": {},
+                "required": [],
+                "type": "object"
+            },
+            "output_parameters": {
+                "properties": {
+                    "output_0": {
+                        "description": "",
+                        "type": "object"
+                    }
+                }
+            }
+        },
+        "group_data_by": {
+            "description": "Group data by values of a specified key",
+            "name": "group_data_by",
+            "parameters": {
+                "properties": {
+                    "data_source": {
+                        "description": "The location of the data file in csv format.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "key_name": {
+                        "description": "name of key to group by: \n* `shop_id` - Unique identifier for each shop.\n* `name` - Name of the shop or the football club associated with the shop.\n* `location` - City where the shop is located.\n* `district` - Specific area or stadium within the city where the shop is located.\n* `number_products` - Number of products available in the shop.\n* `manager_name` - Name of the manager responsible for the shop.\n",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "shop_id",
+                                "name",
+                                "location",
+                                "district",
+                                "number_products",
+                                "manager_name"
+                            ]
+                        }
+                    }
+                },
+                "required": [
+                    "data_source",
+                    "key_name"
+                ],
+                "type": "object"
+            },
+            "output_parameters": {
+                "properties": {
+                    "output_0": {
+                        "description": "The path to a csv file containing  data with additional layer of keys given by unique values in the column given by `key_name`",
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "transform_data_to_substring": {
+            "description": "Transform list of string values by taking substrings",
+            "name": "transform_data_to_substring",
+            "parameters": {
+                "properties": {
+                    "data_source": {
+                        "description": "The location of the data file in csv format.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "key_name": {
+                        "description": "name of string valued key to transform: \n* `shop_id` - Unique identifier for each shop.\n* `name` - Name of the shop or the football club associated with the shop.\n* `location` - City where the shop is located.\n* `district` - Specific area or stadium within the city where the shop is located.\n* `number_products` - Number of products available in the shop.\n* `manager_name` - Name of the manager responsible for the shop.\n",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "shop_id",
+                                "name",
+                                "location",
+                                "district",
+                                "number_products",
+                                "manager_name"
+                            ]
+                        }
+                    },
+                    "start_index": {
+                        "description": "start of substring",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    "end_index": {
+                        "description": "end of substring, must be >= start_index",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                },
+                "required": [
+                    "data_source",
+                    "key_name",
+                    "start_index",
+                    "end_index"
+                ],
+                "type": "object"
+            },
+            "output_parameters": {
+                "properties": {
+                    "output_0": {
+                        "description": "The path to a csv file containing  original table (dict) with the specified key values transformed",
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "initialize_active_data": {
+            "description": "Initializes active data based on the provided condition sequence, alias-to-table mapping, and database path.  This function checks the validity of the database file at the specified path and raises an exception if the file is not found. After validating the database path, the function processes the condition sequence and alias-to-table dictionary to return a dictionary of active data.",
+            "name": "initialize_active_data",
+            "parameters": {
+                "properties": {
+                    "condition_sequence": {
+                        "description": "A list of conditions (joins) to be processed for initializing the data.",
+                        "schema": {
+                            "type": "array"
+                        }
+                    },
+                    "alias_to_table_dict": {
+                        "description": "A dictionary mapping aliases to their respective tables.",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "database_path": {
+                        "description": "The file path to the database that will be used for the initialization.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": [
+                    "condition_sequence",
+                    "alias_to_table_dict",
+                    "database_path"
+                ],
+                "type": "object"
+            },
+            "output_parameters": {
+                "properties": {
+                    "output_0": {
+                        "description": "The path to a csv file containing  a dictionary representing the initialized active data based on the conditions and table mappings.",
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "truncate": {
+            "description": "Return the first `n` elements of a list-like object.",
+            "name": "truncate",
+            "parameters": {
+                "properties": {
+                    "truncate_array": {
+                        "description": "A list-like object.",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "n": {
+                        "description": "The number of rows/elements to return.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                },
+                "required": [
+                    "truncate_array",
+                    "n"
+                ],
+                "type": "object"
+            },
+            "output_parameters": {
+                "properties": {
+                    "output_0": {
+                        "description": "The first `n` elements of the list-like object.",
+                        "type": "array"
+                    }
+                }
+            }
+        },
+        "select_unique_values": {
+            "description": "Return only the distinct elements from the input list.",
+            "name": "select_unique_values",
+            "parameters": {
+                "properties": {
+                    "unique_array": {
+                        "description": "A list of input data",
+                        "schema": {
+                            "type": "array"
+                        }
+                    }
+                },
+                "required": [
+                    "unique_array"
+                ],
+                "type": "object"
+            },
+            "output_parameters": {
+                "properties": {
+                    "output_0": {
+                        "description": "The distinct elements of the input list",
+                        "type": "array"
+                    }
+                }
+            }
+        },
+        "select_data_equal_to": {
+            "description": "Filters rows where the column's value is equal to the given value.",
+            "name": "select_data_equal_to",
+            "parameters": {
+                "properties": {
+                    "data_source": {
+                        "description": "The location of the data file in csv format.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "key_name": {
+                        "description": "The key on which the filter will be applied.: \n* `shop_id` - Unique identifier for each shop.\n* `name` - Name of the shop or the football club associated with the shop.\n* `location` - City where the shop is located.\n* `district` - Specific area or stadium within the city where the shop is located.\n* `number_products` - Number of products available in the shop.\n* `manager_name` - Name of the manager responsible for the shop.\n",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "shop_id",
+                                "name",
+                                "location",
+                                "district",
+                                "number_products",
+                                "manager_name"
+                            ]
+                        }
+                    },
+                    "value": {
+                        "description": "The value to compare against in the filtering operation.",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                },
+                "required": [
+                    "data_source",
+                    "key_name",
+                    "value"
+                ],
+                "type": "object"
+            },
+            "output_parameters": {
+                "properties": {
+                    "output_0": {
+                        "description": "The path to a csv file containing  a new table (dict) containing the rows from the input data that meet the specified condition.",
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "select_data_not_equal_to": {
+            "description": "Filters rows where the column's value is not equal to the given value.",
+            "name": "select_data_not_equal_to",
+            "parameters": {
+                "properties": {
+                    "data_source": {
+                        "description": "The location of the data file in csv format.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "key_name": {
+                        "description": "The key on which the filter will be applied.: \n* `shop_id` - Unique identifier for each shop.\n* `name` - Name of the shop or the football club associated with the shop.\n* `location` - City where the shop is located.\n* `district` - Specific area or stadium within the city where the shop is located.\n* `number_products` - Number of products available in the shop.\n* `manager_name` - Name of the manager responsible for the shop.\n",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "shop_id",
+                                "name",
+                                "location",
+                                "district",
+                                "number_products",
+                                "manager_name"
+                            ]
+                        }
+                    },
+                    "value": {
+                        "description": "The value to compare against in the filtering operation.",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                },
+                "required": [
+                    "data_source",
+                    "key_name",
+                    "value"
+                ],
+                "type": "object"
+            },
+            "output_parameters": {
+                "properties": {
+                    "output_0": {
+                        "description": "The path to a csv file containing  a new table (dict) containing the rows from the input data that meet the specified condition.",
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "select_data_greater_than": {
+            "description": "Filters rows where the column's value is greater than the given value.",
+            "name": "select_data_greater_than",
+            "parameters": {
+                "properties": {
+                    "data_source": {
+                        "description": "The location of the data file in csv format.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "key_name": {
+                        "description": "The key on which the filter will be applied.: \n* `shop_id` - Unique identifier for each shop.\n* `name` - Name of the shop or the football club associated with the shop.\n* `location` - City where the shop is located.\n* `district` - Specific area or stadium within the city where the shop is located.\n* `number_products` - Number of products available in the shop.\n* `manager_name` - Name of the manager responsible for the shop.\n",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "shop_id",
+                                "name",
+                                "location",
+                                "district",
+                                "number_products",
+                                "manager_name"
+                            ]
+                        }
+                    },
+                    "value": {
+                        "description": "The value to compare against in the filtering operation.",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                },
+                "required": [
+                    "data_source",
+                    "key_name",
+                    "value"
+                ],
+                "type": "object"
+            },
+            "output_parameters": {
+                "properties": {
+                    "output_0": {
+                        "description": "The path to a csv file containing  a new table (dict) containing the rows from the input data that meet the specified condition.",
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "select_data_less_than": {
+            "description": "Filters rows where the column's value is less than the given value.",
+            "name": "select_data_less_than",
+            "parameters": {
+                "properties": {
+                    "data_source": {
+                        "description": "The location of the data file in csv format.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "key_name": {
+                        "description": "The key on which the filter will be applied.: \n* `shop_id` - Unique identifier for each shop.\n* `name` - Name of the shop or the football club associated with the shop.\n* `location` - City where the shop is located.\n* `district` - Specific area or stadium within the city where the shop is located.\n* `number_products` - Number of products available in the shop.\n* `manager_name` - Name of the manager responsible for the shop.\n",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "shop_id",
+                                "name",
+                                "location",
+                                "district",
+                                "number_products",
+                                "manager_name"
+                            ]
+                        }
+                    },
+                    "value": {
+                        "description": "The value to compare against in the filtering operation.",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                },
+                "required": [
+                    "data_source",
+                    "key_name",
+                    "value"
+                ],
+                "type": "object"
+            },
+            "output_parameters": {
+                "properties": {
+                    "output_0": {
+                        "description": "The path to a csv file containing  a new table (dict) containing the rows from the input data that meet the specified condition.",
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "select_data_greater_than_equal_to": {
+            "description": "Filters rows where the column's value is greater than or equal to the given value.",
+            "name": "select_data_greater_than_equal_to",
+            "parameters": {
+                "properties": {
+                    "data_source": {
+                        "description": "The location of the data file in csv format.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "key_name": {
+                        "description": "The key on which the filter will be applied.: \n* `shop_id` - Unique identifier for each shop.\n* `name` - Name of the shop or the football club associated with the shop.\n* `location` - City where the shop is located.\n* `district` - Specific area or stadium within the city where the shop is located.\n* `number_products` - Number of products available in the shop.\n* `manager_name` - Name of the manager responsible for the shop.\n",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "shop_id",
+                                "name",
+                                "location",
+                                "district",
+                                "number_products",
+                                "manager_name"
+                            ]
+                        }
+                    },
+                    "value": {
+                        "description": "The value to compare against in the filtering operation.",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                },
+                "required": [
+                    "data_source",
+                    "key_name",
+                    "value"
+                ],
+                "type": "object"
+            },
+            "output_parameters": {
+                "properties": {
+                    "output_0": {
+                        "description": "The path to a csv file containing  a new table (dict) containing the rows from the input data that meet the specified condition.",
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "select_data_less_than_equal_to": {
+            "description": "Filters rows where the column's value is less than or equal to the given value.",
+            "name": "select_data_less_than_equal_to",
+            "parameters": {
+                "properties": {
+                    "data_source": {
+                        "description": "The location of the data file in csv format.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "key_name": {
+                        "description": "The key on which the filter will be applied.: \n* `shop_id` - Unique identifier for each shop.\n* `name` - Name of the shop or the football club associated with the shop.\n* `location` - City where the shop is located.\n* `district` - Specific area or stadium within the city where the shop is located.\n* `number_products` - Number of products available in the shop.\n* `manager_name` - Name of the manager responsible for the shop.\n",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "shop_id",
+                                "name",
+                                "location",
+                                "district",
+                                "number_products",
+                                "manager_name"
+                            ]
+                        }
+                    },
+                    "value": {
+                        "description": "The value to compare against in the filtering operation.",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                },
+                "required": [
+                    "data_source",
+                    "key_name",
+                    "value"
+                ],
+                "type": "object"
+            },
+            "output_parameters": {
+                "properties": {
+                    "output_0": {
+                        "description": "The path to a csv file containing  a new table (dict) containing the rows from the input data that meet the specified condition.",
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "select_data_contains": {
+            "description": "Filters rows where the column's value contains the given value (applies to strings).",
+            "name": "select_data_contains",
+            "parameters": {
+                "properties": {
+                    "data_source": {
+                        "description": "The location of the data file in csv format.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "key_name": {
+                        "description": "The key on which the filter will be applied.: \n* `shop_id` - Unique identifier for each shop.\n* `name` - Name of the shop or the football club associated with the shop.\n* `location` - City where the shop is located.\n* `district` - Specific area or stadium within the city where the shop is located.\n* `number_products` - Number of products available in the shop.\n* `manager_name` - Name of the manager responsible for the shop.\n",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "shop_id",
+                                "name",
+                                "location",
+                                "district",
+                                "number_products",
+                                "manager_name"
+                            ]
+                        }
+                    },
+                    "value": {
+                        "description": "The value to compare against in the filtering operation.",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                },
+                "required": [
+                    "data_source",
+                    "key_name",
+                    "value"
+                ],
+                "type": "object"
+            },
+            "output_parameters": {
+                "properties": {
+                    "output_0": {
+                        "description": "The path to a csv file containing  a new table (dict) containing the rows from the input data that meet the specified condition.",
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "select_data_like": {
+            "description": "Filters rows where the column's value matches a regex pattern (applies to strings).",
+            "name": "select_data_like",
+            "parameters": {
+                "properties": {
+                    "data_source": {
+                        "description": "The location of the data file in csv format.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "key_name": {
+                        "description": "The key on which the filter will be applied.: \n* `shop_id` - Unique identifier for each shop.\n* `name` - Name of the shop or the football club associated with the shop.\n* `location` - City where the shop is located.\n* `district` - Specific area or stadium within the city where the shop is located.\n* `number_products` - Number of products available in the shop.\n* `manager_name` - Name of the manager responsible for the shop.\n",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "shop_id",
+                                "name",
+                                "location",
+                                "district",
+                                "number_products",
+                                "manager_name"
+                            ]
+                        }
+                    },
+                    "value": {
+                        "description": "The value to compare against in the filtering operation.",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                },
+                "required": [
+                    "data_source",
+                    "key_name",
+                    "value"
+                ],
+                "type": "object"
+            },
+            "output_parameters": {
+                "properties": {
+                    "output_0": {
+                        "description": "The path to a csv file containing  a new table (dict) containing the rows from the input data that meet the specified condition.",
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "sort_data_ascending": {
+            "description": "Sort data by the values associated with the chosen key='key_name' If the input data is list-like, returns the sorted list. If the input data is tabular, returns the table with rows sorted by the values in column 'key_name'. If the data is grouped tables, then sort the groups by the value in 'key_name'",
+            "name": "sort_data_ascending",
+            "parameters": {
+                "properties": {
+                    "data_source": {
+                        "description": "The location of the data file in csv format.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "key_name": {
+                        "description": "name of key to sort by: \n* `shop_id` - Unique identifier for each shop.\n* `name` - Name of the shop or the football club associated with the shop.\n* `location` - City where the shop is located.\n* `district` - Specific area or stadium within the city where the shop is located.\n* `number_products` - Number of products available in the shop.\n* `manager_name` - Name of the manager responsible for the shop.\n",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "shop_id",
+                                "name",
+                                "location",
+                                "district",
+                                "number_products",
+                                "manager_name"
+                            ]
+                        }
+                    },
+                    "ascending": {
+                        "description": "whether to sort by ascending order",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                },
+                "required": [
+                    "data_source",
+                    "key_name",
+                    "ascending"
+                ],
+                "type": "object"
+            },
+            "output_parameters": {
+                "properties": {
+                    "output_0": {
+                        "description": "The path to a csv file containing  data sorted by chosen key",
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "sort_data_descending": {
+            "description": "Sort data by the values associated with the chosen key='key_name' If the input data is list-like, returns the sorted list. If the input data is tabular, returns the table with rows sorted by the values in column 'key_name'. If the data is grouped tables, then sort the groups by the value in 'key_name'",
+            "name": "sort_data_descending",
+            "parameters": {
+                "properties": {
+                    "data_source": {
+                        "description": "The location of the data file in csv format.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "key_name": {
+                        "description": "name of key to sort by: \n* `shop_id` - Unique identifier for each shop.\n* `name` - Name of the shop or the football club associated with the shop.\n* `location` - City where the shop is located.\n* `district` - Specific area or stadium within the city where the shop is located.\n* `number_products` - Number of products available in the shop.\n* `manager_name` - Name of the manager responsible for the shop.\n",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "shop_id",
+                                "name",
+                                "location",
+                                "district",
+                                "number_products",
+                                "manager_name"
+                            ]
+                        }
+                    },
+                    "ascending": {
+                        "description": "whether to sort by ascending order",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                },
+                "required": [
+                    "data_source",
+                    "key_name",
+                    "ascending"
+                ],
+                "type": "object"
+            },
+            "output_parameters": {
+                "properties": {
+                    "output_0": {
+                        "description": "The path to a csv file containing  data sorted by chosen key",
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "compute_data_min": {
+            "description": "Return the minimum value from a list.",
+            "name": "compute_data_min",
+            "parameters": {
+                "properties": {
+                    "data_source": {
+                        "description": "The location of the data file in csv format.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": [
+                    "data_source"
+                ],
+                "type": "object"
+            },
+            "output_parameters": {
+                "properties": {
+                    "output_0": {
+                        "description": "The path to a csv file containing  the minimum value in the input data.",
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "compute_data_max": {
+            "description": "Return the maximum value from a list.",
+            "name": "compute_data_max",
+            "parameters": {
+                "properties": {
+                    "data_source": {
+                        "description": "The location of the data file in csv format.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": [
+                    "data_source"
+                ],
+                "type": "object"
+            },
+            "output_parameters": {
+                "properties": {
+                    "output_0": {
+                        "description": "The path to a csv file containing  the maximum value in the input data.",
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "compute_data_sum": {
+            "description": "Return the sum of values in a list.",
+            "name": "compute_data_sum",
+            "parameters": {
+                "properties": {
+                    "data_source": {
+                        "description": "The location of the data file in csv format.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": [
+                    "data_source"
+                ],
+                "type": "object"
+            },
+            "output_parameters": {
+                "properties": {
+                    "output_0": {
+                        "description": "The path to a csv file containing  the sum of the input data.",
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "compute_data_mean": {
+            "description": "Return the mean of values in a list.",
+            "name": "compute_data_mean",
+            "parameters": {
+                "properties": {
+                    "data_source": {
+                        "description": "The location of the data file in csv format.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": [
+                    "data_source"
+                ],
+                "type": "object"
+            },
+            "output_parameters": {
+                "properties": {
+                    "output_0": {
+                        "description": "The path to a csv file containing  the mean of the input data.",
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "compute_data_count": {
+            "description": "Return the number of elements in a list.",
+            "name": "compute_data_count",
+            "parameters": {
+                "properties": {
+                    "data_source": {
+                        "description": "The location of the data file in csv format.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": [
+                    "data_source"
+                ],
+                "type": "object"
+            },
+            "output_parameters": {
+                "properties": {
+                    "output_0": {
+                        "description": "The path to a csv file containing  the number of elements in the input data.",
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "compute_data_std": {
+            "description": "Return the standard deviation of values in a list.",
+            "name": "compute_data_std",
+            "parameters": {
+                "properties": {
+                    "data_source": {
+                        "description": "The location of the data file in csv format.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": [
+                    "data_source"
+                ],
+                "type": "object"
+            },
+            "output_parameters": {
+                "properties": {
+                    "output_0": {
+                        "description": "The path to a csv file containing  the standard deviation of the input data.",
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "compute_data_argmin": {
+            "description": "Return the index of the minimum value in a list.",
+            "name": "compute_data_argmin",
+            "parameters": {
+                "properties": {
+                    "data_source": {
+                        "description": "The location of the data file in csv format.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": [
+                    "data_source"
+                ],
+                "type": "object"
+            },
+            "output_parameters": {
+                "properties": {
+                    "output_0": {
+                        "description": "The path to a csv file containing  the index of the minimum value in the input data.",
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "compute_data_argmax": {
+            "description": "Return the index of the maximum value in a list.",
+            "name": "compute_data_argmax",
+            "parameters": {
+                "properties": {
+                    "data_source": {
+                        "description": "The location of the data file in csv format.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": [
+                    "data_source"
+                ],
+                "type": "object"
+            },
+            "output_parameters": {
+                "properties": {
+                    "output_0": {
+                        "description": "The path to a csv file containing  the index of the maximum value in the input data.",
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    },
+    "data": [
+        {
+            "query": "SELECT MIN(number_products), MAX(number_products) FROM shop",
+            "input": "find the minimum and maximum number of products of all stores.",
+            "gold_answer": [
+                1600,
+                15000
+            ],
+            "output": [
+                {
+                    "name": "compute_data_min",
+                    "arguments": {
+                        "data_source": "$starting_table_var$",
+                        "key_name": "number_products",
+                        "distinct": false
+                    },
+                    "label": "MIN"
+                },
+                {
+                    "name": "compute_data_max",
+                    "arguments": {
+                        "data_source": "$starting_table_var$",
+                        "key_name": "number_products",
+                        "distinct": false
+                    },
+                    "label": "MAX"
+                }
+            ],
+            "tools": [
+                {
+                    "description": "Lookup data name: Name of the shop or the football club associated with the shop.",
+                    "name": "get_names",
+                    "arguments": {}
+                },
+                {
+                    "description": "Group data by values of a specified key",
+                    "name": "group_data_by",
+                    "arguments": {
+                        "data_source": {
+                            "description": "The location of the data file in csv format.",
+                            "schema": {
+                                "type": "string"
+                            }
+                        },
+                        "key_name": {
+                            "description": "name of key to group by: \n* `shop_id` - Unique identifier for each shop.\n* `name` - Name of the shop or the football club associated with the shop.\n* `location` - City where the shop is located.\n* `district` - Specific area or stadium within the city where the shop is located.\n* `number_products` - Number of products available in the shop.\n* `manager_name` - Name of the manager responsible for the shop.\n",
+                            "schema": {
+                                "type": "string",
+                                "enum": [
+                                    "shop_id",
+                                    "name",
+                                    "location",
+                                    "district",
+                                    "number_products",
+                                    "manager_name"
+                                ]
+                            }
+                        }
+                    }
+                },
+                {
+                    "description": "Sort data by the values associated with the chosen key='key_name' If the input data is list-like, returns the sorted list. If the input data is tabular, returns the table with rows sorted by the values in column 'key_name'. If the data is grouped tables, then sort the groups by the value in 'key_name'",
+                    "name": "sort_data_descending",
+                    "arguments": {
+                        "data_source": {
+                            "description": "The location of the data file in csv format.",
+                            "schema": {
+                                "type": "string"
+                            }
+                        },
+                        "key_name": {
+                            "description": "name of key to sort by: \n* `shop_id` - Unique identifier for each shop.\n* `name` - Name of the shop or the football club associated with the shop.\n* `location` - City where the shop is located.\n* `district` - Specific area or stadium within the city where the shop is located.\n* `number_products` - Number of products available in the shop.\n* `manager_name` - Name of the manager responsible for the shop.\n",
+                            "schema": {
+                                "type": "string",
+                                "enum": [
+                                    "shop_id",
+                                    "name",
+                                    "location",
+                                    "district",
+                                    "number_products",
+                                    "manager_name"
+                                ]
+                            }
+                        },
+                        "ascending": {
+                            "description": "whether to sort by ascending order",
+                            "schema": {
+                                "type": "boolean"
+                            }
+                        }
+                    }
+                },
+                {
+                    "description": "Lookup data manager_name: Name of the manager responsible for the shop.",
+                    "name": "get_manager_names",
+                    "arguments": {}
+                },
+                {
+                    "description": "Return the maximum value from a list.",
+                    "name": "compute_data_max",
+                    "arguments": {
+                        "data_source": {
+                            "description": "The location of the data file in csv format.",
+                            "schema": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                {
+                    "description": "Lookup data shop_id: Unique identifier for each shop.",
+                    "name": "get_shop_ids",
+                    "arguments": {}
+                },
+                {
+                    "description": "Return the first `n` elements of a list-like object.",
+                    "name": "truncate",
+                    "arguments": {
+                        "truncate_array": {
+                            "description": "A list-like object.",
+                            "schema": {
+                                "type": "object"
+                            }
+                        },
+                        "n": {
+                            "description": "The number of rows/elements to return.",
+                            "schema": {
+                                "type": "integer"
+                            }
+                        }
+                    }
+                },
+                {
+                    "description": "Return the sum of values in a list.",
+                    "name": "compute_data_sum",
+                    "arguments": {
+                        "data_source": {
+                            "description": "The location of the data file in csv format.",
+                            "schema": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                {
+                    "description": "Filters rows where the column's value is less than the given value.",
+                    "name": "select_data_less_than",
+                    "arguments": {
+                        "data_source": {
+                            "description": "The location of the data file in csv format.",
+                            "schema": {
+                                "type": "string"
+                            }
+                        },
+                        "key_name": {
+                            "description": "The key on which the filter will be applied.: \n* `shop_id` - Unique identifier for each shop.\n* `name` - Name of the shop or the football club associated with the shop.\n* `location` - City where the shop is located.\n* `district` - Specific area or stadium within the city where the shop is located.\n* `number_products` - Number of products available in the shop.\n* `manager_name` - Name of the manager responsible for the shop.\n",
+                            "schema": {
+                                "type": "string",
+                                "enum": [
+                                    "shop_id",
+                                    "name",
+                                    "location",
+                                    "district",
+                                    "number_products",
+                                    "manager_name"
+                                ]
+                            }
+                        },
+                        "value": {
+                            "description": "The value to compare against in the filtering operation.",
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                {
+                    "description": "Return the number of elements in a list.",
+                    "name": "compute_data_count",
+                    "arguments": {
+                        "data_source": {
+                            "description": "The location of the data file in csv format.",
+                            "schema": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                {
+                    "description": "Sort data by the values associated with the chosen key='key_name' If the input data is list-like, returns the sorted list. If the input data is tabular, returns the table with rows sorted by the values in column 'key_name'. If the data is grouped tables, then sort the groups by the value in 'key_name'",
+                    "name": "sort_data_ascending",
+                    "arguments": {
+                        "data_source": {
+                            "description": "The location of the data file in csv format.",
+                            "schema": {
+                                "type": "string"
+                            }
+                        },
+                        "key_name": {
+                            "description": "name of key to sort by: \n* `shop_id` - Unique identifier for each shop.\n* `name` - Name of the shop or the football club associated with the shop.\n* `location` - City where the shop is located.\n* `district` - Specific area or stadium within the city where the shop is located.\n* `number_products` - Number of products available in the shop.\n* `manager_name` - Name of the manager responsible for the shop.\n",
+                            "schema": {
+                                "type": "string",
+                                "enum": [
+                                    "shop_id",
+                                    "name",
+                                    "location",
+                                    "district",
+                                    "number_products",
+                                    "manager_name"
+                                ]
+                            }
+                        },
+                        "ascending": {
+                            "description": "whether to sort by ascending order",
+                            "schema": {
+                                "type": "boolean"
+                            }
+                        }
+                    }
+                },
+                {
+                    "description": "Lookup data location: City where the shop is located.",
+                    "name": "get_locations",
+                    "arguments": {}
+                },
+                {
+                    "description": "Lookup data number_products: Number of products available in the shop.",
+                    "name": "get_number_productss",
+                    "arguments": {}
+                },
+                {
+                    "description": "Return the minimum value from a list.",
+                    "name": "compute_data_min",
+                    "arguments": {
+                        "data_source": {
+                            "description": "The location of the data file in csv format.",
+                            "schema": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                {
+                    "description": "Filters rows where the column's value is less than or equal to the given value.",
+                    "name": "select_data_less_than_equal_to",
+                    "arguments": {
+                        "data_source": {
+                            "description": "The location of the data file in csv format.",
+                            "schema": {
+                                "type": "string"
+                            }
+                        },
+                        "key_name": {
+                            "description": "The key on which the filter will be applied.: \n* `shop_id` - Unique identifier for each shop.\n* `name` - Name of the shop or the football club associated with the shop.\n* `location` - City where the shop is located.\n* `district` - Specific area or stadium within the city where the shop is located.\n* `number_products` - Number of products available in the shop.\n* `manager_name` - Name of the manager responsible for the shop.\n",
+                            "schema": {
+                                "type": "string",
+                                "enum": [
+                                    "shop_id",
+                                    "name",
+                                    "location",
+                                    "district",
+                                    "number_products",
+                                    "manager_name"
+                                ]
+                            }
+                        },
+                        "value": {
+                            "description": "The value to compare against in the filtering operation.",
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                {
+                    "description": "Return the standard deviation of values in a list.",
+                    "name": "compute_data_std",
+                    "arguments": {
+                        "data_source": {
+                            "description": "The location of the data file in csv format.",
+                            "schema": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                {
+                    "description": "Return the index of the maximum value in a list.",
+                    "name": "compute_data_argmax",
+                    "arguments": {
+                        "data_source": {
+                            "description": "The location of the data file in csv format.",
+                            "schema": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                {
+                    "description": "Return the mean of values in a list.",
+                    "name": "compute_data_mean",
+                    "arguments": {
+                        "data_source": {
+                            "description": "The location of the data file in csv format.",
+                            "schema": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                {
+                    "description": "Return the index of the minimum value in a list.",
+                    "name": "compute_data_argmin",
+                    "arguments": {
+                        "data_source": {
+                            "description": "The location of the data file in csv format.",
+                            "schema": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                {
+                    "description": "Return only the distinct elements from the input list.",
+                    "name": "select_unique_values",
+                    "arguments": {
+                        "unique_array": {
+                            "description": "A list of input data",
+                            "schema": {
+                                "type": "array"
+                            }
+                        }
+                    }
+                },
+                {
+                    "description": "Transform list of string values by taking substrings",
+                    "name": "transform_data_to_substring",
+                    "arguments": {
+                        "data_source": {
+                            "description": "The location of the data file in csv format.",
+                            "schema": {
+                                "type": "string"
+                            }
+                        },
+                        "key_name": {
+                            "description": "name of string valued key to transform: \n* `shop_id` - Unique identifier for each shop.\n* `name` - Name of the shop or the football club associated with the shop.\n* `location` - City where the shop is located.\n* `district` - Specific area or stadium within the city where the shop is located.\n* `number_products` - Number of products available in the shop.\n* `manager_name` - Name of the manager responsible for the shop.\n",
+                            "schema": {
+                                "type": "string",
+                                "enum": [
+                                    "shop_id",
+                                    "name",
+                                    "location",
+                                    "district",
+                                    "number_products",
+                                    "manager_name"
+                                ]
+                            }
+                        },
+                        "start_index": {
+                            "description": "start of substring",
+                            "schema": {
+                                "type": "integer"
+                            }
+                        },
+                        "end_index": {
+                            "description": "end of substring, must be >= start_index",
+                            "schema": {
+                                "type": "integer"
+                            }
+                        }
+                    }
+                },
+                {
+                    "description": "Filters rows where the column's value is greater than or equal to the given value.",
+                    "name": "select_data_greater_than_equal_to",
+                    "arguments": {
+                        "data_source": {
+                            "description": "The location of the data file in csv format.",
+                            "schema": {
+                                "type": "string"
+                            }
+                        },
+                        "key_name": {
+                            "description": "The key on which the filter will be applied.: \n* `shop_id` - Unique identifier for each shop.\n* `name` - Name of the shop or the football club associated with the shop.\n* `location` - City where the shop is located.\n* `district` - Specific area or stadium within the city where the shop is located.\n* `number_products` - Number of products available in the shop.\n* `manager_name` - Name of the manager responsible for the shop.\n",
+                            "schema": {
+                                "type": "string",
+                                "enum": [
+                                    "shop_id",
+                                    "name",
+                                    "location",
+                                    "district",
+                                    "number_products",
+                                    "manager_name"
+                                ]
+                            }
+                        },
+                        "value": {
+                            "description": "The value to compare against in the filtering operation.",
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                {
+                    "description": "Filters rows where the column's value contains the given value (applies to strings).",
+                    "name": "select_data_contains",
+                    "arguments": {
+                        "data_source": {
+                            "description": "The location of the data file in csv format.",
+                            "schema": {
+                                "type": "string"
+                            }
+                        },
+                        "key_name": {
+                            "description": "The key on which the filter will be applied.: \n* `shop_id` - Unique identifier for each shop.\n* `name` - Name of the shop or the football club associated with the shop.\n* `location` - City where the shop is located.\n* `district` - Specific area or stadium within the city where the shop is located.\n* `number_products` - Number of products available in the shop.\n* `manager_name` - Name of the manager responsible for the shop.\n",
+                            "schema": {
+                                "type": "string",
+                                "enum": [
+                                    "shop_id",
+                                    "name",
+                                    "location",
+                                    "district",
+                                    "number_products",
+                                    "manager_name"
+                                ]
+                            }
+                        },
+                        "value": {
+                            "description": "The value to compare against in the filtering operation.",
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                {
+                    "description": "Filters rows where the column's value matches a regex pattern (applies to strings).",
+                    "name": "select_data_like",
+                    "arguments": {
+                        "data_source": {
+                            "description": "The location of the data file in csv format.",
+                            "schema": {
+                                "type": "string"
+                            }
+                        },
+                        "key_name": {
+                            "description": "The key on which the filter will be applied.: \n* `shop_id` - Unique identifier for each shop.\n* `name` - Name of the shop or the football club associated with the shop.\n* `location` - City where the shop is located.\n* `district` - Specific area or stadium within the city where the shop is located.\n* `number_products` - Number of products available in the shop.\n* `manager_name` - Name of the manager responsible for the shop.\n",
+                            "schema": {
+                                "type": "string",
+                                "enum": [
+                                    "shop_id",
+                                    "name",
+                                    "location",
+                                    "district",
+                                    "number_products",
+                                    "manager_name"
+                                ]
+                            }
+                        },
+                        "value": {
+                            "description": "The value to compare against in the filtering operation.",
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                {
+                    "description": "Filters rows where the column's value is equal to the given value.",
+                    "name": "select_data_equal_to",
+                    "arguments": {
+                        "data_source": {
+                            "description": "The location of the data file in csv format.",
+                            "schema": {
+                                "type": "string"
+                            }
+                        },
+                        "key_name": {
+                            "description": "The key on which the filter will be applied.: \n* `shop_id` - Unique identifier for each shop.\n* `name` - Name of the shop or the football club associated with the shop.\n* `location` - City where the shop is located.\n* `district` - Specific area or stadium within the city where the shop is located.\n* `number_products` - Number of products available in the shop.\n* `manager_name` - Name of the manager responsible for the shop.\n",
+                            "schema": {
+                                "type": "string",
+                                "enum": [
+                                    "shop_id",
+                                    "name",
+                                    "location",
+                                    "district",
+                                    "number_products",
+                                    "manager_name"
+                                ]
+                            }
+                        },
+                        "value": {
+                            "description": "The value to compare against in the filtering operation.",
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                {
+                    "description": "Filters rows where the column's value is not equal to the given value.",
+                    "name": "select_data_not_equal_to",
+                    "arguments": {
+                        "data_source": {
+                            "description": "The location of the data file in csv format.",
+                            "schema": {
+                                "type": "string"
+                            }
+                        },
+                        "key_name": {
+                            "description": "The key on which the filter will be applied.: \n* `shop_id` - Unique identifier for each shop.\n* `name` - Name of the shop or the football club associated with the shop.\n* `location` - City where the shop is located.\n* `district` - Specific area or stadium within the city where the shop is located.\n* `number_products` - Number of products available in the shop.\n* `manager_name` - Name of the manager responsible for the shop.\n",
+                            "schema": {
+                                "type": "string",
+                                "enum": [
+                                    "shop_id",
+                                    "name",
+                                    "location",
+                                    "district",
+                                    "number_products",
+                                    "manager_name"
+                                ]
+                            }
+                        },
+                        "value": {
+                            "description": "The value to compare against in the filtering operation.",
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                {
+                    "description": "Lookup data district: Specific area or stadium within the city where the shop is located.",
+                    "name": "get_districts",
+                    "arguments": {}
+                },
+                {
+                    "description": "Filters rows where the column's value is greater than the given value.",
+                    "name": "select_data_greater_than",
+                    "arguments": {
+                        "data_source": {
+                            "description": "The location of the data file in csv format.",
+                            "schema": {
+                                "type": "string"
+                            }
+                        },
+                        "key_name": {
+                            "description": "The key on which the filter will be applied.: \n* `shop_id` - Unique identifier for each shop.\n* `name` - Name of the shop or the football club associated with the shop.\n* `location` - City where the shop is located.\n* `district` - Specific area or stadium within the city where the shop is located.\n* `number_products` - Number of products available in the shop.\n* `manager_name` - Name of the manager responsible for the shop.\n",
+                            "schema": {
+                                "type": "string",
+                                "enum": [
+                                    "shop_id",
+                                    "name",
+                                    "location",
+                                    "district",
+                                    "number_products",
+                                    "manager_name"
+                                ]
+                            }
+                        },
+                        "value": {
+                            "description": "The value to compare against in the filtering operation.",
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                }
+            ],
+            "dataset_name": "employee_hire_evaluation",
+            "sample_id": 2,
+            "key_values_and_descriptions": [
+                {
+                    "key_name": "shop_id",
+                    "description": "Unique identifier for each shop.",
+                    "dtype": "number"
+                },
+                {
+                    "key_name": "name",
+                    "description": "Name of the shop or the football club associated with the shop.",
+                    "dtype": "string"
+                },
+                {
+                    "key_name": "location",
+                    "description": "City where the shop is located.",
+                    "dtype": "string"
+                },
+                {
+                    "key_name": "district",
+                    "description": "Specific area or stadium within the city where the shop is located.",
+                    "dtype": "string"
+                },
+                {
+                    "key_name": "number_products",
+                    "description": "Number of products available in the shop.",
+                    "dtype": "number"
+                },
+                {
+                    "key_name": "manager_name",
+                    "description": "Name of the manager responsible for the shop.",
+                    "dtype": "string"
+                }
+            ],
+            "initialization_step": {
+                "name": "initialize_active_data",
+                "arguments": {
+                    "condition_sequence": [],
+                    "alias_to_table_dict": {
+                        "": {
+                            "original_table_name": "shop",
+                            "modified_table_name": "shop"
+                        }
+                    },
+                    "database_path": "/home/belder/invocable-api-hub/invocable_api_hub/driver/../../db_sparc/cache/employee_hire_evaluation.sqlite"
+                },
+                "label": "starting_table_var"
+            }
+        }
+    ],
+    "agent_data": [
+        {
+            "query": "SELECT MIN(number_products), MAX(number_products) FROM shop",
+            "input": "find the minimum and maximum number of products of all stores.",
+            "gold_answer": [
+                1600,
+                15000
+            ],
+            "output": [
+                {
+                    "name": "initialize_active_data",
+                    "arguments": {
+                        "condition_sequence": [],
+                        "alias_to_table_dict": {
+                            "": {
+                                "original_table_name": "shop",
+                                "modified_table_name": "shop"
+                            }
+                        },
+                        "database_path": "/home/belder/invocable-api-hub/invocable_api_hub/driver/../../db_sparc/cache/employee_hire_evaluation.sqlite"
+                    },
+                    "label": "starting_table_var"
+                },
+                {
+                    "name": "compute_data_min",
+                    "arguments": {
+                        "data_source": "$starting_table_var$",
+                        "key_name": "number_products",
+                        "distinct": false
+                    },
+                    "label": "MIN"
+                },
+                {
+                    "name": "compute_data_max",
+                    "arguments": {
+                        "data_source": "$starting_table_var$",
+                        "key_name": "number_products",
+                        "distinct": false
+                    },
+                    "label": "MAX"
+                }
+            ],
+            "tools": [
+                {
+                    "description": "Lookup data name: Name of the shop or the football club associated with the shop.",
+                    "name": "get_names",
+                    "parameters": {
+                        "properties": {},
+                        "required": [],
+                        "type": "object"
+                    },
+                    "output_parameters": {
+                        "properties": {
+                            "output_0": {
+                                "description": "",
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                {
+                    "description": "Group data by values of a specified key",
+                    "name": "group_data_by",
+                    "parameters": {
+                        "properties": {
+                            "data_source": {
+                                "description": "The location of the data file in csv format.",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "key_name": {
+                                "description": "name of key to group by: \n* `shop_id` - Unique identifier for each shop.\n* `name` - Name of the shop or the football club associated with the shop.\n* `location` - City where the shop is located.\n* `district` - Specific area or stadium within the city where the shop is located.\n* `number_products` - Number of products available in the shop.\n* `manager_name` - Name of the manager responsible for the shop.\n",
+                                "schema": {
+                                    "type": "string",
+                                    "enum": [
+                                        "shop_id",
+                                        "name",
+                                        "location",
+                                        "district",
+                                        "number_products",
+                                        "manager_name"
+                                    ]
+                                }
+                            }
+                        },
+                        "required": [
+                            "data_source",
+                            "key_name"
+                        ],
+                        "type": "object"
+                    },
+                    "output_parameters": {
+                        "properties": {
+                            "output_0": {
+                                "description": "The path to a csv file containing  data with additional layer of keys given by unique values in the column given by `key_name`",
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                {
+                    "description": "Sort data by the values associated with the chosen key='key_name' If the input data is list-like, returns the sorted list. If the input data is tabular, returns the table with rows sorted by the values in column 'key_name'. If the data is grouped tables, then sort the groups by the value in 'key_name'",
+                    "name": "sort_data_descending",
+                    "parameters": {
+                        "properties": {
+                            "data_source": {
+                                "description": "The location of the data file in csv format.",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "key_name": {
+                                "description": "name of key to sort by: \n* `shop_id` - Unique identifier for each shop.\n* `name` - Name of the shop or the football club associated with the shop.\n* `location` - City where the shop is located.\n* `district` - Specific area or stadium within the city where the shop is located.\n* `number_products` - Number of products available in the shop.\n* `manager_name` - Name of the manager responsible for the shop.\n",
+                                "schema": {
+                                    "type": "string",
+                                    "enum": [
+                                        "shop_id",
+                                        "name",
+                                        "location",
+                                        "district",
+                                        "number_products",
+                                        "manager_name"
+                                    ]
+                                }
+                            },
+                            "ascending": {
+                                "description": "whether to sort by ascending order",
+                                "schema": {
+                                    "type": "boolean"
+                                }
+                            }
+                        },
+                        "required": [
+                            "data_source",
+                            "key_name",
+                            "ascending"
+                        ],
+                        "type": "object"
+                    },
+                    "output_parameters": {
+                        "properties": {
+                            "output_0": {
+                                "description": "The path to a csv file containing  data sorted by chosen key",
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                {
+                    "description": "Lookup data manager_name: Name of the manager responsible for the shop.",
+                    "name": "get_manager_names",
+                    "parameters": {
+                        "properties": {},
+                        "required": [],
+                        "type": "object"
+                    },
+                    "output_parameters": {
+                        "properties": {
+                            "output_0": {
+                                "description": "",
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                {
+                    "description": "Return the maximum value from a list.",
+                    "name": "compute_data_max",
+                    "parameters": {
+                        "properties": {
+                            "data_source": {
+                                "description": "The location of the data file in csv format.",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "required": [
+                            "data_source"
+                        ],
+                        "type": "object"
+                    },
+                    "output_parameters": {
+                        "properties": {
+                            "output_0": {
+                                "description": "The path to a csv file containing  the maximum value in the input data.",
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                {
+                    "description": "Lookup data shop_id: Unique identifier for each shop.",
+                    "name": "get_shop_ids",
+                    "parameters": {
+                        "properties": {},
+                        "required": [],
+                        "type": "object"
+                    },
+                    "output_parameters": {
+                        "properties": {
+                            "output_0": {
+                                "description": "",
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                {
+                    "description": "Return the first `n` elements of a list-like object.",
+                    "name": "truncate",
+                    "parameters": {
+                        "properties": {
+                            "truncate_array": {
+                                "description": "A list-like object.",
+                                "schema": {
+                                    "type": "object"
+                                }
+                            },
+                            "n": {
+                                "description": "The number of rows/elements to return.",
+                                "schema": {
+                                    "type": "integer"
+                                }
+                            }
+                        },
+                        "required": [
+                            "truncate_array",
+                            "n"
+                        ],
+                        "type": "object"
+                    },
+                    "output_parameters": {
+                        "properties": {
+                            "output_0": {
+                                "description": "The first `n` elements of the list-like object.",
+                                "type": "array"
+                            }
+                        }
+                    }
+                },
+                {
+                    "description": "Return the sum of values in a list.",
+                    "name": "compute_data_sum",
+                    "parameters": {
+                        "properties": {
+                            "data_source": {
+                                "description": "The location of the data file in csv format.",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "required": [
+                            "data_source"
+                        ],
+                        "type": "object"
+                    },
+                    "output_parameters": {
+                        "properties": {
+                            "output_0": {
+                                "description": "The path to a csv file containing  the sum of the input data.",
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                {
+                    "description": "Filters rows where the column's value is less than the given value.",
+                    "name": "select_data_less_than",
+                    "parameters": {
+                        "properties": {
+                            "data_source": {
+                                "description": "The location of the data file in csv format.",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "key_name": {
+                                "description": "The key on which the filter will be applied.: \n* `shop_id` - Unique identifier for each shop.\n* `name` - Name of the shop or the football club associated with the shop.\n* `location` - City where the shop is located.\n* `district` - Specific area or stadium within the city where the shop is located.\n* `number_products` - Number of products available in the shop.\n* `manager_name` - Name of the manager responsible for the shop.\n",
+                                "schema": {
+                                    "type": "string",
+                                    "enum": [
+                                        "shop_id",
+                                        "name",
+                                        "location",
+                                        "district",
+                                        "number_products",
+                                        "manager_name"
+                                    ]
+                                }
+                            },
+                            "value": {
+                                "description": "The value to compare against in the filtering operation.",
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        },
+                        "required": [
+                            "data_source",
+                            "key_name",
+                            "value"
+                        ],
+                        "type": "object"
+                    },
+                    "output_parameters": {
+                        "properties": {
+                            "output_0": {
+                                "description": "The path to a csv file containing  a new table (dict) containing the rows from the input data that meet the specified condition.",
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                {
+                    "description": "Return the number of elements in a list.",
+                    "name": "compute_data_count",
+                    "parameters": {
+                        "properties": {
+                            "data_source": {
+                                "description": "The location of the data file in csv format.",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "required": [
+                            "data_source"
+                        ],
+                        "type": "object"
+                    },
+                    "output_parameters": {
+                        "properties": {
+                            "output_0": {
+                                "description": "The path to a csv file containing  the number of elements in the input data.",
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                {
+                    "description": "Sort data by the values associated with the chosen key='key_name' If the input data is list-like, returns the sorted list. If the input data is tabular, returns the table with rows sorted by the values in column 'key_name'. If the data is grouped tables, then sort the groups by the value in 'key_name'",
+                    "name": "sort_data_ascending",
+                    "parameters": {
+                        "properties": {
+                            "data_source": {
+                                "description": "The location of the data file in csv format.",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "key_name": {
+                                "description": "name of key to sort by: \n* `shop_id` - Unique identifier for each shop.\n* `name` - Name of the shop or the football club associated with the shop.\n* `location` - City where the shop is located.\n* `district` - Specific area or stadium within the city where the shop is located.\n* `number_products` - Number of products available in the shop.\n* `manager_name` - Name of the manager responsible for the shop.\n",
+                                "schema": {
+                                    "type": "string",
+                                    "enum": [
+                                        "shop_id",
+                                        "name",
+                                        "location",
+                                        "district",
+                                        "number_products",
+                                        "manager_name"
+                                    ]
+                                }
+                            },
+                            "ascending": {
+                                "description": "whether to sort by ascending order",
+                                "schema": {
+                                    "type": "boolean"
+                                }
+                            }
+                        },
+                        "required": [
+                            "data_source",
+                            "key_name",
+                            "ascending"
+                        ],
+                        "type": "object"
+                    },
+                    "output_parameters": {
+                        "properties": {
+                            "output_0": {
+                                "description": "The path to a csv file containing  data sorted by chosen key",
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                {
+                    "description": "Lookup data location: City where the shop is located.",
+                    "name": "get_locations",
+                    "parameters": {
+                        "properties": {},
+                        "required": [],
+                        "type": "object"
+                    },
+                    "output_parameters": {
+                        "properties": {
+                            "output_0": {
+                                "description": "",
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                {
+                    "description": "Initializes active data based on the provided condition sequence, alias-to-table mapping, and database path.  This function checks the validity of the database file at the specified path and raises an exception if the file is not found. After validating the database path, the function processes the condition sequence and alias-to-table dictionary to return a dictionary of active data.",
+                    "name": "initialize_active_data",
+                    "parameters": {
+                        "properties": {
+                            "condition_sequence": {
+                                "description": "A list of conditions (joins) to be processed for initializing the data.",
+                                "schema": {
+                                    "type": "array"
+                                }
+                            },
+                            "alias_to_table_dict": {
+                                "description": "A dictionary mapping aliases to their respective tables.",
+                                "schema": {
+                                    "type": "object"
+                                }
+                            },
+                            "database_path": {
+                                "description": "The file path to the database that will be used for the initialization.",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "required": [
+                            "condition_sequence",
+                            "alias_to_table_dict",
+                            "database_path"
+                        ],
+                        "type": "object"
+                    },
+                    "output_parameters": {
+                        "properties": {
+                            "output_0": {
+                                "description": "The path to a csv file containing  a dictionary representing the initialized active data based on the conditions and table mappings.",
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                {
+                    "description": "Lookup data number_products: Number of products available in the shop.",
+                    "name": "get_number_productss",
+                    "parameters": {
+                        "properties": {},
+                        "required": [],
+                        "type": "object"
+                    },
+                    "output_parameters": {
+                        "properties": {
+                            "output_0": {
+                                "description": "",
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                {
+                    "description": "Return the minimum value from a list.",
+                    "name": "compute_data_min",
+                    "parameters": {
+                        "properties": {
+                            "data_source": {
+                                "description": "The location of the data file in csv format.",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "required": [
+                            "data_source"
+                        ],
+                        "type": "object"
+                    },
+                    "output_parameters": {
+                        "properties": {
+                            "output_0": {
+                                "description": "The path to a csv file containing  the minimum value in the input data.",
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                {
+                    "description": "Filters rows where the column's value is less than or equal to the given value.",
+                    "name": "select_data_less_than_equal_to",
+                    "parameters": {
+                        "properties": {
+                            "data_source": {
+                                "description": "The location of the data file in csv format.",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "key_name": {
+                                "description": "The key on which the filter will be applied.: \n* `shop_id` - Unique identifier for each shop.\n* `name` - Name of the shop or the football club associated with the shop.\n* `location` - City where the shop is located.\n* `district` - Specific area or stadium within the city where the shop is located.\n* `number_products` - Number of products available in the shop.\n* `manager_name` - Name of the manager responsible for the shop.\n",
+                                "schema": {
+                                    "type": "string",
+                                    "enum": [
+                                        "shop_id",
+                                        "name",
+                                        "location",
+                                        "district",
+                                        "number_products",
+                                        "manager_name"
+                                    ]
+                                }
+                            },
+                            "value": {
+                                "description": "The value to compare against in the filtering operation.",
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        },
+                        "required": [
+                            "data_source",
+                            "key_name",
+                            "value"
+                        ],
+                        "type": "object"
+                    },
+                    "output_parameters": {
+                        "properties": {
+                            "output_0": {
+                                "description": "The path to a csv file containing  a new table (dict) containing the rows from the input data that meet the specified condition.",
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                {
+                    "description": "Return the standard deviation of values in a list.",
+                    "name": "compute_data_std",
+                    "parameters": {
+                        "properties": {
+                            "data_source": {
+                                "description": "The location of the data file in csv format.",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "required": [
+                            "data_source"
+                        ],
+                        "type": "object"
+                    },
+                    "output_parameters": {
+                        "properties": {
+                            "output_0": {
+                                "description": "The path to a csv file containing  the standard deviation of the input data.",
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                {
+                    "description": "Return the index of the maximum value in a list.",
+                    "name": "compute_data_argmax",
+                    "parameters": {
+                        "properties": {
+                            "data_source": {
+                                "description": "The location of the data file in csv format.",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "required": [
+                            "data_source"
+                        ],
+                        "type": "object"
+                    },
+                    "output_parameters": {
+                        "properties": {
+                            "output_0": {
+                                "description": "The path to a csv file containing  the index of the maximum value in the input data.",
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                {
+                    "description": "Return the mean of values in a list.",
+                    "name": "compute_data_mean",
+                    "parameters": {
+                        "properties": {
+                            "data_source": {
+                                "description": "The location of the data file in csv format.",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "required": [
+                            "data_source"
+                        ],
+                        "type": "object"
+                    },
+                    "output_parameters": {
+                        "properties": {
+                            "output_0": {
+                                "description": "The path to a csv file containing  the mean of the input data.",
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                {
+                    "description": "Return the index of the minimum value in a list.",
+                    "name": "compute_data_argmin",
+                    "parameters": {
+                        "properties": {
+                            "data_source": {
+                                "description": "The location of the data file in csv format.",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "required": [
+                            "data_source"
+                        ],
+                        "type": "object"
+                    },
+                    "output_parameters": {
+                        "properties": {
+                            "output_0": {
+                                "description": "The path to a csv file containing  the index of the minimum value in the input data.",
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                {
+                    "description": "Return only the distinct elements from the input list.",
+                    "name": "select_unique_values",
+                    "parameters": {
+                        "properties": {
+                            "unique_array": {
+                                "description": "A list of input data",
+                                "schema": {
+                                    "type": "array"
+                                }
+                            }
+                        },
+                        "required": [
+                            "unique_array"
+                        ],
+                        "type": "object"
+                    },
+                    "output_parameters": {
+                        "properties": {
+                            "output_0": {
+                                "description": "The distinct elements of the input list",
+                                "type": "array"
+                            }
+                        }
+                    }
+                },
+                {
+                    "description": "Transform list of string values by taking substrings",
+                    "name": "transform_data_to_substring",
+                    "parameters": {
+                        "properties": {
+                            "data_source": {
+                                "description": "The location of the data file in csv format.",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "key_name": {
+                                "description": "name of string valued key to transform: \n* `shop_id` - Unique identifier for each shop.\n* `name` - Name of the shop or the football club associated with the shop.\n* `location` - City where the shop is located.\n* `district` - Specific area or stadium within the city where the shop is located.\n* `number_products` - Number of products available in the shop.\n* `manager_name` - Name of the manager responsible for the shop.\n",
+                                "schema": {
+                                    "type": "string",
+                                    "enum": [
+                                        "shop_id",
+                                        "name",
+                                        "location",
+                                        "district",
+                                        "number_products",
+                                        "manager_name"
+                                    ]
+                                }
+                            },
+                            "start_index": {
+                                "description": "start of substring",
+                                "schema": {
+                                    "type": "integer"
+                                }
+                            },
+                            "end_index": {
+                                "description": "end of substring, must be >= start_index",
+                                "schema": {
+                                    "type": "integer"
+                                }
+                            }
+                        },
+                        "required": [
+                            "data_source",
+                            "key_name",
+                            "start_index",
+                            "end_index"
+                        ],
+                        "type": "object"
+                    },
+                    "output_parameters": {
+                        "properties": {
+                            "output_0": {
+                                "description": "The path to a csv file containing  original table (dict) with the specified key values transformed",
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                {
+                    "description": "Filters rows where the column's value is greater than or equal to the given value.",
+                    "name": "select_data_greater_than_equal_to",
+                    "parameters": {
+                        "properties": {
+                            "data_source": {
+                                "description": "The location of the data file in csv format.",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "key_name": {
+                                "description": "The key on which the filter will be applied.: \n* `shop_id` - Unique identifier for each shop.\n* `name` - Name of the shop or the football club associated with the shop.\n* `location` - City where the shop is located.\n* `district` - Specific area or stadium within the city where the shop is located.\n* `number_products` - Number of products available in the shop.\n* `manager_name` - Name of the manager responsible for the shop.\n",
+                                "schema": {
+                                    "type": "string",
+                                    "enum": [
+                                        "shop_id",
+                                        "name",
+                                        "location",
+                                        "district",
+                                        "number_products",
+                                        "manager_name"
+                                    ]
+                                }
+                            },
+                            "value": {
+                                "description": "The value to compare against in the filtering operation.",
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        },
+                        "required": [
+                            "data_source",
+                            "key_name",
+                            "value"
+                        ],
+                        "type": "object"
+                    },
+                    "output_parameters": {
+                        "properties": {
+                            "output_0": {
+                                "description": "The path to a csv file containing  a new table (dict) containing the rows from the input data that meet the specified condition.",
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                {
+                    "description": "Filters rows where the column's value contains the given value (applies to strings).",
+                    "name": "select_data_contains",
+                    "parameters": {
+                        "properties": {
+                            "data_source": {
+                                "description": "The location of the data file in csv format.",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "key_name": {
+                                "description": "The key on which the filter will be applied.: \n* `shop_id` - Unique identifier for each shop.\n* `name` - Name of the shop or the football club associated with the shop.\n* `location` - City where the shop is located.\n* `district` - Specific area or stadium within the city where the shop is located.\n* `number_products` - Number of products available in the shop.\n* `manager_name` - Name of the manager responsible for the shop.\n",
+                                "schema": {
+                                    "type": "string",
+                                    "enum": [
+                                        "shop_id",
+                                        "name",
+                                        "location",
+                                        "district",
+                                        "number_products",
+                                        "manager_name"
+                                    ]
+                                }
+                            },
+                            "value": {
+                                "description": "The value to compare against in the filtering operation.",
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        },
+                        "required": [
+                            "data_source",
+                            "key_name",
+                            "value"
+                        ],
+                        "type": "object"
+                    },
+                    "output_parameters": {
+                        "properties": {
+                            "output_0": {
+                                "description": "The path to a csv file containing  a new table (dict) containing the rows from the input data that meet the specified condition.",
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                {
+                    "description": "Filters rows where the column's value matches a regex pattern (applies to strings).",
+                    "name": "select_data_like",
+                    "parameters": {
+                        "properties": {
+                            "data_source": {
+                                "description": "The location of the data file in csv format.",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "key_name": {
+                                "description": "The key on which the filter will be applied.: \n* `shop_id` - Unique identifier for each shop.\n* `name` - Name of the shop or the football club associated with the shop.\n* `location` - City where the shop is located.\n* `district` - Specific area or stadium within the city where the shop is located.\n* `number_products` - Number of products available in the shop.\n* `manager_name` - Name of the manager responsible for the shop.\n",
+                                "schema": {
+                                    "type": "string",
+                                    "enum": [
+                                        "shop_id",
+                                        "name",
+                                        "location",
+                                        "district",
+                                        "number_products",
+                                        "manager_name"
+                                    ]
+                                }
+                            },
+                            "value": {
+                                "description": "The value to compare against in the filtering operation.",
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        },
+                        "required": [
+                            "data_source",
+                            "key_name",
+                            "value"
+                        ],
+                        "type": "object"
+                    },
+                    "output_parameters": {
+                        "properties": {
+                            "output_0": {
+                                "description": "The path to a csv file containing  a new table (dict) containing the rows from the input data that meet the specified condition.",
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                {
+                    "description": "Filters rows where the column's value is equal to the given value.",
+                    "name": "select_data_equal_to",
+                    "parameters": {
+                        "properties": {
+                            "data_source": {
+                                "description": "The location of the data file in csv format.",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "key_name": {
+                                "description": "The key on which the filter will be applied.: \n* `shop_id` - Unique identifier for each shop.\n* `name` - Name of the shop or the football club associated with the shop.\n* `location` - City where the shop is located.\n* `district` - Specific area or stadium within the city where the shop is located.\n* `number_products` - Number of products available in the shop.\n* `manager_name` - Name of the manager responsible for the shop.\n",
+                                "schema": {
+                                    "type": "string",
+                                    "enum": [
+                                        "shop_id",
+                                        "name",
+                                        "location",
+                                        "district",
+                                        "number_products",
+                                        "manager_name"
+                                    ]
+                                }
+                            },
+                            "value": {
+                                "description": "The value to compare against in the filtering operation.",
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        },
+                        "required": [
+                            "data_source",
+                            "key_name",
+                            "value"
+                        ],
+                        "type": "object"
+                    },
+                    "output_parameters": {
+                        "properties": {
+                            "output_0": {
+                                "description": "The path to a csv file containing  a new table (dict) containing the rows from the input data that meet the specified condition.",
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                {
+                    "description": "Filters rows where the column's value is not equal to the given value.",
+                    "name": "select_data_not_equal_to",
+                    "parameters": {
+                        "properties": {
+                            "data_source": {
+                                "description": "The location of the data file in csv format.",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "key_name": {
+                                "description": "The key on which the filter will be applied.: \n* `shop_id` - Unique identifier for each shop.\n* `name` - Name of the shop or the football club associated with the shop.\n* `location` - City where the shop is located.\n* `district` - Specific area or stadium within the city where the shop is located.\n* `number_products` - Number of products available in the shop.\n* `manager_name` - Name of the manager responsible for the shop.\n",
+                                "schema": {
+                                    "type": "string",
+                                    "enum": [
+                                        "shop_id",
+                                        "name",
+                                        "location",
+                                        "district",
+                                        "number_products",
+                                        "manager_name"
+                                    ]
+                                }
+                            },
+                            "value": {
+                                "description": "The value to compare against in the filtering operation.",
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        },
+                        "required": [
+                            "data_source",
+                            "key_name",
+                            "value"
+                        ],
+                        "type": "object"
+                    },
+                    "output_parameters": {
+                        "properties": {
+                            "output_0": {
+                                "description": "The path to a csv file containing  a new table (dict) containing the rows from the input data that meet the specified condition.",
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                {
+                    "description": "Lookup data district: Specific area or stadium within the city where the shop is located.",
+                    "name": "get_districts",
+                    "parameters": {
+                        "properties": {},
+                        "required": [],
+                        "type": "object"
+                    },
+                    "output_parameters": {
+                        "properties": {
+                            "output_0": {
+                                "description": "",
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                {
+                    "description": "Filters rows where the column's value is greater than the given value.",
+                    "name": "select_data_greater_than",
+                    "parameters": {
+                        "properties": {
+                            "data_source": {
+                                "description": "The location of the data file in csv format.",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "key_name": {
+                                "description": "The key on which the filter will be applied.: \n* `shop_id` - Unique identifier for each shop.\n* `name` - Name of the shop or the football club associated with the shop.\n* `location` - City where the shop is located.\n* `district` - Specific area or stadium within the city where the shop is located.\n* `number_products` - Number of products available in the shop.\n* `manager_name` - Name of the manager responsible for the shop.\n",
+                                "schema": {
+                                    "type": "string",
+                                    "enum": [
+                                        "shop_id",
+                                        "name",
+                                        "location",
+                                        "district",
+                                        "number_products",
+                                        "manager_name"
+                                    ]
+                                }
+                            },
+                            "value": {
+                                "description": "The value to compare against in the filtering operation.",
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        },
+                        "required": [
+                            "data_source",
+                            "key_name",
+                            "value"
+                        ],
+                        "type": "object"
+                    },
+                    "output_parameters": {
+                        "properties": {
+                            "output_0": {
+                                "description": "The path to a csv file containing  a new table (dict) containing the rows from the input data that meet the specified condition.",
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            ],
+            "dataset_name": "employee_hire_evaluation",
+            "sample_id": 2,
+            "key_values_and_descriptions": [
+                {
+                    "key_name": "shop_id",
+                    "description": "Unique identifier for each shop.",
+                    "dtype": "number"
+                },
+                {
+                    "key_name": "name",
+                    "description": "Name of the shop or the football club associated with the shop.",
+                    "dtype": "string"
+                },
+                {
+                    "key_name": "location",
+                    "description": "City where the shop is located.",
+                    "dtype": "string"
+                },
+                {
+                    "key_name": "district",
+                    "description": "Specific area or stadium within the city where the shop is located.",
+                    "dtype": "string"
+                },
+                {
+                    "key_name": "number_products",
+                    "description": "Number of products available in the shop.",
+                    "dtype": "number"
+                },
+                {
+                    "key_name": "manager_name",
+                    "description": "Name of the manager responsible for the shop.",
+                    "dtype": "string"
+                }
+            ]
+        }
+    ],
+    "dataset": "employee_hire_evaluation"
+}

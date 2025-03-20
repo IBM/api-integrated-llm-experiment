@@ -847,7 +847,7 @@ def scoring(
                 0
             ].get_basic_strs()
 
-            base_model = calculate_scores(
+            scorer_output_model = calculate_scores(
                 data,
                 db_path=db_path,
                 source_file_search_path=source_file_search_path,
@@ -863,7 +863,7 @@ def scoring(
                     (output_file_name + ".json"),
                 )
             )
-            write_json(file_path=outfile, base_model=base_model)
+            write_json(file_path=outfile, base_model=scorer_output_model)
         except Exception as e:
             has_exception = True
             handle_scoring_process_exception(

@@ -115,7 +115,7 @@ def test_scorer_with_win_rate() -> None:
                 "tests",
                 "data",
                 "source",
-                "evaluation_win_rate",
+                "evaluation_trimmed",
             )
         ),
         is_single_intent_detection=False,

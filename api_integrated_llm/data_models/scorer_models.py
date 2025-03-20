@@ -323,8 +323,8 @@ class ScorerOuputModel(BaseModel):
     error_messages_win_rate: Optional[List[str]] = None
     num_failed_function_execution_list: Optional[List[int]] = None
     win_rate_result_model: Optional[WinRateResultModel] = None
-    parsed_predictions: Optional[Any] = None
-    parsed_gold_answer: Optional[Any] = None
+    parsed_predictions: List[List[Any]] = []
+    parsed_gold_answer: List[List[Any]] = []
 
 
 class MetricsAggregationModel(BaseModel):

@@ -44,14 +44,58 @@ async def fetch_data_post(
                 )
 
 
+def get_parsed_payload(
+    response_model: HttpResponseModel,
+) -> Tuple[Optional[str], Optional[List[Dict[str, Any]]], str]:
+    text_responses: Optional[str] = None
+    tool_calls: Optional[List[Dict[str, Any]]] = None
+    error_message: str = ""
+    try:
+        payload = json.loads(response_model.response_txt)
+        if "error" in payload:
+            error_message = json.dumps(payload)
+            text_responses = error_message
+            error_message = json.dumps(payload)
+
+        if "choices" in payload:  # multiple responses from RITS
+            for choice in payload["choices"]:
+                if "message" in choice:
+                    tool_calls = (
+                        deepcopy(choice["message"]["tool_calls"])
+                        if (
+                            "tool_calls" in choice["message"]
+                            and choice["message"]["tool_calls"] is not None
+                        )
+                        else None
+                    )
+                    text_responses = (
+                        choice["message"]["content"]
+                        if "content" in choice["message"]
+                        else ""
+                    )
+                elif "text" in choice:
+                    text_responses = choice["text"]
+
+                break
+
+        elif "response" in payload:  # single response from ollama
+            text_responses = payload["response"]
+    except Exception as e:
+        error_message = str(e)
+        print(f"Error at get_parsed_payload(): {error_message}")
+
+    return text_responses, tool_calls, error_message
+
+
 async def get_response_from_post_request_async(
     obj: Dict[str, Any],
     url: str,
     headers: Optional[Dict[str, Any]] = None,
     timeout: int = 600,
     params: Optional[Dict[str, Any]] = None,
-) -> Tuple[Optional[Union[str, List[str]]], str, float]:
-    text_response: Optional[Union[str, List[str]]] = None
+) -> Tuple[Optional[str], Optional[List[Dict[str, Any]]], str, float]:
+    text_responses: Optional[str] = None
+    tool_calls: Optional[List[Dict[str, Any]]] = None
     error_message: str = ""
     lag: Optional[timedelta] = None
     try:
@@ -59,40 +103,20 @@ async def get_response_from_post_request_async(
             url=url, obj=obj, headers=headers, timeout=timeout, params=params
         )
         lag = response_model.elapsed
-        payload = json.loads(response_model.response_txt)
-        if "error" in payload:
-            error_message = json.dumps(payload)
-            text_response = [error_message]
-            error_message = json.dumps(payload)
-        elif "response" in payload:  # single response from ollama
-            text_response = payload["response"]
-        elif "choices" in payload:  # multiple responses from RITS
-            text_response = []
-            for choice in payload["choices"]:
-                if "message" in choice:
-                    if (
-                        "tool_calls" in choice["message"]
-                        and choice["message"]["tool_calls"] is not None
-                    ):
-                        try:
-                            json_str = json.dumps(choice["message"]["tool_calls"])
-                            text_response.append(json_str)
-                        except Exception as e:
-                            text_response.append("Parcing Tool calls failed")
-                            print(str(e))
-                    elif "content" in choice["message"]:
-                        text_response.append(choice["message"]["content"])
+        text_responses, tool_calls, error_message = get_parsed_payload(
+            response_model=response_model
+        )
 
-                elif "text" in choice:
-                    text_response.append(choice["text"])
-                else:
-                    text_response.append("")
+        if len(error_message) > 0:
+            raise Exception("response model parsing error at get_parsed_payload")
+
     except Exception as e:
         error_message = str(e)
         print(error_message)
 
     return (
-        text_response,
+        text_responses,
+        tool_calls,
         error_message,
         (-1.0 if lag is None else lag.total_seconds()),
     )
@@ -151,8 +175,8 @@ def get_OPENAI_payload(
         "messages": sample.get_message_raw(),
         "temperature": temperature,
         "max_tokens": max_tokens,
-        # "tools": sample.tools,
-        # "tool_choice": "auto",
+        "tools": sample.tools,
+        "tool_choice": "auto",
     }
 
 
@@ -239,7 +263,7 @@ async def get_response_from_RITS_async(
     temperature: float = 0.0,
     n: int = 1,
     timeout: int = 240,
-) -> Tuple[Optional[Union[str, List[str]]], str, float]:
+) -> Tuple[Optional[str], Optional[List[Dict[str, Any]]], str, float]:
     return await get_response_from_post_request_async(
         obj=get_RITZ_payload(
             prompts=deepcopy(contents),
@@ -265,7 +289,7 @@ async def get_response_from_OPENAI_async(
     max_tokens: int,
     temperature: float = 0.0,
     timeout: int = 240,
-) -> Tuple[Optional[Union[str, List[str]]], str, float]:
+) -> Tuple[Optional[str], Optional[List[Dict[str, Any]]], str, float]:
     return await get_response_from_post_request_async(
         obj=get_OPENAI_payload(
             sample=sample,
@@ -286,11 +310,13 @@ async def get_response_from_OPENAI_async(
 
 
 def handle_txt_from_llm_service(
-    txt: Tuple[Optional[Union[str, List[str]]], str, float],
+    payload: Tuple[
+        Union[str, list[str], None], Optional[list[dict[str, Any]]], str, float
+    ],
 ) -> Optional[str]:
-    if not isinstance(txt, tuple):
+    if not isinstance(payload, tuple):
         return None
-    content = txt[0]
+    content = payload[0]
     if content is None:
         return None
     if isinstance(content, str):
@@ -305,7 +331,7 @@ async def generate_llm_response_from_service_async(
     temperature: float,
     max_tokens: int,
     model_obj: Dict[str, str],
-) -> Optional[Union[List[str], str]]:
+) -> Tuple[Optional[str], Optional[List[Dict[str, Any]]]]:
     prompt = sample.input[:]
     model_name = model_obj["model"][:]
     model_resource = model_obj["endpoint"].split("/")[-2][:]
@@ -335,10 +361,12 @@ async def generate_llm_response_from_service_async(
             )
         )
 
-        return handle_txt_from_llm_service(txt=resp)
+        return handle_txt_from_llm_service(payload=resp), resp[1]
     except Exception as e:
-        print(e)
-    return None
+        error_message = str(e)
+        print(f"Error at generate_llm_response_from_service_async: {error_message}")
+
+    return None, None
 
 
 async def get_responses_from_async(
@@ -346,7 +374,7 @@ async def get_responses_from_async(
     model_obj: Dict[str, str],
     temperature: float,
     max_tokens: int,
-) -> List[Optional[Union[List[str], str]]]:
+) -> List[Tuple[Optional[str], Optional[List[Dict[str, Any]]]]]:
     tasks = [
         generate_llm_response_from_service_async(
             sample=sample,
@@ -365,8 +393,8 @@ def get_responses_from_sync(
     model_obj: Dict[str, str],
     temperature: float,
     max_tokens: int,
-) -> List[str]:
-    responses: List[str] = []
+) -> List[Tuple[List[str], List[Optional[List[Dict[str, Any]]]]]]:
+    responses: List[Tuple[List[str], List[Optional[List[Dict[str, Any]]]]]] = []
     for sample in test_data:
         response = asyncio.run(
             generate_llm_response_from_service_async(

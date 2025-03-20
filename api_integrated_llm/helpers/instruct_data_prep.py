@@ -135,18 +135,11 @@ def get_input_query(
 
 
 def get_OPENAI_messages(
-    system_prompt: str, sample_input: str, tools: Optional[List[Dict[str, Any]]]
+    system_prompt: str, sample_input: str
 ) -> List[ConversationUnit]:
-    tool_str = (
-        ("\n\nAvailable Tools:\n" + json.dumps(tools)) if tools is not None else ""
-    )
     system_utterance = ConversationUnit(
         role=ConversationRoleModel.SYSTEM,
-        content=(
-            system_prompt
-            if "Available Tools:" in system_prompt
-            else (system_prompt + tool_str)
-        ),
+        content=system_prompt,
     )
     user_utterance = ConversationUnit(
         role=ConversationRoleModel.USER, content=sample_input
@@ -210,7 +203,6 @@ def instruct_data(
             prompt_dict=prompt_dict,
             function_str=function_str,
         )
-        tools = sample.get_tools_raw()
         test_data.append(
             EvaluationOutputDataUnit(
                 sample_id=sample.sample_id,
@@ -221,12 +213,11 @@ def instruct_data(
                     get_OPENAI_messages(
                         system_prompt=input_query,
                         sample_input=sample_input,
-                        tools=tools,
                     )
                     if model_obj.get("inference_type", "") == "OPENAI"
                     else None
                 ),
-                tools=tools,
+                tools=sample.get_tools_raw(),
             )
         )
 

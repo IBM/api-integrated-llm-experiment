@@ -2,7 +2,7 @@ import asyncio
 from copy import deepcopy
 from pathlib import Path
 import os
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Tuple
 
 from api_integrated_llm.data_models.source_models import (
     EvaluationOutputDataUnit,
@@ -26,7 +26,7 @@ from api_integrated_llm.helpers.instruct_data_prep import instruct_data
 def get_evaluation_output_units_from_responses(
     model_name: str,
     test_data: List[EvaluationOutputDataUnit],
-    responses: List[Union[List[str], str, None]],
+    responses: List[Tuple[Optional[str], Optional[List[Dict[str, Any]]]]],
     evaluation_input_file_path: Path,
     dataset_name: str,
     temperature: float,
@@ -34,20 +34,29 @@ def get_evaluation_output_units_from_responses(
 ) -> List[EvaluationOutputResponseDataUnit]:
     output_list: List[EvaluationOutputResponseDataUnit] = []
     for sample, resp in zip(test_data, responses):
-        if resp is not None:
+        text_response: str = ""
+        tool_call: Optional[List[Dict[str, Any]]] = None
+        if isinstance(resp, tuple):
+            text_response = resp[0] if resp[0] is not None else ""
+            tool_call = resp[1]
+        elif isinstance(resp, str) or isinstance(resp, list):
+            text_response = resp
+
+        if text_response is not None:
             response = ""
-            if isinstance(resp, list) and len(resp) > 0:
+            if isinstance(text_response, list) and len(text_response) > 0:
                 try:
-                    response = resp[0].strip()
+                    response = text_response[0].strip()
                 except Exception as e:
                     print(e)
             if isinstance(response, str):
-                response = resp.strip()  # type: ignore
+                response = text_response.strip()  # type: ignore
 
             output_unit = EvaluationOutputResponseDataUnit.get_model_from_output_unit(
                 data_model=sample
             )
             output_unit.generated_text = response
+            output_unit.tool_calls = tool_call
             output_unit.llm_model_id = model_name[:]
             output_unit.source_file_path = str(evaluation_input_file_path)
             output_unit.dataset_name = dataset_name
@@ -92,7 +101,7 @@ async def get_output_list_async(
             should_ignore=should_ignore,
         )
         if len(test_data) > 0:
-            responses: List[Optional[Union[List[str], str]]] = []
+            responses: List[Tuple[Optional[str], Optional[List[Dict[str, Any]]]]] = []
             if model_obj["endpoint"].startswith("http"):
                 responses = await get_responses_from_async(
                     test_data=test_data,
@@ -194,7 +203,7 @@ def get_output_list(
             should_ignore=should_ignore,
         )
         if len(test_data) > 0:
-            responses: List[str] = []
+            responses = []  # type: ignore
             if ("inference_type" in model_obj) and (
                 model_obj["inference_type"] != "LOCAL"
             ):
@@ -211,6 +220,7 @@ def get_output_list(
                     temperature=temperature,
                     max_tokens=max_tokens,
                 )
+                responses = [(response, None) for response in responses]  # type: ignore
 
                 if len(error_messages) > 0:
                     write_json_from_dict(

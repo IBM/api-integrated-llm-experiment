@@ -107,7 +107,7 @@ def get_responses_from_local_llm(
     model_obj: Dict[str, str],
     temperature: float,
     max_tokens: int,
-) -> Tuple[List[List[str]], List[str]]:
+) -> Tuple[List[str], List[str]]:
     error_messages: List[str] = []
     responses: List[str] = []
     for sample in test_data:

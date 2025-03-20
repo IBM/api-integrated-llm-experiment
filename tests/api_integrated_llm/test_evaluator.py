@@ -20,7 +20,6 @@ def test_evaluator_local_llm() -> None:
             "tokenizer": "BEE-spoke-data/smol_llama-101M-GQA",
             "model_url": "/Users/jungkookang/Documents/projects/api_integrated_llm_experiment/llm_saves/smol_llama-101M-GQA",  # pragma: allowlist secret
             "tokenizer_url": "/Users/jungkookang/Documents/projects/api_integrated_llm_experiment/tokenizer_saves/smol_llama-101M-GQA",  # pragma: allowlist secret
-            "should_use_autoprocessor": False,
         }
     }
 
@@ -68,10 +67,10 @@ def test_evaluator_local_llm() -> None:
 @pytest.mark.skip(reason="sanity check for RITZ")
 def test_evaluator_RITZ() -> None:
     model_id_info_dict = {
-        "granite-3.1-8b-instruct": {
+        "Llama-3.1-8B-Instruct": {
             "inference_type": "RITS",
-            "model": "ibm-granite/granite-3.1-8b-instruct",
-            "endpoint": "https://inference-3scale-apicast-production.apps.rits.fmaas.res.ibm.com/granite-3-1-8b-instruct/v1",
+            "model": "meta-llama/Llama-3.1-8B-Instruct",
+            "endpoint": "https://inference-3scale-apicast-production.apps.rits.fmaas.res.ibm.com/llama-3-1-8b-instruct/v1",
         },
     }
 
@@ -80,7 +79,7 @@ def test_evaluator_RITZ() -> None:
         evaluation_input_file_paths=get_files_in_folder(  # type: ignore
             folder_path=Path(
                 os.path.join(
-                    project_root_path, "tests", "data", "source", "evaluation_debug"
+                    project_root_path, "tests", "data", "source", "evaluation_trimmed"
                 )
             ),
             file_extension="json",
