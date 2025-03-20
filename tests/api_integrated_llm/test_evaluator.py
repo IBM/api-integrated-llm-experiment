@@ -115,7 +115,7 @@ def test_evaluator_RITZ() -> None:
     assert True
 
 
-# @pytest.mark.skip(reason="sanity check for OPENAI")
+@pytest.mark.skip(reason="sanity check for OPENAI")
 def test_evaluator_openai() -> None:
     model_id_info_dict = {
         "gpt-4o": {
