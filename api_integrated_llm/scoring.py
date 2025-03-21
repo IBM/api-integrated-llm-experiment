@@ -258,11 +258,11 @@ def get_item_metrics(
     int,
     List[str],
     List[str],
-    List[Any],
-    List[List[Any]],
-    List[List[Any]],
-    List[List[Any]],
-    List[List[Any]],
+    List[Union[str, int]],
+    List[List[str]],
+    List[List[str]],
+    List[List[Dict[str, Any]]],
+    List[List[Dict[str, Any]]],
 ]:
     gold_output_intent: List[List[str]] = []
     pred_output_intent: List[List[str]] = []
@@ -277,11 +277,11 @@ def get_item_metrics(
     num_gold_examples_w_parsing_errors = 0
     error_messages: List[str] = []
     parsing_error_messages: List[str] = []
-    sample_ids: List[Any] = []
-    predicted_function_calls: List[List[Any]] = []
-    gold_function_calls: List[List[Any]] = []
-    pred_dict_list: List[List[Any]] = []
-    gold_dict_list: List[List[Any]] = []
+    sample_ids: List[Union[str, int]] = []
+    predicted_function_calls: List[List[str]] = []
+    gold_function_calls: List[List[str]] = []
+    pred_dict_list: List[List[Dict[str, Any]]] = []
+    gold_dict_list: List[List[Dict[str, Any]]] = []
 
     for prediction, prediction_model in list(
         map(
