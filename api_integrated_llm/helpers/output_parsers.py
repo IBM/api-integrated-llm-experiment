@@ -435,7 +435,7 @@ def parse_generated_text(
     )
 
 
-def parse_llama_3_output(
+def parse_general_large_language_model_output(
     prediction: Dict[str, Any],
     num_errors_parsing_pred_intent: int,
     skip_grounding: bool = False,
@@ -531,7 +531,7 @@ def parse_output_from_language_models(
             num_errors_parsing_pred_intent_res,
             pred_has_parsing_errors,
             parsing_error_messages,
-        ) = parse_llama_3_output(
+        ) = parse_general_large_language_model_output(
             prediction=prediction,
             num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
             skip_grounding=is_single_intent_detection,
@@ -574,7 +574,7 @@ def parse_output_from_language_models(
             num_errors_parsing_pred_intent_res,
             pred_has_parsing_errors,
             parsing_error_messages,
-        ) = parse_llama_3_output(
+        ) = parse_general_large_language_model_output(
             prediction=prediction,
             num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
             skip_grounding=is_single_intent_detection,

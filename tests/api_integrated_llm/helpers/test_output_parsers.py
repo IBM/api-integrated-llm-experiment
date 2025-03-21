@@ -3,7 +3,7 @@ from pathlib import Path
 
 from api_integrated_llm.helpers.file_helper import get_list_dict_from_jsonl
 from api_integrated_llm.helpers.output_parsers import (
-    parse_llama_3_output,
+    parse_general_large_language_model_output,
     parse_multi_step,
 )
 
@@ -34,7 +34,7 @@ def test_parse_llama_3_output_single_intent() -> None:
         num_errors_parsing_pred_intent,
         pred_has_parsing_errors,
         parsing_error_messages,
-    ) = parse_llama_3_output(
+    ) = parse_general_large_language_model_output(
         prediction=data_list[0],
         num_errors_parsing_pred_intent=0,
         skip_grounding=False,
@@ -66,7 +66,7 @@ def test_parse_llama_3_output_multi_intent() -> None:
         num_errors_parsing_pred_intent,
         pred_has_parsing_errors,
         parsing_error_messages,
-    ) = parse_llama_3_output(
+    ) = parse_general_large_language_model_output(
         prediction=data_list[0],
         num_errors_parsing_pred_intent=0,
         skip_grounding=False,
