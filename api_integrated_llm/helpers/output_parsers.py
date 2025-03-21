@@ -252,111 +252,6 @@ def parse_multi_step(txt: str) -> List[Dict[str, Any]]:
     return pred_dict_list
 
 
-def parse_granite_20b_function_calling_output(
-    prediction: Dict[str, Any],
-    num_errors_parsing_pred_intent: int,
-    skip_grounding: bool = False,
-):
-    pred_has_parsing_errors = False
-    pred_func_calls, gold_func_calls = [], []
-    pred_dict_list, gold_dict_list = [], []  # type: ignore
-    gold_dict_list = get_output_list(prediction=prediction)
-    parsing_error_messages: List[str] = []
-    if skip_grounding:
-        gold_func_calls = [json.dumps(func) for func in gold_dict_list]
-    else:
-        gold_func_calls = ground_seq_nested_repsonse(gold_dict_list)
-        gold_func_calls = [json.dumps(func) for func in gold_func_calls]
-
-    try:
-        pred = prediction["generated_text"].strip().replace("ASSISTANT", "").strip()
-        pred_str_list = pred.split("<function_call>")
-        pred_dict_list = [json.loads(p) for p in pred_str_list if p]
-        pred_dict_list = [p for p in pred_dict_list if not p["name"] == "var_result"]
-        if skip_grounding:
-            pred_func_calls = [json.dumps(func) for func in pred_dict_list]
-        else:
-            pred_func_calls = (
-                ground_seq_nested_repsonse(pred_dict_list)
-                if "label" in pred
-                else pred_dict_list
-            )
-            pred_func_calls = [json.dumps(func) for func in pred_func_calls]
-    except Exception as e:
-        print(e)
-        parsing_error_messages.append(
-            CommonErrorModel(
-                error=str(e), payload=prediction["generated_text"]
-            ).model_dump_json()
-        )
-        num_errors_parsing_pred_intent += 1
-        pred_has_parsing_errors = True
-
-    return (
-        pred_func_calls,
-        gold_func_calls,
-        pred_dict_list,
-        gold_dict_list,
-        num_errors_parsing_pred_intent,
-        pred_has_parsing_errors,
-        parsing_error_messages,
-    )
-
-
-def parse_granite_3_output(
-    prediction: Dict[str, Any],
-    num_errors_parsing_pred_intent: int,
-    skip_grounding: bool = False,
-):
-    pred_has_parsing_errors = False
-    pred_func_calls, gold_func_calls = [], []
-    pred_dict_list, gold_dict_list = [], []  # type: ignore
-    gold_dict_list = get_output_list(prediction=prediction)
-    parsing_error_messages: List[str] = []
-    if skip_grounding:
-        gold_func_calls = [json.dumps(func) for func in gold_dict_list]
-    else:
-        gold_func_calls = ground_seq_nested_repsonse(gold_dict_list)
-        gold_func_calls = [json.dumps(func) for func in gold_func_calls]
-
-    try:
-        pred_dict_list = get_json_data_with_two_step_parsing(  # type: ignore
-            txt=prediction["generated_text"].strip(), should_return_list=True
-        )
-
-        if skip_grounding:
-            pred_func_calls = [json.dumps(func) for func in pred_dict_list]
-        else:
-            pred_func_calls_dict = (
-                ground_seq_nested_repsonse(pred_dict_list)
-                if "label" in prediction["generated_text"]
-                else pred_dict_list
-            )
-
-            pred_func_calls = []
-            for func in pred_func_calls_dict:
-                pred_func_calls.append(json.dumps(func))
-    except Exception as e:
-        print(e)
-        parsing_error_messages.append(
-            CommonErrorModel(
-                error=str(e), payload=prediction["generated_text"]
-            ).model_dump_json()
-        )
-        num_errors_parsing_pred_intent += 1
-        pred_has_parsing_errors = True
-
-    return (
-        pred_func_calls,
-        gold_func_calls,
-        pred_dict_list,
-        gold_dict_list,
-        num_errors_parsing_pred_intent,
-        pred_has_parsing_errors,
-        parsing_error_messages,
-    )
-
-
 def get_dict_list_from_tool_calls(
     tool_calls: List[Dict[str, Any]],
 ) -> Tuple[List[Dict[str, Any]], bool]:
@@ -488,12 +383,12 @@ def parse_output_from_language_models(
     pred_dict_list, gold_dict_list = [], []
     parsing_error_messages: List[str] = []
     num_errors_parsing_pred_intent_res: int = 0
-    model_name_lower_cased = model_name.lower()
+    # model_name_lower_cased = model_name.lower()
 
     if (
         "num_preciedtion_parsing_errors" in prediction
         and prediction["num_preciedtion_parsing_errors"] is not None
-    ):
+    ):  # use existing data
         pred_func_calls = (
             prediction["predicted_function_calls"]
             if "predicted_function_calls" in prediction
@@ -514,57 +409,6 @@ def parse_output_from_language_models(
             else 0
         )
         pred_has_parsing_errors = num_errors_parsing_pred_intent_res > 0
-    elif (
-        is_agent
-        or ("gpt" in model_name_lower_cased)
-        or ("llama" in model_name_lower_cased)
-        or ("mistral" in model_name_lower_cased)
-        or ("mixtral" in model_name_lower_cased)
-        or ("hammer" in model_name_lower_cased)
-        or ("deepseek" in model_name_lower_cased)
-    ):
-        (
-            pred_func_calls,
-            gold_func_calls,
-            pred_dict_list,
-            gold_dict_list,
-            num_errors_parsing_pred_intent_res,
-            pred_has_parsing_errors,
-            parsing_error_messages,
-        ) = parse_general_large_language_model_output(
-            prediction=prediction,
-            num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
-            skip_grounding=is_single_intent_detection,
-        )
-    elif "granite" in model_name_lower_cased:
-        if "functioncalling" in model_name_lower_cased:
-            (
-                pred_func_calls,
-                gold_func_calls,
-                pred_dict_list,
-                gold_dict_list,
-                num_errors_parsing_pred_intent_res,
-                pred_has_parsing_errors,
-                parsing_error_messages,
-            ) = parse_granite_20b_function_calling_output(
-                prediction=prediction,
-                num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
-                skip_grounding=is_single_intent_detection,
-            )
-        else:
-            (
-                pred_func_calls,
-                gold_func_calls,
-                pred_dict_list,
-                gold_dict_list,
-                num_errors_parsing_pred_intent_res,
-                pred_has_parsing_errors,
-                parsing_error_messages,
-            ) = parse_granite_3_output(
-                prediction=prediction,
-                num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
-                skip_grounding=is_single_intent_detection,
-            )
     else:
         (
             pred_func_calls,
