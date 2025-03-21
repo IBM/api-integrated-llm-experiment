@@ -424,8 +424,11 @@ def parse_output_from_language_models(
             skip_grounding=is_single_intent_detection,
         )
 
-    if is_single_intent_detection and len(pred_func_calls) > 0:
-        pred_func_calls = [pred_func_calls[0]]
+    if is_single_intent_detection:
+        if len(pred_func_calls) > 0:
+            pred_func_calls = [pred_func_calls[0]]
+        if len(pred_dict_list) > 0:
+            pred_dict_list = [pred_dict_list[0]]
 
     return (
         pred_func_calls,
