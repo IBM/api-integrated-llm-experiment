@@ -3,6 +3,7 @@ from pathlib import Path
 
 from api_integrated_llm.helpers.file_helper import get_list_dict_from_jsonl
 from api_integrated_llm.helpers.output_parsers import (
+    manual_xml_parsing,
     parse_general_large_language_model_output,
     parse_multi_step,
 )
@@ -78,6 +79,18 @@ def test_parse_llama_3_output_multi_intent() -> None:
 def test_parse_multi_step() -> None:
     txt = '[select_data_less_than_equal_to(data_source="$starting_table_var$", key_name="edhrecRank", value=100)]'
     res = parse_multi_step(txt=txt)
+
+    assert isinstance(res, list)
+    assert len(res) == 1
+
+
+def test_manual_xml_parsing() -> None:
+    txt = (
+        '<tool_call>\n{"name": "aggregate_data", "arguments": {"data_source": "$starting_table_var$",'
+        + ' "key_name": "", "aggregation_type": "count", "distinct": false, "limit": -1},'
+        + ' "label": "COUNT_TEACHERS"}\n</tool_call>'
+    )
+    res = manual_xml_parsing(txt=txt)
 
     assert isinstance(res, list)
     assert len(res) == 1
