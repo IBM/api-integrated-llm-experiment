@@ -228,6 +228,25 @@ def manual_ast_parsing(txt: str) -> List[Dict[str, Any]]:
     raise Exception("Maual AST parsing failed")
 
 
+def manual_xml_parsing(txt: str) -> List[Dict[str, Any]]:
+    if not ("<tool_call>" in txt and "</tool_call>" in txt):
+        raise Exception("Parsing Error at manual_ast_parsing. No <tool_call>")
+    function_calls: List[Dict[str, Any]] = []
+    new_str = txt.replace("</tool_call>", "<tool_call>")
+    new_str_list = new_str.split("<tool_call>")
+    for segment in new_str_list:
+        try:
+            obj = get_json_data_with_two_step_parsing(  # type: ignore
+                txt=segment, should_return_list=False
+            )
+            if obj is not None and isinstance(obj, dict):
+                function_calls.append(deepcopy(obj))
+        except Exception as e:
+            error_message = str(e)
+            print(error_message)
+    return function_calls
+
+
 def parse_multi_step(txt: str) -> List[Dict[str, Any]]:
     txt = txt.replace("\n", "").replace("\_", "_").strip()  # noqa: W605
     pred_dict_list: Optional[List] = None
@@ -247,7 +266,14 @@ def parse_multi_step(txt: str) -> List[Dict[str, Any]]:
             print(f"AST parsing failed: {error_message_ast}")
 
     if pred_dict_list is None:
-        pred_dict_list = manual_ast_parsing(txt=txt)
+        try:
+            pred_dict_list = manual_ast_parsing(txt=txt)
+        except Exception as e:
+            error_message_ast = str(e)
+            print(f"manual AST parsing failed: {error_message_ast}")
+
+    if pred_dict_list is None:
+        pred_dict_list = manual_xml_parsing(txt=txt)
 
     return pred_dict_list
 
