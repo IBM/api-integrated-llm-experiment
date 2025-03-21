@@ -86,7 +86,7 @@ def test_parse_multi_step() -> None:
 
 def test_manual_xml_parsing() -> None:
     txt = (
-        '<tool_call>\n{"name": "aggregate_data", "arguments": {"data_source": "$starting_table_var$",'
+        'jfkjfjhgfjkhg<tool_call>\n{"name": "aggregate_data", "arguments": {"data_source": "$starting_table_var$",'
         + ' "key_name": "", "aggregation_type": "count", "distinct": false, "limit": -1},'
         + ' "label": "COUNT_TEACHERS"}\n</tool_call>'
     )
