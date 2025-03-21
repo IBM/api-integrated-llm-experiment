@@ -50,7 +50,7 @@ def process_slot_value(slot_value):
     return sub_slot_value
 
 
-def ground_seq_nested_repsonse(api_list):
+def ground_seq_nested_repsonse(api_list) -> List[Dict[str, Any]]:
     def check_label_in_slot(label, slot_v):
         if slot_v.startswith("$var"):
             if "." in slot_v:
@@ -307,12 +307,12 @@ def parse_generated_text(
         if skip_grounding:
             pred_func_calls = [json.dumps(func) for func in pred_dict_list]
         else:
-            pred_func_calls = (
+            pred_func_calls_tmp = (
                 ground_seq_nested_repsonse(pred_dict_list)
                 if "label" in generated_txt
                 else pred_dict_list
             )
-            pred_func_calls = [json.dumps(func) for func in pred_func_calls]
+            pred_func_calls = [json.dumps(func) for func in pred_func_calls_tmp]
     except Exception as e:
         print(e)
         parsing_error_messages.append(
@@ -334,18 +334,27 @@ def parse_general_large_language_model_output(
     prediction: Dict[str, Any],
     num_errors_parsing_pred_intent: int,
     skip_grounding: bool = False,
-):
+) -> Tuple[
+    List[str],
+    List[str],
+    List[Dict[str, Any]],
+    List[Dict[str, Any]],
+    int,
+    bool,
+    List[str],
+]:
     pred_has_parsing_errors = False
-    pred_func_calls, gold_func_calls = [], []  # type: ignore
-    pred_dict_list: Optional[List] = None  # type: ignore
+    pred_func_calls: List[str] = []
+    gold_func_calls: List[str] = []
+    pred_dict_list: List[Dict[str, Any]] = []  # type: ignore
     parsing_error_messages: List[str] = []
     gold_dict_list = get_output_list(prediction=prediction)
 
     if skip_grounding:
         gold_func_calls = [json.dumps(func) for func in gold_dict_list]
     else:
-        gold_func_calls = ground_seq_nested_repsonse(gold_dict_list)
-        gold_func_calls = [json.dumps(func) for func in gold_func_calls]
+        gold_func_calls_tmp = ground_seq_nested_repsonse(gold_dict_list)
+        gold_func_calls = [json.dumps(func) for func in gold_func_calls_tmp]
 
     (
         pred_dict_list,
@@ -376,11 +385,21 @@ def parse_output_from_language_models(
     model_name: str,
     is_single_intent_detection: bool = False,
     is_agent: bool = False,
-) -> Tuple[List[Any], List[Any], List[Any], List[Any], int, Any, List[str]]:
-    num_errors_parsing_pred_intent = 0
-    pred_has_parsing_errors = False
-    pred_func_calls, gold_func_calls = [], []
-    pred_dict_list, gold_dict_list = [], []
+) -> Tuple[
+    List[str],
+    List[str],
+    List[Dict[str, Any]],
+    List[Dict[str, Any]],
+    int,
+    bool,
+    List[str],
+]:
+    num_errors_parsing_pred_intent: int = 0
+    pred_has_parsing_errors: bool = False
+    pred_func_calls: List[str] = []
+    gold_func_calls: List[str] = []
+    pred_dict_list: List[Dict[str, Any]] = []
+    gold_dict_list: List[Dict[str, Any]] = []
     parsing_error_messages: List[str] = []
     num_errors_parsing_pred_intent_res: int = 0
     # model_name_lower_cased = model_name.lower()
