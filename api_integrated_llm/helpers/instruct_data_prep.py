@@ -135,11 +135,20 @@ def get_input_query(
 
 
 def get_OPENAI_messages(
-    system_prompt: str, sample_input: str
+    system_prompt: str,
+    sample_input: str,
+    function_str: str,
+    should_add_tool_definitions_to_prompt: bool,
 ) -> List[ConversationUnit]:
+    additional_system_prompt: str = (
+        f"\n\nAvailable Tools:\n {function_str}"
+        if should_add_tool_definitions_to_prompt
+        else ""
+    )
+
     system_utterance = ConversationUnit(
         role=ConversationRoleModel.SYSTEM,
-        content=system_prompt,
+        content=(system_prompt + additional_system_prompt),
     )
     user_utterance = ConversationUnit(
         role=ConversationRoleModel.USER, content=sample_input
@@ -157,6 +166,7 @@ def instruct_data(
     should_generate_random_example: bool = False,
     num_examples: int = 1,
     should_ignore: bool = True,
+    should_add_tool_definitions_to_prompt: bool = False,
 ) -> Tuple[List[EvaluationOutputDataUnit], Optional[str]]:
     examples = get_examples(
         example_file_path=example_file_path,  # type: ignore
@@ -213,6 +223,8 @@ def instruct_data(
                     get_OPENAI_messages(
                         system_prompt=input_query,
                         sample_input=sample_input,
+                        function_str=function_str,
+                        should_add_tool_definitions_to_prompt=should_add_tool_definitions_to_prompt,
                     )
                     if model_obj.get("inference_type", "") == "OPENAI"
                     else None

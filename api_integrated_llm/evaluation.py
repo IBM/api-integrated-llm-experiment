@@ -80,6 +80,7 @@ async def get_output_list_async(
     model_obj: Dict[str, Any],
     temperature: float,
     max_tokens: int,
+    should_add_tool_definitions_to_prompt: bool,
 ) -> None:
     temperature_str = f"temperature_{temperature}"
     max_tokens_str = f"maxtoken_{max_tokens}"
@@ -99,6 +100,7 @@ async def get_output_list_async(
             should_generate_random_example=should_generate_random_example,
             num_examples=num_examples,
             should_ignore=should_ignore,
+            should_add_tool_definitions_to_prompt=should_add_tool_definitions_to_prompt,
         )
         if len(test_data) > 0:
             responses: List[Tuple[Optional[str], Optional[List[Dict[str, Any]]]]] = []
@@ -108,6 +110,7 @@ async def get_output_list_async(
                     model_obj=model_obj,
                     temperature=temperature,
                     max_tokens=max_tokens,
+                    should_add_tool_definitions_to_prompt=should_add_tool_definitions_to_prompt,
                 )
             else:
                 raise Exception(
@@ -182,6 +185,7 @@ def get_output_list(
     model_obj: Dict[str, Any],
     temperature: float,
     max_tokens: int,
+    should_add_tool_definitions_to_prompt: bool,
 ) -> None:
     temperature_str = f"temperature_{temperature}"
     max_tokens_str = f"maxtoken_{max_tokens}"
@@ -201,6 +205,7 @@ def get_output_list(
             should_generate_random_example=should_generate_random_example,
             num_examples=num_examples,
             should_ignore=should_ignore,
+            should_add_tool_definitions_to_prompt=should_add_tool_definitions_to_prompt,
         )
         if len(test_data) > 0:
             responses = []  # type: ignore
@@ -212,6 +217,7 @@ def get_output_list(
                     model_obj=model_obj,
                     temperature=temperature,
                     max_tokens=max_tokens,
+                    should_add_tool_definitions_to_prompt=should_add_tool_definitions_to_prompt,
                 )
             else:
                 responses, error_messages = get_responses_from_local_llm(
@@ -303,6 +309,7 @@ def evaluate(
     num_examples: int = 1,
     should_ignore: bool = True,
     should_async: bool = True,
+    should_add_tool_definitions_to_prompt: bool = False,
 ) -> None:
     loop = asyncio.get_event_loop()
 
@@ -335,6 +342,7 @@ def evaluate(
                                 model_obj=deepcopy(model_obj),
                                 temperature=temperature,
                                 max_tokens=max_tokens,
+                                should_add_tool_definitions_to_prompt=should_add_tool_definitions_to_prompt,
                             )
                         )
 
@@ -359,4 +367,5 @@ def evaluate(
                             model_obj=deepcopy(model_obj),
                             temperature=temperature,
                             max_tokens=max_tokens,
+                            should_add_tool_definitions_to_prompt=should_add_tool_definitions_to_prompt,
                         )

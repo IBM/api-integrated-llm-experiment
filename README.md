@@ -44,10 +44,10 @@ api-integrated-llm -h
 ## Command Line Interface (CLI)
 
 ```
-usage: api-integrated-llm [-h] [-m {default,evaluator,scorer,parser,metrics_aggregator}] [-rt ROOT] [-eof EVALUATOR_OUTPUT_FOLDER]
-                          [-pif PARSER_INPUT_FOLDER] [-of OUTPUT_FOLDER] [-sif SCORER_INPUT_FOLDER] [-dsf DATABASES_FOLDER]
-                          [-maif METRICS_AGGREGATOR_INPUT_FOLDER] [-sf SOURCE_FOLDER] [-ig | --ignore | --no-ignore] [-asy | --use_async | --no-use_async]
-                          [-si | --single_intent | --no-single_intent] [-er | --random_example | --no-random_example] [-nr NUMBER_RANDOM_EXAMPLE]
+usage: api-integrated-llm [-h] [-m {default,evaluator,scorer,parser,metrics_aggregator}] [-rt ROOT] [-eof EVALUATOR_OUTPUT_FOLDER] [-pif PARSER_INPUT_FOLDER] [-of OUTPUT_FOLDER]
+                          [-sif SCORER_INPUT_FOLDER] [-dsf DATABASES_FOLDER] [-maif METRICS_AGGREGATOR_INPUT_FOLDER] [-sf SOURCE_FOLDER] [-ig | --ignore | --no-ignore]
+                          [-asy | --use_async | --no-use_async] [-si | --single_intent | --no-single_intent]
+                          [-atp | --add_tool_definition_to_prompt | --no-add_tool_definition_to_prompt] [-er | --random_example | --no-random_example] [-nr NUMBER_RANDOM_EXAMPLE]
                           [-ep EXAMPLE_FILE_PATH] [-mcp LANGUAGE_MODEL_CONFIGURATION_FILE_PATH]
 
 API Integrated LLM CLI
@@ -78,6 +78,8 @@ options:
                         Use asynchronous operations
   -si, --single_intent, --no-single_intent
                         Single intent dataset
+  -atp, --add_tool_definition_to_prompt, --no-add_tool_definition_to_prompt
+                        Add tool definitions to prompt
   -er, --random_example, --no-random_example
                         Create examples in prompts by sampling source data randomly
   -nr NUMBER_RANDOM_EXAMPLE, --number_random_example NUMBER_RANDOM_EXAMPLE

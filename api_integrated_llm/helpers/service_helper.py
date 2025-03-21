@@ -169,15 +169,20 @@ def get_OPENAI_payload(
     model_obj: Dict[str, str],
     temperature: float = 0.0,
     max_tokens: int = 3000,
+    should_add_tool_definitions_to_prompt: bool = False,
 ) -> Dict[str, Any]:
-    return {
+    payload = {
         "model": model_obj.get("model", ""),
         "messages": sample.get_message_raw(),
         "temperature": temperature,
         "max_tokens": max_tokens,
-        "tools": sample.tools,
-        "tool_choice": "auto",
     }
+
+    if not should_add_tool_definitions_to_prompt:
+        payload["tools"] = sample.tools
+        payload["tool_choice"] = "auto"
+
+    return payload
 
 
 def get_RITZ_payload(
@@ -289,6 +294,7 @@ async def get_response_from_OPENAI_async(
     max_tokens: int,
     temperature: float = 0.0,
     timeout: int = 240,
+    should_add_tool_definitions_to_prompt: bool = False,
 ) -> Tuple[Optional[str], Optional[List[Dict[str, Any]]], str, float]:
     return await get_response_from_post_request_async(
         obj=get_OPENAI_payload(
@@ -296,6 +302,7 @@ async def get_response_from_OPENAI_async(
             model_obj=model_obj,
             temperature=temperature,
             max_tokens=max_tokens,
+            should_add_tool_definitions_to_prompt=should_add_tool_definitions_to_prompt,
         ),
         url=get_openai_url(
             url=model_obj.get("endpoint", ""),
@@ -331,6 +338,7 @@ async def generate_llm_response_from_service_async(
     temperature: float,
     max_tokens: int,
     model_obj: Dict[str, str],
+    should_add_tool_definitions_to_prompt: bool,
 ) -> Tuple[Optional[str], Optional[List[Dict[str, Any]]]]:
     prompt = sample.input[:]
     model_name = model_obj["model"][:]
@@ -344,6 +352,7 @@ async def generate_llm_response_from_service_async(
                 max_tokens=max_tokens,
                 temperature=temperature,
                 timeout=1500,
+                should_add_tool_definitions_to_prompt=should_add_tool_definitions_to_prompt,
             )
             if (
                 ("inference_type" in model_obj)
@@ -374,6 +383,7 @@ async def get_responses_from_async(
     model_obj: Dict[str, str],
     temperature: float,
     max_tokens: int,
+    should_add_tool_definitions_to_prompt: bool,
 ) -> List[Tuple[Optional[str], Optional[List[Dict[str, Any]]]]]:
     tasks = [
         generate_llm_response_from_service_async(
@@ -381,6 +391,7 @@ async def get_responses_from_async(
             temperature=temperature,
             max_tokens=max_tokens,
             model_obj=deepcopy(model_obj),
+            should_add_tool_definitions_to_prompt=should_add_tool_definitions_to_prompt,
         )
         for sample in test_data
     ]
@@ -393,6 +404,7 @@ def get_responses_from_sync(
     model_obj: Dict[str, str],
     temperature: float,
     max_tokens: int,
+    should_add_tool_definitions_to_prompt: bool,
 ) -> List[Tuple[Optional[str], Optional[List[Dict[str, Any]]]]]:
     responses: List[Tuple[Optional[str], Optional[List[Dict[str, Any]]]]] = []
     for sample in test_data:
@@ -402,6 +414,7 @@ def get_responses_from_sync(
                 temperature=temperature,
                 max_tokens=max_tokens,
                 model_obj=deepcopy(model_obj),
+                should_add_tool_definitions_to_prompt=should_add_tool_definitions_to_prompt,
             )
         )
         responses.append(response)

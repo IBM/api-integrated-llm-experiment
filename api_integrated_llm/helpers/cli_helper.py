@@ -115,6 +115,13 @@ def get_arguments() -> argparse.Namespace:
     )
 
     parser.add_argument(
+        "-atp",
+        "--add_tool_definition_to_prompt",
+        action=argparse.BooleanOptionalAction,
+        help="Add tool definitions to prompt",
+    )
+
+    parser.add_argument(
         "-er",
         "--random_example",
         action=argparse.BooleanOptionalAction,
@@ -328,6 +335,7 @@ def cli() -> None:
             num_examples=args.number_random_example,
             should_ignore=args.ignore,
             should_async=args.use_async,
+            should_add_tool_definitions_to_prompt=args.add_tool_definition_to_prompt,
         )
 
     if args.mode == CliModeModel.PARSER:
