@@ -9,7 +9,7 @@ from api_integrated_llm.helpers.file_helper import (
 )
 
 
-def get_deli_sep_str_list(text, deli=","):
+def get_deli_sep_str_list(text: str, deli: str = ",") -> List[str]:
     def find(s, ch):
         return [i for i, ltr in enumerate(s) if ltr == ch]
 
@@ -115,7 +115,7 @@ def get_output_list(prediction: Dict[str, Any]) -> List[Dict[str, Any]]:
     return get_json_dict_from_txt(txt=prediction["output"]) if isinstance(prediction["output"], str) else prediction["output"]  # type: ignore
 
 
-def resolve_ast_by_type(value):
+def resolve_ast_by_type(value) -> Any:
     if isinstance(value, ast.Constant):
         if value.value is Ellipsis:
             output = "..."
@@ -124,9 +124,9 @@ def resolve_ast_by_type(value):
     elif isinstance(value, ast.UnaryOp):
         output = -value.operand.value
     elif isinstance(value, ast.List):
-        output = [resolve_ast_by_type(v) for v in value.elts]
+        output = [resolve_ast_by_type(v) for v in value.elts]  # type: ignore
     elif isinstance(value, ast.Dict):
-        output = {
+        output = {  # type: ignore
             resolve_ast_by_type(k): resolve_ast_by_type(v)
             for k, v in zip(value.keys, value.values)
         }
@@ -144,11 +144,11 @@ def resolve_ast_by_type(value):
         if len(value.keywords) == 0:
             output = ast.unparse(value)
         else:
-            output = resolve_ast_call(value)
+            output = resolve_ast_call(value)  # type: ignore
     elif isinstance(value, ast.Tuple):
-        output = tuple(resolve_ast_by_type(v) for v in value.elts)
+        output = tuple(resolve_ast_by_type(v) for v in value.elts)  # type: ignore
     elif isinstance(value, ast.Lambda):
-        output = eval(ast.unparse(value.body[0].value))
+        output = eval(ast.unparse(value.body[0].value))  # type: ignore
     elif isinstance(value, ast.Ellipsis):
         output = "..."
     elif isinstance(value, ast.Subscript):
@@ -161,7 +161,7 @@ def resolve_ast_by_type(value):
     return output
 
 
-def resolve_ast_call(elem):
+def resolve_ast_call(elem) -> Dict[str, Any]:
     # Handle nested attributes for deeply nested module paths
     func_parts = []
     func_part = elem.func
