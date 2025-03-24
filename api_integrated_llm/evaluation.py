@@ -62,6 +62,7 @@ def get_evaluation_output_units_from_responses(
             output_unit.dataset_name = dataset_name
             output_unit.temperature = temperature
             output_unit.max_tokens = max_tokens
+            output_unit.sample_id = sample.sample_id
             output_list.append(output_unit)
     return output_list
 

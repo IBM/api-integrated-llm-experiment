@@ -45,10 +45,9 @@ api-integrated-llm -h
 
 ```
 usage: api-integrated-llm [-h] [-m {default,evaluator,scorer,parser,metrics_aggregator}] [-rt ROOT] [-eof EVALUATOR_OUTPUT_FOLDER] [-pif PARSER_INPUT_FOLDER] [-of OUTPUT_FOLDER]
-                          [-sif SCORER_INPUT_FOLDER] [-dsf DATABASES_FOLDER] [-maif METRICS_AGGREGATOR_INPUT_FOLDER] [-sf SOURCE_FOLDER] [-ig | --ignore | --no-ignore]
-                          [-asy | --use_async | --no-use_async] [-si | --single_intent | --no-single_intent]
-                          [-atp | --add_tool_definition_to_prompt | --no-add_tool_definition_to_prompt] [-er | --random_example | --no-random_example] [-nr NUMBER_RANDOM_EXAMPLE]
-                          [-ep EXAMPLE_FILE_PATH] [-mcp LANGUAGE_MODEL_CONFIGURATION_FILE_PATH]
+                          [-sif SCORER_INPUT_FOLDER] [-dsf DATABASES_FOLDER] [-maif METRICS_AGGREGATOR_INPUT_FOLDER] [-sf SOURCE_FOLDER] [-ig | --ignore | --no-ignore] [-igf IGNORE_FILE_PATH]
+                          [-asy | --use_async | --no-use_async] [-si | --single_intent | --no-single_intent] [-atp | --add_tool_definition_to_prompt | --no-add_tool_definition_to_prompt]
+                          [-er | --random_example | --no-random_example] [-nr NUMBER_RANDOM_EXAMPLE] [-ep EXAMPLE_FILE_PATH] [-mcp LANGUAGE_MODEL_CONFIGURATION_FILE_PATH]
 
 API Integrated LLM CLI
 
@@ -74,6 +73,8 @@ options:
                         Source folder path
   -ig, --ignore, --no-ignore
                         Ignore data points marked as "ignore"
+  -igf IGNORE_FILE_PATH, --ignore_file_path IGNORE_FILE_PATH
+                        Ignore file path
   -asy, --use_async, --no-use_async
                         Use asynchronous operations
   -si, --single_intent, --no-single_intent
@@ -188,13 +189,27 @@ api-integrated-llm -m scorer -sif <INPUT_FOLDER_PATH> -of <OUTPUT_FOLDER_PATH>
 ### Example Usage:
 
 ```bash
-api-integrated-llm -m scorer -sif /Users/jungkookang/Documents/projects/api_integrated_llm_experiment/output/parsing -of /Users/jungkookang/Documents/projects/api_integrated_llm_experiment/output/scoring -si
+api-integrated-llm -m scorer -sif /Users/jungkookang/Documents/projects/api_integrated_llm_experiment/output/parsing -of /Users/jungkookang/Documents/projects/api_integrated_llm_experiment/output/scoring
 ```
 
 ### Example Input/Output Files:
 
 - Example input files for the scorer are located at `tests/data/test_output/evaluation/llm` and `tests/data/test_output/parsing`.
 - Example output files for the parser are located at `tests/data/test_output/scoring`.
+
+### Exclude Samples:
+
+To exclude specific samples from processing, provide the absolute file path for a JSON file containing file names and sample IDs to ignore to the Scorer using the `-igf` flag. An example JSON file is available at `tests/data/source/auxiliary/ignore.json`.
+
+```bash
+api-integrated-llm -m scorer -sif <INPUT_FOLDER_PATH> -of <OUTPUT_FOLDER_PATH> -igf <IGORE_FILE_PATH>
+```
+
+Example command:
+
+```bash
+api-integrated-llm -m scorer -sif /Users/jungkookang/Documents/projects/api_integrated_llm_experiment/output/parsing -of /Users/jungkookang/Documents/projects/api_integrated_llm_experiment/output/scoring -igf /Users/jungkookang/Documents/projects/api_integrated_llm_experiment/tests/data/source/auxiliary/ignore.json
+```
 
 ## Win Rate Calculator
 

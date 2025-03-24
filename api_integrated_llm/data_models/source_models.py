@@ -139,6 +139,7 @@ class EvaluationOutputResponseDataUnit(EvaluationOutputDataUnit):
     predicted_function_calls: List[str] = []
     gold_function_calls: List[str] = []
     num_preciedtion_parsing_errors: Optional[int] = None
+    sample_id: Union[str, int]
 
     @staticmethod
     def get_model_from_output_unit(

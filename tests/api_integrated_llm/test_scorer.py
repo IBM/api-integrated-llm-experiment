@@ -11,7 +11,7 @@ project_root_path = Path(__file__).parent.parent.parent.resolve()
 
 
 def test_scorer_llm_evaluator_output() -> None:
-    has_exception = scoring(
+    has_exception, _ = scoring(
         evaluator_output_file_paths=get_files_in_folder(  # type: ignore
             folder_path=Path(
                 os.path.join(
@@ -31,8 +31,40 @@ def test_scorer_llm_evaluator_output() -> None:
     assert not has_exception
 
 
+def test_scorer_llm_evaluator_output_ignore_file_path_provided() -> None:
+    has_exception, num_ignored_samples = scoring(
+        evaluator_output_file_paths=get_files_in_folder(  # type: ignore
+            folder_path=Path(
+                os.path.join(
+                    project_root_path,
+                    "tests",
+                    "data",
+                    "test_output",
+                    "evaluation",
+                    "llm",
+                )
+            ),
+            file_extension="jsonl",
+        ),
+        output_folder_path=Path(os.path.join(project_root_path, "output", "scoring")),  # type: ignore
+        ignore_file_path=Path(
+            os.path.join(
+                project_root_path,
+                "tests",
+                "data",
+                "source",
+                "auxiliary",
+                "ignore.json",
+            )
+        ),
+    )
+
+    assert not has_exception
+    assert num_ignored_samples == 3
+
+
 def test_scorer_agent() -> None:
-    has_exception = scoring(
+    has_exception, _ = scoring(
         evaluator_output_file_paths=get_files_in_folder(  # type: ignore
             folder_path=Path(
                 os.path.join(
@@ -52,7 +84,7 @@ def test_scorer_agent() -> None:
 
 
 def test_scorer_with_parser_output() -> None:
-    has_exception = scoring(
+    has_exception, _ = scoring(
         evaluator_output_file_paths=get_files_in_folder(  # type: ignore
             folder_path=Path(
                 os.path.join(
@@ -86,7 +118,7 @@ def test_scorer_with_parser_output() -> None:
     reason="database directory is missing",
 )
 def test_scorer_with_win_rate() -> None:
-    has_exception = scoring(
+    has_exception, _ = scoring(
         evaluator_output_file_paths=get_files_in_folder(  # type: ignore
             folder_path=Path(
                 os.path.join(

@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 from typing import Any, Deque, Dict, List, Optional, Tuple, Union, cast
 
+from api_integrated_llm.data_models.auxiliary_models import SampleIgonoreModel
 from api_integrated_llm.data_models.common_models import CommonErrorModel
 from api_integrated_llm.data_models.scorer_models import (
     ConfusionMatrixMode,
@@ -26,7 +27,8 @@ from api_integrated_llm.helpers.output_parsers import (
     parse_output_from_language_models,
 )
 from api_integrated_llm.helpers.scorer_helper import (
-    get_evaluation_output_response_data_units_from_json,
+    get_evaluation_output_response_data_units,
+    get_sample_ignore_model_from_file,
 )
 from api_integrated_llm.helpers.metrics_helper import (
     get_confision_matrix_from_answers,
@@ -816,27 +818,29 @@ def scoring(
     db_path: Optional[Path] = None,
     source_file_search_path: Optional[Path] = None,
     is_single_intent_detection=False,
-) -> bool:
+    ignore_file_path: Optional[Path] = None,
+) -> Tuple[bool, int]:
     """
     returns the state of exception
     """
+
     has_exception = False
+    num_samples_ignored = 0
+    sample_ignore_model: Optional[
+        SampleIgonoreModel
+    ] = get_sample_ignore_model_from_file(ignore_file_path=ignore_file_path)
+
     for evaluator_output_file_path in evaluator_output_file_paths:
         temperature_str = "default_temperature"
         max_tokens_str = "default_max_tokens"
         model_name = "default_model"
         output_file_name = str(evaluator_output_file_path).split("/")[-1].split(".")[0]
         try:
-            data: List[EvaluationOutputResponseDataUnit] = (
-                get_base_models_from_jsonl(
-                    file_path=evaluator_output_file_path,
-                    base_model=EvaluationOutputResponseDataUnit,
-                )
-                if str(evaluator_output_file_path).endswith("jsonl")
-                else get_evaluation_output_response_data_units_from_json(
-                    file_path=evaluator_output_file_path,
-                )
+            data, num_ignored = get_evaluation_output_response_data_units(
+                evaluator_output_file_path=evaluator_output_file_path,
+                sample_ignore_model=sample_ignore_model,
             )
+            num_samples_ignored += num_ignored
 
             if data is None or len(data) == 0:
                 raise Exception(
@@ -874,4 +878,4 @@ def scoring(
                 max_tokens_str=max_tokens_str,
                 output_file_name=output_file_name,
             )
-    return has_exception
+    return has_exception, num_samples_ignored

@@ -17,6 +17,11 @@ def get_uuid4_str() -> str:
     return uuid.uuid4().hex
 
 
+def get_file_name_without_extension(file_path: str) -> str:
+    name = file_path.split("/")[-1]
+    return ".".join(name.split(".")[:-1])
+
+
 def create_folders_recirsively_if_not_exist(tmp_path: Path) -> None:
     base_path = os.path.basename(os.path.normpath(tmp_path))
     directory_path = (
@@ -337,11 +342,6 @@ def get_dataset_name(file_path: Path) -> str:
     json_dict = get_dict_from_json(file_path)
     data = json_dict["data"]
     return data[0]["dataset_name"][:]
-
-
-def get_file_name_without_extension(file_path: Path) -> str:
-    file_name = str(file_path).split("/")[-1]
-    return "".join(file_name.split(".")[:-1])
 
 
 def get_json_dict_from_txt(txt: str) -> Union[Dict[str, Any], List[Dict[str, Any]]]:

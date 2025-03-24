@@ -101,6 +101,14 @@ def get_arguments() -> argparse.Namespace:
     )
 
     parser.add_argument(
+        "-igf",
+        "--ignore_file_path",
+        type=Path,
+        help="Ignore file path",
+        default=project_root_path,
+    )
+
+    parser.add_argument(
         "-asy",
         "--use_async",
         action=argparse.BooleanOptionalAction,
@@ -192,7 +200,9 @@ def check_args(args) -> bool:
 
 def get_paths(
     args,
-) -> Tuple[Path, Path, Path, Path, Path, Optional[Path], Optional[Path], Path]:
+) -> Tuple[
+    Path, Path, Path, Path, Path, Optional[Path], Optional[Path], Path, Optional[Path]
+]:
     root_folder_path = Path(os.path.join(args.root, "source"))
     output_folder_path = (
         Path(os.path.join(args.root, "output"))
@@ -251,6 +261,12 @@ def get_paths(
         else args.metrics_aggregator_input_folder
     )
 
+    ignore_file_path = (
+        None
+        if args.ignore_file_path == project_root_path
+        else cast(Path, args.ignore_file_path)
+    )
+
     return (
         root_folder_path,
         cast(Path, output_folder_path),
@@ -268,6 +284,7 @@ def get_paths(
             else database_folder_path
         ),
         metrics_aggregator_input_folder_path,
+        ignore_file_path,
     )
 
 
@@ -286,6 +303,7 @@ def cli() -> None:
         source_folder_path,
         database_folder_path,
         metrics_aggregator_input_folder_path,
+        ignore_file_path,
     ) = get_paths(args)
 
     if args.mode == CliModeModel.DEFAULT or args.mode == CliModeModel.EVALUATOR:
@@ -366,6 +384,7 @@ def cli() -> None:
             db_path=database_folder_path,
             source_file_search_path=source_folder_path,
             is_single_intent_detection=args.single_intent,
+            ignore_file_path=ignore_file_path,
         )
     if (
         args.mode == CliModeModel.DEFAULT
