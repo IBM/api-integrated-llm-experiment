@@ -433,7 +433,6 @@ def parse_output_from_language_models(
     gold_dict_list: List[Dict[str, Any]] = []
     parsing_error_messages: List[str] = []
     num_errors_parsing_pred_intent_res: int = 0
-    # model_name_lower_cased = model_name.lower()
 
     if prediction.num_preciedtion_parsing_errors is not None:  # use existing data
         pred_func_calls = prediction.predicted_function_calls
