@@ -157,7 +157,7 @@ def test_scorer_with_win_rate() -> None:
 
 
 def test_parser_only() -> None:
-    has_exception = parsing(
+    has_exception, num_ignored = parsing(
         evaluator_output_file_paths=get_files_in_folder(  # type: ignore
             folder_path=Path(
                 os.path.join(
@@ -173,6 +173,8 @@ def test_parser_only() -> None:
         ),
         output_folder_path=Path(os.path.join(project_root_path, "output", "parsing")),  # type: ignore
         is_single_intent_detection=True,
+        ignore_file_path=None,
     )
 
     assert not has_exception
+    assert num_ignored == 0

@@ -368,6 +368,7 @@ def cli() -> None:
             ),
             output_folder_path=Path(os.path.join(output_folder_path, "parsing")),
             is_single_intent_detection=args.single_intent,
+            ignore_file_path=ignore_file_path,
         )
 
     if args.mode == CliModeModel.DEFAULT or args.mode == CliModeModel.SCORER:

@@ -35,7 +35,6 @@ from api_integrated_llm.helpers.metrics_helper import (
     get_confision_matrix_from_answers_by_output_length,
 )
 from api_integrated_llm.helpers.file_helper import (
-    get_base_models_from_jsonl,
     get_uuid4_str,
     write_json,
     write_jsonl,
@@ -756,14 +755,21 @@ def parsing(
     evaluator_output_file_paths: List[Path],
     output_folder_path: Path,
     is_single_intent_detection: bool,
-) -> None:
+    ignore_file_path: Optional[Path] = None,
+) -> Tuple[bool, int]:
+    has_exception = False
+    num_samples_ignored = 0
+    sample_ignore_model: Optional[
+        SampleIgonoreModel
+    ] = get_sample_ignore_model_from_file(ignore_file_path=ignore_file_path)
     for evaluator_output_file_path in evaluator_output_file_paths:
         output_file_name = str(evaluator_output_file_path).split("/")[-1].split(".")[0]
         try:
-            data: List[EvaluationOutputResponseDataUnit] = get_base_models_from_jsonl(
-                file_path=evaluator_output_file_path,
-                base_model=EvaluationOutputResponseDataUnit,
+            data, num_ignored = get_evaluation_output_response_data_units(
+                evaluator_output_file_path=evaluator_output_file_path,
+                sample_ignore_model=sample_ignore_model,
             )
+            num_samples_ignored += num_ignored
 
             if data is None or len(data) == 0:
                 raise Exception(
@@ -793,6 +799,7 @@ def parsing(
             )
 
         except Exception as e:
+            has_exception = True
             print(e)
             print(evaluator_output_file_paths)
             handle_scoring_process_exception(
@@ -803,6 +810,8 @@ def parsing(
                 max_tokens_str="default_max_tokens",
                 output_file_name=output_file_name,
             )
+
+    return has_exception, num_samples_ignored
 
 
 def scoring(
