@@ -3,6 +3,9 @@ import json
 from typing import Any, Dict, List, Optional, Tuple
 import ast
 from api_integrated_llm.data_models.common_models import CommonErrorModel
+from api_integrated_llm.data_models.source_models import (
+    EvaluationOutputResponseDataUnit,
+)
 from api_integrated_llm.helpers.file_helper import (
     get_json_data_with_two_step_parsing,
     get_json_dict_from_txt,
@@ -111,8 +114,10 @@ def ground_seq_nested_repsonse(api_list) -> List[Dict[str, Any]]:
     return grounded_api_list
 
 
-def get_output_list(prediction: Dict[str, Any]) -> List[Dict[str, Any]]:
-    return get_json_dict_from_txt(txt=prediction["output"]) if isinstance(prediction["output"], str) else prediction["output"]  # type: ignore
+def get_output_list(
+    prediction: EvaluationOutputResponseDataUnit,
+) -> List[Dict[str, Any]]:
+    return get_json_dict_from_txt(txt=prediction.output) if isinstance(prediction.output, str) else list(map(lambda unit: unit.model_dump(), prediction.output))  # type: ignore
 
 
 def resolve_ast_by_type(value) -> Any:
@@ -312,18 +317,18 @@ def get_dict_list_from_tool_calls(
 
 
 def parse_generated_text(
-    prediction: Dict[str, Any], skip_grounding: bool
+    prediction: EvaluationOutputResponseDataUnit, skip_grounding: bool
 ) -> Tuple[List[Dict[str, Any]], List[str], int, bool, List[str]]:
-    generated_txt = prediction["generated_text"]
+    generated_txt = prediction.generated_text
     pred_dict_list: List[Dict[str, Any]] = []
     parsing_error_messages: List[str] = []
     pred_func_calls = []
     pred_has_parsing_errors = False
     num_errors_parsing_pred_intent = 0
     try:
-        if ("tool_calls" in prediction) and (prediction["tool_calls"] is not None):
+        if prediction.tool_calls is not None:
             pred_dict_list, has_parsing_error_instance = get_dict_list_from_tool_calls(
-                tool_calls=prediction["tool_calls"]
+                tool_calls=prediction.tool_calls
             )
             if has_parsing_error_instance:
                 raise Exception("tool call parsing error")
@@ -357,7 +362,7 @@ def parse_generated_text(
 
 
 def parse_general_large_language_model_output(
-    prediction: Dict[str, Any],
+    prediction: EvaluationOutputResponseDataUnit,
     num_errors_parsing_pred_intent: int,
     skip_grounding: bool = False,
 ) -> Tuple[
@@ -407,7 +412,7 @@ def parse_general_large_language_model_output(
 
 
 def parse_output_from_language_models(
-    prediction: Dict[str, Any],
+    prediction: EvaluationOutputResponseDataUnit,
     model_name: str,
     is_single_intent_detection: bool = False,
     is_agent: bool = False,
@@ -430,29 +435,10 @@ def parse_output_from_language_models(
     num_errors_parsing_pred_intent_res: int = 0
     # model_name_lower_cased = model_name.lower()
 
-    if (
-        "num_preciedtion_parsing_errors" in prediction
-        and prediction["num_preciedtion_parsing_errors"] is not None
-    ):  # use existing data
-        pred_func_calls = (
-            prediction["predicted_function_calls"]
-            if "predicted_function_calls" in prediction
-            and prediction["predicted_function_calls"] is not None
-            else []
-        )
-
-        gold_func_calls = (
-            prediction["gold_function_calls"]
-            if "gold_function_calls" in prediction
-            and prediction["gold_function_calls"] is not None
-            else []
-        )
-        num_errors_parsing_pred_intent_res = (
-            prediction["num_preciedtion_parsing_errors"]
-            if "num_preciedtion_parsing_errors" in prediction
-            and prediction["num_preciedtion_parsing_errors"] is not None
-            else 0
-        )
+    if prediction.num_preciedtion_parsing_errors is not None:  # use existing data
+        pred_func_calls = prediction.predicted_function_calls
+        gold_func_calls = prediction.gold_function_calls
+        num_errors_parsing_pred_intent_res = prediction.num_preciedtion_parsing_errors
         pred_has_parsing_errors = num_errors_parsing_pred_intent_res > 0
     else:
         (

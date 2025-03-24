@@ -285,12 +285,7 @@ def get_item_metrics(
     pred_dict_list: List[List[Dict[str, Any]]] = []
     gold_dict_list: List[List[Dict[str, Any]]] = []
 
-    for prediction, prediction_model in list(
-        map(
-            lambda item: (item.model_dump(), item.model_copy(deep=True)),
-            predictions_input,
-        )
-    ):
+    for prediction_model in predictions_input:
         gold_has_parsing_errors = False
         pred_has_parsing_errors = False
         try:
@@ -303,7 +298,7 @@ def get_item_metrics(
                 pred_has_parsing_errors,
                 instance_parsing_error_messages,
             ) = parse_output_from_language_models(
-                prediction=prediction,
+                prediction=prediction_model,
                 model_name=model_name[:],
                 is_single_intent_detection=is_single_intent_detection,
                 is_agent=prediction_model.is_agent,
@@ -587,14 +582,14 @@ def parsing_only(
             _,
             _,
         ) = parse_output_from_language_models(
-            prediction=datum.model_dump(),
+            prediction=datum,
             model_name=datum.llm_model_id.split("/")[-1],
             is_single_intent_detection=is_single_intent_detection,
             is_agent=datum.is_agent,
         )
         parsed_output = datum.model_copy(deep=True)
-        parsed_output.predicted_function_calls = cast(List[str], pred_func_calls)
-        parsed_output.gold_function_calls = cast(List[str], gold_func_calls)
+        parsed_output.predicted_function_calls = pred_func_calls
+        parsed_output.gold_function_calls = gold_func_calls
         parsed_output.num_preciedtion_parsing_errors = (
             model_num_errors_parsing_pred_intent
         )

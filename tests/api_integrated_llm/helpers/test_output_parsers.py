@@ -1,6 +1,9 @@
 import os
 from pathlib import Path
 
+from api_integrated_llm.data_models.source_models import (
+    EvaluationOutputResponseDataUnit,
+)
 from api_integrated_llm.helpers.file_helper import get_list_dict_from_jsonl
 from api_integrated_llm.helpers.output_parsers import (
     manual_xml_parsing,
@@ -36,7 +39,7 @@ def test_parse_llama_3_output_single_intent() -> None:
         pred_has_parsing_errors,
         parsing_error_messages,
     ) = parse_general_large_language_model_output(
-        prediction=data_list[0],
+        prediction=EvaluationOutputResponseDataUnit.model_validate(data_list[0]),
         num_errors_parsing_pred_intent=0,
         skip_grounding=False,
     )
@@ -68,7 +71,7 @@ def test_parse_llama_3_output_multi_intent() -> None:
         pred_has_parsing_errors,
         parsing_error_messages,
     ) = parse_general_large_language_model_output(
-        prediction=data_list[0],
+        prediction=EvaluationOutputResponseDataUnit.model_validate(data_list[0]),
         num_errors_parsing_pred_intent=0,
         skip_grounding=False,
     )
