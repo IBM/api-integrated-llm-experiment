@@ -301,7 +301,6 @@ def get_item_metrics(
                 prediction=prediction_model,
                 model_name=model_name[:],
                 is_single_intent_detection=is_single_intent_detection,
-                is_agent=prediction_model.is_agent,
             )
             num_errors_parsing_pred_intent += model_num_errors_parsing_pred_intent
             parsing_error_messages.extend(instance_parsing_error_messages)
@@ -585,7 +584,6 @@ def parsing_only(
             prediction=datum,
             model_name=datum.llm_model_id.split("/")[-1],
             is_single_intent_detection=is_single_intent_detection,
-            is_agent=datum.is_agent,
         )
         parsed_output = datum.model_copy(deep=True)
         parsed_output.predicted_function_calls = pred_func_calls

@@ -415,7 +415,6 @@ def parse_output_from_language_models(
     prediction: EvaluationOutputResponseDataUnit,
     model_name: str,
     is_single_intent_detection: bool = False,
-    is_agent: bool = False,
 ) -> Tuple[
     List[str],
     List[str],
