@@ -47,7 +47,6 @@ project_root_path = Path(__file__).parent.resolve()
 
 
 def get_function_dict(content: Any) -> Optional[Dict[str, Any]]:
-    print(" in here")
     if content is None or not isinstance(content, str):
         return None
 
@@ -66,19 +65,16 @@ def get_function_obj(
     except Exception as e:
         error_message = str(e)
 
-    print("obj =", obj)
     if obj is None:
         error_message = "function content is not str"
     elif field_to_extract not in obj:
         obj = None
         error_message = f"{field_to_extract} does not exist in a parsed object"
-        print("error!")
 
     return obj, error_message
 
 
 def get_default_obj(field_to_extract: str) -> Union[str, Dict[str, Any]]:
-    print("getting default")
     return get_uuid4_str() if field_to_extract == "name" else {}
 
 
@@ -100,10 +96,8 @@ def get_api_field_value(
         except:
             # todo: work around for function names that have "name" in them
             obj_extracted = ""
-    print("obj_extracted before", obj_extracted)
     if obj_extracted and field_to_extract == "name":
         obj_extracted = str(obj_extracted)
-    print("obj_extracted after", obj_extracted)
     num_errors = 1 if obj is None else 0
     has_parsing_errors = obj is None
 
@@ -116,13 +110,10 @@ def get_api_contents(
     apis_contents: List[Union[str, Dict[str, Any]]] = []
     has_parsing_errors_contents = False
     num_errors_contents = 0
-    print(func_calls)
     for idx, content in enumerate(func_calls):
-        print(idx, content, field_to_extract)
         (obj_extracted, num_errors, has_parsing_errors) = get_api_field_value(
             content=content, field_to_extract=field_to_extract
         )
-        print("returning")
         apis_contents.append(obj_extracted)
         num_errors_contents += num_errors
         has_parsing_errors_contents = has_parsing_errors_contents or has_parsing_errors
@@ -297,7 +288,6 @@ def get_item_metrics(
     gold_dict_list: List[List[Dict[str, Any]]] = []
 
     for prediction_model in predictions_input:
-        print("sample id", prediction_model.sample_id)
         gold_has_parsing_errors = False
         pred_has_parsing_errors = False
         try:
@@ -321,7 +311,6 @@ def get_item_metrics(
             pred_dict_list.append(pred_dict_list_instance)
             gold_dict_list.append(gold_dict_list_instance)
             sample_ids.append(prediction_model.sample_id)
-            print("done")
         except Exception as e:
             print(e)
             error_messages.append(
@@ -331,7 +320,6 @@ def get_item_metrics(
                 ).model_dump_json()
             )
             continue
-        print("final step?")
         (
             gold_apis_names,
             instance_num_errors_parsing_gold_intent,
@@ -374,7 +362,6 @@ def get_item_metrics(
             gold_func_calls=gold_func_calls,
             pred_func_calls=pred_func_calls,
         )
-        print("completed slot!!")
         gold_output_slot.extend(cast(List[List[str]], instance_gold_output_slot))
         pred_output_slot.extend(cast(List[List[str]], instance_pred_output_slot))
         error_messages.extend(slot_error_messages)
@@ -523,7 +510,6 @@ def get_micro_confusion_matrix_metrics_by_output_length(
         predicted_answers=pred_output_intent,
         mode=ConfusionMatrixMode.SET,
     )
-    print("step1")
     (
         confusion_matrix_intent_counter_by_output_length_dict,
         confusion_matrix_intent_counter_by_output_length_list_dict,
@@ -532,7 +518,6 @@ def get_micro_confusion_matrix_metrics_by_output_length(
         predicted_answers=pred_output_intent,
         mode=ConfusionMatrixMode.COUNTER,
     )
-    print("step2")
     (
         confusion_matrix_intent_list_by_output_length_dict,
         confusion_matrix_intent_list_by_output_length_list_dict,
@@ -541,7 +526,6 @@ def get_micro_confusion_matrix_metrics_by_output_length(
         predicted_answers=pred_output_intent,
         mode=ConfusionMatrixMode.LIST,
     )
-    print("step3")
     (
         confusion_matrix_slot_set_by_output_length_dict,
         confusion_matrix_slot_set_by_output_length_list_dict,
@@ -550,7 +534,6 @@ def get_micro_confusion_matrix_metrics_by_output_length(
         predicted_answers=pred_output_slot,
         mode=ConfusionMatrixMode.SET,
     )
-    print("step4")
     X = MicroConfusionMetrixMetricsByOutputLengthModel(
             intent_set_metrics=ConfusionMetrixMetricsModel.get_confusion_matrix_metrics_micro_by_output_length(
                 confusion_matrix_intent_set_by_output_length_dict
@@ -565,7 +548,6 @@ def get_micro_confusion_matrix_metrics_by_output_length(
                 confusion_matrix_slot_set_by_output_length_dict
             ),
         )
-    print("done????")
     Y = MicroConfusionMetrixMetricsByOutputLengthProblemLevelModel(
             intent_set_metrics_list=get_confusion_matrix_metrics_dict_by_output_length_from_dict(
                 confusion_matrix_by_output_length_list_dict=confusion_matrix_intent_set_by_output_length_list_dict
@@ -580,7 +562,6 @@ def get_micro_confusion_matrix_metrics_by_output_length(
                 confusion_matrix_by_output_length_list_dict=confusion_matrix_slot_set_by_output_length_list_dict
             ),
         )
-    print("done again!")
     return (
         X,
         Y
@@ -672,7 +653,6 @@ def calculate_scores(
         is_single_intent_detection=is_single_intent_detection,
         spec_path=spec_path,
     )
-    print("get item metrics complete")
     (
         confusion_metrix_matrics_micro_model,
         confusion_metrix_matrics_micro_problem_level_model,
@@ -682,7 +662,6 @@ def calculate_scores(
         gold_output_slot=gold_output_slot,
         pred_output_slot=pred_output_slot,
     )
-    print("cofusion")
     (
         confusion_metrix_matrics_micro_model_by_output_length,
         confusion_metrix_matrics_micro_model_by_output_length_list,
@@ -713,12 +692,11 @@ def calculate_scores(
     )
 
     num_samples = len(predictions_input)
-    print(gold_output_intent, pred_output_intent)
-    print(gold_output_slot, pred_output_slot)
     intent_pair_models = []
     pred_output_intent_new = []
+
+    # {} in pred causes unhashable dict error (AGENTS)
     for gold, pred in zip(gold_output_intent, pred_output_intent):
-        print(f"Intent gold: {gold}, pred: {pred}")
         new_pred = []
         for p in pred:
             if p in (None, "{}", {}):
@@ -727,13 +705,6 @@ def calculate_scores(
         model = ContentPairModel(gold=gold, predicted=new_pred)
         intent_pair_models.append(model)
         pred_output_intent_new.append(new_pred)
-
-    slot_pair_models = []
-
-    for gold, pred in zip(gold_output_slot, pred_output_slot):
-        print(f"Slot gold: {gold}, pred: {pred}")
-        model = ContentPairModel(gold=gold, predicted=pred)
-        slot_pair_models.append(model)
 
     return ScorerOuputModel(
         confusion_metrix_matrics_micro_problem_level=confusion_metrix_matrics_micro_problem_level_model,
@@ -891,7 +862,6 @@ def scoring(
     ] = get_sample_ignore_model_from_file(ignore_file_path=ignore_file_path)
 
     for evaluator_output_file_path in evaluator_output_file_paths:
-        print(evaluator_output_file_path)
         temperature_str = "default_temperature"
         max_tokens_str = "default_max_tokens"
         model_name = "default_model"

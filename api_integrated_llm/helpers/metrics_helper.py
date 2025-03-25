@@ -92,15 +92,12 @@ def get_confision_matrix_from_answers(
     matrix = ConfusionMatrixModel(mode=mode)
     problem_level_matrices: List[ConfusionMatrixModel] = []
     for gold, pred in zip(gold_answers, predicted_answers):
-        print("gold", gold)
-        print("pred", pred)
         new_pred = []
-        for p in pred:
-
-            if p == "{}" or p == {} or p is None:
-                p = ""
-                print("crap")
-            new_pred.append(p)
+        # hack to deal with some predictions that have {}
+        for pr in pred:
+            if pr == "{}" or pr == {} or pr is None:
+                pr = ""
+            new_pred.append(pr)
         pred = new_pred
         matrix_problem_level = ConfusionMatrixModel(mode=mode)
         is_non_zero_gold, is_covered = check_coverage(gold=gold, pred=pred)
@@ -135,16 +132,13 @@ def get_confision_matrix_from_answers_by_output_length(
 ) -> Tuple[Dict[int, ConfusionMatrixModel], Dict[int, List[ConfusionMatrixModel]]]:
     output: Dict[int, ConfusionMatrixModel] = dict()
     output_problem_level: Dict[int, List[ConfusionMatrixModel]] = dict()
-    print("predicted", predicted_answers)
-    print("gold", gold_answers)
     for gold, pred in zip(gold_answers, predicted_answers):
         new_pred = []
-        for p in pred:
-
-            if p == "{}" or p == {} or p is None:
-                p = ""
-                print("crap")
-            new_pred.append(p)
+        # hack to deal with some predictions that have {}
+        for pr in pred:
+            if pr == "{}" or pr == {} or pr is None:
+                pr = ""
+            new_pred.append(pr)
         pred = new_pred
         confusion_matrix_problem_level = ConfusionMatrixModel(mode=mode)
         gold_length = len(gold)

@@ -417,12 +417,10 @@ def parse_output_from_language_models_rest(prediction: EvaluationOutputResponseD
     model_name: str,
     is_single_intent_detection: bool = False,
     is_agent: bool = False):
-    print("In here")
     model_name_lower_cased = model_name.lower()
-    # hard code if u are running an agent
-    is_agent = True
+    # hard code if u are running an agent, there is some assumption that is unclear
+    # is_agent = True
     if is_agent:
-     print("IS AGENT")
      return parse_agent_rest(
             prediction,
             num_errors_parsing_pred_intent=0,
@@ -438,7 +436,6 @@ def parse_output_from_language_models_rest(prediction: EvaluationOutputResponseD
         num_errors_parsing_pred_intent=0,
         skip_grounding=True)
     elif "gpt" in model_name_lower_cased or "deepseek" in model_name_lower_cased or "hammer" in model_name_lower_cased or "qwen" in model_name_lower_cased:
-
         if "deepseek" in model_name_lower_cased:
             return parse_deepseek_output_rest(prediction,num_errors_parsing_pred_intent=0, skip_grounding=True, model_name="deepseek")
         elif "hammer" in model_name_lower_cased:
@@ -458,8 +455,6 @@ def parse_output_from_language_models_rest(prediction: EvaluationOutputResponseD
         num_errors_parsing_pred_intent=0,
         is_single_intent_detection=True,
         skip_grounding=True)
-
-
 
 
 def parse_output_from_language_models(
@@ -483,15 +478,12 @@ def parse_output_from_language_models(
     gold_dict_list: List[Dict[str, Any]] = []
     parsing_error_messages: List[str] = []
     num_errors_parsing_pred_intent_res: int = 0
-    print("inside parse_output_from_language_models_rest", is_single_intent_detection)
     if is_single_intent_detection:
-         print(prediction.num_preciedtion_parsing_errors)
          if prediction.num_preciedtion_parsing_errors is not None:  # use existing data
             pred_func_calls = prediction.predicted_function_calls
             gold_func_calls = prediction.gold_function_calls
             num_errors_parsing_pred_intent_res = prediction.num_preciedtion_parsing_errors
             pred_has_parsing_errors = num_errors_parsing_pred_intent_res > 0
-            print("done here")
          else:
             (
                 pred_func_calls,
@@ -525,7 +517,7 @@ def parse_output_from_language_models(
                 num_errors_parsing_pred_intent=num_errors_parsing_pred_intent,
                 skip_grounding=is_single_intent_detection,
             )
-
+    # TODO: This is not correct for REST - Commenting it out
     # if is_single_intent_detection:
     #     if len(pred_func_calls) > 0:
     #         pred_func_calls = [pred_func_calls[0]]
