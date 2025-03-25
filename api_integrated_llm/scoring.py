@@ -24,7 +24,8 @@ from api_integrated_llm.data_models.source_models import (
 )
 from api_integrated_llm.helpers.database_helper.win_rate_calculator import get_win_rate
 from api_integrated_llm.helpers.output_parsers import (
-    parse_output_from_language_models, parse_output_from_language_models_rest
+    parse_output_from_language_models,
+    parse_output_from_language_models_rest,
 )
 from api_integrated_llm.helpers.scorer_helper import (
     get_evaluation_output_response_data_units,
@@ -40,8 +41,6 @@ from api_integrated_llm.helpers.file_helper import (
     write_jsonl,
 )
 
-import re
-import regex
 
 project_root_path = Path(__file__).parent.resolve()
 
@@ -535,37 +534,34 @@ def get_micro_confusion_matrix_metrics_by_output_length(
         mode=ConfusionMatrixMode.SET,
     )
     X = MicroConfusionMetrixMetricsByOutputLengthModel(
-            intent_set_metrics=ConfusionMetrixMetricsModel.get_confusion_matrix_metrics_micro_by_output_length(
-                confusion_matrix_intent_set_by_output_length_dict
-            ),
-            intent_counter_metrics=ConfusionMetrixMetricsModel.get_confusion_matrix_metrics_micro_by_output_length(
-                confusion_matrix_intent_counter_by_output_length_dict
-            ),
-            intent_list_metrics=ConfusionMetrixMetricsModel.get_confusion_matrix_metrics_micro_by_output_length(
-                confusion_matrix_intent_list_by_output_length_dict
-            ),
-            slot_set_metrics=ConfusionMetrixMetricsModel.get_confusion_matrix_metrics_micro_by_output_length(
-                confusion_matrix_slot_set_by_output_length_dict
-            ),
-        )
-    Y = MicroConfusionMetrixMetricsByOutputLengthProblemLevelModel(
-            intent_set_metrics_list=get_confusion_matrix_metrics_dict_by_output_length_from_dict(
-                confusion_matrix_by_output_length_list_dict=confusion_matrix_intent_set_by_output_length_list_dict
-            ),
-            intent_counter_metrics_list=get_confusion_matrix_metrics_dict_by_output_length_from_dict(
-                confusion_matrix_by_output_length_list_dict=confusion_matrix_intent_counter_by_output_length_list_dict
-            ),
-            intent_list_metrics_list=get_confusion_matrix_metrics_dict_by_output_length_from_dict(
-                confusion_matrix_by_output_length_list_dict=confusion_matrix_intent_list_by_output_length_list_dict
-            ),
-            slot_set_metrics_list=get_confusion_matrix_metrics_dict_by_output_length_from_dict(
-                confusion_matrix_by_output_length_list_dict=confusion_matrix_slot_set_by_output_length_list_dict
-            ),
-        )
-    return (
-        X,
-        Y
+        intent_set_metrics=ConfusionMetrixMetricsModel.get_confusion_matrix_metrics_micro_by_output_length(
+            confusion_matrix_intent_set_by_output_length_dict
+        ),
+        intent_counter_metrics=ConfusionMetrixMetricsModel.get_confusion_matrix_metrics_micro_by_output_length(
+            confusion_matrix_intent_counter_by_output_length_dict
+        ),
+        intent_list_metrics=ConfusionMetrixMetricsModel.get_confusion_matrix_metrics_micro_by_output_length(
+            confusion_matrix_intent_list_by_output_length_dict
+        ),
+        slot_set_metrics=ConfusionMetrixMetricsModel.get_confusion_matrix_metrics_micro_by_output_length(
+            confusion_matrix_slot_set_by_output_length_dict
+        ),
     )
+    Y = MicroConfusionMetrixMetricsByOutputLengthProblemLevelModel(
+        intent_set_metrics_list=get_confusion_matrix_metrics_dict_by_output_length_from_dict(
+            confusion_matrix_by_output_length_list_dict=confusion_matrix_intent_set_by_output_length_list_dict
+        ),
+        intent_counter_metrics_list=get_confusion_matrix_metrics_dict_by_output_length_from_dict(
+            confusion_matrix_by_output_length_list_dict=confusion_matrix_intent_counter_by_output_length_list_dict
+        ),
+        intent_list_metrics_list=get_confusion_matrix_metrics_dict_by_output_length_from_dict(
+            confusion_matrix_by_output_length_list_dict=confusion_matrix_intent_list_by_output_length_list_dict
+        ),
+        slot_set_metrics_list=get_confusion_matrix_metrics_dict_by_output_length_from_dict(
+            confusion_matrix_by_output_length_list_dict=confusion_matrix_slot_set_by_output_length_list_dict
+        ),
+    )
+    return (X, Y)
 
 
 def parsing_only(
@@ -576,18 +572,18 @@ def parsing_only(
     for datum in predictions_input:
         if is_single_intent_detection:
             (
-            pred_func_calls,
-            gold_func_calls,
-            _,
-            _,
-            model_num_errors_parsing_pred_intent,
-            _,
-            _,
-        ) = parse_output_from_language_models_rest(
-            prediction=datum,
-            model_name=datum.llm_model_id.split("/")[-1],
-            is_single_intent_detection=is_single_intent_detection,
-        )
+                pred_func_calls,
+                gold_func_calls,
+                _,
+                _,
+                model_num_errors_parsing_pred_intent,
+                _,
+                _,
+            ) = parse_output_from_language_models_rest(
+                prediction=datum,
+                model_name=datum.llm_model_id.split("/")[-1],
+                is_single_intent_detection=is_single_intent_detection,
+            )
         else:
             (
                 pred_func_calls,
@@ -671,7 +667,7 @@ def calculate_scores(
         gold_output_slot=gold_output_slot,
         pred_output_slot=pred_output_slot,
     )
-    
+
     (
         win_rate,
         num_sequences_processed_win_rate,
@@ -830,7 +826,6 @@ def parsing(
         except Exception as e:
             has_exception = True
             print(e)
-            print(evaluator_output_file_paths)
             handle_scoring_process_exception(
                 output_root_path=output_folder_path,
                 e=e,

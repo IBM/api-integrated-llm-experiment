@@ -89,7 +89,7 @@ def get_input_query(
     example_str: str,
     prompt_dict: Dict[str, str],
     function_str: str,
-    is_single_intent: bool = False
+    is_single_intent: bool = False,
 ) -> str:
     model_name_lower = model_name.lower()
     if "granite" in model_name_lower:
@@ -98,7 +98,7 @@ def get_input_query(
             (sample.tools if sample.tools is not None else []),
             example_str,
             prompt_dict["granite"],
-            is_single_intent
+            is_single_intent,
         )
 
     template_str = ""

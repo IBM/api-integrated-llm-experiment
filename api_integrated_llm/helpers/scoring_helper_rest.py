@@ -1,10 +1,10 @@
 import re
 import regex
 import json
+
 # from api_integrated_llm.helpers.output_parsers import get_output_list
 from typing import Any, Dict, List
 
-from api_integrated_llm.data_models.source_models import EvaluationOutputResponseDataUnit
 from api_integrated_llm.helpers.file_helper import (
     get_json_dict_from_txt,
 )
@@ -24,27 +24,27 @@ def parse_functions(string_input):
     chunks = [chunk.strip() for chunk in stripped.split("),")]
 
     results = []
-    pattern = re.compile(r'^(?P<name>\w[\w_]*)\((?P<args>.*)\)$')
+    pattern = re.compile(r"^(?P<name>\w[\w_]*)\((?P<args>.*)\)$")
 
     for chunk in chunks:
         chunk = chunk.strip()
         # Add back the ) if we lost it during splitting
-        if not chunk.endswith(')'):
-            chunk += ')'
+        if not chunk.endswith(")"):
+            chunk += ")"
 
         match = pattern.match(chunk)
         if not match:
             continue
 
-        func_name = match.group('name')
-        args_str = match.group('args').strip()
+        func_name = match.group("name")
+        args_str = match.group("args").strip()
 
         args_dict = {}
         if args_str:  # parse the arguments k1=v1, k2=v2 ...
-            arg_pairs = [arg.strip() for arg in args_str.split(',')]
+            arg_pairs = [arg.strip() for arg in args_str.split(",")]
             for pair in arg_pairs:
-                if '=' in pair:
-                    key, val = pair.split('=', 1)
+                if "=" in pair:
+                    key, val = pair.split("=", 1)
                     key = key.strip()
                     val = val.strip()
                     # Convert numbers if needed
@@ -52,11 +52,9 @@ def parse_functions(string_input):
                         val = int(val)
                     args_dict[key] = val
 
-        results.append({
-            'name': func_name,
-            'arguments': args_dict
-        })
+        results.append({"name": func_name, "arguments": args_dict})
     return results
+
 
 def parse_llama_3_70b_instruct_rest(
     prediction,
@@ -70,14 +68,17 @@ def parse_llama_3_70b_instruct_rest(
     pred_dict_list, gold_dict_list = [], []  # type: ignore
     gold_dict_list = get_output_list(prediction=prediction)
     parsing_error_messages: List[str] = []
-    new_item = {"name": item["output"][0]["name"], "arguments": item["output"][0]["arguments"]}
+    new_item = {
+        "name": item["output"][0]["name"],
+        "arguments": item["output"][0]["arguments"],
+    }
     gold_dict_list = [new_item]
     if skip_grounding:
         gold_func_calls = [json.dumps(func) for func in gold_dict_list]
     else:
         gold_func_calls = ground_seq_nested_repsonse(gold_dict_list)
         gold_func_calls = [json.dumps(func) for func in gold_func_calls]
-   
+
     pred = item["generated_text"].strip()
     try:
         pred_dict_list = parse_functions(pred)
@@ -97,10 +98,12 @@ def parse_llama_3_70b_instruct_rest(
                             arg_val = arg_val.replace("'", "")
                         new_arg[key_arg] = arg_val
                 args = new_arg
-            pred_dict_list_new.append({"name": pred_fun_call["name"], "arguments": args}) 
+            pred_dict_list_new.append(
+                {"name": pred_fun_call["name"], "arguments": args}
+            )
         pred_func_calls = [json.dumps(func) for func in pred_dict_list]
         pred_func_calls = [json.dumps(func) for func in pred_dict_list_new]
-    except Exception as e:
+    except Exception:
         parsing_error_messages = []
         num_errors_parsing_pred_intent += 1
         pred_has_parsing_errors = True
@@ -115,7 +118,8 @@ def parse_llama_3_70b_instruct_rest(
         parsing_error_messages,
     )
 
-def extract_inner_content(input_str, regex_expr=r'\[?<tool_call>\[(.*)\]?\s*$'):
+
+def extract_inner_content(input_str, regex_expr=r"\[?<tool_call>\[(.*)\]?\s*$"):
     """
     Extracts the content inside the outermost double quotes.
     For an input like:
@@ -125,6 +129,7 @@ def extract_inner_content(input_str, regex_expr=r'\[?<tool_call>\[(.*)\]?\s*$'):
     if m:
         return m.group(1)
     return ""
+
 
 def ground_seq_nested_repsonse(api_list):
     def check_label_in_slot(label, slot_v):
@@ -191,17 +196,21 @@ def ground_seq_nested_repsonse(api_list):
     return grounded_api_list
 
 
-
-def parse_mixtral_output_rest(prediction, num_errors_parsing_pred_intent, skip_grounding=True):
+def parse_mixtral_output_rest(
+    prediction, num_errors_parsing_pred_intent, skip_grounding=True
+):
     item = prediction.model_dump()
     pred_has_parsing_errors = False
     pred_func_calls, gold_func_calls = [], []
     pred_dict_list, gold_dict_list = [], []
 
-    new_item = {"name": item["output"][0]["name"], "arguments": item["output"][0]["arguments"]}
+    new_item = {
+        "name": item["output"][0]["name"],
+        "arguments": item["output"][0]["arguments"],
+    }
     gold_dict_list = [new_item]
     # gold_dict_list = item["output"]
-    
+
     if skip_grounding:
         gold_func_calls = [json.dumps(func) for func in gold_dict_list]
     ## Pred
@@ -218,34 +227,35 @@ def parse_mixtral_output_rest(prediction, num_errors_parsing_pred_intent, skip_g
         try:
             pred_dict_list = json.loads(gen_text)
             pred_func_calls = [json.dumps(func) for func in pred_dict_list]
-        except Exception as e:
-            print(e)
+        except Exception:
             # Step 1: Extract the inner content and unescape it.
-            inner_content = extract_inner_content(gen_text, r'\[?<tool_call>\[(.*)\]?\s*$')
-
-            unescaped = inner_content.encode().decode('unicode_escape')
+            # inner_content = extract_inner_content(
+            #     gen_text, r"\[?<tool_call>\[(.*)\]?\s*$"
+            # )
+            # TODO: This is not essential but a second-level of parsing. Some debugging is required
+            # unescaped = inner_content.encode().decode("unicode_escape")
             # Step 2: Use finditer to capture all JSON objects.
-            pred_dict_list = []
-            for m in pattern.finditer(unescaped):
-                name = m.group("name")
-                args_str = m.group("args")
-                # Parse the "arguments" string to a Python object.
-                try:
-                    arguments = json.loads(args_str)
-                    # If the arguments object is empty, return an empty string.
-                    if arguments == {}:
-                        arguments = {}
-                except Exception as e:
-                    # Fallback: if parsing fails, keep the raw string.
-                    arguments = args_str
-                    num_errors_parsing_pred_intent += 1
-                pred_dict_list.append({"name": name, "arguments": arguments})
+
+            # pred_dict_list = []
+            # for m in pattern.finditer(unescaped):
+            #     name = m.group("name")
+            #     args_str = m.group("args")
+            #     # Parse the "arguments" string to a Python object.
+            #     try:
+            #         arguments = json.loads(args_str)
+            #         # If the arguments object is empty, return an empty string.
+            #         if arguments == {}:
+            #             arguments = {}
+            #     except Exception:
+            #         # Fallback: if parsing fails, keep the raw string.
+            #         arguments = args_str
+            #         num_errors_parsing_pred_intent += 1
+            #     pred_dict_list.append({"name": name, "arguments": arguments})
 
             if skip_grounding:
                 pred_func_calls = [json.dumps(func) for func in pred_dict_list]
 
-
-    except Exception as e:
+    except Exception:
         num_errors_parsing_pred_intent += 1
         pred_has_parsing_errors = True
 
@@ -255,19 +265,24 @@ def parse_mixtral_output_rest(prediction, num_errors_parsing_pred_intent, skip_g
         pred_dict_list,
         gold_dict_list,
         num_errors_parsing_pred_intent,
-        pred_has_parsing_errors, []
+        pred_has_parsing_errors,
+        [],
     )
 
 
-def parse_deepseek_output_rest(prediction, num_errors_parsing_pred_intent, skip_grounding=True, model_name=None):
-    
+def parse_deepseek_output_rest(
+    prediction, num_errors_parsing_pred_intent, skip_grounding=True, model_name=None
+):
     pred_has_parsing_errors = False
     pred_func_calls, gold_func_calls = [], []
     pred_dict_list, gold_dict_list = [], []
     # Convert a single instance to dict
     item = prediction.model_dump()
-    
-    new_item = {"name": item["output"][0]["name"], "arguments": item["output"][0]["arguments"]}
+
+    new_item = {
+        "name": item["output"][0]["name"],
+        "arguments": item["output"][0]["arguments"],
+    }
     gold_dict_list = [new_item]
     # gold_dict_list = item["output"]
     if skip_grounding:
@@ -285,7 +300,6 @@ def parse_deepseek_output_rest(prediction, num_errors_parsing_pred_intent, skip_
                 gen_text = gen_text + "]"
 
         if "deepseek" in model_name or "gpt" in model_name:
-
             pattern = r"```json\s*(.*?)\s*```"
         elif "hammer" in model_name:
             pattern = r"```\s*(.*?)\s*```"
@@ -295,22 +309,25 @@ def parse_deepseek_output_rest(prediction, num_errors_parsing_pred_intent, skip_
         if match:
             extracted_text = match.group(1)
         else:
-            print("No match found.") 
+            print("No match found.")
 
         if "qwen" not in model_name:
             pred_dict_list = json.loads(extracted_text)
         else:
             pred_dict_list = [extracted_text]
 
-        if "qwen" not in model_name and len(pred_dict_list)!=0 and not isinstance(pred_dict_list[0], dict):
+        if (
+            "qwen" not in model_name
+            and len(pred_dict_list) != 0
+            and not isinstance(pred_dict_list[0], dict)
+        ):
             pred_dict_list = []
 
-        if "qwen" not in model_name:   
+        if "qwen" not in model_name:
             pred_func_calls = [json.dumps(func) for func in pred_dict_list]
         else:
             pred_func_calls = [func for func in pred_dict_list]
-    except Exception as e:
-
+    except Exception:
         num_errors_parsing_pred_intent += 1
         pred_has_parsing_errors = True
 
@@ -320,15 +337,25 @@ def parse_deepseek_output_rest(prediction, num_errors_parsing_pred_intent, skip_
         pred_dict_list,
         gold_dict_list,
         num_errors_parsing_pred_intent,
-        pred_has_parsing_errors, []
+        pred_has_parsing_errors,
+        [],
     )
 
-def parse_llm_out_rest_dataset(prediction, num_errors_parsing_pred_intent, is_single_intent_detection=True,skip_grounding=True):
+
+def parse_llm_out_rest_dataset(
+    prediction,
+    num_errors_parsing_pred_intent,
+    is_single_intent_detection=True,
+    skip_grounding=True,
+):
     item = prediction.model_dump()
     pred_has_parsing_errors = False
     pred_func_calls, gold_func_calls = [], []
     pred_dict_list, gold_dict_list = [], []
-    new_item = {"name": item["output"][0]["name"], "arguments": item["output"][0]["arguments"]}
+    new_item = {
+        "name": item["output"][0]["name"],
+        "arguments": item["output"][0]["arguments"],
+    }
     gold_dict_list = [new_item]
 
     if skip_grounding:
@@ -353,7 +380,7 @@ def parse_llm_out_rest_dataset(prediction, num_errors_parsing_pred_intent, is_si
         # Step 1: Extract the inner content and unescape it.
         inner_content = extract_inner_content(gen_text)
 
-        unescaped = inner_content.encode().decode('unicode_escape')
+        unescaped = inner_content.encode().decode("unicode_escape")
 
         # Step 2: Use finditer to capture all JSON objects.
         pred_dict_list = []
@@ -366,7 +393,7 @@ def parse_llm_out_rest_dataset(prediction, num_errors_parsing_pred_intent, is_si
                 # If the arguments object is empty, return an empty string.
                 if arguments == {}:
                     arguments = {}
-            except Exception as e:
+            except Exception:
                 # Fallback: if parsing fails, keep the raw string.
                 arguments = args_str
                 num_errors_parsing_pred_intent += 1
@@ -395,7 +422,7 @@ def parse_llm_out_rest_dataset(prediction, num_errors_parsing_pred_intent, is_si
         gold_dict_list,
         num_errors_parsing_pred_intent,
         pred_has_parsing_errors,
-        parsing_error_messages
+        parsing_error_messages,
     )
 
 
@@ -411,7 +438,10 @@ def parse_agent_rest(
     pred_dict_list, gold_dict_list = [], []  # type: ignore
     gold_dict_list = get_output_list(prediction)
     parsing_error_messages: List[str] = []
-    new_item = {"name": item["output"][0]["name"], "arguments": item["output"][0]["arguments"]}
+    new_item = {
+        "name": item["output"][0]["name"],
+        "arguments": item["output"][0]["arguments"],
+    }
     gold_dict_list = [new_item]
     # if skip_grounding:
     gold_func_calls = [json.dumps(func) for func in gold_dict_list]
@@ -423,7 +453,7 @@ def parse_agent_rest(
         pred_dict_list = json.loads(pred)
         pred_func_calls = [json.dumps(func) for func in pred_dict_list]
         # pred_func_calls = pred_dict_list
-    except Exception as e:
+    except Exception:
         parsing_error_messages = []
         num_errors_parsing_pred_intent += 1
         pred_has_parsing_errors = True
@@ -436,4 +466,3 @@ def parse_agent_rest(
         pred_has_parsing_errors,
         parsing_error_messages,
     )
-
