@@ -96,6 +96,7 @@ def get_arguments() -> argparse.Namespace:
     parser.add_argument(
         "-ig",
         "--ignore",
+        default=True,
         action=argparse.BooleanOptionalAction,
         help='Ignore data points marked as "ignore"',
     )

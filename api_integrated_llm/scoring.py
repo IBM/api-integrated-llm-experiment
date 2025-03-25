@@ -24,7 +24,7 @@ from api_integrated_llm.data_models.source_models import (
 )
 from api_integrated_llm.helpers.database_helper.win_rate_calculator import get_win_rate
 from api_integrated_llm.helpers.output_parsers import (
-    parse_output_from_language_models,
+    parse_output_from_language_models, parse_output_from_language_models_rest
 )
 from api_integrated_llm.helpers.scorer_helper import (
     get_evaluation_output_response_data_units,
@@ -40,6 +40,8 @@ from api_integrated_llm.helpers.file_helper import (
     write_jsonl,
 )
 
+import re
+import regex
 
 project_root_path = Path(__file__).parent.resolve()
 
@@ -85,15 +87,17 @@ def get_api_field_value(
     obj_extracted = ""
 
     if obj is not None:
-        obj_extracted = (
-            obj[field_to_extract]
-            if (error_message is None and field_to_extract in obj)
-            else get_default_obj(field_to_extract=field_to_extract)
-        )
-
-    if field_to_extract == "name":
+        try:
+            obj_extracted = (
+                obj[field_to_extract]
+                if (error_message is None and field_to_extract in obj)
+                else get_default_obj(field_to_extract=field_to_extract)
+            )
+        except:
+            # todo: work around for function names that have "name" in them
+            obj_extracted = ""
+    if obj_extracted and field_to_extract == "name":
         obj_extracted = str(obj_extracted)
-
     num_errors = 1 if obj is None else 0
     has_parsing_errors = obj is None
 
@@ -106,8 +110,7 @@ def get_api_contents(
     apis_contents: List[Union[str, Dict[str, Any]]] = []
     has_parsing_errors_contents = False
     num_errors_contents = 0
-
-    for content in func_calls:
+    for idx, content in enumerate(func_calls):
         (obj_extracted, num_errors, has_parsing_errors) = get_api_field_value(
             content=content, field_to_extract=field_to_extract
         )
@@ -317,7 +320,6 @@ def get_item_metrics(
                 ).model_dump_json()
             )
             continue
-
         (
             gold_apis_names,
             instance_num_errors_parsing_gold_intent,
@@ -532,9 +534,7 @@ def get_micro_confusion_matrix_metrics_by_output_length(
         predicted_answers=pred_output_slot,
         mode=ConfusionMatrixMode.SET,
     )
-
-    return (
-        MicroConfusionMetrixMetricsByOutputLengthModel(
+    X = MicroConfusionMetrixMetricsByOutputLengthModel(
             intent_set_metrics=ConfusionMetrixMetricsModel.get_confusion_matrix_metrics_micro_by_output_length(
                 confusion_matrix_intent_set_by_output_length_dict
             ),
@@ -547,8 +547,8 @@ def get_micro_confusion_matrix_metrics_by_output_length(
             slot_set_metrics=ConfusionMetrixMetricsModel.get_confusion_matrix_metrics_micro_by_output_length(
                 confusion_matrix_slot_set_by_output_length_dict
             ),
-        ),
-        MicroConfusionMetrixMetricsByOutputLengthProblemLevelModel(
+        )
+    Y = MicroConfusionMetrixMetricsByOutputLengthProblemLevelModel(
             intent_set_metrics_list=get_confusion_matrix_metrics_dict_by_output_length_from_dict(
                 confusion_matrix_by_output_length_list_dict=confusion_matrix_intent_set_by_output_length_list_dict
             ),
@@ -561,7 +561,10 @@ def get_micro_confusion_matrix_metrics_by_output_length(
             slot_set_metrics_list=get_confusion_matrix_metrics_dict_by_output_length_from_dict(
                 confusion_matrix_by_output_length_list_dict=confusion_matrix_slot_set_by_output_length_list_dict
             ),
-        ),
+        )
+    return (
+        X,
+        Y
     )
 
 
@@ -571,7 +574,8 @@ def parsing_only(
 ) -> List[EvaluationOutputResponseDataUnit]:
     parsed_outputs: List[EvaluationOutputResponseDataUnit] = []
     for datum in predictions_input:
-        (
+        if is_single_intent_detection:
+            (
             pred_func_calls,
             gold_func_calls,
             _,
@@ -579,11 +583,25 @@ def parsing_only(
             model_num_errors_parsing_pred_intent,
             _,
             _,
-        ) = parse_output_from_language_models(
+        ) = parse_output_from_language_models_rest(
             prediction=datum,
             model_name=datum.llm_model_id.split("/")[-1],
             is_single_intent_detection=is_single_intent_detection,
         )
+        else:
+            (
+                pred_func_calls,
+                gold_func_calls,
+                _,
+                _,
+                model_num_errors_parsing_pred_intent,
+                _,
+                _,
+            ) = parse_output_from_language_models(
+                prediction=datum,
+                model_name=datum.llm_model_id.split("/")[-1],
+                is_single_intent_detection=is_single_intent_detection,
+            )
         parsed_output = datum.model_copy(deep=True)
         parsed_output.predicted_function_calls = pred_func_calls
         parsed_output.gold_function_calls = gold_func_calls
@@ -635,7 +653,6 @@ def calculate_scores(
         is_single_intent_detection=is_single_intent_detection,
         spec_path=spec_path,
     )
-
     (
         confusion_metrix_matrics_micro_model,
         confusion_metrix_matrics_micro_problem_level_model,
@@ -645,7 +662,6 @@ def calculate_scores(
         gold_output_slot=gold_output_slot,
         pred_output_slot=pred_output_slot,
     )
-
     (
         confusion_metrix_matrics_micro_model_by_output_length,
         confusion_metrix_matrics_micro_model_by_output_length_list,
@@ -655,7 +671,7 @@ def calculate_scores(
         gold_output_slot=gold_output_slot,
         pred_output_slot=pred_output_slot,
     )
-
+    
     (
         win_rate,
         num_sequences_processed_win_rate,
@@ -676,6 +692,19 @@ def calculate_scores(
     )
 
     num_samples = len(predictions_input)
+    intent_pair_models = []
+    pred_output_intent_new = []
+
+    # {} in pred causes unhashable dict error (AGENTS)
+    for gold, pred in zip(gold_output_intent, pred_output_intent):
+        new_pred = []
+        for p in pred:
+            if p in (None, "{}", {}):
+                p = ""
+            new_pred.append(p)
+        model = ContentPairModel(gold=gold, predicted=new_pred)
+        intent_pair_models.append(model)
+        pred_output_intent_new.append(new_pred)
 
     return ScorerOuputModel(
         confusion_metrix_matrics_micro_problem_level=confusion_metrix_matrics_micro_problem_level_model,
@@ -698,7 +727,7 @@ def calculate_scores(
             map(lambda item: item.model_copy(deep=True), predictions_input)
         ),
         gold_output_intent=gold_output_intent,
-        pred_output_intent=pred_output_intent,
+        pred_output_intent=pred_output_intent_new,
         gold_output_slot=gold_output_slot,
         pred_output_slot=pred_output_slot,
         intent_pair_models=list(
@@ -706,7 +735,7 @@ def calculate_scores(
                 lambda content_pair: ContentPairModel(
                     gold=content_pair[0], predicted=content_pair[1]
                 ),
-                zip(gold_output_intent, pred_output_intent),
+                zip(gold_output_intent, pred_output_intent_new),
             )
         ),
         slot_pair_models=list(
