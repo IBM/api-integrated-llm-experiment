@@ -232,7 +232,7 @@ def parse_mixtral_output_rest(
             # inner_content = extract_inner_content(
             #     gen_text, r"\[?<tool_call>\[(.*)\]?\s*$"
             # )
-
+            # TODO: This is not essential but a second-level of parsing. Some debugging is required
             # unescaped = inner_content.encode().decode("unicode_escape")
             # Step 2: Use finditer to capture all JSON objects.
 
