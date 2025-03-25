@@ -12,7 +12,14 @@ from api_integrated_llm.helpers.file_helper import (
 )
 
 
-from api_integrated_llm.helpers.scoring_helper_rest import parse_agent_rest, parse_llm_out_rest_dataset, parse_llama_3_70b_instruct_rest, parse_mixtral_output_rest, parse_deepseek_output_rest
+from api_integrated_llm.helpers.scoring_helper_rest import (
+    parse_agent_rest,
+    parse_llm_out_rest_dataset,
+    parse_llama_3_70b_instruct_rest,
+    parse_mixtral_output_rest,
+    parse_deepseek_output_rest,
+)
+
 
 def get_deli_sep_str_list(text: str, deli: str = ",") -> List[str]:
     def find(s, ch):
@@ -72,7 +79,7 @@ def ground_seq_nested_repsonse(api_list) -> List[Dict[str, Any]]:
             continue
         if api["name"] == "var_result":
             continue
-        if "label" in api and api["label"] != None:
+        if "label" in api and api["label"] is not None:
             # label_api_map[api['name']] = api['label']
             lbl = api["label"].replace("$", "")
             # if lbl == 'var_10': ipdb.set_trace()
@@ -413,48 +420,74 @@ def parse_general_large_language_model_output(
     )
 
 
-def parse_output_from_language_models_rest(prediction: EvaluationOutputResponseDataUnit,
+def parse_output_from_language_models_rest(
+    prediction: EvaluationOutputResponseDataUnit,
     model_name: str,
     is_single_intent_detection: bool = False,
-    is_agent: bool = False):
+    is_agent: bool = False,
+):
     model_name_lower_cased = model_name.lower()
     # hard code if u are running an agent, there is some assumption that is unclear
     # is_agent = True
     if is_agent:
-     return parse_agent_rest(
+        return parse_agent_rest(
             prediction,
             num_errors_parsing_pred_intent=0,
             is_single_intent_detection=is_single_intent_detection,
-            skip_grounding=True)
+            skip_grounding=True,
+        )
     if "llama" in model_name_lower_cased or "watt" in model_name_lower_cased:
-        return parse_llama_3_70b_instruct_rest(prediction,
-        num_errors_parsing_pred_intent=0,
-        is_single_intent_detection=True,
-        skip_grounding=True)
+        return parse_llama_3_70b_instruct_rest(
+            prediction,
+            num_errors_parsing_pred_intent=0,
+            is_single_intent_detection=True,
+            skip_grounding=True,
+        )
     elif "mixtral" in model_name_lower_cased:
-        return parse_mixtral_output_rest(prediction,
-        num_errors_parsing_pred_intent=0,
-        skip_grounding=True)
-    elif "gpt" in model_name_lower_cased or "deepseek" in model_name_lower_cased or "hammer" in model_name_lower_cased or "qwen" in model_name_lower_cased:
+        return parse_mixtral_output_rest(
+            prediction, num_errors_parsing_pred_intent=0, skip_grounding=True
+        )
+    elif (
+        "gpt" in model_name_lower_cased
+        or "deepseek" in model_name_lower_cased
+        or "hammer" in model_name_lower_cased
+        or "qwen" in model_name_lower_cased
+    ):
         if "deepseek" in model_name_lower_cased:
-            return parse_deepseek_output_rest(prediction,num_errors_parsing_pred_intent=0, skip_grounding=True, model_name="deepseek")
+            return parse_deepseek_output_rest(
+                prediction,
+                num_errors_parsing_pred_intent=0,
+                skip_grounding=True,
+                model_name="deepseek",
+            )
         elif "hammer" in model_name_lower_cased:
-            return parse_deepseek_output_rest(prediction,
-            num_errors_parsing_pred_intent=0,
-            skip_grounding=True, model_name="hammer")
+            return parse_deepseek_output_rest(
+                prediction,
+                num_errors_parsing_pred_intent=0,
+                skip_grounding=True,
+                model_name="hammer",
+            )
         elif "qwen" in model_name_lower_cased:
-            return parse_deepseek_output_rest(prediction,
-            num_errors_parsing_pred_intent=0,
-            skip_grounding=True, model_name="qwen")
+            return parse_deepseek_output_rest(
+                prediction,
+                num_errors_parsing_pred_intent=0,
+                skip_grounding=True,
+                model_name="qwen",
+            )
         elif "gpt" in model_name_lower_cased:
-            return parse_deepseek_output_rest(prediction,
-            num_errors_parsing_pred_intent=0,
-            skip_grounding=True, model_name="gpt")
+            return parse_deepseek_output_rest(
+                prediction,
+                num_errors_parsing_pred_intent=0,
+                skip_grounding=True,
+                model_name="gpt",
+            )
     else:
-        return parse_llm_out_rest_dataset(prediction,
-        num_errors_parsing_pred_intent=0,
-        is_single_intent_detection=True,
-        skip_grounding=True)
+        return parse_llm_out_rest_dataset(
+            prediction,
+            num_errors_parsing_pred_intent=0,
+            is_single_intent_detection=True,
+            skip_grounding=True,
+        )
 
 
 def parse_output_from_language_models(
@@ -479,12 +512,14 @@ def parse_output_from_language_models(
     parsing_error_messages: List[str] = []
     num_errors_parsing_pred_intent_res: int = 0
     if is_single_intent_detection:
-         if prediction.num_preciedtion_parsing_errors is not None:  # use existing data
+        if prediction.num_preciedtion_parsing_errors is not None:  # use existing data
             pred_func_calls = prediction.predicted_function_calls
             gold_func_calls = prediction.gold_function_calls
-            num_errors_parsing_pred_intent_res = prediction.num_preciedtion_parsing_errors
+            num_errors_parsing_pred_intent_res = (
+                prediction.num_preciedtion_parsing_errors
+            )
             pred_has_parsing_errors = num_errors_parsing_pred_intent_res > 0
-         else:
+        else:
             (
                 pred_func_calls,
                 gold_func_calls,
@@ -493,15 +528,17 @@ def parse_output_from_language_models(
                 num_errors_parsing_pred_intent_res,
                 pred_has_parsing_errors,
                 parsing_error_messages,
-            ) = parse_output_from_language_models_rest( prediction,
-                model_name, is_single_intent_detection, False
+            ) = parse_output_from_language_models_rest(
+                prediction, model_name, is_single_intent_detection, False
             )
-            
+
     else:
         if prediction.num_preciedtion_parsing_errors is not None:  # use existing data
             pred_func_calls = prediction.predicted_function_calls
             gold_func_calls = prediction.gold_function_calls
-            num_errors_parsing_pred_intent_res = prediction.num_preciedtion_parsing_errors
+            num_errors_parsing_pred_intent_res = (
+                prediction.num_preciedtion_parsing_errors
+            )
             pred_has_parsing_errors = num_errors_parsing_pred_intent_res > 0
         else:
             (

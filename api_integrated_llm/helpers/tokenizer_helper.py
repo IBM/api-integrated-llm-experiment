@@ -21,15 +21,16 @@ def granite_prompt_input(
     function: List[ToolItemModel],
     example_str: str,
     base_prompt: str,
-    is_single_intent: bool = False
+    is_single_intent: bool = False,
 ) -> str:
     prompts_initial = {"role": "user", "content": input}
 
     if is_single_intent:
         extra_turn = {
-        "role": "system",
-        "content": (
-            "Knowledge Cutoff Date: April 2024. Today's Date: February 19, 2025. You are Granite, developed by IBM. You are a helpful AI assistant with access to the following tools. When a tool is required to answer the user's query, respond with <|tool_call|> followed by a JSON list of tools used. If a tool does not exist in the provided list of tools, notify the user that you do not have the ability to fulfill the request.<|end_of_text|>")
+            "role": "system",
+            "content": (
+                "Knowledge Cutoff Date: April 2024. Today's Date: February 19, 2025. You are Granite, developed by IBM. You are a helpful AI assistant with access to the following tools. When a tool is required to answer the user's query, respond with <|tool_call|> followed by a JSON list of tools used. If a tool does not exist in the provided list of tools, notify the user that you do not have the ability to fulfill the request.<|end_of_text|>"
+            ),
         }
     else:
         extra_turn = {
