@@ -34,6 +34,7 @@ from api_integrated_llm.helpers.scorer_helper import (
 from api_integrated_llm.helpers.metrics_helper import (
     get_confision_matrix_from_answers,
     get_confision_matrix_from_answers_by_output_length,
+    get_confision_matrix_from_answers_by_output_length_slot,
 )
 from api_integrated_llm.helpers.file_helper import (
     get_uuid4_str,
@@ -261,6 +262,8 @@ def get_item_metrics(
     List[List[str]],
     List[List[str]],
     List[List[str]],
+    List[List[List[str]]],
+    List[List[List[str]]],
     int,
     int,
     int,
@@ -280,6 +283,8 @@ def get_item_metrics(
     pred_output_intent: List[List[str]] = []
     gold_output_slot: List[List[str]] = []
     pred_output_slot: List[List[str]] = []
+    gold_output_slot_problem: List[List[List[str]]] = []
+    pred_output_slot_problem: List[List[List[str]]] = []
     num_errors_parsing_pred_intent = 0
     num_errors_parsing_gold_intent = 0
     num_errors_parsing_pred_slot = 0
@@ -372,6 +377,8 @@ def get_item_metrics(
         )
         gold_output_slot.extend(cast(List[List[str]], instance_gold_output_slot))
         pred_output_slot.extend(cast(List[List[str]], instance_pred_output_slot))
+        gold_output_slot_problem.append(deepcopy(instance_gold_output_slot))
+        pred_output_slot_problem.append(deepcopy(instance_pred_output_slot))
         error_messages.extend(slot_error_messages)
         num_errors_parsing_gold_slot += instance_num_errors_parsing_gold_slot
         num_errors_parsing_pred_slot += instance_num_errors_parsing_pred_slot
@@ -386,6 +393,8 @@ def get_item_metrics(
         pred_output_intent,
         gold_output_slot,
         pred_output_slot,
+        gold_output_slot_problem,
+        pred_output_slot_problem,
         num_errors_parsing_pred_intent,
         num_errors_parsing_gold_intent,
         num_errors_parsing_pred_slot,
@@ -408,6 +417,7 @@ def get_micro_confusion_matrix_metrics(
     pred_output_intent: List[List[str]],
     gold_output_slot: List[List[str]],
     pred_output_slot: List[List[str]],
+    is_single_intent_detection: bool,
 ) -> Tuple[
     MicroConfusionMetrixMetricsModel, MicroConfusionMetrixMetricsProblemLevelModel
 ]:
@@ -417,6 +427,7 @@ def get_micro_confusion_matrix_metrics(
     ) = get_confision_matrix_from_answers(
         gold_answers=gold_output_intent,
         predicted_answers=pred_output_intent,
+        is_single_intent_detection=is_single_intent_detection,
         mode=ConfusionMatrixMode.SET,
     )
     (
@@ -425,6 +436,7 @@ def get_micro_confusion_matrix_metrics(
     ) = get_confision_matrix_from_answers(
         gold_answers=gold_output_intent,
         predicted_answers=pred_output_intent,
+        is_single_intent_detection=is_single_intent_detection,
         mode=ConfusionMatrixMode.COUNTER,
     )
     (
@@ -433,6 +445,7 @@ def get_micro_confusion_matrix_metrics(
     ) = get_confision_matrix_from_answers(
         gold_answers=gold_output_intent,
         predicted_answers=pred_output_intent,
+        is_single_intent_detection=is_single_intent_detection,
         mode=ConfusionMatrixMode.LIST,
     )
     (
@@ -441,6 +454,7 @@ def get_micro_confusion_matrix_metrics(
     ) = get_confision_matrix_from_answers(
         gold_answers=gold_output_slot,
         predicted_answers=pred_output_slot,
+        is_single_intent_detection=is_single_intent_detection,
         mode=ConfusionMatrixMode.SET,
     )
     return (
@@ -504,8 +518,9 @@ def get_confusion_matrix_metrics_dict_by_output_length_from_dict(
 def get_micro_confusion_matrix_metrics_by_output_length(
     gold_output_intent: List[List[str]],
     pred_output_intent: List[List[str]],
-    gold_output_slot: List[List[str]],
-    pred_output_slot: List[List[str]],
+    gold_output_slot: List[List[List[str]]],
+    pred_output_slot: List[List[List[str]]],
+    is_single_intent_detection: bool,
 ) -> Tuple[
     MicroConfusionMetrixMetricsByOutputLengthModel,
     MicroConfusionMetrixMetricsByOutputLengthProblemLevelModel,
@@ -516,6 +531,7 @@ def get_micro_confusion_matrix_metrics_by_output_length(
     ) = get_confision_matrix_from_answers_by_output_length(
         gold_answers=gold_output_intent,
         predicted_answers=pred_output_intent,
+        is_single_intent_detection=is_single_intent_detection,
         mode=ConfusionMatrixMode.SET,
     )
     (
@@ -524,6 +540,7 @@ def get_micro_confusion_matrix_metrics_by_output_length(
     ) = get_confision_matrix_from_answers_by_output_length(
         gold_answers=gold_output_intent,
         predicted_answers=pred_output_intent,
+        is_single_intent_detection=is_single_intent_detection,
         mode=ConfusionMatrixMode.COUNTER,
     )
     (
@@ -532,14 +549,17 @@ def get_micro_confusion_matrix_metrics_by_output_length(
     ) = get_confision_matrix_from_answers_by_output_length(
         gold_answers=gold_output_intent,
         predicted_answers=pred_output_intent,
+        is_single_intent_detection=is_single_intent_detection,
         mode=ConfusionMatrixMode.LIST,
     )
     (
         confusion_matrix_slot_set_by_output_length_dict,
         confusion_matrix_slot_set_by_output_length_list_dict,
-    ) = get_confision_matrix_from_answers_by_output_length(
+    ) = get_confision_matrix_from_answers_by_output_length_slot(
         gold_answers=gold_output_slot,
         predicted_answers=pred_output_slot,
+        gold_output_intent=gold_output_intent,
+        is_single_intent_detection=is_single_intent_detection,
         mode=ConfusionMatrixMode.SET,
     )
     X = MicroConfusionMetrixMetricsByOutputLengthModel(
@@ -638,6 +658,8 @@ def calculate_scores(
         pred_output_intent,
         gold_output_slot,
         pred_output_slot,
+        gold_output_slot_problem,
+        pred_output_slot_problem,
         num_errors_parsing_pred_intent,
         num_errors_parsing_gold_intent,
         num_errors_parsing_pred_slot,
@@ -666,6 +688,7 @@ def calculate_scores(
         pred_output_intent=pred_output_intent,
         gold_output_slot=gold_output_slot,
         pred_output_slot=pred_output_slot,
+        is_single_intent_detection=is_single_intent_detection,
     )
     (
         confusion_metrix_matrics_micro_model_by_output_length,
@@ -673,8 +696,9 @@ def calculate_scores(
     ) = get_micro_confusion_matrix_metrics_by_output_length(
         gold_output_intent=gold_output_intent,
         pred_output_intent=pred_output_intent,
-        gold_output_slot=gold_output_slot,
-        pred_output_slot=pred_output_slot,
+        gold_output_slot=gold_output_slot_problem,
+        pred_output_slot=pred_output_slot_problem,
+        is_single_intent_detection=is_single_intent_detection,
     )
 
     (
