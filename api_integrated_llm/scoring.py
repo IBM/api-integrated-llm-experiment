@@ -54,6 +54,15 @@ def get_function_dict(content: Any) -> Optional[Dict[str, Any]]:
     )
 
 
+def clean_up_pred(pred):
+    new_pred = []
+    for p in pred:
+        if p in (None, "{}", {}):
+            p = ""
+        new_pred.append(p)
+    return new_pred
+
+
 def get_function_obj(
     content: Any, field_to_extract: Optional[str]
 ) -> Tuple[Optional[Dict[str, Any]], Optional[str]]:
@@ -693,11 +702,7 @@ def calculate_scores(
 
     # {} in pred causes unhashable dict error (AGENTS)
     for gold, pred in zip(gold_output_intent, pred_output_intent):
-        new_pred = []
-        for p in pred:
-            if p in (None, "{}", {}):
-                p = ""
-            new_pred.append(p)
+        new_pred = clean_up_pred(pred)
         model = ContentPairModel(gold=gold, predicted=new_pred)
         intent_pair_models.append(model)
         pred_output_intent_new.append(new_pred)

@@ -425,7 +425,15 @@ def parse_output_from_language_models_rest(
     model_name: str,
     is_single_intent_detection: bool = False,
     is_agent: bool = False,
-):
+) -> Tuple[
+    List[str],
+    List[str],
+    List[Dict[str, Any]],
+    List[Dict[str, Any]],
+    int,
+    bool,
+    List[str],
+]:
     model_name_lower_cased = model_name.lower()
     # hard code if u are running an agent, there is some assumption that is unclear
     # is_agent = True
@@ -481,13 +489,13 @@ def parse_output_from_language_models_rest(
                 skip_grounding=True,
                 model_name="gpt",
             )
-    else:
-        return parse_llm_out_rest_dataset(
-            prediction,
-            num_errors_parsing_pred_intent=0,
-            is_single_intent_detection=True,
-            skip_grounding=True,
-        )
+
+    return parse_llm_out_rest_dataset(
+        prediction,
+        num_errors_parsing_pred_intent=0,
+        is_single_intent_detection=True,
+        skip_grounding=True,
+    )
 
 
 def parse_output_from_language_models(

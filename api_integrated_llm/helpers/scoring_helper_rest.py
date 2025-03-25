@@ -3,8 +3,11 @@ import regex
 import json
 
 # from api_integrated_llm.helpers.output_parsers import get_output_list
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Tuple
 
+from api_integrated_llm.data_models.source_models import (
+    EvaluationOutputResponseDataUnit,
+)
 from api_integrated_llm.helpers.file_helper import (
     get_json_dict_from_txt,
 )
@@ -16,7 +19,7 @@ def get_output_list(
     return get_json_dict_from_txt(txt=prediction.output) if isinstance(prediction.output, str) else list(map(lambda unit: unit.model_dump(), prediction.output))  # type: ignore
 
 
-def parse_functions(string_input):
+def parse_functions(string_input: str) -> List[Dict]:
     # 1. Strip the leading/trailing square brackets
     stripped = string_input.strip("[]")
 
@@ -57,7 +60,7 @@ def parse_functions(string_input):
 
 
 def parse_llama_3_70b_instruct_rest(
-    prediction,
+    prediction: EvaluationOutputResponseDataUnit,
     num_errors_parsing_pred_intent: int,
     is_single_intent_detection: bool = True,
     skip_grounding: bool = True,
@@ -119,7 +122,7 @@ def parse_llama_3_70b_instruct_rest(
     )
 
 
-def extract_inner_content(input_str, regex_expr=r"\[?<tool_call>\[(.*)\]?\s*$"):
+def extract_inner_content(input_str: str, regex_expr=r"\[?<tool_call>\[(.*)\]?\s*$"):
     """
     Extracts the content inside the outermost double quotes.
     For an input like:
@@ -197,7 +200,9 @@ def ground_seq_nested_repsonse(api_list):
 
 
 def parse_mixtral_output_rest(
-    prediction, num_errors_parsing_pred_intent, skip_grounding=True
+    prediction: EvaluationOutputResponseDataUnit,
+    num_errors_parsing_pred_intent: int,
+    skip_grounding: bool = True,
 ):
     item = prediction.model_dump()
     pred_has_parsing_errors = False
@@ -271,7 +276,10 @@ def parse_mixtral_output_rest(
 
 
 def parse_deepseek_output_rest(
-    prediction, num_errors_parsing_pred_intent, skip_grounding=True, model_name=None
+    prediction: EvaluationOutputResponseDataUnit,
+    num_errors_parsing_pred_intent: int,
+    skip_grounding: bool = True,
+    model_name=None,
 ):
     pred_has_parsing_errors = False
     pred_func_calls, gold_func_calls = [], []
@@ -343,15 +351,29 @@ def parse_deepseek_output_rest(
 
 
 def parse_llm_out_rest_dataset(
-    prediction,
-    num_errors_parsing_pred_intent,
-    is_single_intent_detection=True,
-    skip_grounding=True,
-):
+    prediction: EvaluationOutputResponseDataUnit,
+    num_errors_parsing_pred_intent: int,
+    is_single_intent_detection: bool = True,
+    skip_grounding: bool = True,
+) -> Tuple[
+    List[str],
+    List[str],
+    List[Dict[str, Any]],
+    List[Dict[str, Any]],
+    int,
+    bool,
+    List[str],
+]:
     item = prediction.model_dump()
     pred_has_parsing_errors = False
-    pred_func_calls, gold_func_calls = [], []
-    pred_dict_list, gold_dict_list = [], []
+    # pred_func_calls, gold_func_calls = [], []
+    # pred_dict_list, gold_dict_list = [], []
+
+    pred_dict_list: List = []
+    gold_dict_list: List = []
+
+    pred_func_calls: List = []
+    gold_func_calls: List = []
     new_item = {
         "name": item["output"][0]["name"],
         "arguments": item["output"][0]["arguments"],
@@ -414,7 +436,6 @@ def parse_llm_out_rest_dataset(
         num_errors_parsing_pred_intent += 1
         pred_has_parsing_errors = True
 
-    parsing_error_messages = []
     return (
         pred_func_calls,
         gold_func_calls,
@@ -422,12 +443,12 @@ def parse_llm_out_rest_dataset(
         gold_dict_list,
         num_errors_parsing_pred_intent,
         pred_has_parsing_errors,
-        parsing_error_messages,
+        [],
     )
 
 
 def parse_agent_rest(
-    prediction,
+    prediction: EvaluationOutputResponseDataUnit,
     num_errors_parsing_pred_intent: int,
     is_single_intent_detection: bool = True,
     skip_grounding: bool = True,
