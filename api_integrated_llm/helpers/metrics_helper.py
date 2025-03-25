@@ -93,6 +93,46 @@ def clean_up_pred(pred):
     return new_pred
 
 
+def get_confision_matrix_from_answers_slot(
+    gold_answers: List[List[List[str]]],
+    predicted_answers: List[List[List[str]]],
+    is_single_intent_detection: bool = False,
+    mode: ConfusionMatrixMode = ConfusionMatrixMode.SET,
+) -> Tuple[ConfusionMatrixModel, List[ConfusionMatrixModel]]:
+    matrix = ConfusionMatrixModel(mode=mode)
+    problem_level_matrices: List[ConfusionMatrixModel] = []
+    for gold_container, pred_container in zip(gold_answers, predicted_answers):
+        matrix_problem_level = ConfusionMatrixModel(mode=mode)
+        for gold, pred in zip(gold_container, pred_container):
+            if is_single_intent_detection:
+                pred = clean_up_pred(pred)
+
+            is_non_zero_gold, is_covered = check_coverage(gold=gold, pred=pred)
+            matrix_problem_level.num_non_zero_gold += 1 if is_non_zero_gold else 0
+            matrix_problem_level.num_is_covered += 1 if is_covered else 0
+            (
+                true_positive,
+                false_positive,
+                true_negative,
+                false_negative,
+            ) = get_confusion_matrix_cells(
+                gold=gold,
+                pred=pred,
+                mode=mode,
+            )
+
+            matrix_problem_level.true_positive += true_positive
+            matrix_problem_level.true_negative += true_negative
+            matrix_problem_level.false_positive += false_positive
+            matrix_problem_level.false_negative += false_negative
+
+            matrix.add(confusion_matrix=matrix_problem_level)
+        if matrix_problem_level.is_valid_model():
+            problem_level_matrices.append(matrix_problem_level)
+
+    return matrix, problem_level_matrices
+
+
 def get_confision_matrix_from_answers(
     gold_answers: List[List[str]],
     predicted_answers: List[List[str]],
@@ -141,12 +181,13 @@ def get_confision_matrix_from_answers_by_output_length_slot(
     output_problem_level: Dict[int, List[ConfusionMatrixModel]] = dict()
     counter = 0
     for gold_container, pred_container in zip(gold_answers, predicted_answers):
+        confusion_matrix_problem_level = ConfusionMatrixModel(mode=mode)
+        gold_length = len(gold_output_intent[counter])
+
         for gold, pred in zip(gold_container, pred_container):
             if is_single_intent_detection:
                 pred = clean_up_pred(pred)
 
-            confusion_matrix_problem_level = ConfusionMatrixModel(mode=mode)
-            gold_length = len(gold_output_intent[counter])
             if gold_length not in output:
                 output[gold_length] = ConfusionMatrixModel(mode=mode)
                 output_problem_level[gold_length] = []
@@ -172,6 +213,8 @@ def get_confision_matrix_from_answers_by_output_length_slot(
             confusion_matrix_problem_level.false_negative += false_negative
 
             output[gold_length].add(confusion_matrix=confusion_matrix_problem_level)
+
+        if confusion_matrix_problem_level.is_valid_model():
             output_problem_level[gold_length].append(confusion_matrix_problem_level)
         counter += 1
 

@@ -35,6 +35,7 @@ from api_integrated_llm.helpers.metrics_helper import (
     get_confision_matrix_from_answers,
     get_confision_matrix_from_answers_by_output_length,
     get_confision_matrix_from_answers_by_output_length_slot,
+    get_confision_matrix_from_answers_slot,
 )
 from api_integrated_llm.helpers.file_helper import (
     get_uuid4_str,
@@ -415,8 +416,8 @@ def get_item_metrics(
 def get_micro_confusion_matrix_metrics(
     gold_output_intent: List[List[str]],
     pred_output_intent: List[List[str]],
-    gold_output_slot: List[List[str]],
-    pred_output_slot: List[List[str]],
+    gold_output_slot: List[List[List[str]]],
+    pred_output_slot: List[List[List[str]]],
     is_single_intent_detection: bool,
 ) -> Tuple[
     MicroConfusionMetrixMetricsModel, MicroConfusionMetrixMetricsProblemLevelModel
@@ -451,7 +452,7 @@ def get_micro_confusion_matrix_metrics(
     (
         confusion_matrix_slot_set,
         confusion_matrix_slot_set_list,
-    ) = get_confision_matrix_from_answers(
+    ) = get_confision_matrix_from_answers_slot(
         gold_answers=gold_output_slot,
         predicted_answers=pred_output_slot,
         is_single_intent_detection=is_single_intent_detection,
@@ -686,8 +687,8 @@ def calculate_scores(
     ) = get_micro_confusion_matrix_metrics(
         gold_output_intent=gold_output_intent,
         pred_output_intent=pred_output_intent,
-        gold_output_slot=gold_output_slot,
-        pred_output_slot=pred_output_slot,
+        gold_output_slot=gold_output_slot_problem,
+        pred_output_slot=pred_output_slot_problem,
         is_single_intent_detection=is_single_intent_detection,
     )
     (
