@@ -253,6 +253,8 @@ class ConfusionMetrixMetricsModel(BaseModel):
             and self.recall >= 0.0
         ):
             self.f1 = statistics.harmonic_mean([self.precision, self.recall])
+        else:
+            self.f1 = None
 
 
 class MicroConfusionMetrixMetricsProblemLevelModel(BaseModel):

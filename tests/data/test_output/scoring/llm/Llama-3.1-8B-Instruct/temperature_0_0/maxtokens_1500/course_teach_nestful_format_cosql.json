@@ -1,960 +1,51 @@
 {
   "confusion_metrix_matrics_micro_problem_level": {
-    "intent_set_metrics_list": [
-      {
-        "accuracy": 1.0,
-        "precision": 1.0,
-        "recall": 1.0,
-        "f1": 1.0,
-        "confusion_matrix": {
-          "true_positive": 1,
-          "false_positive": 0,
-          "true_negative": 0,
-          "false_negative": 0,
-          "mode": "set",
-          "num_non_zero_gold": 1,
-          "num_is_covered": 1
-        }
-      },
-      {
-        "accuracy": 0.0,
-        "precision": 0.0,
-        "recall": 0.0,
-        "f1": null,
-        "confusion_matrix": {
-          "true_positive": 0,
-          "false_positive": 1,
-          "true_negative": 0,
-          "false_negative": 1,
-          "mode": "set",
-          "num_non_zero_gold": 1,
-          "num_is_covered": 0
-        }
-      },
-      {
-        "accuracy": 1.0,
-        "precision": 1.0,
-        "recall": 1.0,
-        "f1": 1.0,
-        "confusion_matrix": {
-          "true_positive": 1,
-          "false_positive": 0,
-          "true_negative": 0,
-          "false_negative": 0,
-          "mode": "set",
-          "num_non_zero_gold": 1,
-          "num_is_covered": 1
-        }
-      },
-      {
-        "accuracy": 1.0,
-        "precision": 1.0,
-        "recall": 1.0,
-        "f1": 1.0,
-        "confusion_matrix": {
-          "true_positive": 1,
-          "false_positive": 0,
-          "true_negative": 0,
-          "false_negative": 0,
-          "mode": "set",
-          "num_non_zero_gold": 1,
-          "num_is_covered": 1
-        }
-      },
-      {
-        "accuracy": 1.0,
-        "precision": 1.0,
-        "recall": 1.0,
-        "f1": 1.0,
-        "confusion_matrix": {
-          "true_positive": 1,
-          "false_positive": 0,
-          "true_negative": 0,
-          "false_negative": 0,
-          "mode": "set",
-          "num_non_zero_gold": 1,
-          "num_is_covered": 1
-        }
-      },
-      {
-        "accuracy": 1.0,
-        "precision": 1.0,
-        "recall": 1.0,
-        "f1": 1.0,
-        "confusion_matrix": {
-          "true_positive": 1,
-          "false_positive": 0,
-          "true_negative": 0,
-          "false_negative": 0,
-          "mode": "set",
-          "num_non_zero_gold": 1,
-          "num_is_covered": 1
-        }
-      },
-      {
-        "accuracy": 0.0,
-        "precision": 0.0,
-        "recall": 0.0,
-        "f1": null,
-        "confusion_matrix": {
-          "true_positive": 0,
-          "false_positive": 1,
-          "true_negative": 0,
-          "false_negative": 1,
-          "mode": "set",
-          "num_non_zero_gold": 1,
-          "num_is_covered": 0
-        }
-      }
-    ],
-    "intent_counter_metrics_list": [
-      {
-        "accuracy": 1.0,
-        "precision": 1.0,
-        "recall": 1.0,
-        "f1": 1.0,
-        "confusion_matrix": {
-          "true_positive": 1,
-          "false_positive": 0,
-          "true_negative": 0,
-          "false_negative": 0,
-          "mode": "counter",
-          "num_non_zero_gold": 1,
-          "num_is_covered": 1
-        }
-      },
-      {
-        "accuracy": 0.0,
-        "precision": 0.0,
-        "recall": 0.0,
-        "f1": null,
-        "confusion_matrix": {
-          "true_positive": 0,
-          "false_positive": 1,
-          "true_negative": 0,
-          "false_negative": 1,
-          "mode": "counter",
-          "num_non_zero_gold": 1,
-          "num_is_covered": 0
-        }
-      },
-      {
-        "accuracy": 1.0,
-        "precision": 1.0,
-        "recall": 1.0,
-        "f1": 1.0,
-        "confusion_matrix": {
-          "true_positive": 1,
-          "false_positive": 0,
-          "true_negative": 0,
-          "false_negative": 0,
-          "mode": "counter",
-          "num_non_zero_gold": 1,
-          "num_is_covered": 1
-        }
-      },
-      {
-        "accuracy": 1.0,
-        "precision": 1.0,
-        "recall": 1.0,
-        "f1": 1.0,
-        "confusion_matrix": {
-          "true_positive": 1,
-          "false_positive": 0,
-          "true_negative": 0,
-          "false_negative": 0,
-          "mode": "counter",
-          "num_non_zero_gold": 1,
-          "num_is_covered": 1
-        }
-      },
-      {
-        "accuracy": 1.0,
-        "precision": 1.0,
-        "recall": 1.0,
-        "f1": 1.0,
-        "confusion_matrix": {
-          "true_positive": 1,
-          "false_positive": 0,
-          "true_negative": 0,
-          "false_negative": 0,
-          "mode": "counter",
-          "num_non_zero_gold": 1,
-          "num_is_covered": 1
-        }
-      },
-      {
-        "accuracy": 1.0,
-        "precision": 1.0,
-        "recall": 1.0,
-        "f1": 1.0,
-        "confusion_matrix": {
-          "true_positive": 1,
-          "false_positive": 0,
-          "true_negative": 0,
-          "false_negative": 0,
-          "mode": "counter",
-          "num_non_zero_gold": 1,
-          "num_is_covered": 1
-        }
-      },
-      {
-        "accuracy": 0.0,
-        "precision": 0.0,
-        "recall": 0.0,
-        "f1": null,
-        "confusion_matrix": {
-          "true_positive": 0,
-          "false_positive": 1,
-          "true_negative": 0,
-          "false_negative": 1,
-          "mode": "counter",
-          "num_non_zero_gold": 1,
-          "num_is_covered": 0
-        }
-      }
-    ],
-    "intent_list_metrics_list": [
-      {
-        "accuracy": 1.0,
-        "precision": 1.0,
-        "recall": 1.0,
-        "f1": 1.0,
-        "confusion_matrix": {
-          "true_positive": 1,
-          "false_positive": 0,
-          "true_negative": 0,
-          "false_negative": 0,
-          "mode": "list",
-          "num_non_zero_gold": 1,
-          "num_is_covered": 1
-        }
-      },
-      {
-        "accuracy": 0.0,
-        "precision": 0.0,
-        "recall": 0.0,
-        "f1": null,
-        "confusion_matrix": {
-          "true_positive": 0,
-          "false_positive": 1,
-          "true_negative": 0,
-          "false_negative": 1,
-          "mode": "list",
-          "num_non_zero_gold": 1,
-          "num_is_covered": 0
-        }
-      },
-      {
-        "accuracy": 1.0,
-        "precision": 1.0,
-        "recall": 1.0,
-        "f1": 1.0,
-        "confusion_matrix": {
-          "true_positive": 1,
-          "false_positive": 0,
-          "true_negative": 0,
-          "false_negative": 0,
-          "mode": "list",
-          "num_non_zero_gold": 1,
-          "num_is_covered": 1
-        }
-      },
-      {
-        "accuracy": 1.0,
-        "precision": 1.0,
-        "recall": 1.0,
-        "f1": 1.0,
-        "confusion_matrix": {
-          "true_positive": 1,
-          "false_positive": 0,
-          "true_negative": 0,
-          "false_negative": 0,
-          "mode": "list",
-          "num_non_zero_gold": 1,
-          "num_is_covered": 1
-        }
-      },
-      {
-        "accuracy": 1.0,
-        "precision": 1.0,
-        "recall": 1.0,
-        "f1": 1.0,
-        "confusion_matrix": {
-          "true_positive": 1,
-          "false_positive": 0,
-          "true_negative": 0,
-          "false_negative": 0,
-          "mode": "list",
-          "num_non_zero_gold": 1,
-          "num_is_covered": 1
-        }
-      },
-      {
-        "accuracy": 1.0,
-        "precision": 1.0,
-        "recall": 1.0,
-        "f1": 1.0,
-        "confusion_matrix": {
-          "true_positive": 1,
-          "false_positive": 0,
-          "true_negative": 0,
-          "false_negative": 0,
-          "mode": "list",
-          "num_non_zero_gold": 1,
-          "num_is_covered": 1
-        }
-      },
-      {
-        "accuracy": 0.0,
-        "precision": 0.0,
-        "recall": 0.0,
-        "f1": null,
-        "confusion_matrix": {
-          "true_positive": 0,
-          "false_positive": 1,
-          "true_negative": 0,
-          "false_negative": 1,
-          "mode": "list",
-          "num_non_zero_gold": 1,
-          "num_is_covered": 0
-        }
-      }
-    ],
-    "slot_set_metrics_list": [
-      {
-        "accuracy": 1.0,
-        "precision": 1.0,
-        "recall": 1.0,
-        "f1": 1.0,
-        "confusion_matrix": {
-          "true_positive": 1,
-          "false_positive": 0,
-          "true_negative": 0,
-          "false_negative": 0,
-          "mode": "set",
-          "num_non_zero_gold": 0,
-          "num_is_covered": 0
-        }
-      },
-      {
-        "accuracy": 1.0,
-        "precision": 1.0,
-        "recall": 1.0,
-        "f1": 1.0,
-        "confusion_matrix": {
-          "true_positive": 1,
-          "false_positive": 0,
-          "true_negative": 0,
-          "false_negative": 0,
-          "mode": "set",
-          "num_non_zero_gold": 0,
-          "num_is_covered": 0
-        }
-      },
-      {
-        "accuracy": 1.0,
-        "precision": 1.0,
-        "recall": 1.0,
-        "f1": 1.0,
-        "confusion_matrix": {
-          "true_positive": 1,
-          "false_positive": 0,
-          "true_negative": 0,
-          "false_negative": 0,
-          "mode": "set",
-          "num_non_zero_gold": 0,
-          "num_is_covered": 0
-        }
-      },
-      {
-        "accuracy": 1.0,
-        "precision": 1.0,
-        "recall": 1.0,
-        "f1": 1.0,
-        "confusion_matrix": {
-          "true_positive": 1,
-          "false_positive": 0,
-          "true_negative": 0,
-          "false_negative": 0,
-          "mode": "set",
-          "num_non_zero_gold": 0,
-          "num_is_covered": 0
-        }
-      },
-      {
-        "accuracy": 1.0,
-        "precision": 1.0,
-        "recall": 1.0,
-        "f1": 1.0,
-        "confusion_matrix": {
-          "true_positive": 1,
-          "false_positive": 0,
-          "true_negative": 0,
-          "false_negative": 0,
-          "mode": "set",
-          "num_non_zero_gold": 1,
-          "num_is_covered": 1
-        }
-      }
-    ]
+    "intent_set_metrics_list": [],
+    "intent_counter_metrics_list": [],
+    "intent_list_metrics_list": [],
+    "slot_set_metrics_list": []
   },
   "confusion_metrix_matrics_micro_model_by_output_length_problem_level": {
-    "intent_set_metrics_list": {
-      "1": [
-        {
-          "accuracy": 1.0,
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1": 1.0,
-          "confusion_matrix": {
-            "true_positive": 1,
-            "false_positive": 0,
-            "true_negative": 0,
-            "false_negative": 0,
-            "mode": "set",
-            "num_non_zero_gold": 1,
-            "num_is_covered": 1
-          }
-        },
-        {
-          "accuracy": 0.0,
-          "precision": 0.0,
-          "recall": 0.0,
-          "f1": null,
-          "confusion_matrix": {
-            "true_positive": 0,
-            "false_positive": 1,
-            "true_negative": 0,
-            "false_negative": 1,
-            "mode": "set",
-            "num_non_zero_gold": 1,
-            "num_is_covered": 0
-          }
-        },
-        {
-          "accuracy": 1.0,
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1": 1.0,
-          "confusion_matrix": {
-            "true_positive": 1,
-            "false_positive": 0,
-            "true_negative": 0,
-            "false_negative": 0,
-            "mode": "set",
-            "num_non_zero_gold": 1,
-            "num_is_covered": 1
-          }
-        },
-        {
-          "accuracy": 1.0,
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1": 1.0,
-          "confusion_matrix": {
-            "true_positive": 1,
-            "false_positive": 0,
-            "true_negative": 0,
-            "false_negative": 0,
-            "mode": "set",
-            "num_non_zero_gold": 1,
-            "num_is_covered": 1
-          }
-        },
-        {
-          "accuracy": 1.0,
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1": 1.0,
-          "confusion_matrix": {
-            "true_positive": 1,
-            "false_positive": 0,
-            "true_negative": 0,
-            "false_negative": 0,
-            "mode": "set",
-            "num_non_zero_gold": 1,
-            "num_is_covered": 1
-          }
-        },
-        {
-          "accuracy": 1.0,
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1": 1.0,
-          "confusion_matrix": {
-            "true_positive": 1,
-            "false_positive": 0,
-            "true_negative": 0,
-            "false_negative": 0,
-            "mode": "set",
-            "num_non_zero_gold": 1,
-            "num_is_covered": 1
-          }
-        },
-        {
-          "accuracy": 0.0,
-          "precision": 0.0,
-          "recall": 0.0,
-          "f1": null,
-          "confusion_matrix": {
-            "true_positive": 0,
-            "false_positive": 1,
-            "true_negative": 0,
-            "false_negative": 1,
-            "mode": "set",
-            "num_non_zero_gold": 1,
-            "num_is_covered": 0
-          }
-        }
-      ]
-    },
-    "intent_counter_metrics_list": {
-      "1": [
-        {
-          "accuracy": 1.0,
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1": 1.0,
-          "confusion_matrix": {
-            "true_positive": 1,
-            "false_positive": 0,
-            "true_negative": 0,
-            "false_negative": 0,
-            "mode": "counter",
-            "num_non_zero_gold": 1,
-            "num_is_covered": 1
-          }
-        },
-        {
-          "accuracy": 0.0,
-          "precision": 0.0,
-          "recall": 0.0,
-          "f1": null,
-          "confusion_matrix": {
-            "true_positive": 0,
-            "false_positive": 1,
-            "true_negative": 0,
-            "false_negative": 1,
-            "mode": "counter",
-            "num_non_zero_gold": 1,
-            "num_is_covered": 0
-          }
-        },
-        {
-          "accuracy": 1.0,
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1": 1.0,
-          "confusion_matrix": {
-            "true_positive": 1,
-            "false_positive": 0,
-            "true_negative": 0,
-            "false_negative": 0,
-            "mode": "counter",
-            "num_non_zero_gold": 1,
-            "num_is_covered": 1
-          }
-        },
-        {
-          "accuracy": 1.0,
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1": 1.0,
-          "confusion_matrix": {
-            "true_positive": 1,
-            "false_positive": 0,
-            "true_negative": 0,
-            "false_negative": 0,
-            "mode": "counter",
-            "num_non_zero_gold": 1,
-            "num_is_covered": 1
-          }
-        },
-        {
-          "accuracy": 1.0,
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1": 1.0,
-          "confusion_matrix": {
-            "true_positive": 1,
-            "false_positive": 0,
-            "true_negative": 0,
-            "false_negative": 0,
-            "mode": "counter",
-            "num_non_zero_gold": 1,
-            "num_is_covered": 1
-          }
-        },
-        {
-          "accuracy": 1.0,
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1": 1.0,
-          "confusion_matrix": {
-            "true_positive": 1,
-            "false_positive": 0,
-            "true_negative": 0,
-            "false_negative": 0,
-            "mode": "counter",
-            "num_non_zero_gold": 1,
-            "num_is_covered": 1
-          }
-        },
-        {
-          "accuracy": 0.0,
-          "precision": 0.0,
-          "recall": 0.0,
-          "f1": null,
-          "confusion_matrix": {
-            "true_positive": 0,
-            "false_positive": 1,
-            "true_negative": 0,
-            "false_negative": 1,
-            "mode": "counter",
-            "num_non_zero_gold": 1,
-            "num_is_covered": 0
-          }
-        }
-      ]
-    },
-    "intent_list_metrics_list": {
-      "1": [
-        {
-          "accuracy": 1.0,
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1": 1.0,
-          "confusion_matrix": {
-            "true_positive": 1,
-            "false_positive": 0,
-            "true_negative": 0,
-            "false_negative": 0,
-            "mode": "list",
-            "num_non_zero_gold": 1,
-            "num_is_covered": 1
-          }
-        },
-        {
-          "accuracy": 0.0,
-          "precision": 0.0,
-          "recall": 0.0,
-          "f1": null,
-          "confusion_matrix": {
-            "true_positive": 0,
-            "false_positive": 1,
-            "true_negative": 0,
-            "false_negative": 1,
-            "mode": "list",
-            "num_non_zero_gold": 1,
-            "num_is_covered": 0
-          }
-        },
-        {
-          "accuracy": 1.0,
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1": 1.0,
-          "confusion_matrix": {
-            "true_positive": 1,
-            "false_positive": 0,
-            "true_negative": 0,
-            "false_negative": 0,
-            "mode": "list",
-            "num_non_zero_gold": 1,
-            "num_is_covered": 1
-          }
-        },
-        {
-          "accuracy": 1.0,
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1": 1.0,
-          "confusion_matrix": {
-            "true_positive": 1,
-            "false_positive": 0,
-            "true_negative": 0,
-            "false_negative": 0,
-            "mode": "list",
-            "num_non_zero_gold": 1,
-            "num_is_covered": 1
-          }
-        },
-        {
-          "accuracy": 1.0,
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1": 1.0,
-          "confusion_matrix": {
-            "true_positive": 1,
-            "false_positive": 0,
-            "true_negative": 0,
-            "false_negative": 0,
-            "mode": "list",
-            "num_non_zero_gold": 1,
-            "num_is_covered": 1
-          }
-        },
-        {
-          "accuracy": 1.0,
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1": 1.0,
-          "confusion_matrix": {
-            "true_positive": 1,
-            "false_positive": 0,
-            "true_negative": 0,
-            "false_negative": 0,
-            "mode": "list",
-            "num_non_zero_gold": 1,
-            "num_is_covered": 1
-          }
-        },
-        {
-          "accuracy": 0.0,
-          "precision": 0.0,
-          "recall": 0.0,
-          "f1": null,
-          "confusion_matrix": {
-            "true_positive": 0,
-            "false_positive": 1,
-            "true_negative": 0,
-            "false_negative": 1,
-            "mode": "list",
-            "num_non_zero_gold": 1,
-            "num_is_covered": 0
-          }
-        }
-      ]
-    },
-    "slot_set_metrics_list": {
-      "0": [
-        {
-          "accuracy": 1.0,
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1": 1.0,
-          "confusion_matrix": {
-            "true_positive": 1,
-            "false_positive": 0,
-            "true_negative": 0,
-            "false_negative": 0,
-            "mode": "set",
-            "num_non_zero_gold": 0,
-            "num_is_covered": 0
-          }
-        },
-        {
-          "accuracy": 1.0,
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1": 1.0,
-          "confusion_matrix": {
-            "true_positive": 1,
-            "false_positive": 0,
-            "true_negative": 0,
-            "false_negative": 0,
-            "mode": "set",
-            "num_non_zero_gold": 0,
-            "num_is_covered": 0
-          }
-        },
-        {
-          "accuracy": 1.0,
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1": 1.0,
-          "confusion_matrix": {
-            "true_positive": 1,
-            "false_positive": 0,
-            "true_negative": 0,
-            "false_negative": 0,
-            "mode": "set",
-            "num_non_zero_gold": 0,
-            "num_is_covered": 0
-          }
-        },
-        {
-          "accuracy": 1.0,
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1": 1.0,
-          "confusion_matrix": {
-            "true_positive": 1,
-            "false_positive": 0,
-            "true_negative": 0,
-            "false_negative": 0,
-            "mode": "set",
-            "num_non_zero_gold": 0,
-            "num_is_covered": 0
-          }
-        }
-      ],
-      "1": [
-        {
-          "accuracy": 1.0,
-          "precision": 1.0,
-          "recall": 1.0,
-          "f1": 1.0,
-          "confusion_matrix": {
-            "true_positive": 1,
-            "false_positive": 0,
-            "true_negative": 0,
-            "false_negative": 0,
-            "mode": "set",
-            "num_non_zero_gold": 1,
-            "num_is_covered": 1
-          }
-        }
-      ]
-    }
+    "intent_set_metrics_list": {},
+    "intent_counter_metrics_list": {},
+    "intent_list_metrics_list": {},
+    "slot_set_metrics_list": {}
   },
   "confusion_metrix_matrics_micro": {
     "intent_set_metrics": {
-      "accuracy": 0.5555555555555556,
-      "precision": 0.7142857142857143,
-      "recall": 0.7142857142857143,
-      "f1": 0.7142857142857143,
-      "confusion_matrix": {
-        "true_positive": 5,
-        "false_positive": 2,
-        "true_negative": 0,
-        "false_negative": 2,
-        "mode": "set",
-        "num_non_zero_gold": 7,
-        "num_is_covered": 5
-      }
+      "accuracy": null,
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "confusion_matrix": null
     },
     "intent_counter_metrics": {
-      "accuracy": 0.5555555555555556,
-      "precision": 0.7142857142857143,
-      "recall": 0.7142857142857143,
-      "f1": 0.7142857142857143,
-      "confusion_matrix": {
-        "true_positive": 5,
-        "false_positive": 2,
-        "true_negative": 0,
-        "false_negative": 2,
-        "mode": "counter",
-        "num_non_zero_gold": 7,
-        "num_is_covered": 5
-      }
+      "accuracy": null,
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "confusion_matrix": null
     },
     "intent_list_metrics": {
-      "accuracy": 0.5555555555555556,
-      "precision": 0.7142857142857143,
-      "recall": 0.7142857142857143,
-      "f1": 0.7142857142857143,
-      "confusion_matrix": {
-        "true_positive": 5,
-        "false_positive": 2,
-        "true_negative": 0,
-        "false_negative": 2,
-        "mode": "list",
-        "num_non_zero_gold": 7,
-        "num_is_covered": 5
-      }
+      "accuracy": null,
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "confusion_matrix": null
     },
     "slot_set_metrics": {
-      "accuracy": 1.0,
-      "precision": 1.0,
-      "recall": 1.0,
-      "f1": 1.0,
-      "confusion_matrix": {
-        "true_positive": 5,
-        "false_positive": 0,
-        "true_negative": 0,
-        "false_negative": 0,
-        "mode": "set",
-        "num_non_zero_gold": 1,
-        "num_is_covered": 1
-      }
+      "accuracy": null,
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "confusion_matrix": null
     }
   },
   "confusion_metrix_matrics_micro_model_by_output_length": {
-    "intent_set_metrics": {
-      "1": {
-        "accuracy": 0.5555555555555556,
-        "precision": 0.7142857142857143,
-        "recall": 0.7142857142857143,
-        "f1": 0.7142857142857143,
-        "confusion_matrix": {
-          "true_positive": 5,
-          "false_positive": 2,
-          "true_negative": 0,
-          "false_negative": 2,
-          "mode": "set",
-          "num_non_zero_gold": 7,
-          "num_is_covered": 5
-        }
-      }
-    },
-    "intent_counter_metrics": {
-      "1": {
-        "accuracy": 0.5555555555555556,
-        "precision": 0.7142857142857143,
-        "recall": 0.7142857142857143,
-        "f1": 0.7142857142857143,
-        "confusion_matrix": {
-          "true_positive": 5,
-          "false_positive": 2,
-          "true_negative": 0,
-          "false_negative": 2,
-          "mode": "counter",
-          "num_non_zero_gold": 7,
-          "num_is_covered": 5
-        }
-      }
-    },
-    "intent_list_metrics": {
-      "1": {
-        "accuracy": 0.5555555555555556,
-        "precision": 0.7142857142857143,
-        "recall": 0.7142857142857143,
-        "f1": 0.7142857142857143,
-        "confusion_matrix": {
-          "true_positive": 5,
-          "false_positive": 2,
-          "true_negative": 0,
-          "false_negative": 2,
-          "mode": "list",
-          "num_non_zero_gold": 7,
-          "num_is_covered": 5
-        }
-      }
-    },
-    "slot_set_metrics": {
-      "0": {
-        "accuracy": 1.0,
-        "precision": 1.0,
-        "recall": 1.0,
-        "f1": 1.0,
-        "confusion_matrix": {
-          "true_positive": 4,
-          "false_positive": 0,
-          "true_negative": 0,
-          "false_negative": 0,
-          "mode": "set",
-          "num_non_zero_gold": 0,
-          "num_is_covered": 0
-        }
-      },
-      "1": {
-        "accuracy": 1.0,
-        "precision": 1.0,
-        "recall": 1.0,
-        "f1": 1.0,
-        "confusion_matrix": {
-          "true_positive": 1,
-          "false_positive": 0,
-          "true_negative": 0,
-          "false_negative": 0,
-          "mode": "set",
-          "num_non_zero_gold": 1,
-          "num_is_covered": 1
-        }
-      }
-    }
+    "intent_set_metrics": {},
+    "intent_counter_metrics": {},
+    "intent_list_metrics": {},
+    "slot_set_metrics": {}
   },
   "num_examples": 7,
   "percentage_times_full_score": 0.0,
@@ -964,7 +55,15 @@
   "num_errors_parsing_gold_slot": 0,
   "num_pred_examples_w_parsing_errors": 0,
   "num_gold_examples_w_parsing_errors": 0,
-  "error_messages": [],
+  "error_messages": [
+    "{\"error\":\"Error at parse_output_from_language_models(): string indices must be integers, not 'str'\",\"file\":\"/u/jungkoo2654/api_integrated_llm_experiment/source/evaluation/router/cosql/rest/course_teach_nestful_format_cosql.json\",\"payload\":null}",
+    "{\"error\":\"Error at parse_output_from_language_models(): string indices must be integers, not 'str'\",\"file\":\"/u/jungkoo2654/api_integrated_llm_experiment/source/evaluation/router/cosql/rest/course_teach_nestful_format_cosql.json\",\"payload\":null}",
+    "{\"error\":\"Error at parse_output_from_language_models(): string indices must be integers, not 'str'\",\"file\":\"/u/jungkoo2654/api_integrated_llm_experiment/source/evaluation/router/cosql/rest/course_teach_nestful_format_cosql.json\",\"payload\":null}",
+    "{\"error\":\"Error at parse_output_from_language_models(): string indices must be integers, not 'str'\",\"file\":\"/u/jungkoo2654/api_integrated_llm_experiment/source/evaluation/router/cosql/rest/course_teach_nestful_format_cosql.json\",\"payload\":null}",
+    "{\"error\":\"Error at parse_output_from_language_models(): string indices must be integers, not 'str'\",\"file\":\"/u/jungkoo2654/api_integrated_llm_experiment/source/evaluation/router/cosql/rest/course_teach_nestful_format_cosql.json\",\"payload\":null}",
+    "{\"error\":\"Error at parse_output_from_language_models(): string indices must be integers, not 'str'\",\"file\":\"/u/jungkoo2654/api_integrated_llm_experiment/source/evaluation/router/cosql/rest/course_teach_nestful_format_cosql.json\",\"payload\":null}",
+    "{\"error\":\"Error at parse_output_from_language_models(): string indices must be integers, not 'str'\",\"file\":\"/u/jungkoo2654/api_integrated_llm_experiment/source/evaluation/router/cosql/rest/course_teach_nestful_format_cosql.json\",\"payload\":null}"
+  ],
   "parsing_error_messages": [],
   "model_temperature": 0,
   "model_max_tokens": 1500,
@@ -995,7 +94,10 @@
           1
         ]
       ],
+      "messages": null,
+      "tools": null,
       "generated_text": "{\"name\": \"get_teacher_course_count_v1_cosql_course_teach_teacher_course_count_get\", \"arguments\": {}, \"label\": \"$var_1\"}'",
+      "tool_calls": null,
       "llm_model_id": "meta-llama/Llama-3.1-8B-Instruct",
       "source_file_path": "/u/jungkoo2654/api_integrated_llm_experiment/source/evaluation/router/cosql/rest/course_teach_nestful_format_cosql.json",
       "dataset_name": "course_teach_nestful_format_cosql",
@@ -1018,7 +120,10 @@
           "Vicente Carretero"
         ]
       ],
+      "messages": null,
+      "tools": null,
       "generated_text": "{\"name\": \"get_teacher_names_for_course_v1_cosql_course_teach_teacher_names_for_course_get\", \"arguments\": {\"course_name\": \"math\"}, \"label\": \"$var_1\"}",
+      "tool_calls": null,
       "llm_model_id": "meta-llama/Llama-3.1-8B-Instruct",
       "source_file_path": "/u/jungkoo2654/api_integrated_llm_experiment/source/evaluation/router/cosql/rest/course_teach_nestful_format_cosql.json",
       "dataset_name": "course_teach_nestful_format_cosql",
@@ -1055,7 +160,10 @@
           1
         ]
       ],
+      "messages": null,
+      "tools": null,
       "generated_text": "{\"name\": \"get_teacher_course_count_v1_cosql_course_teach_teacher_course_count_get\", \"arguments\": {}, \"label\": \"$var_1\"}'",
+      "tool_calls": null,
       "llm_model_id": "meta-llama/Llama-3.1-8B-Instruct",
       "source_file_path": "/u/jungkoo2654/api_integrated_llm_experiment/source/evaluation/router/cosql/rest/course_teach_nestful_format_cosql.json",
       "dataset_name": "course_teach_nestful_format_cosql",
@@ -1096,7 +204,10 @@
           "Math"
         ]
       ],
+      "messages": null,
+      "tools": null,
       "generated_text": "{\"name\": \"get_teacher_courses_ordered_v1_cosql_course_teach_teacher_courses_ordered_get\", \"arguments\": {}, \"label\": \"$var_1\"}'",
+      "tool_calls": null,
       "llm_model_id": "meta-llama/Llama-3.1-8B-Instruct",
       "source_file_path": "/u/jungkoo2654/api_integrated_llm_experiment/source/evaluation/router/cosql/rest/course_teach_nestful_format_cosql.json",
       "dataset_name": "course_teach_nestful_format_cosql",
@@ -1116,7 +227,10 @@
           "Farnworth Municipal Borough"
         ]
       ],
+      "messages": null,
+      "tools": null,
       "generated_text": "{\"name\": \"get_youngest_teacher_hometown_v1_cosql_course_teach_youngest_teacher_hometown_get\", \"arguments\": {}, \"label\": \"$var_1\"}",
+      "tool_calls": null,
       "llm_model_id": "meta-llama/Llama-3.1-8B-Instruct",
       "source_file_path": "/u/jungkoo2654/api_integrated_llm_experiment/source/evaluation/router/cosql/rest/course_teach_nestful_format_cosql.json",
       "dataset_name": "course_teach_nestful_format_cosql",
@@ -1136,7 +250,10 @@
           "Anne Walker"
         ]
       ],
+      "messages": null,
+      "tools": null,
       "generated_text": "{\"name\": \"get_teacher_names_min_course_count_v1_cosql_course_teach_teacher_names_min_course_count_get\", \"arguments\": {\"min_count\": \"2\"}}'",
+      "tool_calls": null,
       "llm_model_id": "meta-llama/Llama-3.1-8B-Instruct",
       "source_file_path": "/u/jungkoo2654/api_integrated_llm_experiment/source/evaluation/router/cosql/rest/course_teach_nestful_format_cosql.json",
       "dataset_name": "course_teach_nestful_format_cosql",
@@ -1159,7 +276,10 @@
           "Vicente Carretero"
         ]
       ],
+      "messages": null,
+      "tools": null,
       "generated_text": "{\"name\": \"get_teacher_names_for_course_v1_cosql_course_teach_teacher_names_for_course_get\", \"arguments\": {\"course_name\": \"math\"}, \"label\": \"$var_1\"}",
+      "tool_calls": null,
       "llm_model_id": "meta-llama/Llama-3.1-8B-Instruct",
       "source_file_path": "/u/jungkoo2654/api_integrated_llm_experiment/source/evaluation/router/cosql/rest/course_teach_nestful_format_cosql.json",
       "dataset_name": "course_teach_nestful_format_cosql",
@@ -1171,159 +291,19 @@
       "num_preciedtion_parsing_errors": null
     }
   ],
-  "gold_output_intent": [
-    [
-      "get_teacher_course_count_v1_cosql_course_teach_teacher_course_count_get"
-    ],
-    [
-      "get_teacher_course_count_filtered_v1_cosql_course_teach_teacher_course_count_filtered_get"
-    ],
-    [
-      "get_teacher_course_count_v1_cosql_course_teach_teacher_course_count_get"
-    ],
-    [
-      "get_teacher_courses_ordered_v1_cosql_course_teach_teacher_courses_ordered_get"
-    ],
-    [
-      "get_youngest_teacher_hometown_v1_cosql_course_teach_youngest_teacher_hometown_get"
-    ],
-    [
-      "get_teacher_names_min_course_count_v1_cosql_course_teach_teacher_names_min_course_count_get"
-    ],
-    [
-      "get_teacher_course_count_filtered_v1_cosql_course_teach_teacher_course_count_filtered_get"
-    ]
-  ],
-  "pred_output_intent": [
-    [
-      "get_teacher_course_count_v1_cosql_course_teach_teacher_course_count_get"
-    ],
-    [
-      "get_teacher_names_for_course_v1_cosql_course_teach_teacher_names_for_course_get"
-    ],
-    [
-      "get_teacher_course_count_v1_cosql_course_teach_teacher_course_count_get"
-    ],
-    [
-      "get_teacher_courses_ordered_v1_cosql_course_teach_teacher_courses_ordered_get"
-    ],
-    [
-      "get_youngest_teacher_hometown_v1_cosql_course_teach_youngest_teacher_hometown_get"
-    ],
-    [
-      "get_teacher_names_min_course_count_v1_cosql_course_teach_teacher_names_min_course_count_get"
-    ],
-    [
-      "get_teacher_names_for_course_v1_cosql_course_teach_teacher_names_for_course_get"
-    ]
-  ],
-  "gold_output_slot": [
-    [],
-    [],
-    [],
-    [],
-    [
-      "min_count = 2"
-    ]
-  ],
-  "pred_output_slot": [
-    [],
-    [],
-    [],
-    [],
-    [
-      "min_count = 2"
-    ]
-  ],
-  "intent_pair_models": [
-    {
-      "gold": [
-        "get_teacher_course_count_v1_cosql_course_teach_teacher_course_count_get"
-      ],
-      "predicted": [
-        "get_teacher_course_count_v1_cosql_course_teach_teacher_course_count_get"
-      ]
-    },
-    {
-      "gold": [
-        "get_teacher_course_count_filtered_v1_cosql_course_teach_teacher_course_count_filtered_get"
-      ],
-      "predicted": [
-        "get_teacher_names_for_course_v1_cosql_course_teach_teacher_names_for_course_get"
-      ]
-    },
-    {
-      "gold": [
-        "get_teacher_course_count_v1_cosql_course_teach_teacher_course_count_get"
-      ],
-      "predicted": [
-        "get_teacher_course_count_v1_cosql_course_teach_teacher_course_count_get"
-      ]
-    },
-    {
-      "gold": [
-        "get_teacher_courses_ordered_v1_cosql_course_teach_teacher_courses_ordered_get"
-      ],
-      "predicted": [
-        "get_teacher_courses_ordered_v1_cosql_course_teach_teacher_courses_ordered_get"
-      ]
-    },
-    {
-      "gold": [
-        "get_youngest_teacher_hometown_v1_cosql_course_teach_youngest_teacher_hometown_get"
-      ],
-      "predicted": [
-        "get_youngest_teacher_hometown_v1_cosql_course_teach_youngest_teacher_hometown_get"
-      ]
-    },
-    {
-      "gold": [
-        "get_teacher_names_min_course_count_v1_cosql_course_teach_teacher_names_min_course_count_get"
-      ],
-      "predicted": [
-        "get_teacher_names_min_course_count_v1_cosql_course_teach_teacher_names_min_course_count_get"
-      ]
-    },
-    {
-      "gold": [
-        "get_teacher_course_count_filtered_v1_cosql_course_teach_teacher_course_count_filtered_get"
-      ],
-      "predicted": [
-        "get_teacher_names_for_course_v1_cosql_course_teach_teacher_names_for_course_get"
-      ]
-    }
-  ],
-  "slot_pair_models": [
-    {
-      "gold": [],
-      "predicted": []
-    },
-    {
-      "gold": [],
-      "predicted": []
-    },
-    {
-      "gold": [],
-      "predicted": []
-    },
-    {
-      "gold": [],
-      "predicted": []
-    },
-    {
-      "gold": [
-        "min_count = 2"
-      ],
-      "predicted": [
-        "min_count = 2"
-      ]
-    }
-  ],
+  "gold_output_intent": [],
+  "pred_output_intent": [],
+  "gold_output_slot": [],
+  "pred_output_slot": [],
+  "intent_pair_models": [],
+  "slot_pair_models": [],
   "win_rate": null,
   "num_sequences_processed_win_rate": null,
   "error_messages_win_rate": [],
   "num_failed_function_execution_list": [],
   "win_rate_result_model": {
     "win_rate_result": []
-  }
+  },
+  "parsed_predictions": [],
+  "parsed_gold_answer": []
 }
