@@ -104,12 +104,13 @@ def get_confision_matrix_from_answers_slot(
     for gold_container, pred_container in zip(gold_answers, predicted_answers):
         matrix_problem_level = ConfusionMatrixModel(mode=mode)
         for gold, pred in zip(gold_container, pred_container):
+            matrix_item_level = ConfusionMatrixModel(mode=mode)
             if is_single_intent_detection:
                 pred = clean_up_pred(pred)
 
             is_non_zero_gold, is_covered = check_coverage(gold=gold, pred=pred)
-            matrix_problem_level.num_non_zero_gold += 1 if is_non_zero_gold else 0
-            matrix_problem_level.num_is_covered += 1 if is_covered else 0
+            matrix_item_level.num_non_zero_gold += 1 if is_non_zero_gold else 0
+            matrix_item_level.num_is_covered += 1 if is_covered else 0
             (
                 true_positive,
                 false_positive,
@@ -121,12 +122,13 @@ def get_confision_matrix_from_answers_slot(
                 mode=mode,
             )
 
-            matrix_problem_level.true_positive += true_positive
-            matrix_problem_level.true_negative += true_negative
-            matrix_problem_level.false_positive += false_positive
-            matrix_problem_level.false_negative += false_negative
+            matrix_item_level.true_positive += true_positive
+            matrix_item_level.true_negative += true_negative
+            matrix_item_level.false_positive += false_positive
+            matrix_item_level.false_negative += false_negative
 
-            matrix.add(confusion_matrix=matrix_problem_level)
+            matrix.add(confusion_matrix=matrix_item_level)
+            matrix_problem_level.add(confusion_matrix=matrix_item_level)
         if matrix_problem_level.is_valid_model():
             problem_level_matrices.append(matrix_problem_level)
 
@@ -185,6 +187,7 @@ def get_confision_matrix_from_answers_by_output_length_slot(
         gold_length = len(gold_output_intent[counter])
 
         for gold, pred in zip(gold_container, pred_container):
+            confusion_matrix_item_level = ConfusionMatrixModel(mode=mode)
             if is_single_intent_detection:
                 pred = clean_up_pred(pred)
 
@@ -192,10 +195,10 @@ def get_confision_matrix_from_answers_by_output_length_slot(
                 output[gold_length] = ConfusionMatrixModel(mode=mode)
                 output_problem_level[gold_length] = []
             is_non_zero_gold, is_covered = check_coverage(gold=gold, pred=pred)
-            confusion_matrix_problem_level.num_non_zero_gold += (
+            confusion_matrix_item_level.num_non_zero_gold += (
                 1 if is_non_zero_gold else 0
             )
-            confusion_matrix_problem_level.num_is_covered += 1 if is_covered else 0
+            confusion_matrix_item_level.num_is_covered += 1 if is_covered else 0
             (
                 true_positive,
                 false_positive,
@@ -207,12 +210,15 @@ def get_confision_matrix_from_answers_by_output_length_slot(
                 mode=mode,
             )
 
-            confusion_matrix_problem_level.true_positive += true_positive
-            confusion_matrix_problem_level.true_negative += true_negative
-            confusion_matrix_problem_level.false_positive += false_positive
-            confusion_matrix_problem_level.false_negative += false_negative
+            confusion_matrix_item_level.true_positive += true_positive
+            confusion_matrix_item_level.true_negative += true_negative
+            confusion_matrix_item_level.false_positive += false_positive
+            confusion_matrix_item_level.false_negative += false_negative
 
-            output[gold_length].add(confusion_matrix=confusion_matrix_problem_level)
+            output[gold_length].add(confusion_matrix=confusion_matrix_item_level)
+            confusion_matrix_problem_level.add(
+                confusion_matrix=confusion_matrix_item_level
+            )
 
         if confusion_matrix_problem_level.is_valid_model():
             output_problem_level[gold_length].append(confusion_matrix_problem_level)
