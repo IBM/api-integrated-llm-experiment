@@ -156,10 +156,7 @@ def test_scorer_with_win_rate() -> None:
     assert not has_exception
 
 
-@pytest.mark.skip(
-    reason="This is a failing test",
-)
-def test_parser_only() -> None:
+def test_parser_only_single_intent() -> None:
     has_exception, num_ignored = parsing(
         evaluator_output_file_paths=get_files_in_folder(  # type: ignore
             folder_path=Path(
@@ -168,7 +165,7 @@ def test_parser_only() -> None:
                     "tests",
                     "data",
                     "test_output",
-                    "evaluation",
+                    "evaluation_single_intent",
                     "llm",
                 )
             ),
@@ -176,6 +173,30 @@ def test_parser_only() -> None:
         ),
         output_folder_path=Path(os.path.join(project_root_path, "output", "parsing")),  # type: ignore
         is_single_intent_detection=True,
+        ignore_file_path=None,
+    )
+
+    assert not has_exception
+    assert num_ignored == 0
+
+
+def test_parser_only_regular_sequence() -> None:
+    has_exception, num_ignored = parsing(
+        evaluator_output_file_paths=get_files_in_folder(  # type: ignore
+            folder_path=Path(
+                os.path.join(
+                    project_root_path,
+                    "tests",
+                    "data",
+                    "test_output",
+                    "evaluation_regular_sequence",
+                    "llm",
+                )
+            ),
+            file_extension="jsonl",
+        ),
+        output_folder_path=Path(os.path.join(project_root_path, "output", "parsing")),  # type: ignore
+        is_single_intent_detection=False,
         ignore_file_path=None,
     )
 
