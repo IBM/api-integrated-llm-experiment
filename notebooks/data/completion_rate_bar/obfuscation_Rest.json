@@ -1,0 +1,215 @@
+{
+    "gpt-4o": {
+        "datasets": [
+            {
+                "data_file": "formula_1_rest_gpt-4o.json",
+                "n_datapoints": 128,
+                "n_wins": 69
+            },
+            {
+                "data_file": "thrombosis_prediction_rest_gpt-4o.json",
+                "n_datapoints": 136,
+                "n_wins": 39
+            },
+            {
+                "data_file": "card_games_rest_gpt-4o.json",
+                "n_datapoints": 155,
+                "n_wins": 75
+            },
+            {
+                "data_file": "toxicology_rest_gpt-4o.json",
+                "n_datapoints": 100,
+                "n_wins": 21
+            },
+            {
+                "data_file": "codebase_community_rest_gpt-4o.json",
+                "n_datapoints": 157,
+                "n_wins": 76
+            },
+            {
+                "data_file": "student_club_rest_gpt-4o.json",
+                "n_datapoints": 132,
+                "n_wins": 59
+            },
+            {
+                "data_file": "financial_rest_gpt-4o.json",
+                "n_datapoints": 91,
+                "n_wins": 19
+            },
+            {
+                "data_file": "debit_card_specializing_rest_gpt-4o.json",
+                "n_datapoints": 61,
+                "n_wins": 35
+            },
+            {
+                "data_file": "european_football_2_rest_gpt-4o.json",
+                "n_datapoints": 122,
+                "n_wins": 62
+            },
+            {
+                "data_file": "california_schools_rest_gpt-4o.json",
+                "n_datapoints": 75,
+                "n_wins": 43
+            },
+            {
+                "data_file": "superhero_rest_gpt-4o.json",
+                "n_datapoints": 110,
+                "n_wins": 46
+            }
+        ],
+        "total_micro": {
+            "n_datapoints": 1267,
+            "all_wins": 544,
+            "n_datasets": 11,
+            "win_rate": 0.4293606945540647
+        },
+        "total_macro": {
+            "n_datapoints": 1267,
+            "all_wins": 544,
+            "win_rate": 0.43027435246691986,
+            "n_datasets": 11
+        }
+    },
+    "llama-3-3-70b": {
+        "datasets": [
+            {
+                "data_file": "financial_rest_llama-3-3-70b.json",
+                "n_datapoints": 91,
+                "n_wins": 24
+            },
+            {
+                "data_file": "superhero_rest_llama-3-3-70b.json",
+                "n_datapoints": 110,
+                "n_wins": 48
+            },
+            {
+                "data_file": "codebase_community_rest_llama-3-3-70b.json",
+                "n_datapoints": 157,
+                "n_wins": 71
+            },
+            {
+                "data_file": "debit_card_specializing_rest_llama-3-3-70b.json",
+                "n_datapoints": 61,
+                "n_wins": 33
+            },
+            {
+                "data_file": "card_games_rest_llama-3-3-70b.json",
+                "n_datapoints": 155,
+                "n_wins": 59
+            },
+            {
+                "data_file": "toxicology_rest_llama-3-3-70b.json",
+                "n_datapoints": 100,
+                "n_wins": 21
+            },
+            {
+                "data_file": "formula_1_rest_llama-3-3-70b.json",
+                "n_datapoints": 128,
+                "n_wins": 63
+            },
+            {
+                "data_file": "thrombosis_prediction_rest_llama-3-3-70b.json",
+                "n_datapoints": 136,
+                "n_wins": 48
+            },
+            {
+                "data_file": "student_club_rest_llama-3-3-70b.json",
+                "n_datapoints": 132,
+                "n_wins": 66
+            },
+            {
+                "data_file": "california_schools_rest_llama-3-3-70b.json",
+                "n_datapoints": 75,
+                "n_wins": 33
+            },
+            {
+                "data_file": "european_football_2_rest_llama-3-3-70b.json",
+                "n_datapoints": 122,
+                "n_wins": 69
+            }
+        ],
+        "total_micro": {
+            "n_datapoints": 1267,
+            "all_wins": 535,
+            "n_datasets": 11,
+            "win_rate": 0.4222573007103394
+        },
+        "total_macro": {
+            "n_datapoints": 1267,
+            "all_wins": 535,
+            "win_rate": 0.42133276493391353,
+            "n_datasets": 11
+        }
+    },
+    "mixtral-8x22B": {
+        "datasets": [
+            {
+                "data_file": "formula_1_rest_mixtral-8x22B.json",
+                "n_datapoints": 128,
+                "n_wins": 24
+            },
+            {
+                "data_file": "thrombosis_prediction_rest_mixtral-8x22B.json",
+                "n_datapoints": 136,
+                "n_wins": 22
+            },
+            {
+                "data_file": "european_football_2_rest_mixtral-8x22B.json",
+                "n_datapoints": 122,
+                "n_wins": 48
+            },
+            {
+                "data_file": "california_schools_rest_mixtral-8x22B.json",
+                "n_datapoints": 75,
+                "n_wins": 22
+            },
+            {
+                "data_file": "student_club_rest_mixtral-8x22B.json",
+                "n_datapoints": 132,
+                "n_wins": 39
+            },
+            {
+                "data_file": "financial_rest_mixtral-8x22B.json",
+                "n_datapoints": 91,
+                "n_wins": 5
+            },
+            {
+                "data_file": "debit_card_specializing_rest_mixtral-8x22B.json",
+                "n_datapoints": 61,
+                "n_wins": 26
+            },
+            {
+                "data_file": "codebase_community_rest_mixtral-8x22B.json",
+                "n_datapoints": 157,
+                "n_wins": 37
+            },
+            {
+                "data_file": "superhero_rest_mixtral-8x22B.json",
+                "n_datapoints": 110,
+                "n_wins": 38
+            },
+            {
+                "data_file": "card_games_rest_mixtral-8x22B.json",
+                "n_datapoints": 155,
+                "n_wins": 22
+            },
+            {
+                "data_file": "toxicology_rest_mixtral-8x22B.json",
+                "n_datapoints": 100,
+                "n_wins": 14
+            }
+        ],
+        "total_micro": {
+            "n_datapoints": 1267,
+            "all_wins": 297,
+            "n_datasets": 11,
+            "win_rate": 0.23441199684293607
+        },
+        "total_macro": {
+            "n_datapoints": 1267,
+            "all_wins": 297,
+            "win_rate": 0.2432480536270235,
+            "n_datasets": 11
+        }
+    }
+}

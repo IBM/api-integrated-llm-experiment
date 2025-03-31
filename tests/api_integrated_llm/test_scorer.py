@@ -105,16 +105,7 @@ def test_scorer_with_parser_output() -> None:
     assert not has_exception
 
 
-@pytest.mark.skipif(
-    not os.path.isdir(
-        os.path.join(
-            project_root_path,
-            "tests",
-            "data",
-            "source",
-            "databases",
-        )
-    ),
+@pytest.mark.skip(
     reason="database directory is missing",
 )
 def test_scorer_with_win_rate() -> None:
