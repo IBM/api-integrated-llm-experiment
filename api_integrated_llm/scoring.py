@@ -17,12 +17,10 @@ from api_integrated_llm.data_models.scorer_models import (
     MicroConfusionMetrixMetricsModel,
     MicroConfusionMetrixMetricsProblemLevelModel,
     ScorerOuputModel,
-    WinRateResultModel,
 )
 from api_integrated_llm.data_models.source_models import (
     EvaluationOutputResponseDataUnit,
 )
-from api_integrated_llm.helpers.database_helper.win_rate_calculator import get_win_rate
 from api_integrated_llm.helpers.output_parsers import (
     parse_output_from_language_models,
     parse_output_from_language_models_rest,
@@ -190,9 +188,15 @@ def get_api_dict_with_list_as_value(
     return api_dict
 
 
-def get_slot_info(
-    gold_func_calls: List[Any], pred_func_calls: List[Any]
-) -> Tuple[List[List[str]], List[List[str]], List[str], int, int, bool, bool,]:
+def get_slot_info(gold_func_calls: List[Any], pred_func_calls: List[Any]) -> Tuple[
+    List[List[str]],
+    List[List[str]],
+    List[str],
+    int,
+    int,
+    bool,
+    bool,
+]:
     gold_output_slot: List[List[str]] = []
     pred_output_slot: List[List[str]] = []
     error_messages: List[str] = []
@@ -641,8 +645,6 @@ def parsing_only(
 
 def calculate_scores(
     predictions_input: List[EvaluationOutputResponseDataUnit],
-    db_path: Optional[Path] = None,
-    source_file_search_path: Optional[Path] = None,
     is_single_intent_detection: bool = False,
 ) -> ScorerOuputModel:
     (
@@ -702,25 +704,6 @@ def calculate_scores(
         is_single_intent_detection=is_single_intent_detection,
     )
 
-    (
-        win_rate,
-        num_sequences_processed_win_rate,
-        error_messages_win_rate,
-        num_failed_function_execution_list,
-        win_rate_result_model,
-    ) = (
-        get_win_rate(
-            predictions_input=predictions_input,
-            predicted_function_calls=predicted_function_calls,
-            gold_function_calls=gold_function_calls,
-            sample_ids=sample_ids,
-            db_path=db_path,  # database path
-            source_file_search_path=source_file_search_path,
-        )
-        if ((db_path is not None) and (source_file_search_path is not None))
-        else (None, None, [], [], WinRateResultModel())
-    )
-
     num_samples = len(predictions_input)
     intent_pair_models = []
     pred_output_intent_new = []
@@ -772,11 +755,6 @@ def calculate_scores(
                 zip(gold_output_slot, pred_output_slot),
             )
         ),
-        win_rate=win_rate,
-        num_sequences_processed_win_rate=num_sequences_processed_win_rate,
-        error_messages_win_rate=error_messages_win_rate,
-        num_failed_function_execution_list=num_failed_function_execution_list,
-        win_rate_result_model=win_rate_result_model,
         parsed_predictions=pred_dict_list,
         parsed_gold_answer=gold_dict_list,
     )
@@ -814,9 +792,9 @@ def parsing(
 ) -> Tuple[bool, int]:
     has_exception = False
     num_samples_ignored = 0
-    sample_ignore_model: Optional[
-        SampleIgonoreModel
-    ] = get_sample_ignore_model_from_file(ignore_file_path=ignore_file_path)
+    sample_ignore_model: Optional[SampleIgonoreModel] = (
+        get_sample_ignore_model_from_file(ignore_file_path=ignore_file_path)
+    )
     for evaluator_output_file_path in evaluator_output_file_paths:
         output_file_name = str(evaluator_output_file_path).split("/")[-1].split(".")[0]
         try:
@@ -871,8 +849,6 @@ def parsing(
 def scoring(
     evaluator_output_file_paths: List[Path],
     output_folder_path: Path,
-    db_path: Optional[Path] = None,
-    source_file_search_path: Optional[Path] = None,
     is_single_intent_detection=False,
     ignore_file_path: Optional[Path] = None,
 ) -> Tuple[bool, int]:
@@ -882,9 +858,9 @@ def scoring(
 
     has_exception = False
     num_samples_ignored = 0
-    sample_ignore_model: Optional[
-        SampleIgonoreModel
-    ] = get_sample_ignore_model_from_file(ignore_file_path=ignore_file_path)
+    sample_ignore_model: Optional[SampleIgonoreModel] = (
+        get_sample_ignore_model_from_file(ignore_file_path=ignore_file_path)
+    )
 
     for evaluator_output_file_path in evaluator_output_file_paths:
         temperature_str = "default_temperature"
@@ -909,8 +885,6 @@ def scoring(
 
             scorer_output_model = calculate_scores(
                 data,
-                db_path=db_path,
-                source_file_search_path=source_file_search_path,
                 is_single_intent_detection=is_single_intent_detection,
             )
             outfile = Path(

@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 import pytest
-from api_integrated_llm.helpers.database_helper.local_llm_helper import (
+from api_integrated_llm.helpers.local_llm_helper import (
     get_response_from_llm_with_tokenizer,
 )
 from transformers import (

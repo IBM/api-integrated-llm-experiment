@@ -70,26 +70,10 @@ def get_arguments() -> argparse.Namespace:
     )
 
     parser.add_argument(
-        "-dsf",
-        "--databases_folder",
-        type=Path,
-        help="Databases folder path",
-        default=project_root_path,
-    )
-
-    parser.add_argument(
         "-maif",
         "--metrics_aggregator_input_folder",
         type=Path,
         help="Metrics aggregator input folder path",
-        default=project_root_path,
-    )
-
-    parser.add_argument(
-        "-sf",
-        "--source_folder",
-        type=Path,
-        help="Source folder path",
         default=project_root_path,
     )
 
@@ -201,9 +185,7 @@ def check_args(args) -> bool:
 
 def get_paths(
     args,
-) -> Tuple[
-    Path, Path, Path, Path, Path, Optional[Path], Optional[Path], Path, Optional[Path]
-]:
+) -> Tuple[Path, Path, Path, Path, Path, Path, Optional[Path]]:
     root_folder_path = Path(os.path.join(args.root, "source"))
     output_folder_path = (
         Path(os.path.join(args.root, "output"))
@@ -243,14 +225,6 @@ def get_paths(
         else args.scorer_input_folder
     )
 
-    source_folder_path = (
-        None if args.source_folder == project_root_path else args.source_folder
-    )
-
-    database_folder_path = (
-        None if args.databases_folder == project_root_path else args.databases_folder
-    )
-
     metrics_aggregator_input_folder_path = (
         Path(
             os.path.join(
@@ -274,16 +248,6 @@ def get_paths(
         cast(Path, evaluation_folder_path),
         cast(Path, parser_input_folder_path),
         cast(Path, scorer_input_folder_path),
-        (
-            cast(Path, source_folder_path)
-            if source_folder_path is not None
-            else source_folder_path
-        ),
-        (
-            cast(Path, database_folder_path)
-            if database_folder_path is not None
-            else database_folder_path
-        ),
         metrics_aggregator_input_folder_path,
         ignore_file_path,
     )
@@ -301,8 +265,6 @@ def cli() -> None:
         evaluation_folder_path,
         parser_input_folder_path,
         scorer_input_folder_path,
-        source_folder_path,
-        database_folder_path,
         metrics_aggregator_input_folder_path,
         ignore_file_path,
     ) = get_paths(args)
@@ -383,8 +345,6 @@ def cli() -> None:
                 file_extension="jsonl",
             ),
             output_folder_path=Path(os.path.join(output_folder_path, "scoring")),
-            db_path=database_folder_path,
-            source_file_search_path=source_folder_path,
             is_single_intent_detection=args.single_intent,
             ignore_file_path=ignore_file_path,
         )

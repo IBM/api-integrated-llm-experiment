@@ -1,8 +1,6 @@
 import os
 from pathlib import Path
 
-import pytest
-
 from api_integrated_llm.helpers.file_helper import get_files_in_folder
 from api_integrated_llm.scoring import parsing, scoring
 
@@ -100,48 +98,6 @@ def test_scorer_with_parser_output() -> None:
         ),
         output_folder_path=Path(os.path.join(project_root_path, "output", "scoring")),  # type: ignore
         is_single_intent_detection=True,
-    )
-
-    assert not has_exception
-
-
-@pytest.mark.skip(
-    reason="database directory is missing",
-)
-def test_scorer_with_win_rate() -> None:
-    has_exception, _ = scoring(
-        evaluator_output_file_paths=get_files_in_folder(  # type: ignore
-            folder_path=Path(
-                os.path.join(
-                    project_root_path,
-                    "tests",
-                    "data",
-                    "test_output",
-                    "evaluation_win_rate",
-                )
-            ),
-            file_extension="jsonl",
-        ),
-        output_folder_path=Path(os.path.join(project_root_path, "output", "scoring")),
-        db_path=Path(
-            os.path.join(
-                project_root_path,
-                "tests",
-                "data",
-                "source",
-                "databases",
-            )
-        ),
-        source_file_search_path=Path(
-            os.path.join(
-                project_root_path,
-                "tests",
-                "data",
-                "source",
-                "evaluation_trimmed",
-            )
-        ),
-        is_single_intent_detection=False,
     )
 
     assert not has_exception

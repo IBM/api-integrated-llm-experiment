@@ -8,7 +8,7 @@ from api_integrated_llm.data_models.source_models import (
     EvaluationOutputDataUnit,
     EvaluationOutputResponseDataUnit,
 )
-from api_integrated_llm.helpers.database_helper.local_llm_helper import (
+from api_integrated_llm.helpers.local_llm_helper import (
     get_responses_from_local_llm,
 )
 from api_integrated_llm.helpers.file_helper import (

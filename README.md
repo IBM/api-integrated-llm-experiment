@@ -45,7 +45,7 @@ api-integrated-llm -h
 
 ```
 usage: api-integrated-llm [-h] [-m {default,evaluator,scorer,parser,metrics_aggregator}] [-rt ROOT] [-eof EVALUATOR_OUTPUT_FOLDER] [-pif PARSER_INPUT_FOLDER] [-of OUTPUT_FOLDER]
-                          [-sif SCORER_INPUT_FOLDER] [-dsf DATABASES_FOLDER] [-maif METRICS_AGGREGATOR_INPUT_FOLDER] [-sf SOURCE_FOLDER] [-ig | --ignore | --no-ignore] [-igf IGNORE_FILE_PATH]
+                          [-sif SCORER_INPUT_FOLDER] [-maif METRICS_AGGREGATOR_INPUT_FOLDER] [-ig | --ignore | --no-ignore] [-igf IGNORE_FILE_PATH]
                           [-asy | --use_async | --no-use_async] [-si | --single_intent | --no-single_intent] [-atp | --add_tool_definition_to_prompt | --no-add_tool_definition_to_prompt]
                           [-er | --random_example | --no-random_example] [-nr NUMBER_RANDOM_EXAMPLE] [-ep EXAMPLE_FILE_PATH] [-mcp LANGUAGE_MODEL_CONFIGURATION_FILE_PATH]
 
@@ -65,12 +65,8 @@ options:
                         Output folder path
   -sif SCORER_INPUT_FOLDER, --scorer_input_folder SCORER_INPUT_FOLDER
                         Scorer input folder path
-  -dsf DATABASES_FOLDER, --databases_folder DATABASES_FOLDER
-                        Databases folder path
   -maif METRICS_AGGREGATOR_INPUT_FOLDER, --metrics_aggregator_input_folder METRICS_AGGREGATOR_INPUT_FOLDER
                         Metrics aggregator input folder path
-  -sf SOURCE_FOLDER, --source_folder SOURCE_FOLDER
-                        Source folder path
   -ig, --ignore, --no-ignore
                         Ignore data points marked as "ignore"
   -igf IGNORE_FILE_PATH, --ignore_file_path IGNORE_FILE_PATH
@@ -211,65 +207,6 @@ Example command:
 api-integrated-llm -m scorer -sif /Users/jungkookang/Documents/projects/api_integrated_llm_experiment/output/parsing -of /Users/jungkookang/Documents/projects/api_integrated_llm_experiment/output/scoring -igf /Users/jungkookang/Documents/projects/api_integrated_llm_experiment/tests/data/source/auxiliary/ignore.json
 ```
 
-## Win Rate Calculator
-
-### Pre-requisites
-
-This win rate calculator, found at `api-integrated-llm-experiment`, is based on Ben Elder's code (https://github.ibm.com/AI4BA/invocable-api-hub/blob/sql/invocable_api_hub/driver/run_example.py). It has been significantly modified for use in `api-integrated-llm-experiment`.
-
-To use the win rate calculator, you need three things:
-1. Source data file (retrieved from LLMs or Agents)
-2. Output files from evaluation or parsing
-3. Database folder
-
-Ensure that your source data contains the following:
-- `QuerySourceDataModel` in `api_integrated_llm/data_models/source_models.py` should have a unique `sample_id`.
-- `QuerySourceModel` in `api_integrated_llm/data_models/source_models.py` should have a valid dataset name.
-
-The win rate calculation algorithm uses `sample_id` to locate necessary data in the source data, and the dataset's name is used to determine which folder contains the corresponding database contents.
-
-### Usage:
-
-To use the win rate calculator, run the following command:
-
-```bash
-api-integrated-llm -m scorer -sif <INPUT_FOLDER_PATH> -of <OUTPUT_FOLDER_PATH> -dsf <DATABASES_FOLDER_PATH> -sf <EVALUATION_SOURCE_FOLDER_PATH>
-```
-
-### Input/Output:
-
-Ensure that `DATABASES_FOLDER_PATH` and `EVALUATION_SOURCE_FOLDER_PATH` are provided for the calculator to work.
-
-- `EVALUATION_SOURCE_FOLDER_PATH`: Path to a folder containing source files for benchmarking, e.g., `tests/data/source/evaluation_win_rate`. The source files follow the `QuerySourceModel` defined in `api_integrated_llm/data_models/source_models.py`.
-- `DATABASES_FOLDER_PATH`: Absolute folder path containing databases, e.g., a file structure with folders representing databases inside `DATABASES_FOLDER`. For example,
-
-```
-DATABASES_FOLDER
-├── california_schools
-│   ├── california_schools.sqlite
-│   └── database_description
-│       ├── frpm.csv
-│       ├── satscores.csv
-│       └── schools.csv
-├── card_games
-│   ├── card_games.sqlite
-│   └── database_description
-│       ├── cards.csv
-│       ├── foreign_data.csv
-│       ├── legalities.csv
-│       ├── rulings.csv
-│       ├── set_translations.csv
-│       └── sets.csv
-├── codebase_community
-```
-
-- Output files are in JSON format, following the `ScorerOuputModel` schema defined in `api_integrated_llm/data_models/scorer_models.py`.
-
-### Example Usage:
-
-```bash
-api-integrated-llm -m scorer -sif /Users/jungkookang/Documents/projects/api_integrated_llm_experiment/output/parsing -of /Users/jungkookang/Documents/projects/api_integrated_llm_experiment/output/scoring -dsf /Users/jungkookang/Documents/projects/api_integrated_llm_experiment/tests/data/source/databases -sf /Users/jungkookang/Documents/projects/api_integrated_llm_experiment/tests/data/source/evaluation_win_rate
-```
 
 ## Metrics Aggregator
 
