@@ -111,7 +111,7 @@ def get_input_query(
     ):
         template_str = prompt_dict["mixtral_8x7b_instruct_v01"]
     elif (
-        "mixtral-8x22B" in model_name_lower
+        "mixtral-8x22b" in model_name_lower
         and "Mixtral-8x22B-Instruct-v0.1" in prompt_dict
     ):
         template_str = prompt_dict["Mixtral-8x22B-Instruct-v0.1"]
