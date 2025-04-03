@@ -126,7 +126,7 @@ def get_input_query(
     elif "gpt" in model_name_lower:
         template_str = prompt_dict["gpt4o"]
     else:
-        template_str = prompt_dict["LLaMa-3.1"]
+        raise Exception(f"Prompt template for {model_name} is missing.")
 
     return replace_sub_str(
         base_str=template_str,
