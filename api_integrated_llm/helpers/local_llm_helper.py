@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 import torch
 from transformers import (
     AutoModelForCausalLM,
@@ -16,7 +16,7 @@ processors_dict = {}
 
 
 def get_response_from_llm_with_tokenizer(
-    input: str, model_obj: Dict[str, str], temperature: float, max_tokens: int
+    input: str, model_obj: Dict[str, Any], temperature: float, max_tokens: int
 ) -> Optional[str]:
     if "tokenizer" not in model_obj or "model" not in model_obj:
         return None

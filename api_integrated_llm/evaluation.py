@@ -221,7 +221,7 @@ def get_output_list(
                     should_add_tool_definitions_to_prompt=should_add_tool_definitions_to_prompt,
                 )
             else:
-                responses, error_messages = get_responses_from_local_llm(
+                responses, error_messages = get_responses_from_local_llm(  # type: ignore
                     test_data=test_data,
                     model_obj=model_obj,
                     temperature=temperature,

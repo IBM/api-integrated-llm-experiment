@@ -188,15 +188,9 @@ def get_api_dict_with_list_as_value(
     return api_dict
 
 
-def get_slot_info(gold_func_calls: List[Any], pred_func_calls: List[Any]) -> Tuple[
-    List[List[str]],
-    List[List[str]],
-    List[str],
-    int,
-    int,
-    bool,
-    bool,
-]:
+def get_slot_info(
+    gold_func_calls: List[Any], pred_func_calls: List[Any]
+) -> Tuple[List[List[str]], List[List[str]], List[str], int, int, bool, bool,]:
     gold_output_slot: List[List[str]] = []
     pred_output_slot: List[List[str]] = []
     error_messages: List[str] = []
@@ -792,9 +786,9 @@ def parsing(
 ) -> Tuple[bool, int]:
     has_exception = False
     num_samples_ignored = 0
-    sample_ignore_model: Optional[SampleIgonoreModel] = (
-        get_sample_ignore_model_from_file(ignore_file_path=ignore_file_path)
-    )
+    sample_ignore_model: Optional[
+        SampleIgonoreModel
+    ] = get_sample_ignore_model_from_file(ignore_file_path=ignore_file_path)
     for evaluator_output_file_path in evaluator_output_file_paths:
         output_file_name = str(evaluator_output_file_path).split("/")[-1].split(".")[0]
         try:
@@ -858,9 +852,9 @@ def scoring(
 
     has_exception = False
     num_samples_ignored = 0
-    sample_ignore_model: Optional[SampleIgonoreModel] = (
-        get_sample_ignore_model_from_file(ignore_file_path=ignore_file_path)
-    )
+    sample_ignore_model: Optional[
+        SampleIgonoreModel
+    ] = get_sample_ignore_model_from_file(ignore_file_path=ignore_file_path)
 
     for evaluator_output_file_path in evaluator_output_file_paths:
         temperature_str = "default_temperature"
