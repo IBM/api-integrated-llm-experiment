@@ -1,4 +1,5 @@
-# Experiment
+# Api-Integrated-Llm-Experiment
+api-integrated-llm-experiment is a command-line tool that retrieves responses from large language models, scores them, and aggregates performance metrics.
 
 ### Build API-Integrated-LLM Package
 
