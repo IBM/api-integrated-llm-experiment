@@ -8,7 +8,7 @@ description     = "API Integrated LLM"
 requires-python = ">=3.10"
 license         = { file = "LICENSE.txt" }
 keywords        = ["api", "llm"]
-authors         = []
+authors         = [{ name = "Jungkoo Kang", email = "jungkoo.kang@gmail.com" }, { name = "Anupama Murthi", email = "anupama.murthi@ibm.com" }, { name = "Benjamin Elder", email = "benjamin.elder@ibm.com" }]
 dependencies    = ["transformers==4.49.0", "pydantic >= 2.10", "pandas", "jinja2", "aiohttp", "statistics", "torch", "accelerate", "sentencepiece", "google-api-python-client"]
 dynamic         = ["version"]
 readme          = { file = "README.md", content-type = "text/markdown" }
