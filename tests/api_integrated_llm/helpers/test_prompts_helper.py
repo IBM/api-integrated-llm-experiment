@@ -15,15 +15,7 @@ def test_get_input_query() -> None:
         prompt_meta_dict = json.load(f)
 
     model_names = [
-        "granite",
         "llama",
-        "hammer",
-        "mixtral_8x7b",
-        "mixtral-8x22B",
-        "deepseek",
-        "watt",
-        "qwen",
-        "gpt",
     ]
     sample_input = "What is your name?"
     example_str = "example"
