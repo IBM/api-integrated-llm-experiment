@@ -91,7 +91,6 @@ def get_response_from_llm_with_pipeline(
     sequences = pipeline(
         input,
         do_sample=False,
-        temperature=temperature,
         num_return_sequences=1,
         eos_token_id=tokenizer.eos_token_id,
         max_length=max_tokens,
