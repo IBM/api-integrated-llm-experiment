@@ -6,6 +6,7 @@ from transformers import (
     AutoProcessor,
     GenerationConfig,
 )
+import transformers
 
 from api_integrated_llm.data_models.source_models import EvaluationOutputDataUnit
 
@@ -55,6 +56,49 @@ def get_response_from_llm_with_tokenizer(
         output[0][len(input_tokens_dict["input_ids"][0]) :],  # noqa: E203
         skip_special_tokens=True,
     )
+
+    return response
+
+
+def get_response_from_llm_with_pipeline(
+    input: str, model_obj: Dict[str, Any], temperature: float, max_tokens: int
+) -> Optional[str]:
+    if "tokenizer" not in model_obj or "model" not in model_obj:
+        return None
+
+    if model_obj["tokenizer"] not in tokenizers_dict:
+        tokenizers_dict[model_obj["tokenizer"]] = AutoTokenizer.from_pretrained(
+            model_obj["tokenizer_url"]
+            if "tokenizer_url" in model_obj
+            else model_obj["tokenizer"]
+        )
+
+    if model_obj["model"] not in models_dict:
+        models_dict[model_obj["model"]] = transformers.pipeline(
+            "text-generation",
+            model=model_obj["model"],
+            torch_dtype=torch.float16,
+            device_map="auto",
+        )
+
+    tokenizer = tokenizers_dict[model_obj["tokenizer"]]
+
+    if max_tokens > tokenizer.model_max_length:
+        max_tokens = tokenizer.model_max_length - 1
+
+    pipeline = models_dict[model_obj["model"]]
+
+    sequences = pipeline(
+        input,
+        do_sample=False,
+        temperature=temperature,
+        num_return_sequences=1,
+        eos_token_id=tokenizer.eos_token_id,
+        max_length=max_tokens,
+    )
+
+    for seq in sequences:
+        response = seq["generated_text"]
 
     return response
 
@@ -123,7 +167,7 @@ def get_responses_from_local_llm(
                     "should_use_autoprocessor" in model_obj
                     and model_obj["should_use_autoprocessor"]
                 )
-                else get_response_from_llm_with_tokenizer(
+                else get_response_from_llm_with_pipeline(
                     input=sample.input,
                     model_obj=model_obj,
                     temperature=temperature,
